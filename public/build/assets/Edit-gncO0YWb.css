@@ -1,0 +1,1 @@
+.ProseMirror{outline:none}.toolbar-button{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:4px;transition:background-color .2s}.toolbar-button:hover{background-color:#e5e7eb}.toolbar-button.is-active{background-color:#d1d5db}.toolbar-divider{width:1px;height:20px;background-color:#d1d5db;margin:0 8px}
