@@ -3,7 +3,7 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - development  # Auto-deploy saat push ke branch development
+      - development # Auto-deploy saat push ke branch development
 
 jobs:
   deploy:
@@ -20,6 +20,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          timeout: 120s           # ← Tambahkan ini (increase connection timeout)
+          command_timeout: 300s   # ← Tambahkan ini (increase command timeout 5 menit)
           script: |
             cd /var/www/fsti-itk
             
