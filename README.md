@@ -1,4 +1,4 @@
-# Website FSTI ITK
+# Website DEVELOPMENT FSTI ITK
 
 <div align="center">
   <img src="public/images/logofsti.png" alt="Logo FSTI ITK" width="200"/>
