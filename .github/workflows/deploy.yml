@@ -3,49 +3,44 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - development # Auto-deploy saat push ke branch development
+      - development
 
 jobs:
   deploy:
     name: Deploy to FSTI VPS
-    runs-on: ubuntu-latest
+    runs-on: self-hosted  # ← UBAH DARI ubuntu-latest KE self-hosted
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          timeout: 120s           # ← Tambahkan ini (increase connection timeout)
-          command_timeout: 300s   # ← Tambahkan ini (increase command timeout 5 menit)
-          script: |
-            cd /var/www/fsti-itk
-            
-            # Pull latest code dari branch development
-            git fetch origin
-            git reset --hard origin/development
-            
-            # Install dependencies (production only, no dev packages)
-            composer install --no-dev --optimize-autoloader
-            
-            # Build frontend assets
-            npm install
-            npm run build
-            
-            # Run migrations (if any new migrations)
-            php artisan migrate --force
-            
-            # Clear & cache configs
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            php artisan optimize
-            
-            # Restart Laravel service
-            sudo systemctl restart laravel-fsti-dev
-            
-            echo "✅ Deployment to dev-fsti.myst-tech.com successful!"
+          clean: false  # ← Penting! Jangan delete files yang sudah ada
+        
+      - name: Deploy Application
+        run: |
+          cd /var/www/fsti-itk
+          
+          # Pull latest code
+          git fetch origin
+          git reset --hard origin/development
+          
+          # Install dependencies
+          composer install --no-dev --optimize-autoloader
+          
+          # Build frontend assets
+          npm install
+          npm run build
+          
+          # Run migrations
+          php artisan migrate --force
+          
+          # Clear & cache configs
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          php artisan optimize
+          
+          # Restart Laravel service
+          sudo systemctl restart laravel-fsti-dev
+          
+          echo "✅ Deployment to dev-fsti.myst-tech.com successful!"
