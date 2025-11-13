@@ -8,16 +8,20 @@ on:
 jobs:
   deploy:
     name: Deploy to FSTI VPS
-    runs-on: self-hosted  # ← UBAH DARI ubuntu-latest KE self-hosted
+    runs-on: self-hosted
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          clean: false  # ← Penting! Jangan delete files yang sudah ada
+          clean: false
         
       - name: Deploy Application
         run: |
+          # Load NVM environment
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          
           cd /var/www/fsti-itk
           
           # Pull latest code
