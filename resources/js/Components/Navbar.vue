@@ -79,6 +79,17 @@ const navigationMenu: NavLink[] = [
             { name: 'Portal Layanan Mahasiswa', href: 'https://layanan-fsti.myst-tech.com/', external: true },
         ],
     },
+    {
+        name: 'Informasi & Layanan',
+        href: '#',
+        sublinks: [
+            { name: 'PPID Fakultas', href: route('ppid.index') },
+            { name: 'Zona Integritas', href: route('zona-integritas.index') },
+            { name: 'Alumni & Tracer Study', href: route('alumni.index') },
+            { name: 'Survei Kepuasan', href: route('survei.index') },
+            { name: 'Layanan Internal', href: route('layanan.index') },
+        ],
+    },
     { name: 'Berita', href: route('berita.index') },
     { name: 'Kontak', href: route('kontak') },
 ];

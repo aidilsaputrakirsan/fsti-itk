@@ -7,6 +7,7 @@ import {
     UsersIcon,
     ArrowLeftOnRectangleIcon,
     ChevronRightIcon,
+    InformationCircleIcon,
 } from '@heroicons/vue/24/outline';
 import { ref, onMounted } from 'vue';
 
@@ -31,6 +32,18 @@ const navigation = ref([
         icon: TrophyIcon,
         children: [
             { name: 'Kelola Daftar Prestasi', href: '/admin/achievements' }
+        ]
+    },
+    {
+        name: 'Informasi & Layanan',
+        href: null,
+        icon: InformationCircleIcon,
+        children: [
+            { name: 'PPID', href: '/admin/ppid' },
+            { name: 'Zona Integritas', href: '/admin/integrity-zones' },
+            { name: 'Alumni & Tracer', href: '/admin/alumni' },
+            { name: 'Survei Kepuasan', href: '/admin/satisfaction-surveys' },
+            { name: 'Layanan Internal', href: '/admin/internal-services' },
         ]
     },
     { name: 'Kelola Akun Admin', href: '/admin/akun', icon: UsersIcon, children: null },

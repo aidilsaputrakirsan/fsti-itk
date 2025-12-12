@@ -68,7 +68,24 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     // Route untuk Impor & Ekspor Prestasi
     Route::post('/achievements/import', [AchievementsController::class, 'import'])->name('achievements.import');
     Route::get('/achievements/export', [AchievementsController::class, 'export'])->name('achievements.export');
+
+    // --- MODUL TAMBAHAN (Admin) ---
+    Route::resource('/ppid', \App\Http\Controllers\Admin\PpidController::class);
+    Route::resource('/integrity-zones', \App\Http\Controllers\Admin\IntegrityZoneController::class);
+    Route::resource('/alumni', \App\Http\Controllers\Admin\AlumniController::class);
+    Route::resource('/satisfaction-surveys', \App\Http\Controllers\Admin\SatisfactionSurveyController::class);
+    Route::resource('/internal-services', \App\Http\Controllers\Admin\InternalServiceController::class);
 });
+
+// --- MODUL TAMBAHAN (Publik) ---
+use App\Http\Controllers\PublicAdditionalController;
+
+Route::get('/ppid', [PublicAdditionalController::class, 'ppid'])->name('ppid.index');
+Route::get('/zona-integritas', [PublicAdditionalController::class, 'zonaIntegritas'])->name('zona-integritas.index');
+Route::get('/alumni', [PublicAdditionalController::class, 'alumni'])->name('alumni.index');
+Route::get('/survei-kepuasan', [PublicAdditionalController::class, 'survei'])->name('survei.index');
+Route::post('/survei-kepuasan', [PublicAdditionalController::class, 'storeSurvei'])->name('survei.store');
+Route::get('/layanan-internal', [PublicAdditionalController::class, 'layanan'])->name('layanan.index');
 
 
 // --- KELOMPOK ROUTE UNTUK AUTENTIKASI ---
