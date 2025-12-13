@@ -28,7 +28,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->enum('category', ['Kebijakan Anti Korupsi', 'Reformasi Birokrasi', 'Berita ZI'])->default('Berita ZI');
+            $table->string('category')->default('Berita ZI'); // Changed from enum to string for flexibility
             $table->text('content'); // Rich text
             $table->string('image_path')->nullable();
             $table->string('document_path')->nullable(); // For policy PDFs
@@ -40,7 +40,7 @@ return new class extends Migration
         Schema::create('alumni_tracers', function (Blueprint $table) {
             $table->id();
             $table->string('title'); // e.g., "Laporan Tracer Study 2024"
-            $table->enum('type', ['Link Survei', 'Laporan/Infografis', 'Agenda Alumni'])->default('Laporan/Infografis');
+            $table->string('type')->default('Report'); // Changed from enum for flexibility ('Survey Link' or 'Report')
             $table->string('url')->nullable(); // Link to Google Form or external
             $table->string('file_path')->nullable(); // PDF report
             $table->text('description')->nullable();

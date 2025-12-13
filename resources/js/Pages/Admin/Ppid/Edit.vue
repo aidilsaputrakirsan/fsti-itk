@@ -25,9 +25,8 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('admin.ppid.update', props.document.id), {
+    form.put(route('admin.ppid.update', props.document.id), {
         forceFormData: true,
-        _method: 'put',
     });
 };
 
