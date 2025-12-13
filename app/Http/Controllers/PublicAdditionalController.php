@@ -21,10 +21,12 @@ class PublicAdditionalController extends Controller
     public function zonaIntegritas()
     {
         $policies = \App\Models\IntegrityZone::where('category', '!=', 'Berita ZI')
+            ->where('published_at', '<=', now())
             ->orderBy('published_at', 'desc')
             ->get();
             
         $news = \App\Models\IntegrityZone::where('category', 'Berita ZI')
+            ->where('published_at', '<=', now())
             ->orderBy('published_at', 'desc')
             ->take(6)
             ->get();

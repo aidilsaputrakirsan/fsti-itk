@@ -4,15 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AlumniTracer extends Model
+class Staff extends Model
 {
     protected $fillable = [
-        'title',
-        'type',
-        'url',
-        'file_path',
-        'year',
-        'description',
+        'name',
+        'nip',
+        'email',
+        'position',
+        'prodi',
+        'jurusan',
+        'category',
+        'image_path',
+        'sort_order',
         'is_active',
     ];
 

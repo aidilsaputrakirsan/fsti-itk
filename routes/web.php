@@ -9,7 +9,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\AchievementsController;
 use App\Http\Controllers\PublicPostController;
-use App\Http\Controllers\PublicAchievementController; // <-- Impor controller baru
+use App\Http\Controllers\PublicProfileController; // <-- Import controller baru
 use App\Models\Post;
 use App\Models\Achievement;
 
@@ -73,8 +73,13 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('/ppid', \App\Http\Controllers\Admin\PpidController::class);
     Route::resource('/integrity-zones', \App\Http\Controllers\Admin\IntegrityZoneController::class);
     Route::resource('/alumni', \App\Http\Controllers\Admin\AlumniController::class);
+    Route::resource('/users', \App\Http\Controllers\Admin\UserController::class);
     Route::resource('/satisfaction-surveys', \App\Http\Controllers\Admin\SatisfactionSurveyController::class);
     Route::resource('/internal-services', \App\Http\Controllers\Admin\InternalServiceController::class);
+    
+    // Profil Module
+    Route::resource('/static-pages', \App\Http\Controllers\Admin\StaticPageController::class)->only(['index', 'edit', 'update']);
+    Route::resource('/staff', \App\Http\Controllers\Admin\StaffController::class);
 });
 
 // --- MODUL TAMBAHAN (Publik) ---
@@ -101,39 +106,22 @@ Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Route untuk halaman Visi & Misi
-Route::get('/profil/visi-misi', function () {
-    return Inertia::render('Public/Profil/VisiMisi');
-})->name('visi-misi');
+// Route untuk Visi & Misi
+Route::get('/profil/visi-misi', [PublicProfileController::class, 'visiMisi'])->name('visi-misi');
 
-Route::get('/profil/bagan-organisasi', function () {
-    return Inertia::render('Public/Profil/BaganOrganisasi');
-})->name('bagan-organisasi');
+Route::get('/profil/bagan-organisasi', [PublicProfileController::class, 'baganOrganisasi'])->name('bagan-organisasi');
 
-Route::get('/profil/pimpinan-fakultas', function () {
-    return Inertia::render('Public/Profil/PimpinanFakultas');
-})->name('profil.pimpinan-fakultas');
+Route::get('/profil/pimpinan-fakultas', [PublicProfileController::class, 'pimpinanFakultas'])->name('profil.pimpinan-fakultas');
 
-Route::get('/profil/pimpinan-jurusan', function () {
-    return Inertia::render('Public/Profil/PimpinanJurusan');
-})->name('profil.pimpinan-jurusan');
+Route::get('/profil/pimpinan-jurusan', [PublicProfileController::class, 'pimpinanJurusan'])->name('profil.pimpinan-jurusan');
 
-Route::get('/profil/pimpinan-prodi', function () {
-    return Inertia::render('Public/Profil/PimpinanProdi');
-})->name('profil.pimpinan-prodi');
+Route::get('/profil/pimpinan-prodi', [PublicProfileController::class, 'pimpinanProdi'])->name('profil.pimpinan-prodi');
 
-Route::get('/profil/pimpinan-laboratorium', function () {
-    return Inertia::render('Public/Profil/PimpinanLaboratorium');
-})->name('profil.pimpinan-laboratorium');
+Route::get('/profil/pimpinan-laboratorium', [PublicProfileController::class, 'pimpinanLaboratorium'])->name('profil.pimpinan-laboratorium');
 
-Route::get('/profil/dosen', function () {
-    return Inertia::render('Public/Profil/Dosen');
-})->name('profil.dosen');
+Route::get('/profil/dosen', [PublicProfileController::class, 'dosen'])->name('profil.dosen');
 
-
-Route::get('/profil/tenaga-kependidikan', function () {
-    return Inertia::render('Public/Profil/TenagaKependidikan');
-})->name('profil.tenaga-kependidikan');
+Route::get('/profil/tenaga-kependidikan', [PublicProfileController::class, 'tendik'])->name('profil.tenaga-kependidikan');
 
 Route::get('/program-studi/matematika', function () {
     return Inertia::render('Public/ProgramStudi/Matematika');

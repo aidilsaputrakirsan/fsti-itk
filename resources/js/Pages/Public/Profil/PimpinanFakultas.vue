@@ -2,13 +2,10 @@
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 
-// Karena AOS sudah menangani animasi, kita hanya perlu data statis.
-const pimpinan = [
-    { name: 'Adi Mahmud Jaya Marindra, S.T., M.Eng., Ph.D.', title: 'Dekan Fakultas Sains dan Teknologi Informasi', image: '/images/pimpinan-fakultas/dekan.png' },
-    { name: 'Irma Fitria, S.Si., M.Si.', title: 'Wakil Dekan I (Akademik dan Kemahasiswaan)', image: '/images/pimpinan-fakultas/wd1.png' },
-    { name: 'Yun Tonce Kusuma Priyanto, S.T., M.T.', title: 'Wakil Dekan II (Umum dan Keuangan)', image: '/images/pimpinan-fakultas/wd2.png' },
-    { name: 'Desy Ridho Rahayu, S.Si', title: 'Kepala Sub Bagian Umum', image: '/images/pimpinan-fakultas/kasubbag.png' },
-];
+// Menerima data dari Controller
+const props = defineProps({
+    pimpinan: Array
+});
 </script>
 
 <template>
@@ -22,7 +19,7 @@ const pimpinan = [
         <div class="bg-white pb-16 md:pb-24 overflow-x-hidden">
             <div class="flex flex-col">
                 
-                <template v-for="(p, index) in pimpinan" :key="p.name">
+                <template v-for="(p, index) in pimpinan" :key="p.id">
                     <div v-if="index > 0" class="h-3 bg-white"></div>
 
                     <div
@@ -31,7 +28,7 @@ const pimpinan = [
                         :class="{ 'md:flex-row-reverse': index % 2 === 0 }"
                     >
                         <div class="w-full md:w-2/5 flex-shrink-0">
-                            <img :src="p.image" :alt="p.name" class="w-full h-64 md:h-full object-cover object-top">
+                            <img :src="p.image_path || '/images/default-avatar.png'" :alt="p.name" class="w-full h-64 md:h-full object-cover object-top">
                         </div>
 
                         <div class="w-full h-3 md:w-3 md:h-auto bg-white flex-shrink-0"></div>
@@ -42,7 +39,7 @@ const pimpinan = [
                             </h3>
                             <hr class="my-3 border-t-2 w-1/2 border-[#133E87] mx-auto md:mx-0">
                             <p class="font-kulim-park text-xl text-[#133E87]">
-                                {{ p.title }}
+                                {{ p.position }}
                             </p>
                         </div>
                     </div>

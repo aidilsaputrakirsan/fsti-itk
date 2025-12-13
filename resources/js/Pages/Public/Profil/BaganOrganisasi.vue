@@ -2,6 +2,9 @@
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import { Head } from '@inertiajs/vue3';
+const props = defineProps({
+    baganImage: String
+});
 </script>
 
 <template>
@@ -34,7 +37,7 @@ import { Head } from '@inertiajs/vue3';
                             <div class="flex-grow p-6 md:p-8">
                                 <div class="flex justify-center">
                                     <img
-                                        src="/images/bagan-organisasi.webp"
+                                        :src="baganImage || '/images/bagan-organisasi.webp'"
                                         alt="Bagan Organisasi FSTI ITK"
                                         class="w-full h-auto object-contain"
                                     />

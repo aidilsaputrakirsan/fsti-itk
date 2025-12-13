@@ -20,11 +20,13 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin FSTI',
             'email' => 'admin@fsti.itk.ac.id',
             'password' => bcrypt('admin123'), // Password: admin123
+            'is_superadmin' => true,
         ]);
 
         $this->call([
             PostSeeder::class,
             AchievementSeeder::class,
+            ProfileSeeder::class,
         ]);
     }
 }

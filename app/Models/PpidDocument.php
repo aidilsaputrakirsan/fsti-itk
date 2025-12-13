@@ -14,4 +14,8 @@ class PpidDocument extends Model
         'file_path',
         'is_active',
     ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
 }
