@@ -41,8 +41,9 @@ class AlumniController extends Controller
             'file' => 'nullable|file|mimes:pdf|max:10240',
             'year' => 'required|integer',
             'description' => 'nullable|string',
-            'is_active' => 'boolean',
         ]);
+
+        $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('file')) {
             $path = $request->file('file')->store('alumni', 'public');
@@ -76,11 +77,12 @@ class AlumniController extends Controller
             'title' => 'required|string|max:255',
             'type' => 'required|in:Survey Link,Report',
             'url' => 'nullable|url',
-            'file' => 'nullable|file|mimes:pdf|max:10240',
+            'file' =>  'nullable|file|mimes:pdf|max:10240',
             'year' => 'required|integer',
             'description' => 'nullable|string',
-            'is_active' => 'boolean',
         ]);
+
+        $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('file')) {
             if ($tracer->file_path) {

@@ -40,8 +40,9 @@ class InternalServiceController extends Controller
             'link_url' => 'required|url',
             'category' => 'nullable|string',
             'sort_order' => 'nullable|integer',
-            'is_active' => 'boolean',
         ]);
+
+        $validated['is_active'] = $request->boolean('is_active');
 
         \App\Models\InternalService::create($validated);
 
@@ -72,8 +73,9 @@ class InternalServiceController extends Controller
             'link_url' => 'required|url',
             'category' => 'nullable|string',
             'sort_order' => 'nullable|integer',
-            'is_active' => 'boolean',
         ]);
+
+        $validated['is_active'] = $request->boolean('is_active');
 
         $service->update($validated);
 

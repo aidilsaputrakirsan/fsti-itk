@@ -19,6 +19,7 @@ const props = defineProps<{
 }>();
 
 const form = useForm({
+    _method: 'PUT',
     title: props.tracer.title,
     type: props.tracer.type,
     url: props.tracer.url || '',
@@ -29,8 +30,9 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.put(route('admin.alumni.update', props.tracer.id), {
+    form.post(route('admin.alumni.update', props.tracer.id), {
         forceFormData: true,
+        preserveScroll: true,
     });
 };
 </script>

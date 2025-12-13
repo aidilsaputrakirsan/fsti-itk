@@ -18,6 +18,7 @@ const props = defineProps<{
 }>();
 
 const form = useForm({
+    _method: 'PUT',
     title: props.item.title,
     category: props.item.category,
     content: props.item.content,
@@ -27,8 +28,9 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.put(route('admin.integrity-zones.update', props.item.id), {
+    form.post(route('admin.integrity-zones.update', props.item.id), {
         forceFormData: true,
+        preserveScroll: true,
     });
 };
 

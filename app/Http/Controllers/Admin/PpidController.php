@@ -39,10 +39,10 @@ class PpidController extends Controller
             'category' => 'required|string',
             'description' => 'nullable|string',
             'file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
-            'is_active' => 'boolean',
         ]);
 
         $validated['slug'] = \Str::slug($validated['title']);
+        $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('file')) {
             $path = $request->file('file')->store('ppid', 'public');
@@ -77,10 +77,10 @@ class PpidController extends Controller
             'category' => 'required|string',
             'description' => 'nullable|string',
             'file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
-            'is_active' => 'boolean',
         ]);
 
         $validated['slug'] = \Str::slug($validated['title']);
+        $validated['is_active'] = $request->boolean('is_active'); // Handle checkbox properly
 
         if ($request->hasFile('file')) {
             if ($document->file_path) {

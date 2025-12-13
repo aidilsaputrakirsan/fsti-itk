@@ -17,6 +17,7 @@ const props = defineProps<{
 }>();
 
 const form = useForm({
+    _method: 'PUT', // Required for method spoofing with forceFormData
     title: props.document.title,
     category: props.document.category,
     description: props.document.description || '',
@@ -25,8 +26,10 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.put(route('admin.ppid.update', props.document.id), {
+    // Use POST with _method spoofing for file uploads - PUT doesn't work well with FormData
+    form.post(route('admin.ppid.update', props.document.id), {
         forceFormData: true,
+        preserveScroll: true,
     });
 };
 
