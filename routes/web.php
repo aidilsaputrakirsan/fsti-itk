@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\AchievementsController;
 use App\Http\Controllers\PublicPostController;
+use App\Http\Controllers\PublicAchievementController;
 use App\Http\Controllers\PublicProfileController; // <-- Import controller baru
 use App\Models\Post;
 use App\Models\Achievement;
@@ -25,6 +26,15 @@ use App\Models\Achievement;
 */
 
 // --- KELOMPOK ROUTE PUBLIK ---
+
+// Route untuk ganti bahasa
+Route::get('lang/{locale}', function ($locale) {
+    if (in_array($locale, ['id', 'en'])) {
+        session(['locale' => $locale]);
+    }
+    return redirect()->back();
+})->name('lang.switch');
+
 
 Route::get('/', function () {
     $latestPosts = Post::where('category', '!=', 'Prestasi')
