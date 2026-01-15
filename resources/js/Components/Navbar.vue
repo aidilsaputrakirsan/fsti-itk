@@ -8,8 +8,9 @@ import { usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
 const page = usePage();
-const trans = (key) => {
-    return page.props.translations[key] || key;
+const trans = (key: string): string => {
+    const translations = page.props.translations as Record<string, string> | undefined;
+    return translations?.[key] || key;
 };
 
 // --- Interface untuk struktur data ---
@@ -181,7 +182,7 @@ onUnmounted(() => {
                             <div v-if="activeDropdown === item.name && item.sublinks" class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                 <div class="py-1">
                                     <template v-for="sublink in item.sublinks" :key="sublink.name">
-                                        <div v-if="sublink.sublinks" class="relative group">
+                                        <div v-if="'sublinks' in sublink && sublink.sublinks" class="relative group">
                                             <button class="w-full text-left flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#133E87]">
                                                 {{ sublink.name }}
                                                 <ChevronDown class="h-4 w-4 transform -rotate-90" />
@@ -192,7 +193,7 @@ onUnmounted(() => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <a v-else-if="sublink.external" :href="sublink.href" target="_blank" rel="noopener noreferrer" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ sublink.name }}</a>
+                                        <a v-else-if="'external' in sublink && sublink.external" :href="sublink.href" target="_blank" rel="noopener noreferrer" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ sublink.name }}</a>
                                         <Link v-else :href="sublink.href" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ sublink.name }}</Link>
                                     </template>
                                 </div>

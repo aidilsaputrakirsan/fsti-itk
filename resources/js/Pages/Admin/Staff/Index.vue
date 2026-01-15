@@ -7,13 +7,36 @@ import debounce from 'lodash/debounce';
 
 defineOptions({ layout: AdminLayout });
 
+interface StaffMember {
+    id: number;
+    name: string;
+    nip: string | null;
+    email: string | null;
+    position: string | null;
+    prodi: string | null;
+    jurusan: string | null;
+    category: string;
+    image_path: string | null;
+    is_active: boolean;
+}
+
+interface PaginatedStaff {
+    data: StaffMember[];
+    links: { url: string | null; label: string; active: boolean }[];
+}
+
+interface Filters {
+    search?: string;
+    category?: string;
+}
+
 const props = defineProps<{
-    staff: Object;
-    filters: Object;
+    staff: PaginatedStaff;
+    filters: Filters;
 }>();
 
-const search = ref(props.filters.search || '');
-const category = ref(props.filters.category || '');
+const search = ref(props.filters?.search || '');
+const category = ref(props.filters?.category || '');
 
 const categories = [
     'Pimpinan Fakultas',
