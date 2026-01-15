@@ -6,17 +6,12 @@ import Modal from '@/Components/Modal.vue';
 import { X, Eye, Mail, Search, Filter } from 'lucide-vue-next';
 
 // --- DATA STATIS ---
-const allDosen = ref([
-    { id: 1, name: 'Adi Mahmud Jaya Marindra, S.T., M.Eng., Ph.D.', prodi: 'Teknik Elektro', jurusan: 'Teknik Elektro, Informatika, dan Bisnis', image: '/images/dosen/dosen-1.png', nip: '198001012005011001', email: 'adi.marindra@itk.ac.id' },
-    { id: 2, name: 'Irma Fitria, S.Si., M.Si.', prodi: 'Sistem Informasi', jurusan: 'Teknik Elektro, Informatika, dan Bisnis', image: '/images/dosen/dosen-2.png', nip: '198202022006022002', email: 'irma.fitria@itk.ac.id' },
-    { id: 3, name: 'Febrian Dedi Sastrawan, S.Si., M.Sc', prodi: 'Fisika', jurusan: 'Sains dan Analitika Data', image: '/images/dosen/dosen-1.png', nip: '198503032008031003', email: 'febrian.ds@itk.ac.id' },
-    { id: 4, name: 'Kartika Nugraheni, S.Si., M.Si.', prodi: 'Matematika', jurusan: 'Sains dan Analitika Data', image: '/images/dosen/dosen-2.png', nip: '198804042010042004', email: 'kartika.n@itk.ac.id' },
-    { id: 5, name: 'Nisa Rizqiya Fadhliana, S.Kom., M.T', prodi: 'Informatika', jurusan: 'Teknik Elektro, Informatika, dan Bisnis', image: '/images/dosen/dosen-1.png', nip: '199005052012051005', email: 'nisa.rf@itk.ac.id' },
-    { id: 6, name: 'Yun Tonce Kusuma Priyanto, S.T., M.T.', prodi: 'Informatika', jurusan: 'Teknik Elektro, Informatika, dan Bisnis', image: '/images/dosen/dosen-2.png', nip: '199106062014061006', email: 'yun.tonce@itk.ac.id' },
-    { id: 7, name: 'Desy Ridho Rahayu, S.Si', prodi: 'Fisika', jurusan: 'Sains dan Analitika Data', image: '/images/dosen/dosen-1.png', nip: '199207072015072007', email: 'desy.rr@itk.ac.id' },
-    { id: 8, name: 'Muhammad Azka, S.Si., M.Sc', prodi: 'Ilmu Aktuaria', jurusan: 'Sains dan Analitika Data', image: '/images/dosen/dosen-2.png', nip: '199308082016081008', email: 'azka.m@itk.ac.id' },
-    { id: 9, name: 'Deli Yansyah, S.E., M.Acc., Ak., CA', prodi: 'Bisnis Digital', jurusan: 'Teknik Elektro, Informatika, dan Bisnis', image: '/images/dosen/dosen-1.png', nip: '199409092018092009', email: 'deli.y@itk.ac.id' },
-]);
+const props = defineProps({
+    dosenList: Array
+});
+
+// --- DATA DARI DATABASE ---
+const allDosen = ref(props.dosenList);
 
 // --- State untuk Filter dan Pencarian ---
 const search = ref('');
@@ -151,7 +146,7 @@ function closeModal() {
                         data-aos="fade-up"
                     >
                         <div class="h-[245px] flex-shrink-0">
-                            <img :src="dosen.image" :alt="dosen.name" class="object-cover w-full h-full">
+                            <img :src="dosen.image_path || 'https://ui-avatars.com/api/?name=' + dosen.name" :alt="dosen.name" class="object-cover w-full h-full">
                         </div>
                         <div class="p-4 flex flex-col flex-grow bg-[#CBDCEB]">
                              <div class="flex-grow">
@@ -204,7 +199,7 @@ function closeModal() {
                     <h2 class="text-2xl font-kulim-park font-bold text-[#133E87] mb-6">Detail Dosen</h2>
                     <div class="flex justify-center mb-4">
                         <div class="w-40 h-40 rounded-full border-4 border-[#133E87] p-1 shadow-lg">
-                            <img :src="selectedDosen.image" :alt="selectedDosen.name" class="w-full h-full object-cover rounded-full">
+                            <img :src="selectedDosen.image_path || 'https://ui-avatars.com/api/?name=' + selectedDosen.name" :alt="selectedDosen.name" class="w-full h-full object-cover rounded-full">
                         </div>
                     </div>
                     <h3 class="text-2xl font-kulim-park font-bold text-[#133E87]">{{ selectedDosen.name }}</h3>

@@ -19,7 +19,12 @@ class PostFactory extends Factory
         $imagePathForDatabase = null;
         $directory = 'posts'; // Path relatif di dalam disk 'public'
 
-        // PERBAIKAN: Secara eksplisit gunakan disk 'public' untuk membaca file
+        // Pastikan direktori ada
+        if (!Storage::disk('public')->exists($directory)) {
+            Storage::disk('public')->makeDirectory($directory);
+        }
+
+        // Secara eksplisit gunakan disk 'public' untuk membaca file
         $existingImages = Storage::disk('public')->files($directory);
 
         // Jika ada gambar di dalam folder storage/app/public/posts, pilih satu

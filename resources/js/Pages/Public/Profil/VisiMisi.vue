@@ -3,26 +3,10 @@ import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import { Head } from '@inertiajs/vue3';
 
-const visiText = "Pada tahun 2029, Fakultas Sains dan Teknologi Informasi (FSTI) ITK akan menjadi pusat keunggulan akademik dan inovasi, menghasilkan lulusan yang kompeten, adaptif, berdaya saing global, dan karya-karya dalam bidang sains dan teknologi informasi yang berdampak bagi kemajuan Kalimantan dan Indonesia.";
-
-const misiItems = [
-    {
-        title: 'Pendidikan Berkualitas',
-        description: 'Menyelenggarakan pendidikan tinggi yang berkualitas dan relevan dengan kebutuhan industri serta masyarakat di bidang sains dan teknologi informasi.'
-    },
-    {
-        title: 'Penelitian Inovatif',
-        description: 'Melaksanakan penelitian dan pengembangan ilmu pengetahuan dan teknologi terapan yang inovatif dan berwawasan lingkungan.'
-    },
-    {
-        title: 'Pengabdian Masyarakat',
-        description: 'Menyelenggarakan pengabdian kepada masyarakat yang berbasis pada hasil penelitian dan pengembangan ilmu pengetahuan dan teknologi terapan.'
-    },
-    {
-        title: 'Kerjasama Strategis',
-        description: 'Membangun jejaring kerjasama yang kokoh dengan berbagai pihak, baik di tingkat nasional maupun internasional, untuk mendukung pelaksanaan tridharma perguruan tinggi.'
-    }
-];
+const props = defineProps({
+    visiText: String,
+    misiItems: Array
+});
 </script>
 
 <template>
@@ -49,7 +33,7 @@ const misiItems = [
                         data-aos="fade-up"
                         data-aos-delay="100"
                     >
-                        <p class="text-gray-900 text-center font-bold text-lg leading-relaxed">
+                        <p class="text-gray-900 text-center font-bold text-lg leading-relaxed whitespace-pre-wrap">
                             {{ visiText }}
                         </p>
                     </div>

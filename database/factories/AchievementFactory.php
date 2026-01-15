@@ -15,19 +15,31 @@ class AchievementFactory extends Factory
 
     public function definition(): array
     {
-        // --- PENAMBAHAN: Logika untuk Foto Mahasiswa (Wajib) ---
+        // --- Logika untuk Foto Mahasiswa ---
         $photoDirectory = 'achievement/photos';
+
+        // Pastikan direktori ada
+        if (!Storage::disk('public')->exists($photoDirectory)) {
+            Storage::disk('public')->makeDirectory($photoDirectory);
+        }
+
         $photoFiles = Storage::disk('public')->files($photoDirectory);
-        // Jika folder foto kosong, berikan nilai null (atau path default jika ada)
+
+        // Jika folder foto kosong, gunakan placeholder path
         if (empty($photoFiles)) {
-            $selectedPhotoPath = null;
+            $selectedPhotoPath = 'achievement/photos/placeholder-' . $this->faker->uuid() . '.jpg';
         } else {
             $selectedPhotoPath = $this->faker->randomElement($photoFiles);
         }
 
-        // --- PENYESUAIAN: Logika untuk Bukti (Opsional) ---
-        // Nama folder diubah sesuai kesepakatan menjadi 'achievements/proofs'
+        // --- Logika untuk Bukti (Opsional) ---
         $proofDirectory = 'achievement/proofs';
+
+        // Pastikan direktori ada
+        if (!Storage::disk('public')->exists($proofDirectory)) {
+            Storage::disk('public')->makeDirectory($proofDirectory);
+        }
+
         $proofFiles = Storage::disk('public')->files($proofDirectory);
 
         $selectedProofPath = null; // Defaultnya null (opsional)

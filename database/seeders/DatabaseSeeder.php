@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,16 +12,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Default Admin User untuk testing (skip jika sudah ada)
+        if (!User::where('email', 'admin@fsti.itk.ac.id')->exists()) {
+            User::factory()->create([
+                'name' => 'Admin FSTI',
+                'email' => 'admin@fsti.itk.ac.id',
+                'password' => bcrypt('admin123'), // Password: admin123
+                'is_superadmin' => true,
+            ]);
+            $this->command->info('Admin user created: admin@fsti.itk.ac.id / admin123');
+        } else {
+            $this->command->info('Admin user already exists, skipping...');
+        }
 
         $this->call([
             PostSeeder::class,
             AchievementSeeder::class,
+            ProfileSeeder::class,
         ]);
     }
 }

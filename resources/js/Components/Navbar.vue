@@ -3,6 +3,15 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import { ChevronDown, Search, X, Menu, Globe } from 'lucide-vue-next';
 
+import LanguageSwitcher from '@/Components/LanguageSwitcher.vue';
+import { usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+
+const page = usePage();
+const trans = (key) => {
+    return page.props.translations[key] || key;
+};
+
 // --- Interface untuk struktur data ---
 interface NavLink {
     name: string;
@@ -17,36 +26,36 @@ interface NavLink {
 }
 
 // --- Data Menu Navigasi ---
-const navigationMenu: NavLink[] = [
-    { name: 'Beranda', href: route('home') },
+const navigationMenu = computed(() => [
+    { name: trans('Beranda'), href: route('home') },
     {
-        name: 'Profil',
+        name: trans('Profil'),
         href: '#',
         sublinks: [
-            { name: 'Visi Misi', href: route('visi-misi') },
+            { name: trans('Visi & Misi'), href: route('visi-misi') },
             {
-                name: 'Struktur Organisasi',
+                name: trans('Struktur Organisasi'),
                 href: '#',
                 sublinks: [
-                    { name: 'Bagan Organisasi', href: route('bagan-organisasi') },
-                    { name: 'Pimpinan Fakultas', href: route('profil.pimpinan-fakultas') },
-                    { name: 'Pimpinan Jurusan', href: route('profil.pimpinan-jurusan') },
-                    { name: 'Pimpinan Prodi', href: route('profil.pimpinan-prodi') },
-                    { name: 'Pimpinan Laboratorium', href: route('profil.pimpinan-laboratorium') },
+                    { name: trans('Bagan Organisasi'), href: route('bagan-organisasi') },
+                    { name: trans('Pimpinan Fakultas'), href: route('profil.pimpinan-fakultas') },
+                    { name: trans('Pimpinan Jurusan'), href: route('profil.pimpinan-jurusan') },
+                    { name: trans('Pimpinan Prodi'), href: route('profil.pimpinan-prodi') },
+                    { name: trans('Pimpinan Laboratorium'), href: route('profil.pimpinan-laboratorium') },
                 ],
             },
             {
-                name: 'Civitas Akademika',
+                name: trans('Civitas Akademika'), // Fallback if not in JSON, but keys should be there
                 href: '#',
                 sublinks: [
-                    { name: 'Dosen', href: route('profil.dosen') },
-                    { name: 'Tenaga Kependidikan', href: route('profil.tenaga-kependidikan') },
+                    { name: trans('Dosen'), href: route('profil.dosen') },
+                    { name: trans('Tenaga Kependidikan'), href: route('profil.tenaga-kependidikan') },
                 ],
             },
         ],
     },
     {
-        name: 'Program Studi',
+        name: trans('Program Studi'),
         href: '#',
         megaMenu: true,
         columns: [
@@ -72,16 +81,27 @@ const navigationMenu: NavLink[] = [
         ],
     },
     {
-        name: 'Kemahasiswaan',
+        name: trans('Kemahasiswaan'),
         href: '#',
         sublinks: [
-            { name: 'Prestasi Mahasiswa', href: route('prestasi.index') },
+            { name: trans('Prestasi Mahasiswa'), href: route('prestasi.index') },
             { name: 'Portal Layanan Mahasiswa', href: 'https://layanan-fsti.myst-tech.com/', external: true },
         ],
     },
-    { name: 'Berita', href: route('berita.index') },
-    { name: 'Kontak', href: route('kontak') },
-];
+    {
+        name: trans('Informasi & Layanan'),
+        href: '#',
+        sublinks: [
+            { name: 'PPID Fakultas', href: route('ppid.index') },
+            { name: trans('Zona Integritas'), href: route('zona-integritas.index') },
+            { name: trans('Alumni & Tracer Study'), href: route('alumni.index') },
+            { name: trans('Survei Kepuasan'), href: route('survei.index') },
+            { name: trans('Layanan Internal'), href: route('layanan.index') },
+        ],
+    },
+    { name: trans('Berita'), href: route('berita.index') },
+    { name: trans('Kontak'), href: route('kontak') },
+]);
 
 // --- State untuk interaktivitas ---
 const activeDropdown = ref<string | null>(null);
@@ -114,11 +134,7 @@ const submitSearch = () => {
     }
 };
 
-// --- Fungsionalitas Ganti Bahasa ---
-const changeLanguage = (event: Event) => {
-    const target = event.target as HTMLSelectElement;
-    alert(`Bahasa diubah menjadi: ${target.value}`);
-};
+// --- Fungsionalitas Ganti Bahasa (moved to Component) ---
 
 // --- Lifecycle hooks untuk event listener ---
 onMounted(() => {
@@ -204,13 +220,7 @@ onUnmounted(() => {
                 </nav>
 
                 <div class="hidden md:flex items-center space-x-4">
-                    <div class="relative">
-                        <select @change="changeLanguage" class="w-full pl-4 pr-8 py-2 text-sm border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white/20 border-white/50 text-white">
-                            <option value="id" class="text-black">🇮🇩 ID</option>
-                            <option value="en" class="text-black">🇬🇧 EN</option>
-                        </select>
-                         <Globe class="h-4 w-4 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-white" />
-                    </div>
+                    <LanguageSwitcher />
                     <button @click="openSearch" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors text-white hover:bg-white/20">
                         <Search class="h-5 w-5" />
                     </button>

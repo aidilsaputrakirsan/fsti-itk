@@ -2,28 +2,29 @@
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 
-// Data untuk pimpinan prodi, dikelompokkan berdasarkan jurusan
-const departments = [
-    {
-        jurusan: ['Koordinator Program Studi', 'Jurusan Sains dan Analitika Data'],
-        pimpinan: [
-            { name: 'Febrian Dedi Sastrawan, S.Si., M.Sc', title: 'Koordinator Program Studi Fisika', image: '/images/pimpinan-prodi/koorpro-fis.png' },
-            { name: 'Kartika Nugraheni, S.Si., M.Si.', title: 'Koordinator Program Studi Matematika', image: '/images/pimpinan-prodi/koorpro-mat.png' },
-            { name: 'Diana Nurlaily, S.Si., M.Stat', title: 'Koordinator Program Studi Statistika', image: '/images/pimpinan-prodi/koorpro-stat.png' },
-            { name: 'Muhammad Azka, S.Si., M.Sc', title: 'Koordinator Program Studi Ilmu Aktuaria', image: '/images/pimpinan-prodi/koorpro-akt.png' },
-        ]
-    },
-    {
-        jurusan: ['Koordinator Program Studi', 'Jurusan Teknik Elektro, Informatika, dan Bisnis'],
-        pimpinan: [
-            { name: 'Kharis Sugiarto, S.T., M.T', title: 'Koordinator Program Studi Teknik Elektro', image: '/images/pimpinan-prodi/koorpro-te.png' },
-            { name: 'Sri Rahayu Natasia, S.Komp., M.Si., M.Sc', title: 'Koordinator Program Studi Sistem Informasi', image: '/images/pimpinan-prodi/koorpro-si.png' },
-            { name: 'Nisa Rizqiya Fadhliana, S.Kom., M.T', title: 'Koordinator Program Studi Informatika', image: '/images/pimpinan-prodi/koorpro-if.png' },
-            { name: 'Deli Yansyah, S.E., M.Acc., Ak., CA', title: 'Koordinator Program Studi Bisnis Digital', image: '/images/pimpinan-prodi/koorpro-bd.png' },
-            { name: 'Bima Prihasto, Ph.D.', title: 'Koordinator Program Studi Magister Manajemen Teknologi', image: '/images/pimpinan-prodi/koorpro-mmt.png' },
-        ]
-    }
-];
+import { computed } from 'vue';
+
+const props = defineProps({
+    pimpinan: Array
+});
+
+// Group pimpinan by Jurusan
+const departments = computed(() => {
+    // Unique Jurusan
+    const jurusans = [...new Set(props.pimpinan.map(p => p.jurusan))];
+    
+    // Sort logic (Hardcoded preference if needed, or simple alphanumeric)
+    // Here we try to replicate 'Sains dan Analitika Data' first if present
+    jurusans.sort((a, b) => {
+        if (a && a.includes('Sains')) return -1;
+        return 1;
+    });
+
+    return jurusans.map(jurusan => ({
+        jurusan: ['Koordinator Program Studi', 'Jurusan ' + (jurusan || 'Lainnya')],
+        pimpinan: props.pimpinan.filter(p => p.jurusan === jurusan)
+    }));
+});
 </script>
 
 <template>
@@ -47,7 +48,7 @@ const departments = [
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 container mx-auto px-4">
                         <div
                             v-for="(p, pIndex) in dept.pimpinan"
-                            :key="pIndex"
+                            :key="p.id"
                             data-aos="fade-up"
                             :data-aos-delay="pIndex * 100"
                         >
@@ -56,7 +57,7 @@ const departments = [
                                        transform transition-transform duration-300 hover:scale-[1.02]"
                             >
                                 <div class="w-48 h-48 rounded-full border-2 border-[#133E87] p-1 mb-6 flex-shrink-0">
-                                    <img :src="p.image" :alt="p.name" class="w-full h-full object-cover rounded-full">
+                                    <img :src="p.image_path || '/images/default-avatar.png'" :alt="p.name" class="w-full h-full object-cover rounded-full">
                                 </div>
                                 
                                 <h3 class="font-kulim-park font-bold text-xl text-[#133E87]">
@@ -66,7 +67,7 @@ const departments = [
                                 <hr class="my-2 border-t-2 w-1/2 border-[#133E87]">
                                 
                                 <p class="font-kulim-park text-base text-[#133E87]">
-                                    {{ p.title }}
+                                    {{ p.position }}
                                 </p>
                             </div>
                         </div>

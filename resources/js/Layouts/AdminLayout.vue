@@ -7,6 +7,8 @@ import {
     UsersIcon,
     ArrowLeftOnRectangleIcon,
     ChevronRightIcon,
+    InformationCircleIcon,
+    AcademicCapIcon,
 } from '@heroicons/vue/24/outline';
 import { ref, onMounted } from 'vue';
 
@@ -33,7 +35,28 @@ const navigation = ref([
             { name: 'Kelola Daftar Prestasi', href: '/admin/achievements' }
         ]
     },
-    { name: 'Kelola Akun Admin', href: '/admin/akun', icon: UsersIcon, children: null },
+    {
+        name: 'Profil Fakultas',
+        href: null,
+        icon: AcademicCapIcon,
+        children: [
+            { name: 'Kelola Halaman', href: '/admin/static-pages' },
+            { name: 'Civitas Akademika', href: '/admin/staff' },
+        ]
+    },
+    {
+        name: 'Informasi & Layanan',
+        href: null,
+        icon: InformationCircleIcon,
+        children: [
+            { name: 'PPID', href: '/admin/ppid' },
+            { name: 'Zona Integritas', href: '/admin/integrity-zones' },
+            { name: 'Alumni & Tracer', href: '/admin/alumni' },
+            { name: 'Survei Kepuasan', href: '/admin/satisfaction-surveys' },
+            { name: 'Layanan Internal', href: '/admin/internal-services' },
+        ]
+    },
+    { name: 'Kelola Akun Admin', href: '/admin/users', icon: UsersIcon, children: null },
 ]);
 
 const isParentUrlActive = (item: any) => {
@@ -140,7 +163,8 @@ onMounted(() => {
         </aside>
 
         <div class="flex flex-1 flex-col overflow-x-hidden">
-            <header class="flex items-center justify-end border-b border-gray-200 bg-white px-6 py-3 shadow-md">
+            <!-- Header removed as requested -->
+            <!-- <header class="flex items-center justify-end border-b border-gray-200 bg-white px-6 py-3 shadow-md">
                 <div class="relative">
                     <button @click="isProfileOpen = !isProfileOpen" class="flex items-center gap-4 p-1 rounded-lg">
                         <div class="text-right">
@@ -159,7 +183,7 @@ onMounted(() => {
                         </div>
                     </div>
                 </div>
-            </header>
+            </header> -->
             
             <main class="flex-1 overflow-auto bg-[#CBDCEB] p-8">
                 <slot />
