@@ -8,6 +8,6 @@ defineOptions({ layout: AdminLayout });
 <template>
   <div>
     <h1 class="text-3xl font-bold text-black">Dashboard</h1>
-    <p class="mt-1 text-black">Selamat datang di dashboard admin.</p>
+    <p class="mt-1 text-black">Selamat datang di dashboard admin..</p>
   </div>
 </template>
