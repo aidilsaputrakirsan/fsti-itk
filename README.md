@@ -1,4 +1,4 @@
-# Website DEVELOPMENT FSTI ITK
+# Website FSTI ITK
 
 <div align="center">
   <img src="public/images/logofsti.png" alt="Logo FSTI ITK" width="200"/>
@@ -6,175 +6,216 @@
   <h3>Website Resmi Fakultas Sains dan Teknologi Informasi</h3>
   <h4>Institut Teknologi Kalimantan</h4>
 
-  [![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
-  [![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D)](https://vuejs.org)
+  [![Laravel](https://img.shields.io/badge/Laravel_12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+  [![Vue.js](https://img.shields.io/badge/Vue.js_3-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D)](https://vuejs.org)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 </div>
 
 ---
 
-## 📋 Deskripsi
+## Deskripsi
 
 Website resmi Fakultas Sains dan Teknologi Informasi (FSTI) Institut Teknologi Kalimantan (ITK) adalah platform digital yang dirancang untuk menyediakan informasi lengkap tentang fakultas, program studi, civitas academica, berita, dan prestasi mahasiswa. Website ini menggabungkan antarmuka publik yang informatif dengan sistem manajemen konten untuk administrator.
 
-## ✨ Fitur Utama
+## Fitur Utama
 
-### 🌐 Halaman Publik
+### Halaman Publik
 
-#### 1. **Beranda**
-   - Statistik fakultas (jumlah mahasiswa, dosen, program studi)
-   - Berita terkini
-   - Highlights prestasi
-   - Animasi interaktif dengan GSAP
+#### 1. Beranda
+- Statistik fakultas (jumlah mahasiswa, dosen, program studi)
+- Berita terkini
+- Highlights prestasi mahasiswa
+- Animasi interaktif dengan GSAP & AOS
 
-#### 2. **Profil Fakultas**
-   - **Visi & Misi** - Visi, misi, dan tujuan FSTI
-   - **Bagan Organisasi** - Struktur organisasi fakultas
-   - **Pimpinan Fakultas** - Dekan dan Wakil Dekan
-   - **Pimpinan Jurusan** - Kepala Jurusan
-   - **Pimpinan Program Studi** - Ketua Program Studi
-   - **Pimpinan Laboratorium** - Kepala Laboratorium
+#### 2. Profil Fakultas
+- **Visi & Misi** - Visi, misi, dan tujuan FSTI
+- **Bagan Organisasi** - Struktur organisasi fakultas
+- **Pimpinan Fakultas** - Dekan dan Wakil Dekan
+- **Pimpinan Jurusan** - Kepala Jurusan
+- **Pimpinan Program Studi** - Ketua Program Studi
+- **Pimpinan Laboratorium** - Kepala Laboratorium
 
-#### 3. **Civitas Academica**
-   - **Dosen** - Direktori lengkap dosen dengan:
-     - Filter berdasarkan jurusan
-     - Informasi detail (email, NIDN, pendidikan)
-     - Foto dan profil
-   - **Tenaga Kependidikan** - Informasi staff administrasi
+#### 3. Civitas Academica
+- **Dosen** - Direktori lengkap dosen dengan:
+  - Filter berdasarkan jurusan
+  - Informasi detail (email, NIDN, pendidikan)
+  - Foto dan profil
+- **Tenaga Kependidikan** - Informasi staff administrasi
 
-#### 4. **Program Studi**
-   Informasi lengkap untuk 8 program studi:
-   - **Jurusan Teknik, Teknologi Informasi & Bisnis**
-     - Teknik Elektro
-     - Sistem Informasi
-     - Informatika
-     - Bisnis Digital
-   - **Jurusan Sains & Analitika Data**
-     - Fisika
-     - Matematika
-     - Statistika
-     - Ilmu Aktuaria
+#### 4. Program Studi
+Informasi lengkap untuk 8 program studi:
+- **Jurusan Teknik, Teknologi Informasi & Bisnis**
+  - Teknik Elektro
+  - Sistem Informasi
+  - Informatika
+  - Bisnis Digital
+- **Jurusan Sains & Analitika Data**
+  - Fisika
+  - Matematika
+  - Statistika
+  - Ilmu Aktuaria
 
-#### 5. **Berita**
-   - Artikel dan berita terkini
-   - Fitur pencarian
-   - Kategori berita
-   - View counter
-   - Gambar dan konten rich media
+#### 5. Berita
+- Artikel dan berita terkini
+- Fitur pencarian
+- Kategori berita
+- View counter
+- Gambar dan konten rich media
 
-#### 6. **Prestasi Mahasiswa**
-   - Dashboard statistik prestasi
-   - Filter berdasarkan:
-     - Kategori (Akademik/Non-Akademik)
-     - Tingkat (Internasional/Nasional)
-     - Tahun
-   - Form pelaporan prestasi (Google Forms integration)
-   - Detail prestasi dengan foto
+#### 6. Prestasi Mahasiswa
+- Dashboard statistik prestasi
+- Filter berdasarkan:
+  - Kategori (Akademik/Non-Akademik)
+  - Tingkat (Internasional/Nasional)
+  - Tahun
+- Form pelaporan prestasi (Google Forms integration)
+- Detail prestasi dengan foto
 
-#### 7. **Kontak**
-   - Informasi kontak fakultas
-   - Form kontak
-   - Integrasi media sosial (Instagram, TikTok)
-   - Link ke portal layanan mahasiswa
+#### 7. Modul Tambahan
+- **PPID** - Pejabat Pengelola Informasi dan Dokumentasi (Transparansi)
+- **Zona Integritas** - Informasi zona integritas fakultas
+- **Alumni** - Tracer study dan informasi alumni
+- **Survei Kepuasan** - Form feedback dari pengguna layanan
+- **Layanan Internal** - Link ke portal layanan internal
 
-#### 8. **Multi-bahasa**
-   - Bahasa Indonesia
-   - Bahasa Inggris
+#### 8. Kontak
+- Informasi kontak fakultas
+- Form kontak
+- Integrasi media sosial (Instagram, TikTok)
+- Link ke portal layanan mahasiswa
 
-### 🔐 Halaman Admin
+#### 9. Multi-bahasa
+- Bahasa Indonesia
+- Bahasa Inggris
 
-#### 1. **Dashboard**
-   - Statistik konten
-   - Overview sistem
+### Halaman Admin
 
-#### 2. **Manajemen Berita**
-   - **Create** - Buat artikel/berita baru
-   - **Read** - Lihat daftar berita
-   - **Update** - Edit berita yang ada
-   - **Delete** - Hapus berita
-   - Status publikasi (Draft/Terbitkan)
-   - View tracking
-   - Kategori management
-   - Search & filtering
+#### 1. Dashboard
+- Statistik konten
+- Overview sistem
 
-#### 3. **Manajemen Pengguna**
-   - Autentikasi (Login/Register)
-   - Update profil
-   - Change password
-   - Email verification
-   - Password reset
+#### 2. Manajemen Berita
+- Create, Read, Update, Delete artikel/berita
+- Rich text editor (Tiptap)
+- Status publikasi (Draft/Terbitkan)
+- View tracking
+- Kategori management
+- Search & filtering
 
-## 🛠️ Teknologi
+#### 3. Manajemen Prestasi
+- CRUD data prestasi mahasiswa
+- Import/Export Excel
+- Upload foto dan bukti prestasi
+
+#### 4. Manajemen Staff & Dosen
+- CRUD data staff/dosen
+- Upload foto profil
+- Informasi pendidikan dan jabatan
+
+#### 5. Modul Tambahan
+- **Dokumen PPID** - Manajemen dokumen transparansi
+- **Zona Integritas** - Konten zona integritas
+- **Alumni Tracer** - Data tracer study alumni
+- **Survei Kepuasan** - Lihat hasil survei
+- **Layanan Internal** - Manajemen link layanan
+
+#### 6. Manajemen Pengguna
+- Autentikasi (Login/Register)
+- Update profil
+- Change password
+- Email verification
+- Password reset
+- Role management (Superadmin)
+
+## Teknologi
 
 ### Backend
-- **Framework**: Laravel (PHP)
-- **Server**: Apache
-- **Routing**: RESTful API
-- **Authentication**: Laravel Sanctum/Breeze
+- **Framework**: Laravel 12 (PHP 8.2+)
+- **Authentication**: Laravel Sanctum + Breeze
+- **Database ORM**: Eloquent
+- **Server-Side Rendering**: Inertia.js
+- **File Storage**: Laravel Filesystem (public disk)
+- **Excel Processing**: Maatwebsite Excel
 
 ### Frontend
 - **Framework**: Vue.js 3 (Composition API)
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS
-- **Icons**: Lucide Vue Next (v0.541.0)
-- **Animation**: GSAP (v3.13.0)
+- **Build Tool**: Vite 7.0
+- **Type Checking**: TypeScript 5.6
+- **Styling**: Tailwind CSS 3.2
+- **Icons**: Lucide Vue Next, Heroicons
+- **Rich Text Editor**: Tiptap 3.3
+- **Animation**: GSAP 3.13, AOS 2.3
+- **HTTP Client**: Axios
 - **Utilities**: Lodash
 
 ### Database
-- MySQL / PostgreSQL
+- SQLite (Development)
+- MySQL / PostgreSQL (Production)
 
-## 📁 Struktur Direktori
+> Untuk dokumentasi arsitektur teknis yang lebih detail, lihat [ARCHITECTURE.md](ARCHITECTURE.md)
+
+## Struktur Direktori
 
 ```
 fsti-itk/
+├── app/                         # Logika aplikasi Laravel
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Admin/          # Controller untuk admin panel
+│   │   │   └── Public*.php     # Controller untuk halaman publik
+│   │   ├── Middleware/         # Custom middleware
+│   │   └── Requests/           # Form request validation
+│   └── Models/                 # Eloquent models
+├── config/                      # Konfigurasi Laravel
+├── database/
+│   ├── migrations/             # Database schema
+│   ├── factories/              # Model factories
+│   └── seeders/                # Database seeders
 ├── public/                      # Web root directory
-│   ├── index.php               # Laravel entry point
-│   ├── .htaccess               # Apache configuration
-│   ├── robots.txt              # SEO configuration
-│   ├── favicon.ico             # Site favicon
 │   ├── build/                  # Compiled frontend assets
-│   │   ├── assets/             # JS/CSS bundles (~71 files)
-│   │   │   ├── app-*.js        # Main application bundle
-│   │   │   ├── app-*.css       # Main stylesheet
-│   │   │   ├── PublicLayout-*.js
-│   │   │   ├── AdminLayout-*.js
-│   │   │   ├── Home-*.js
-│   │   │   ├── Dosen-*.js
-│   │   │   └── ... (page components)
+│   │   ├── assets/             # JS/CSS bundles
 │   │   └── manifest.json       # Asset manifest
-│   └── images/                 # Static images (~31 files)
-│       ├── logofsti.png
-│       ├── background-banner.png
-│       ├── bagan-organisasi.webp
-│       ├── dosen/              # Lecturer photos
-│       ├── prodi/              # Study program assets
-│       ├── pimpinan-fakultas/  # Faculty leadership
-│       ├── pimpinan-jurusan/   # Department leadership
-│       ├── pimpinan-prodi/     # Program leadership
-│       └── pimpinan-laboratorium/ # Lab leadership
-├── app/                        # Application logic (gitignored)
-├── routes/                     # Route definitions (gitignored)
-├── resources/                  # Views & frontend source (gitignored)
-├── database/                   # Database migrations (gitignored)
-├── config/                     # Configuration files (gitignored)
-└── storage/                    # File storage (gitignored)
+│   └── images/                 # Static images
+│       ├── dosen/              # Foto dosen
+│       ├── prodi/              # Asset program studi
+│       └── pimpinan-*/         # Foto pimpinan
+├── resources/
+│   ├── js/
+│   │   ├── Components/         # Reusable Vue components
+│   │   ├── Layouts/            # Layout templates
+│   │   ├── Pages/              # Page components
+│   │   │   ├── Admin/          # Admin pages
+│   │   │   └── Public/         # Public pages
+│   │   └── types/              # TypeScript definitions
+│   └── css/                    # Stylesheets
+├── routes/
+│   ├── web.php                 # Web routes
+│   └── auth.php                # Authentication routes
+├── storage/                     # File storage & logs
+├── tests/                       # PHPUnit tests
+├── composer.json               # PHP dependencies
+├── package.json                # Node.js dependencies
+├── vite.config.js              # Vite configuration
+├── tsconfig.json               # TypeScript configuration
+└── tailwind.config.js          # Tailwind CSS configuration
 ```
 
-## 🚀 Instalasi
+## Instalasi
 
 ### Prasyarat
-- PHP >= 8.1
+- PHP >= 8.2
 - Composer
 - Node.js >= 18.x
 - NPM atau Yarn
-- MySQL/PostgreSQL
+- MySQL/PostgreSQL (untuk production)
 - Apache/Nginx
 
 ### Langkah Instalasi
 
 1. **Clone repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/aidilsaputrakirsan/fsti-itk.git
    cd fsti-itk
    ```
 
@@ -186,8 +227,6 @@ fsti-itk/
 3. **Install dependencies JavaScript**
    ```bash
    npm install
-   # atau
-   yarn install
    ```
 
 4. **Setup environment**
@@ -221,8 +260,6 @@ fsti-itk/
 8. **Build frontend assets**
    ```bash
    npm run build
-   # Untuk development:
-   npm run dev
    ```
 
 9. **Jalankan server**
@@ -234,7 +271,7 @@ fsti-itk/
 
     Buka browser dan akses: `http://localhost:8000`
 
-## 🔧 Konfigurasi
+## Konfigurasi
 
 ### Apache Configuration
 
@@ -255,10 +292,11 @@ Asset frontend dikelola melalui Vite dengan manifest di `public/build/manifest.j
 - Cache busting
 - Dependency tracking
 
-## 💻 Development
+## Development
 
 ### Menjalankan Development Server
 
+**Cara 1: Manual (2 terminal)**
 ```bash
 # Terminal 1: Laravel backend
 php artisan serve
@@ -266,6 +304,12 @@ php artisan serve
 # Terminal 2: Vite frontend (hot reload)
 npm run dev
 ```
+
+**Cara 2: Menggunakan Composer Script (1 terminal)**
+```bash
+composer run dev
+```
+Script ini akan menjalankan: Laravel server, Queue listener, Pail logs, dan Vite secara bersamaan.
 
 ### Build untuk Production
 
@@ -277,37 +321,37 @@ php artisan optimize
 ### Coding Standards
 
 - **PHP**: PSR-12
-- **JavaScript**: ESLint
+- **JavaScript/TypeScript**: ESLint
 - **Vue**: Vue 3 Style Guide
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run PHP tests
 php artisan test
 
-# Run JavaScript tests
-npm run test
+# Atau menggunakan composer script
+composer run test
 ```
 
-## 📦 Deployment
+## Deployment
 
 ### Production Checklist
 
-1. ✅ Set `APP_ENV=production` di `.env`
-2. ✅ Set `APP_DEBUG=false` di `.env`
-3. ✅ Generate production key: `php artisan key:generate`
-4. ✅ Build assets: `npm run build`
-5. ✅ Optimize: `php artisan optimize`
-6. ✅ Migrate database: `php artisan migrate --force`
-7. ✅ Set proper file permissions
-8. ✅ Configure web server (Apache/Nginx)
-9. ✅ Setup SSL certificate
-10. ✅ Configure backup system
+1. Set `APP_ENV=production` di `.env`
+2. Set `APP_DEBUG=false` di `.env`
+3. Generate production key: `php artisan key:generate`
+4. Build assets: `npm run build`
+5. Optimize: `php artisan optimize`
+6. Migrate database: `php artisan migrate --force`
+7. Set proper file permissions
+8. Configure web server (Apache/Nginx)
+9. Setup SSL certificate
+10. Configure backup system
 
 ### Server Requirements
 
-- PHP >= 8.1
+- PHP >= 8.2
 - BCMath PHP Extension
 - Ctype PHP Extension
 - Fileinfo PHP Extension
@@ -318,28 +362,28 @@ npm run test
 - Tokenizer PHP Extension
 - XML PHP Extension
 
-## 🔐 Keamanan
+## Keamanan
 
-- ✅ CSRF Protection (Laravel)
-- ✅ XSS Protection
-- ✅ SQL Injection Protection (Eloquent ORM)
-- ✅ Authentication & Authorization
-- ✅ Password Hashing (bcrypt)
-- ✅ HTTPS Ready
-- ✅ Rate Limiting
+- CSRF Protection (Laravel)
+- XSS Protection
+- SQL Injection Protection (Eloquent ORM)
+- Authentication & Authorization
+- Password Hashing (bcrypt)
+- HTTPS Ready
+- Rate Limiting
 
 ### Melaporkan Kerentanan
 
-Jika Anda menemukan kerentanan keamanan, silakan laporkan melalui email ke: security@fsti.itk.ac.id
+Jika Anda menemukan kerentanan keamanan, silakan laporkan melalui email ke: fsti@itk.ac.id
 
-## 🌟 Fitur Unggulan
+## Fitur Unggulan
 
-### Animasi GSAP
-Website menggunakan GSAP 3.13.0 untuk animasi yang smooth dan profesional:
+### Animasi GSAP & AOS
+Website menggunakan GSAP 3.13 dan AOS untuk animasi yang smooth dan profesional:
 - Scroll-triggered animations
 - Timeline animations
 - Easing functions
-- CSS animations
+- Fade-in effects
 
 ### Responsive Design
 Desain responsif dengan breakpoint:
@@ -353,7 +397,7 @@ Desain responsif dengan breakpoint:
 - Asset optimization dengan Vite
 - Caching strategies
 
-## 🔗 Link Penting
+## Link Penting
 
 - **Website FSTI**: [https://fsti.itk.ac.id](https://fsti.itk.ac.id)
 - **Instagram**: [@fsti.itk](https://instagram.com/fsti.itk)
@@ -362,16 +406,17 @@ Desain responsif dengan breakpoint:
 - **Form Lapor Prestasi**: [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSfaToVEnR6vnZSTggEbH_IfAVbOpuPf1aCirsNTRb3m8aFL-Q/viewform)
 - **Website ITK**: [https://itk.ac.id](https://itk.ac.id)
 
-## 👥 Tim Pengembang
+## Tim Pengembang
 
 **Fakultas Sains dan Teknologi Informasi**
 Institut Teknologi Kalimantan
 
-## 📄 Lisensi
+## Lisensi
 
-[Tentukan lisensi proyek Anda]
+Hak Cipta 2025 Fakultas Sains dan Teknologi Informasi - Institut Teknologi Kalimantan.
+Semua hak dilindungi undang-undang.
 
-## 🤝 Kontribusi
+## Kontribusi
 
 Kontribusi sangat diterima! Silakan buat Pull Request atau buka Issue untuk saran dan perbaikan.
 
@@ -383,17 +428,17 @@ Kontribusi sangat diterima! Silakan buat Pull Request atau buka Issue untuk sara
 4. Push ke branch (`git push origin feature/AmazingFeature`)
 5. Buat Pull Request
 
-## 📞 Kontak
+## Kontak
 
 **Fakultas Sains dan Teknologi Informasi**
 Institut Teknologi Kalimantan
 
-Website: [https://fsti.itk.ac.id](https://fsti.itk.ac.id)
-Email: fsti@itk.ac.id
+- Website: [https://fsti.itk.ac.id](https://fsti.itk.ac.id)
+- Email: fsti@itk.ac.id
 
 ---
 
 <div align="center">
-  <p>Made with ❤️ by FSTI ITK Team</p>
-  <p>© 2025 Fakultas Sains dan Teknologi Informasi - Institut Teknologi Kalimantan</p>
+  <p>Made with by FSTI ITK Team</p>
+  <p>2025 Fakultas Sains dan Teknologi Informasi - Institut Teknologi Kalimantan</p>
 </div>
