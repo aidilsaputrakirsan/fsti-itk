@@ -8,6 +8,7 @@ use Inertia\Inertia;
 // Import semua controller yang relevan
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\AchievementsController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\PublicPostController;
 use App\Http\Controllers\PublicAchievementController;
 use App\Http\Controllers\PublicProfileController; // <-- Import controller baru
@@ -67,9 +68,7 @@ Route::get('/prestasi', [PublicAchievementController::class, 'index'])->name('pr
 // Semua URL di sini akan diawali dengan /admin/ dan memerlukan login
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     // Route untuk Dashboard
-    Route::get('/dashboard', function () {
-        return Inertia::render('Admin/Dashboard/Index');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Resource Routes untuk CRUD Posts (Berita) dan Achievements (Prestasi)
     Route::resource('/posts', AdminPostController::class);
