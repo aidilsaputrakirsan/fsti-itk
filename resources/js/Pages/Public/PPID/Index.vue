@@ -43,15 +43,12 @@ const daftarLayanan = ref([
   }
 ]);
 
-// KAMUS ICON: Mengatur icon spesifik berdasarkan jenis informasi
 const getIcon = (jenis) => {
     const icons = {
         'Berkala': '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>',
         'Setiap Saat': '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>',
         'Serta Merta': '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" /></svg>'
     };
-    
-    // Jika ada jenis baru yang belum didaftarkan, kembalikan icon default (buku)
     return icons[jenis] || icons['Berkala']; 
 };
 </script>
@@ -69,7 +66,6 @@ const getIcon = (jenis) => {
         <section class="bg-white pt-12 pb-6">
             <div class="relative py-8 md:py-10 overflow-hidden">
                 <div class="absolute inset-y-0 left-0 w-[95%] bg-[#CBDCEB] rounded-r-[4rem] md:rounded-r-[6rem] z-0"></div>
-
                 <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
                     <div class="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8">
                         <div class="md:w-1/5 flex-shrink-0">
@@ -78,7 +74,6 @@ const getIcon = (jenis) => {
                                 Tentang<br />PPID
                             </h2>
                         </div>
-                        
                         <div class="md:w-4/5 md:pl-6 md:border-l-2 border-[#4682A9]/30">
                             <p class="text-base md:text-lg text-[#133E87] font-inter-semibold leading-relaxed text-justify m-0">
                                 Dalam rangka pelaksanaan keterbukaan informasi publik di lingkungan Institut Teknologi Kalimantan, Tim Pejabat Pengelola Informasi dan Dokumentasi (PPID) tingkat Fakultas dibentuk. Pembentukan ini bertujuan untuk mempermudah pengelolaan dan pelayanan informasi kepada masyarakat sesuai dengan ketentuan peraturan perundang-undangan.
@@ -89,26 +84,26 @@ const getIcon = (jenis) => {
             </div>
         </section>
 
-        <section class="bg-white pb-16 pt-8">
+      <section class="bg-white pb-16 pt-8">
             <div class="container mx-auto px-6 lg:px-8">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-kulim-park-bold text-[#133E87]">Daftar Informasi Publik</h2>
                     <p class="mt-3 text-gray-600 font-inter-semibold">Katalog informasi yang tersedia di Fakultas Sains dan Teknologi Informasi</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                <div class="flex flex-wrap justify-center gap-8 max-w-6xl mx-auto px-4">
                     <Link 
                         v-for="info in $page.props.jenisInformasi" 
                         :key="info.jenis"
                         :href="`/ppid/informasi/${info.slug}`"
-                        class="bg-white p-8 rounded-2xl shadow-sm border-t-4 border-[#4682A9] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 text-center group flex flex-col h-full"
+                        class="bg-white p-8 rounded-2xl shadow-sm border-t-4 border-[#4682A9] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 text-center group flex flex-col h-full w-full md:w-[calc(50%-2rem)] max-w-[420px]"
                     >
-<div 
-    class="flex items-center justify-center w-20 h-20 bg-[#CBDCEB]/50 rounded-full mx-auto mb-6 text-[#133E87] group-hover:bg-[#133E87] group-hover:text-white transition-colors duration-300" 
-    v-html="getIcon(info.jenis)">
-</div>
+                        <div 
+                            class="flex items-center justify-center w-20 h-20 bg-[#CBDCEB]/50 rounded-full mx-auto mb-6 text-[#133E87] group-hover:bg-[#133E87] group-hover:text-white transition-colors duration-300" 
+                            v-html="getIcon(info.jenis)">
+                        </div>
                         
-                        <h3 class="text-xl font-inter-bold text-[#133E87] mb-4">Informasi {{ info.jenis }}</h3>
+                        <h3 class="text-xl font-inter-bold text-[#133E87] mb-4 uppercase">Informasi {{ info.jenis }}</h3>
                         
                         <p class="text-gray-600 leading-relaxed flex-grow text-[15px]">
                             Kumpulan informasi publik yang masuk ke dalam klasifikasi {{ info.jenis }} di lingkungan Fakultas Sains dan Teknologi Informasi.
@@ -146,7 +141,6 @@ const getIcon = (jenis) => {
                 <div class="max-w-5xl mx-auto mb-20">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-start relative">
                         <div class="hidden md:block absolute top-8 left-0 w-full h-1 bg-[#CBDCEB] z-0"></div>
-                        
                         <div 
                             v-for="(alur, index) in alurLayanan" 
                             :key="alur.id"
@@ -162,7 +156,7 @@ const getIcon = (jenis) => {
                     </div>
                 </div>
 
-                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto px-4">
                     <div 
                         v-for="layanan in daftarLayanan" 
                         :key="layanan.id"
@@ -180,16 +174,13 @@ const getIcon = (jenis) => {
                         </a>
                     </div>
                 </div>
-
             </div>
         </section>
-
     </PublicLayout>
 </template>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kulim+Park:wght@600;700&display=swap');
-
 .font-kulim-park-bold { font-family: 'Kulim Park', sans-serif; font-weight: 700; }
 .font-inter-semibold { font-family: 'Inter', sans-serif; font-weight: 600; }
 .font-inter-bold { font-family: 'Inter', sans-serif; font-weight: 700; }

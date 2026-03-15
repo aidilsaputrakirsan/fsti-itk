@@ -60,8 +60,10 @@ watch(flashSuccess, (message) => {
             </Link>
         </div>
 
-        <div class="bg-white shadow-sm p-6 rounded-xl border border-gray-100">
-            <div class="border rounded-lg overflow-x-auto">
+<div class="bg-white shadow-sm p-6 rounded-xl border border-gray-100">
+            <div class="mb-5">
+                <h2 class="text-xl font-bold text-gray-800">Daftar Kategori Dokumen PPID</h2>
+            </div>            <div class="border rounded-lg overflow-x-auto">
                 <table class="w-full min-w-full text-left">
                     <thead class="bg-[#CBDCEB]">
                         <tr>
