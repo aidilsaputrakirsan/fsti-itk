@@ -32,7 +32,8 @@ interface Props {
         totalUsers: number;
         totalSurveys: number;
         avgRating: number;
-        totalPpid: number;
+    totalPpid: Number, 
+    totalKategoriPpid: Number, 
         totalAlumni: number;
         totalZonaIntegritas: number;
         totalLayanan: number;

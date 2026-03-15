@@ -9,6 +9,7 @@ import {
     ChevronRightIcon,
     InformationCircleIcon,
     AcademicCapIcon,
+    ArchiveBoxIcon,
 } from '@heroicons/vue/24/outline';
 import { ref, onMounted } from 'vue';
 
@@ -45,11 +46,19 @@ const navigation = ref([
         ]
     },
     {
+        name: 'PPID',
+        href: null,
+        icon: ArchiveBoxIcon,
+        children: [
+            { name: 'Kelola PPID', href: '/admin/ppid' },
+            { name: 'Kelola Kategori PPID', href: '/admin/kategori-ppid' }
+        ]
+    },
+    {
         name: 'Informasi & Layanan',
         href: null,
         icon: InformationCircleIcon,
         children: [
-            { name: 'PPID', href: '/admin/ppid' },
             { name: 'Zona Integritas', href: '/admin/integrity-zones' },
             { name: 'Alumni & Tracer', href: '/admin/alumni' },
             { name: 'Survei Kepuasan', href: '/admin/satisfaction-surveys' },
@@ -64,15 +73,11 @@ const isParentUrlActive = (item: any) => {
     return item.children.some((child: any) => page.url.startsWith(child.href));
 };
 
-// PERUBAHAN: Memperbarui logika toggle submenu
 const toggleSubMenu = (name: string) => {
-    // Jika menu yang sama diklik (artinya submenu sedang terbuka)
     if (openMenu.value === name) {
-        openMenu.value = null; // Tutup submenu
-        // Arahkan kembali ke dashboard
+        openMenu.value = null;
         router.visit('/admin/dashboard');
     } else {
-        // Jika menu lain yang diklik, cukup buka submenunya
         openMenu.value = name;
     }
 };
@@ -86,16 +91,15 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex h-screen bg-gray-50 text-gray-800">
+    <div class="flex h-screen bg-[#CBDCEB] text-black">
         <aside class="flex w-72 flex-col flex-shrink-0 bg-white px-5 pt-6 pb-4 border-r border-gray-200 shadow-lg">
             <div class="px-4 mb-8">
-                <img src="/images/logofsti.png" alt="Logo FSTV Prestasi" width="192" height="69" />
+                <img src="/images/logofsti.png" alt="Logo FSTI Prestasi" width="192" height="69" />
             </div>
 
-            <nav class="flex-1 space-y-3">
+            <nav class="flex-1 space-y-3 overflow-y-auto">
                 <template v-for="item in navigation" :key="item.name">
                     <div>
-                        <!-- Link untuk menu tanpa anak -->
                         <Link
                             v-if="!item.children"
                             :href="item.href"
@@ -103,41 +107,39 @@ onMounted(() => {
                                 'flex items-center w-full p-3 transition-colors duration-200 rounded-lg',
                                 page.url.startsWith(item.href)
                                     ? 'bg-[#4682A9] text-white shadow-md'
-                                    : 'bg-[#CBDCEB] text-gray-800 hover:bg-[#a6c1da]', 
+                                    : 'bg-[#CBDCEB] text-black hover:bg-[#a6c1da]', 
                             ]"
                         >
                             <span class="flex items-center justify-center h-8 w-8 bg-white rounded-full">
-                                <component :is="item.icon" :class="['h-5 w-5', page.url.startsWith(item.href) ? 'text-[#4682A9]' : 'text-gray-600']" />
+                                <component :is="item.icon" :class="['h-5 w-5', page.url.startsWith(item.href) ? 'text-[#4682A9]' : 'text-black']" />
                             </span>
                             <span class="ml-4 font-semibold">{{ item.name }}</span>
-                            <ChevronRightIcon class="h-5 w-5 ml-auto" />
+                            <ChevronRightIcon class="h-5 w-5 ml-auto opacity-0" />
                         </Link>
 
-                        <!-- Tombol untuk menu dengan anak -->
                         <button
                             v-else
                             @click="toggleSubMenu(item.name)"
                             :class="[
                                 'flex items-center w-full p-3 transition-colors duration-200 text-left',
-                                openMenu === item.name ? 'rounded-t-lg' : 'rounded-lg',
-                                'bg-[#CBDCEB] text-gray-800 hover:bg-[#a6c1da]',
+                                openMenu === item.name ? 'rounded-t-lg bg-[#a6c1da]' : 'rounded-lg bg-[#CBDCEB]',
+                                'text-black hover:bg-[#a6c1da]',
                             ]"
                         >
                             <span class="flex items-center justify-center h-8 w-8 bg-white rounded-full">
-                                <component :is="item.icon" :class="['h-5 w-5', isParentUrlActive(item) ? 'text-[#4682A9]' : 'text-gray-600']" />
+                                <component :is="item.icon" :class="['h-5 w-5', isParentUrlActive(item) ? 'text-[#4682A9]' : 'text-black']" />
                             </span>
                             <span class="ml-4 font-semibold">{{ item.name }}</span>
-                            <ChevronRightIcon class="h-5 w-5 ml-auto" />
+                            <ChevronRightIcon :class="['h-5 w-5 ml-auto transition-transform duration-200', openMenu === item.name ? 'rotate-90' : '']" />
                         </button>
                         
-                        <!-- Submenu -->
-                        <div v-if="item.children && openMenu === item.name">
+                        <div v-if="item.children && openMenu === item.name" class="bg-gray-50 rounded-b-lg border-x border-b border-gray-200 overflow-hidden">
                             <Link v-for="child in item.children" :key="child.name" :href="child.href"
                                 :class="[
-                                    'block w-full text-center py-2 font-semibold transition-colors duration-200 rounded-b-lg',
+                                    'block w-full px-12 py-3 text-sm font-semibold transition-colors duration-200',
                                     page.url.startsWith(child.href) 
-                                        ? 'bg-[#4682A9] text-white' 
-                                        : 'bg-[#CBDCEB] text-black hover:bg-[#a6c1da]'
+                                        ? 'bg-[#4682A9] text-white border-l-4 border-[#133E87]' 
+                                        : 'text-black hover:bg-gray-200 hover:text-[#4682A9] border-l-4 border-transparent'
                                 ]"
                             >
                                 {{ child.name }}
@@ -147,44 +149,22 @@ onMounted(() => {
                 </template>
             </nav>
             
-            <div class="mt-auto">
+            <div class="mt-auto pt-4 border-t border-gray-200">
                 <Link 
                     href="/logout" 
                     method="post" 
                     as="button" 
-                    class="flex w-full items-center justify-between rounded-lg p-3 bg-[#CBDCEB] text-black hover:bg-[#a6c1da] transition-colors duration-200"
+                    class="flex w-full items-center justify-between rounded-lg p-3 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 transition-colors duration-200"
                 >
-                    <span class="font-semibold">Logout</span>
-                    <span class="flex h-7 w-7 items-center justify-center rounded-md bg-black">
-                        <ArrowLeftOnRectangleIcon class="h-5 w-5 text-white" />
+                    <span class="font-semibold">Keluar</span>
+                    <span class="flex h-7 w-7 items-center justify-center rounded-md bg-red-600">
+                        <ArrowLeftOnRectangleIcon class="h-4 w-4 text-white" />
                     </span>
                 </Link>
             </div>
         </aside>
 
         <div class="flex flex-1 flex-col overflow-x-hidden">
-            <!-- Header removed as requested -->
-            <!-- <header class="flex items-center justify-end border-b border-gray-200 bg-white px-6 py-3 shadow-md">
-                <div class="relative">
-                    <button @click="isProfileOpen = !isProfileOpen" class="flex items-center gap-4 p-1 rounded-lg">
-                        <div class="text-right">
-                            <p class="font-bold">Hikmah</p>
-                            <p class="text-sm text-gray-500">Super Admin</p>
-                        </div>
-                        <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center border-2 border-black">
-                                <UsersIcon class="h-8 w-8 text-gray-400" />
-                        </div>
-                    </button>
-                    
-                    <div v-if="isProfileOpen" @click="isProfileOpen = false" class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                            <Link href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile</Link>
-                            <Link href="/reset-password" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Reset Password</Link>
-                        </div>
-                    </div>
-                </div>
-            </header> -->
-            
             <main class="flex-1 overflow-auto bg-[#CBDCEB] p-8">
                 <slot />
             </main>

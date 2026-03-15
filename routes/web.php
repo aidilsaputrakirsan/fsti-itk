@@ -80,12 +80,17 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // --- MODUL TAMBAHAN (Admin) ---
     Route::resource('/ppid', \App\Http\Controllers\Admin\PpidController::class);
+
+
+    // Modul Kategori PPID (Full Resource)
+    Route::resource('/kategori-ppid', \App\Http\Controllers\Admin\KategoriPpidController::class);
+
     Route::resource('/integrity-zones', \App\Http\Controllers\Admin\IntegrityZoneController::class);
     Route::resource('/alumni', \App\Http\Controllers\Admin\AlumniController::class);
     Route::resource('/users', \App\Http\Controllers\Admin\UserController::class);
     Route::resource('/satisfaction-surveys', \App\Http\Controllers\Admin\SatisfactionSurveyController::class);
     Route::resource('/internal-services', \App\Http\Controllers\Admin\InternalServiceController::class);
-    
+
     // Profil Module
     Route::resource('/static-pages', \App\Http\Controllers\Admin\StaticPageController::class)->only(['index', 'edit', 'update']);
     Route::resource('/staff', \App\Http\Controllers\Admin\StaffController::class);
@@ -94,7 +99,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 // --- MODUL TAMBAHAN (Publik) ---
 use App\Http\Controllers\PublicAdditionalController;
 
-Route::get('/ppid', [PublicAdditionalController::class, 'ppid'])->name('ppid.index');
+Route::get('/ppid', [PublicAdditionalController::class, 'ppid'])->name('public.ppid.index');
+
+Route::get('/ppid/informasi/{slug}', [PublicAdditionalController::class, 'showJenis'])->name('public.ppid.show');
+
+
 Route::get('/zona-integritas', [PublicAdditionalController::class, 'zonaIntegritas'])->name('zona-integritas.index');
 Route::get('/alumni', [PublicAdditionalController::class, 'alumni'])->name('alumni.index');
 Route::get('/survei-kepuasan', [PublicAdditionalController::class, 'survei'])->name('survei.index');
@@ -138,7 +147,7 @@ Route::get('/program-studi/matematika', function () {
 
 
 Route::get('/kontak', function () {
-    return Inertia::render('Public/Kontak');
+    return Inertia::render('Public/Profil/Kontak');
 })->name('kontak');
 
 

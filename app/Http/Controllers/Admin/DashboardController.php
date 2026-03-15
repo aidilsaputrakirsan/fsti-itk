@@ -19,6 +19,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
+
+        $totalPpid = \App\Models\DokumenPpid::count();
+        $totalKategoriPpid = \App\Models\KategoriPpid::count();
+        // === STATISTIK UTAMA (Cards) ===
         // === STATISTIK UTAMA (Cards) ===
         $stats = [
             'totalPosts' => Post::count(),
@@ -30,7 +34,8 @@ class DashboardController extends Controller
             'totalUsers' => User::count(),
             'totalSurveys' => SatisfactionSurvey::count(),
             'avgRating' => round(SatisfactionSurvey::avg('rating') ?? 0, 1),
-            'totalPpid' => PpidDocument::where('is_active', true)->count(),
+            'totalPpid' => $totalPpid,
+            'totalKategoriPpid' => $totalKategoriPpid,
             'totalAlumni' => AlumniTracer::where('is_active', true)->count(),
             'totalZonaIntegritas' => IntegrityZone::count(),
             'totalLayanan' => InternalService::where('is_active', true)->count(),
@@ -167,6 +172,8 @@ class DashboardController extends Controller
                 'ratingDistribution' => $ratingDistribution,
                 'satisfactionByType' => $satisfactionByType,
                 'staffByCategory' => $staffByCategory,
+                'totalPpid' => $totalPpid,
+                'totalKategoriPpid' => $totalKategoriPpid,
             ],
             'recent' => [
                 'posts' => $recentPosts,

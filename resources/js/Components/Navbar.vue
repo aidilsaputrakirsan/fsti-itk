@@ -33,7 +33,7 @@ const navigationMenu = computed(() => [
         name: trans('Profil'),
         href: '#',
         sublinks: [
-            { name: trans('Visi & Misi'), href: route('visi-misi') },
+            { name: trans('Tentang FSTI'), href: route('visi-misi') },
             {
                 name: trans('Struktur Organisasi'),
                 href: '#',
@@ -46,13 +46,17 @@ const navigationMenu = computed(() => [
                 ],
             },
             {
-                name: trans('Civitas Akademika'), // Fallback if not in JSON, but keys should be there
+                name: trans('Civitas Akademika'),
                 href: '#',
                 sublinks: [
                     { name: trans('Dosen'), href: route('profil.dosen') },
                     { name: trans('Tenaga Kependidikan'), href: route('profil.tenaga-kependidikan') },
                 ],
             },
+             { name: trans('Kerjasama'), href: route('visi-misi') },
+
+            { name: trans('Kontak'), href: route('kontak') },
+
         ],
     },
     {
@@ -86,22 +90,52 @@ const navigationMenu = computed(() => [
         href: '#',
         sublinks: [
             { name: trans('Prestasi Mahasiswa'), href: route('prestasi.index') },
-            { name: 'Portal Layanan Mahasiswa', href: 'https://layanan-fsti.myst-tech.com/', external: true },
+            { name: 'Portal Layanan Mahasiswa', href: route('layanan.index') }, 
+            { name: 'Kegiatan Mahasiswa', href: route('layanan.index') }, 
+            { name: 'Informasi Beasiswa', href: route('layanan.index') }, 
+            { name: 'Penerimaan Mahasiswa Baru (PMB)', href: route('layanan.index') }, 
         ],
     },
-    {
-        name: trans('Informasi & Layanan'),
+
+     {
+    name: trans('Alumni'),
         href: '#',
         sublinks: [
-            { name: 'PPID Fakultas', href: route('ppid.index') },
-            { name: trans('Zona Integritas'), href: route('zona-integritas.index') },
-            { name: trans('Alumni & Tracer Study'), href: route('alumni.index') },
-            { name: trans('Survei Kepuasan'), href: route('survei.index') },
-            { name: trans('Layanan Internal'), href: route('layanan.index') },
+            { name: trans('Data Alumni'), href: route('alumni.index') },
+            { name: 'Tracer Study', href: route('alumni.index') }, 
         ],
     },
+
+
+    {
+        name: trans('Informasi'),
+        href: '#',
+        sublinks: [
+           { name: trans('Agenda'), href: route('berita.index') },
     { name: trans('Berita'), href: route('berita.index') },
-    { name: trans('Kontak'), href: route('kontak') },
+    { name: ('Pengumuman'), href: route('berita.index') },
+    { name: ('Prosedur Publikasi'), href: route('berita.index') },
+        ],
+    },
+    
+{ name: 'PPID', href: route('public.ppid.index') },    
+    {
+        name: trans('Zona Integritas'),
+        href: '#',
+        sublinks: [
+            { name: trans('Informasi Zona Integritas'), href: route('zona-integritas.index') },
+            { name: trans('Survei Kepuasan'), href: route('survei.index') },
+        ],
+    },
+    
+     {
+        name: trans('Riset'),
+        href: '#',
+        sublinks: [
+            { name: trans('Penelitian'), href: route('zona-integritas.index') },
+            { name: trans('Pengabdian kepada Masyarakat'), href: route('survei.index') },
+        ],
+    },    
 ]);
 
 // --- State untuk interaktivitas ---
