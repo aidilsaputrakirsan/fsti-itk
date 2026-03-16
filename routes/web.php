@@ -24,6 +24,18 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('/achievements/import', [AchievementsController::class, 'import'])->name('achievements.import');
     Route::get('/achievements/export', [AchievementsController::class, 'export'])->name('achievements.export');
 
+    // Rute untuk Zona Integritas Admin
+    Route::prefix('zona-integritas')->name('admin.zi.')->group(function () {
+        // Pengaturan Profil
+        Route::get('/profil', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'profileEdit'])->name('profile.edit');
+        Route::post('/profil', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'profileUpdate'])->name('profile.update');
+
+        // Kelola Dokumen
+        Route::get('/dokumen', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'documentIndex'])->name('document.index');
+        Route::post('/dokumen', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'documentStore'])->name('document.store');
+        Route::delete('/dokumen/{id}', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'documentDestroy'])->name('document.destroy');
+    });
+
     // Modul PPID Admin
     Route::resource('/ppid', \App\Http\Controllers\Admin\PpidController::class);
     Route::resource('/kategori-ppid', \App\Http\Controllers\Admin\KategoriPpidController::class);
@@ -52,6 +64,8 @@ Route::get('/', function () {
 Route::get('/berita', [PublicPostController::class, 'index'])->name('berita.index');
 Route::get('/berita/{post:slug}', [PublicPostController::class, 'show'])->name('berita.show');
 Route::get('/prestasi', [PublicAchievementController::class, 'index'])->name('prestasi.index');
+
+Route::get('/zona-integritas', [PublicAdditionalController::class, 'zonaIntegritas'])->name('public.zona-integritas');
 
 // PPID Publik (Nama diubah total agar tidak bentrok)
 Route::get('/ppid', [PublicAdditionalController::class, 'ppid'])->name('public.ppid.index');

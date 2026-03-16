@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\KategoriPpid;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use App\Models\ZiProfile;
+use App\Models\ZiDocument;
 
 class PublicAdditionalController extends Controller
 {
@@ -56,6 +57,20 @@ class PublicAdditionalController extends Controller
         return Inertia::render('Public/PPID/ShowJenis', [
             'kategoris' => $kategoris,
             'jenis_informasi' => $jenisAsli
+        ]);
+    }
+
+    public function zonaIntegritas()
+    {
+        // Ambil profil ZI (jika belum ada, kembalikan objek kosong)
+        $profile = ZiProfile::first() ?? new ZiProfile();
+
+        // Ambil semua dokumen ZI urut dari yang terbaru
+        $documents = ZiDocument::latest()->get();
+
+        return Inertia::render('Public/ZonaIntegritas/Index', [
+            'profile' => $profile,
+            'documents' => $documents
         ]);
     }
 }

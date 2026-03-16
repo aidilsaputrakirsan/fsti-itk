@@ -10,6 +10,7 @@ import {
     InformationCircleIcon,
     AcademicCapIcon,
     ArchiveBoxIcon,
+    ShieldCheckIcon,
 } from '@heroicons/vue/24/outline';
 import { ref, onMounted, computed } from 'vue'; // Tambahkan computed
 
@@ -56,13 +57,21 @@ const navigation = [
         ]
     },
     {
+        name: 'Zona Integritas (ZI)',
+        href: null,
+        icon: ShieldCheckIcon,
+        children: [
+            { name: 'Kelola Halaman ZI', href: '/admin/zona-integritas/profil' },
+            { name: 'Kelola Dokumen ZI', href: '/admin/zona-integritas/dokumen' },
+            { name: 'Kelola Survei Kepuasan', href: '/admin/satisfaction-surveys' },
+        ]
+    },
+    {
         name: 'Informasi & Layanan',
         href: null,
         icon: InformationCircleIcon,
         children: [
-            { name: 'Zona Integritas', href: '/admin/integrity-zones' },
             { name: 'Alumni & Tracer', href: '/admin/alumni' },
-            { name: 'Survei Kepuasan', href: '/admin/satisfaction-surveys' },
             { name: 'Layanan Internal', href: '/admin/internal-services' },
         ]
     },
