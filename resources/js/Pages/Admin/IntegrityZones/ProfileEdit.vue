@@ -1,34 +1,49 @@
 <script setup lang="ts">
-import { useForm, Head, Link } from '@inertiajs/vue3';
+import { ref, watch, computed } from 'vue';
+import { useForm, Head, Link, usePage } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { ArrowLeftIcon, CheckIcon, IdentificationIcon, InformationCircleIcon, PhotoIcon, DocumentTextIcon } from '@heroicons/vue/24/outline';
+import { ArrowLeftIcon, CheckIcon, IdentificationIcon, InformationCircleIcon, PhotoIcon, DocumentTextIcon, CheckCircleIcon } from '@heroicons/vue/24/outline';
 
 defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
     profile: {
-        id: number;
+        id?: number | null;
         description: string | null;
         service_declaration_image_path: string | null;
-    }
+    } | null
 }>();
 
 const form = useForm({
-    description: props.profile.description || '',
+    description: props.profile?.description || '',
     service_declaration_image: null as File | null,
 });
 
-// Helper untuk TypeScript File Upload
 const handleMaklumatUpload = (e: Event) => {
     const target = e.target as HTMLInputElement;
     form.service_declaration_image = target.files?.[0] || null;
 };
 
 const submit = () => {
-    form.post(route('admin.zi.profile.update'), {
+    form.post('/admin/zona-integritas/profil', {
         preserveScroll: true,
+        forceFormData: true,
     });
 };
+
+// --- Logika Notifikasi Sukses ---
+const page = usePage();
+const showNotification = ref(false);
+const notificationMessage = ref('');
+const flashSuccess = computed(() => (page.props as any).flash?.success);
+
+watch(flashSuccess, (message) => {
+    if (message) {
+        notificationMessage.value = message as string;
+        showNotification.value = true;
+        setTimeout(() => { showNotification.value = false; }, 3000);
+    }
+}, { immediate: true });
 </script>
 
 <template>
@@ -67,15 +82,15 @@ const submit = () => {
                     <div class="md:col-span-4">
                         <label class="block text-base font-bold text-gray-900 mb-1 flex items-center">
                             <DocumentTextIcon class="w-5 h-5 mr-2 text-gray-500" />
-                            1. Teks Pengantar & Role Model
+                            1. Teks Pengantar
                         </label>
-                        <p class="text-sm text-gray-500 mb-4 leading-relaxed">Tuliskan narasi komitmen ZI dan perkenalkan nama serta jabatan Role Model FSTI saat ini.</p>
+                        <p class="text-sm text-gray-500 mb-4 leading-relaxed">Tuliskan narasi komitmen ZI institusi Anda.</p>
                     </div>
                     <div class="md:col-span-8">
                         <textarea 
                             v-model="form.description" 
                             rows="8" 
-                            placeholder="Contoh:&#10;Fakultas Sains dan Teknologi Informasi (FSTI) ITK senantiasa berkomitmen penuh dalam mewujudkan Wilayah Bebas dari Korupsi (WBK)...&#10;&#10;Role Model ZI FSTI Periode 2025-2027:&#10;Adi Mahmud Jaya Marindra, S.T., M.Eng., Ph.D (Dekan FSTI)" 
+                            placeholder="Contoh: Fakultas Sains dan Teknologi Informasi (FSTI) ITK senantiasa berkomitmen penuh dalam mewujudkan Wilayah Bebas dari Korupsi (WBK)..." 
                             class="w-full rounded-xl border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] text-sm leading-relaxed"
                         ></textarea>
                         <p class="text-[11px] text-gray-500 mt-2 italic">* Teks akan otomatis menyesuaikan paragraf (enter) saat ditampilkan di halaman publik.</p>
@@ -91,18 +106,17 @@ const submit = () => {
                             <PhotoIcon class="w-5 h-5 mr-2 text-gray-500" />
                             2. Maklumat Pelayanan
                         </label>
-                        <p class="text-sm text-gray-500 mb-4 leading-relaxed">Poster atau piagam resmi Maklumat Pelayanan yang telah disahkan/ditandatangani.</p>
+                        <p class="text-sm text-gray-500 mb-4 leading-relaxed">Poster atau piagam resmi Maklumat Pelayanan yang telah disahkan.</p>
 
                         <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 text-[11px] text-gray-600 space-y-1.5">
                             <p class="font-bold text-gray-700">Aturan File:</p>
                             <p>• <strong>Format:</strong> JPG, PNG, WEBP</p>
-                            <p>• <strong>Maks Ukuran:</strong> 5 MB (Kualitas Jelas)</p>
-                            <p>• <strong>Rekomendasi:</strong> Dokumen Portrait (Kertas A4)</p>
+                            <p>• <strong>Maks Ukuran:</strong> 5 MB</p>
                         </div>
                     </div>
                     <div class="md:col-span-8">
                         <div class="p-5 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/30">
-                            <div v-if="props.profile.service_declaration_image_path" class="mb-4">
+                            <div v-if="props.profile?.service_declaration_image_path" class="mb-4">
                                 <span class="inline-block bg-green-100 text-green-800 text-[10px] font-bold px-2 py-1 rounded mb-2">Dokumen Saat Ini Terpasang</span>
                                 <div class="bg-white p-2 border border-gray-200 rounded-lg inline-block shadow-sm">
                                     <img :src="props.profile.service_declaration_image_path" alt="Maklumat Pelayanan" class="h-64 w-auto object-contain rounded">
@@ -118,7 +132,8 @@ const submit = () => {
                         </div>
                     </div>
                 </div>
-<div class="pt-8 border-t border-gray-200 flex items-center justify-end">
+
+                <div class="pt-8 border-t border-gray-200 flex items-center justify-end">
                     <button type="submit" :disabled="form.processing" class="inline-flex items-center gap-2 rounded-lg bg-[#4682A9] px-8 py-3 text-sm font-bold text-white hover:bg-[#133E87] shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                         <CheckIcon class="w-5 h-5" v-if="!form.processing" />
                         <svg v-else class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
@@ -127,5 +142,22 @@ const submit = () => {
                 </div>
             </form>
         </div>
+        
+        <transition
+            enter-active-class="transform ease-out duration-300 transition"
+            enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+            enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
+            leave-active-class="transition ease-in duration-100"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+        >
+            <div v-if="showNotification" class="fixed top-5 right-5 z-50">
+                <div class="flex items-center gap-4 rounded-lg bg-green-600 p-4 text-white shadow-lg">
+                    <CheckCircleIcon class="h-8 w-8" />
+                    <p class="font-semibold">{{ notificationMessage }}</p>
+                </div>
+            </div>
+        </transition>
+
     </div>
 </template>

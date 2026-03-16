@@ -17,8 +17,15 @@ class IntegrityZoneController extends Controller
     // ==========================================
     public function profileEdit()
     {
-        // Ambil data pertama, jika belum ada, buatkan data kosong (ID=1)
-        $profile = ZiProfile::firstOrCreate(['id' => 1]);
+        // Ambil data, jika belum ada, kirim data dummy (object kosong)
+        $profile = ZiProfile::first();
+        if (!$profile) {
+            $profile = (object)[
+                'id' => null,
+                'description' => '',
+                'service_declaration_image_path' => null
+            ];
+        }
 
         return Inertia::render('Admin/IntegrityZones/ProfileEdit', [
             'profile' => $profile
@@ -27,31 +34,30 @@ class IntegrityZoneController extends Controller
 
     public function profileUpdate(Request $request)
     {
-        $profile = ZiProfile::firstOrCreate(['id' => 1]);
-
         $validated = $request->validate([
             'description' => 'nullable|string',
-            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'service_declaration_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120', // Maks 5MB untuk maklumat
+            'service_declaration_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120', // Maks 5MB
         ]);
 
-        $profile->description = $validated['description'] ?? $profile->description;
-        $profile->user_id = Auth::id();
-
-        // Handle Banner Image
-        if ($request->hasFile('banner_image')) {
-            if ($profile->banner_image_path) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $profile->banner_image_path));
-            }
-            $path = $request->file('banner_image')->store('zi-images', 'public');
-            $profile->banner_image_path = '/storage/' . $path;
+        // Cari profil pertama, jika tidak ada buat instansiasi baru dengan aman
+        $profile = ZiProfile::first();
+        if (!$profile) {
+            $profile = new ZiProfile();
         }
+
+        $profile->description = $validated['description'];
+        $profile->user_id = Auth::id();
 
         // Handle Maklumat Image
         if ($request->hasFile('service_declaration_image')) {
+            // Hapus gambar lama jika ada
             if ($profile->service_declaration_image_path) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $profile->service_declaration_image_path));
+                $oldPath = str_replace('/storage/', '', $profile->service_declaration_image_path);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
             }
+            // Simpan gambar baru
             $path = $request->file('service_declaration_image')->store('zi-images', 'public');
             $profile->service_declaration_image_path = '/storage/' . $path;
         }
@@ -89,15 +95,66 @@ class IntegrityZoneController extends Controller
 
         ZiDocument::create($validated);
 
-        return redirect()->back()->with('success', 'Dokumen ZI berhasil ditambahkan!');
+        return redirect('/admin/zona-integritas/dokumen')->with('success', 'Dokumen ZI berhasil ditambahkan!');
+    }
+
+    public function documentCreate()
+    {
+        return Inertia::render('Admin/IntegrityZones/DocumentCreate');
+    }
+
+    public function documentEdit($id)
+    {
+        $document = ZiDocument::findOrFail($id);
+        return Inertia::render('Admin/IntegrityZones/DocumentEdit', [
+            'document' => $document
+        ]);
+    }
+
+    public function documentUpdate(Request $request, $id)
+    {
+        $document = ZiDocument::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'file' => 'nullable|file|mimes:pdf|max:10240',
+            'file_url' => 'nullable|string',
+        ]);
+
+        $document->title = $validated['title'];
+
+        // Jika user upload file baru
+        if ($request->hasFile('file')) {
+            // Hapus file lama jika ada (dan jika file lama tersebut adalah dari local storage)
+            if ($document->file_url && str_contains($document->file_url, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $document->file_url));
+            }
+            $path = $request->file('file')->store('zi-documents', 'public');
+            $document->file_url = '/storage/' . $path;
+        }
+        // Jika user tidak upload file, tapi mengisi Link Google Drive
+        elseif ($request->filled('file_url') && !$request->hasFile('file')) {
+            if ($document->file_url && str_contains($document->file_url, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $document->file_url));
+            }
+            $document->file_url = $validated['file_url'];
+        }
+
+        $document->save();
+
+        // Redirect kembali ke halaman Index Dokumen
+        return redirect('/admin/zona-integritas/dokumen')->with('success', 'Dokumen ZI berhasil diperbarui!');
     }
 
     public function documentDestroy($id)
     {
         $document = ZiDocument::findOrFail($id);
 
-        if ($document->file_url && Storage::disk('public')->exists(str_replace('/storage/', '', $document->file_url))) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $document->file_url));
+        if ($document->file_url) {
+            $filePath = str_replace('/storage/', '', $document->file_url);
+            if (Storage::disk('public')->exists($filePath)) {
+                Storage::disk('public')->delete($filePath);
+            }
         }
 
         $document->delete();

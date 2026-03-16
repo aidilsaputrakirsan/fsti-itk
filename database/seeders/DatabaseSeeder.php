@@ -29,6 +29,9 @@ class DatabaseSeeder extends Seeder
             PostSeeder::class,
             AchievementSeeder::class,
             ProfileSeeder::class,
+            PostSeeder::class,
+            PpidSeeder::class,
+            IntegrityZoneSeeder::class
         ]);
     }
 }
