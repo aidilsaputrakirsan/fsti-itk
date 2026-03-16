@@ -12,7 +12,7 @@ class IntegrityZoneSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. BERSIHKAN DATA LAMA (Gaya PPID Seeder)
+        // 1. BERSIHKAN DATA LAMA DULU (Agar tidak ada data ganda/nyangkut)
         Schema::disableForeignKeyConstraints();
         ZiProfile::truncate();
         ZiDocument::truncate();
@@ -22,23 +22,23 @@ class IntegrityZoneSeeder extends Seeder
         $admin = User::first();
         $adminId = $admin ? $admin->id : 1;
 
-        // 3. MASUKKAN PROFIL ZI (Otomatis ID 1 karena baru di-truncate)
+        // 3. MASUKKAN PROFIL ZI (Arahkan gambar ke public/assets/zi)
         ZiProfile::create([
             'id' => 1,
             'user_id' => $adminId,
             'description' => "Fakultas Sains dan Teknologi Informasi (FSTI) Institut Teknologi Kalimantan senantiasa berkomitmen penuh dalam mewujudkan Wilayah Bebas dari Korupsi (WBK) dan Wilayah Birokrasi Bersih dan Melayani (WBBM) melalui reformasi birokrasi yang berkesinambungan serta peningkatan kualitas pelayanan publik yang transparan dan terukur.",
-            'service_declaration_image_path' => '/storage/zi-images/maklumat-pelayanan.png',
+            'service_declaration_image_path' => '/assets/zi/maklumat-pelayanan.png',
         ]);
 
-        // 4. SIAPKAN DOKUMEN ZI
+        // 4. SIAPKAN DOKUMEN ZI (Arahkan PDF ke public/assets/zi)
         $documents = [
             [
                 'title' => 'SK Tim Zona Integritas FSTI Tahun 2025',
-                'file_url' => '/storage/zi-documents/sk-tim-zi-fsti.pdf',
+                'file_url' => '/assets/zi/sk-tim-zi-fsti.pdf',
             ],
             [
                 'title' => 'SK Role Model Zona Integritas FSTI Periode 2025-2027',
-                'file_url' => '/storage/zi-documents/sk-role-model-fsti.pdf',
+                'file_url' => '/assets/zi/sk-role-model-fsti.pdf',
             ],
         ];
 

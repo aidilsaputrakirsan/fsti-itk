@@ -32,7 +32,7 @@ class PpidSeeder extends Seeder
                     ['judul' => 'Profil pejabat fakultas', 'url' => '/profil/pimpinan-fakultas'],
                     ['judul' => 'Tugas dan fungsi fakultas', 'url' => '/profil/tentang-fakultas'],
                     ['judul' => 'Visi dan misi fakultas', 'url' => '/profil/visi-misi'],
-                    ['judul' => 'Laporan Harta Kekayaan Bagi Pejabat Negara (LHKPN)', 'url' => '#'], // Belum ada
+                    ['judul' => 'Laporan Harta Kekayaan Bagi Pejabat Negara (LHKPN)', 'url' => '#'], 
                 ]
             ],
             [
@@ -52,7 +52,7 @@ class PpidSeeder extends Seeder
                 'jenis_informasi' => 'Berkala',
                 'urutan' => 3,
                 'dokumen' => [
-                    ['judul' => 'Laporan kinerja fakultas', 'url' => '#'], // Belum ada
+                    ['judul' => 'Laporan kinerja fakultas', 'url' => '#'], 
                 ]
             ],
             [
@@ -60,7 +60,7 @@ class PpidSeeder extends Seeder
                 'jenis_informasi' => 'Berkala',
                 'urutan' => 4,
                 'dokumen' => [
-                    ['judul' => 'Laporan keuangan tahunan', 'url' => '#'], // Belum ada
+                    ['judul' => 'Laporan keuangan tahunan', 'url' => '#'], 
                 ]
             ],
             [
@@ -68,7 +68,7 @@ class PpidSeeder extends Seeder
                 'jenis_informasi' => 'Berkala',
                 'urutan' => 5,
                 'dokumen' => [
-                    ['judul' => 'Ringkasan Laporan Akses Informasi Publik', 'url' => '#'], // Belum ada
+                    ['judul' => 'Ringkasan Laporan Akses Informasi Publik', 'url' => '#'], 
                 ]
             ],
             [
@@ -85,9 +85,10 @@ class PpidSeeder extends Seeder
                 'jenis_informasi' => 'Berkala',
                 'urutan' => 7,
                 'dokumen' => [
-                    ['judul' => 'Tata Cara Permohonan Informasi Publik', 'url' => '/storage/ppid-documents/sop-pengelolaan-informasi-publik.pdf'],
+                    // UBAH PATH KE ASSETS PUBLIC
+                    ['judul' => 'Tata Cara Permohonan Informasi Publik', 'url' => '/assets/ppid/sop-pengelolaan-informasi-publik.pdf'],
                     ['judul' => 'Formulir Permohonan Informasi Publik', 'url' => 'https://docs.google.com/forms/d/e/1FAIpQLSfqWYCCyMTZ2TXrDGIu0dkOgh_xPIy__31NZLdjYNpjNv422w/viewform'],
-                    ['judul' => 'Tata Cara Pengajuan Keberatan', 'url' => '/storage/ppid-documents/sop-pengelolaan-keberatan-informasi.pdf'],
+                    ['judul' => 'Tata Cara Pengajuan Keberatan', 'url' => '/assets/ppid/sop-pengelolaan-keberatan-informasi.pdf'],
                     ['judul' => 'Formulir Pengajuan Keberatan Atas Layanan Informasi Publik', 'url' => 'https://docs.google.com/forms/d/e/1FAIpQLSefIA7eJNmNHt0YXzWaWyLdp4zJUulojXUmh7xlVN-MQxZLlw/viewform'],
                     ['judul' => 'Tata Cara Pengaduan Penyalahgunaan Wewenang Atau Pelanggaran', 'url' => 'https://ppid.itk.ac.id/pengaduan-penyalahgunaan-wewenang/'],
                 ]
@@ -103,7 +104,8 @@ class PpidSeeder extends Seeder
                 'jenis_informasi' => 'Setiap Saat',
                 'urutan' => 1,
                 'dokumen' => [
-                    ['judul' => 'Daftar Informasi Publik Fakultas Sains dan Teknologi Informasi', 'url' => '/storage/ppid-documents/daftar-informasi-publik-fsti.pdf']
+                    // UBAH PATH KE ASSETS PUBLIC
+                    ['judul' => 'Daftar Informasi Publik Fakultas Sains dan Teknologi Informasi', 'url' => '/assets/ppid/daftar-informasi-publik-fsti.pdf']
                 ]
             ],
             [
@@ -140,7 +142,7 @@ class PpidSeeder extends Seeder
                 'jenis_informasi' => 'Setiap Saat',
                 'urutan' => 5,
                 'dokumen' => [
-                    ['judul' => 'Daftar Penelitian & Pengabdian Masyarakat', 'url' => '#'] // Belum ada
+                    ['judul' => 'Daftar Penelitian & Pengabdian Masyarakat', 'url' => '#'] 
                 ]
             ],
             [
@@ -148,8 +150,9 @@ class PpidSeeder extends Seeder
                 'jenis_informasi' => 'Setiap Saat',
                 'urutan' => 6,
                 'dokumen' => [
-                    ['judul' => 'Rencana Strategis', 'url' => '#'], // Belum ada
-                    ['judul' => 'Perjanjian Kinerja', 'url' => '/storage/ppid-documents/perjanjian-kinerja.pdf']
+                    ['judul' => 'Rencana Strategis', 'url' => '#'], 
+                    // UBAH PATH KE ASSETS PUBLIC
+                    ['judul' => 'Perjanjian Kinerja', 'url' => '/assets/ppid/perjanjian-kinerja.pdf']
                 ]
             ]
         ];
@@ -158,14 +161,12 @@ class PpidSeeder extends Seeder
         $semuaData = array_merge($berkala, $setiapSaat);
 
         foreach ($semuaData as $kategoriData) {
-            // 1. Simpan Kategori
             $kategori = KategoriPpid::create([
                 'nama_kategori' => $kategoriData['nama_kategori'],
                 'jenis_informasi' => $kategoriData['jenis_informasi'],
                 'urutan' => $kategoriData['urutan'],
             ]);
 
-            // 2. Simpan Dokumennya
             foreach ($kategoriData['dokumen'] as $dokumenData) {
                 DokumenPpid::create([
                     'kategori_ppid_id' => $kategori->id,
