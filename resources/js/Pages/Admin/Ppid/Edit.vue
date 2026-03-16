@@ -87,33 +87,48 @@ const submit = () => {
                             accept=".pdf" 
                             class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition" 
                         />
+                        
                         <div v-if="props.document.file_url && props.document.file_url.includes('/storage/')" class="mt-3 p-2.5 bg-blue-50 rounded-lg border border-blue-100 flex items-center justify-between">
                             <div class="flex items-center">
                                 <DocumentIcon class="w-4 h-4 text-blue-500 mr-2" />
                                 <span class="text-xs text-blue-700 font-medium italic">File PDF sudah tersedia di server</span>
                             </div>
                             <a 
-    v-if="form.file_url"
-    :href="form.file_url" 
-    target="_blank" 
-    class="text-[10px] bg-[#4682A9] text-white px-2 py-1 rounded hover:bg-[#133E87] transition"
->
-    Pratinjau File
-</a>
+                                v-if="form.file_url"
+                                :href="form.file_url" 
+                                target="_blank" 
+                                class="text-[10px] bg-[#4682A9] text-white px-2 py-1 rounded hover:bg-[#133E87] transition"
+                            >
+                                Pratinjau File
+                            </a>
                         </div>
                         <p class="text-[11px] text-gray-500 mt-2 italic">* Biarkan kosong jika tidak ingin mengganti file lama.</p>
+                        <p v-if="form.errors.file" class="text-xs text-red-500 mt-1">{{ form.errors.file }}</p>
                     </div>
 
                     <div class="p-6 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/30">
                         <label class="block text-sm font-bold text-[#4682A9] mb-3 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-                            Opsi 2: Tautan Halaman / Path Internal
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                            </svg>
+                            Opsi 2: Tautan Halaman Web FSTI atau Google Drive
                         </label>
-                        <input v-model="form.file_url" type="text" placeholder="Contoh: /profil/visi-misi atau https://..." class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] text-sm">
-                        <p class="text-[11px] text-gray-500 mt-2 leading-relaxed">
-                            * Gunakan <strong>path internal</strong> (misal: <code>/prestasi</code>) untuk diarahkan ke halaman di dalam web FSTI. <br>
-                            * Masukkan URL lengkap jika file/dokumen berada di luar website.
-                        </p>
+                        <input 
+                            v-model="form.file_url" 
+                            type="text" 
+                            placeholder="Contoh: https://fsti.itk.ac.id/profil/dosen" 
+                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] text-sm"
+                            :disabled="form.file !== null"
+                        >
+                        
+                        <div class="mt-3 text-[11px] sm:text-xs text-gray-600 bg-blue-50 p-3 rounded-lg border border-blue-100 leading-relaxed">
+                            <p class="font-bold text-blue-800 mb-1">Cara menggunakan opsi ini:</p>
+                            <ul class="list-decimal pl-4 space-y-1">
+                                <li><b>Halaman Web FSTI:</b> Buka halaman web FSTI yang ingin ditautkan, <i>copy</i> seluruh link di atas browser, lalu <i>paste</i> ke sini.</li>
+                                <li><b>Google Drive:</b> Jika file sangat besar, upload ke Google Drive, atur akses ke "Siapa saja yang memiliki link", lalu <i>paste</i> link ke sini.</li>
+                            </ul>
+                        </div>
+                        <p v-if="form.errors.file_url" class="text-xs text-red-500 mt-1">{{ form.errors.file_url }}</p>
                     </div>
                 </div>
 
