@@ -31,7 +31,8 @@ class DatabaseSeeder extends Seeder
             ProfileSeeder::class,
             PostSeeder::class,
             PpidSeeder::class,
-            IntegrityZoneSeeder::class
+            IntegrityZoneSeeder::class,
+            SurveyCategorySeeder::class
         ]);
     }
 }

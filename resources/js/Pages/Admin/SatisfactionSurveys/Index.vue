@@ -7,7 +7,7 @@ import {
     TrashIcon,
     ExclamationTriangleIcon,
     CheckCircleIcon,
-    XMarkIcon 
+    Cog6ToothIcon // Tambahan ikon gerigi untuk tombol kelola
 } from '@heroicons/vue/24/outline';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { ref, watch, computed } from 'vue';
@@ -51,7 +51,7 @@ watch([search, respondentType], throttle(function ([searchVal, typeVal]: [(strin
     });
 }, 300));
 
-// Modal Detail (Lihat Feedback)
+// Modal Detail
 const isDetailModalOpen = ref(false);
 const selectedSurvey = ref<typeof props.surveys.data[0] | null>(null);
 
@@ -115,11 +115,16 @@ const getRatingStars = (rating: number) => {
 
 <template>
     <div>
-        <div class="flex items-start justify-between mb-8">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-black">Hasil Survei Kepuasan</h1>
                 <p class="mt-1 text-black">Manajemen data respons survei layanan Informasi Publik dan Zona Integritas</p>
             </div>
+            
+            <Link :href="route('admin.survey-categories.index')" class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90 flex-shrink-0 transition-colors">
+                <Cog6ToothIcon class="h-5 w-5" />
+                Kelola Aspek Penilaian
+            </Link>
         </div>
 
         <div class="flex items-center justify-between gap-4 mb-6">
@@ -129,13 +134,13 @@ const getRatingStars = (rating: number) => {
                     v-model="search"
                     type="text" 
                     placeholder="Cari nama atau email responden" 
-                    class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                    class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9]" 
                 />
             </div>
             
             <div class="relative flex-shrink-0">
                 <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
-                <select v-model="respondentType" class="w-full rounded-lg border border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
+                <select v-model="respondentType" class="w-full rounded-lg border border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:border-[#4682A9] focus:ring-[#4682A9]">
                     <option value="">Semua Kategori Responden</option>
                     <option v-for="type in respondentTypes" :key="type" :value="type">{{ type }}</option>
                 </select>

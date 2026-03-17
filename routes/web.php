@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\AchievementsController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\SurveyCategoryController; // <--- Import Controller Baru
 use App\Http\Controllers\PublicPostController;
 use App\Http\Controllers\PublicAchievementController;
 use App\Http\Controllers\PublicProfileController;
@@ -45,7 +46,17 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     Route::resource('/alumni', \App\Http\Controllers\Admin\AlumniController::class);
     Route::resource('/users', \App\Http\Controllers\Admin\UserController::class);
+
+    // --- KELOMPOK SURVEI KEPUASAN (Admin) ---
     Route::resource('/satisfaction-surveys', \App\Http\Controllers\Admin\SatisfactionSurveyController::class);
+
+    // Kelola Kategori/Aspek Survei (Diletakkan DI DALAM group admin.)
+    Route::get('/survey-categories', [SurveyCategoryController::class, 'index'])->name('survey-categories.index');
+    Route::post('/survey-categories', [SurveyCategoryController::class, 'store'])->name('survey-categories.store');
+    Route::put('/survey-categories/{surveyCategory}', [SurveyCategoryController::class, 'update'])->name('survey-categories.update');
+    Route::delete('/survey-categories/{surveyCategory}', [SurveyCategoryController::class, 'destroy'])->name('survey-categories.destroy');
+    // ----------------------------------------
+
     Route::resource('/internal-services', \App\Http\Controllers\Admin\InternalServiceController::class);
     Route::resource('/static-pages', \App\Http\Controllers\Admin\StaticPageController::class)->only(['index', 'edit', 'update']);
     Route::resource('/staff', \App\Http\Controllers\Admin\StaffController::class);

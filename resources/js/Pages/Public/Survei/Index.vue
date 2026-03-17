@@ -1,9 +1,14 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { ChevronDown } from 'lucide-vue-next';
+
+// MENANGKAP DATA DARI DATABASE
+const props = defineProps<{
+    categories: Array<{ id: number, name: string }>;
+}>();
 
 const form = useForm({
     respondent_name: '',
@@ -30,19 +35,19 @@ const submit = () => {
 const isTypeOpen = ref(false);
 const isCategoryOpen = ref(false);
 
-const typeBtnRef = ref(null);
-const categoryBtnRef = ref(null);
+const typeBtnRef = ref<HTMLButtonElement | null>(null);
+const categoryBtnRef = ref<HTMLButtonElement | null>(null);
 
 const typeDropdownStyle = ref({});
 const categoryDropdownStyle = ref({});
 
-const toggleDropdown = (type) => {
+const toggleDropdown = (type: 'type' | 'category') => {
     const refs = { type: typeBtnRef, category: categoryBtnRef };
     const isOpenRefs = { type: isTypeOpen, category: isCategoryOpen };
     const styleRefs = { type: typeDropdownStyle, category: categoryDropdownStyle };
 
     Object.keys(isOpenRefs).forEach(key => {
-        if (key !== type) isOpenRefs[key].value = false;
+        if (key !== type) isOpenRefs[key as keyof typeof isOpenRefs].value = false;
     });
 
     const isOpen = isOpenRefs[type];
@@ -63,7 +68,7 @@ const toggleDropdown = (type) => {
     }
 };
 
-const selectOption = (type, value) => {
+const selectOption = (type: 'type' | 'category', value: string) => {
     if (type === 'type') {
         form.respondent_type = value;
         isTypeOpen.value = false;
@@ -73,9 +78,9 @@ const selectOption = (type, value) => {
     }
 };
 
-const handleClickOutside = (event) => {
-    const target = event.target;
-    const check = (btnRef, menuId, isOpenRef) => {
+const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as Node;
+    const check = (btnRef: typeof typeBtnRef, menuId: string, isOpenRef: typeof isTypeOpen) => {
         const menu = document.getElementById(menuId);
         if (btnRef.value && !btnRef.value.contains(target) && menu && !menu.contains(target)) {
             isOpenRef.value = false;
@@ -99,13 +104,6 @@ const respondentTypes = [
     'Tenaga Kependidikan', 
     'Alumni', 
     'Masyarakat Umum'
-];
-
-const serviceCategories = [
-    'Aksesibilitas Informasi Publik',
-    'Kualitas & Kelengkapan Konten Website',
-    'Kejelasan Prosedur Layanan Informasi (PPID)',
-    'Transparansi Dokumen Zona Integritas'
 ];
 </script>
 
@@ -288,7 +286,13 @@ const serviceCategories = [
     <Teleport to="body">
         <transition enter-active-class="transition ease-out duration-150" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-100" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
             <div v-if="isCategoryOpen" id="category-dropdown-menu" :style="categoryDropdownStyle" class="z-[9999] bg-white rounded-xl shadow-xl border border-gray-100 py-2 overflow-hidden">
-                <a v-for="c in serviceCategories" :key="c" @click="selectOption('category', c)" class="block px-5 py-3 text-sm text-gray-700 hover:bg-blue-50/50 hover:text-[#133E87] font-inter cursor-pointer transition-colors">{{ c }}</a>
+                <a v-for="c in props.categories" :key="c.id" @click="selectOption('category', c.name)" class="block px-5 py-3 text-sm text-gray-700 hover:bg-blue-50/50 hover:text-[#133E87] font-inter cursor-pointer transition-colors">
+                    {{ c.name }}
+                </a>
+                
+                <a v-if="!props.categories || props.categories.length === 0" class="block px-5 py-3 text-sm text-gray-400 italic font-inter cursor-not-allowed">
+                    Belum ada aspek tersedia
+                </a>
             </div>
         </transition>
     </Teleport>

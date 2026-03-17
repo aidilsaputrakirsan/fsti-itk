@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\ZiProfile;
 use App\Models\ZiDocument;
 use App\Models\SatisfactionSurvey;
+use App\Models\SurveyCategory;
 
 class PublicAdditionalController extends Controller
 {
@@ -87,7 +88,12 @@ class PublicAdditionalController extends Controller
     // ==========================================
     public function survei()
     {
-        return Inertia::render('Public/Survei/Index');
+        // Mengambil semua aspek penilaian yang aktif dari tabel survey_categories
+        $categories = SurveyCategory::where('is_active', true)->get();
+
+        return Inertia::render('Public/Survei/Index', [
+            'categories' => $categories
+        ]);
     }
 
     public function storeSurvei(Request $request)
