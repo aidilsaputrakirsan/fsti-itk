@@ -8,11 +8,13 @@ use Inertia\Inertia;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\AchievementsController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\SurveyCategoryController; // <--- Import Controller Baru
+use App\Http\Controllers\Admin\SurveyCategoryController; 
 use App\Http\Controllers\PublicPostController;
 use App\Http\Controllers\PublicAchievementController;
 use App\Http\Controllers\PublicProfileController;
-use App\Http\Controllers\PublicAdditionalController;
+use App\Http\Controllers\Public\PublicPpidController;
+use App\Http\Controllers\Public\PublicZonaIntegritasController;
+use App\Http\Controllers\Public\PublicSurveiController;
 use App\Models\Post;
 use App\Models\Achievement;
 
@@ -80,15 +82,23 @@ Route::get('/berita/{post:slug}', [PublicPostController::class, 'show'])->name('
 Route::get('/prestasi', [PublicAchievementController::class, 'index'])->name('prestasi.index');
 
 // PPID Publik
-Route::get('/ppid', [PublicAdditionalController::class, 'ppid'])->name('public.ppid.index');
-Route::get('/ppid/informasi/{slug}', [PublicAdditionalController::class, 'showJenis'])->name('public.ppid.show');
+Route::get('/ppid', [PublicPpidController::class, 'index'])->name('public.ppid.index');
+Route::get('/ppid/informasi/{slug}', [PublicPpidController::class, 'show'])->name('public.ppid.show');
 
-// Layanan Publik Lainnya
-Route::get('/zona-integritas', [PublicAdditionalController::class, 'zonaIntegritas'])->name('zona-integritas.index');
-Route::get('/alumni', [PublicAdditionalController::class, 'alumni'])->name('alumni.index');
-Route::get('/survei-kepuasan', [PublicAdditionalController::class, 'survei'])->name('survei.index');
-Route::post('/survei-kepuasan', [PublicAdditionalController::class, 'storeSurvei'])->name('survei.store');
-Route::get('/layanan-internal', [PublicAdditionalController::class, 'layanan'])->name('layanan.index');
+// Zona Integritas Publik
+Route::get('/zona-integritas', [PublicZonaIntegritasController::class, 'index'])->name('zona-integritas.index');
+
+// Survei Kepuasan Publik
+Route::get('/survei-kepuasan', [PublicSurveiController::class, 'index'])->name('survei.index');
+Route::post('/survei-kepuasan', [PublicSurveiController::class, 'store'])->name('survei.store');
+
+Route::get('/alumni', function () {
+    return Inertia::render('Public/Alumni/Index'); // Sesuaikan path jika berbeda
+})->name('alumni.index');
+
+Route::get('/layanan-internal', function () {
+    return Inertia::render('Public/Layanan/Index'); // Sesuaikan path jika berbeda
+})->name('layanan.index');
 
 
 // --- 3. KELOMPOK AUTH ---
