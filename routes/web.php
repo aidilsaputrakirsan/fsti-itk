@@ -4,17 +4,20 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Import Controllers
+// Import Controllers Admin
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\AchievementsController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SurveyCategoryController; 
-use App\Http\Controllers\PublicPostController;
-use App\Http\Controllers\PublicAchievementController;
-use App\Http\Controllers\PublicProfileController;
+
+// Import Controllers Public (Sudah Diupdate ke folder Public)
+use App\Http\Controllers\Public\PublicPostController;
+use App\Http\Controllers\Public\PublicAchievementController;
+use App\Http\Controllers\Public\PublicProfileController;
 use App\Http\Controllers\Public\PublicPpidController;
 use App\Http\Controllers\Public\PublicZonaIntegritasController;
 use App\Http\Controllers\Public\PublicSurveiController;
+
 use App\Models\Post;
 use App\Models\Achievement;
 
@@ -93,11 +96,11 @@ Route::get('/survei-kepuasan', [PublicSurveiController::class, 'index'])->name('
 Route::post('/survei-kepuasan', [PublicSurveiController::class, 'store'])->name('survei.store');
 
 Route::get('/alumni', function () {
-    return Inertia::render('Public/Alumni/Index'); // Sesuaikan path jika berbeda
+    return Inertia::render('Public/Alumni/Index');
 })->name('alumni.index');
 
 Route::get('/layanan-internal', function () {
-    return Inertia::render('Public/Layanan/Index'); // Sesuaikan path jika berbeda
+    return Inertia::render('Public/Layanan/Index'); 
 })->name('layanan.index');
 
 

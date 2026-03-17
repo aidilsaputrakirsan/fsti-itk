@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Public;
 
+use App\Http\Controllers\Controller; // Wajib ditambahkan
 use App\Models\Staff;
 use App\Models\StaticPage;
 use Illuminate\Http\Request;
