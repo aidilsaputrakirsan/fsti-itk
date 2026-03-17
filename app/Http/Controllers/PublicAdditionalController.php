@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\KategoriPpid;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use App\Models\ZiProfile;
 use App\Models\ZiDocument;
+use App\Models\SatisfactionSurvey;
 
 class PublicAdditionalController extends Controller
 {
+    // ==========================================
+    // MODUL PPID
+    // ==========================================
     public function ppid()
     {
         // Ambil semua kategori beserta dokumennya
@@ -48,7 +53,7 @@ class PublicAdditionalController extends Controller
         // Jika slug tidak cocok dengan data apapun, tampilkan 404
         if (!$jenisAsli) abort(404);
 
-        // 2. AMBIL DATA DENGAN URUTAN YANG BENAR
+        // AMBIL DATA DENGAN URUTAN YANG BENAR
         $kategoris = KategoriPpid::with(['dokumen'])
             ->where('jenis_informasi', $jenisAsli)
             ->orderBy('urutan', 'asc') // Menjamin Kategori tampil terurut (1, 2, 3)
@@ -60,6 +65,9 @@ class PublicAdditionalController extends Controller
         ]);
     }
 
+    // ==========================================
+    // MODUL ZONA INTEGRITAS
+    // ==========================================
     public function zonaIntegritas()
     {
         // Ambil profil ZI (jika belum ada, kembalikan objek kosong)
@@ -72,5 +80,32 @@ class PublicAdditionalController extends Controller
             'profile' => $profile,
             'documents' => $documents
         ]);
+    }
+
+    // ==========================================
+    // MODUL SURVEI KEPUASAN (SKM)
+    // ==========================================
+    public function survei()
+    {
+        return Inertia::render('Public/Survei/Index');
+    }
+
+    public function storeSurvei(Request $request)
+    {
+        // Validasi inputan dari form Vue
+        $validated = $request->validate([
+            'respondent_name' => 'nullable|string|max:255',
+            'respondent_email' => 'nullable|email|max:255',
+            'respondent_type' => 'required|string|max:255',
+            'service_category' => 'required|string|max:255',
+            'rating' => 'required|integer|min:1|max:5',
+            'feedback' => 'required|string',
+        ]);
+
+        // Simpan ke database
+        SatisfactionSurvey::create($validated);
+
+        // Kembalikan ke halaman form dengan pesan sukses
+        return redirect()->back()->with('success', 'Terima kasih atas partisipasi Anda!');
     }
 }
