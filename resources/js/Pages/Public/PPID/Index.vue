@@ -63,19 +63,19 @@ const getIcon = (jenis) => {
             background-image="/images/background-banner.png"
         />
 
-        <section class="bg-white pt-12 pb-6">
+        <section class="bg-white pt-12 pb-6 font-public-sans">
             <div class="relative py-8 md:py-10 overflow-hidden">
-                <div class="absolute inset-y-0 left-0 w-[95%] bg-[#CBDCEB] rounded-r-[4rem] md:rounded-r-[6rem] z-0"></div>
+                <div class="absolute inset-y-0 left-0 w-[95%] bg-primary/10 rounded-r-[4rem] md:rounded-r-[6rem] z-0"></div>
                 <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
                     <div class="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8">
                         <div class="md:w-1/5 flex-shrink-0">
-                            <div class="w-12 h-1 bg-[#133E87] mb-3"></div>
-                            <h2 class="text-3xl md:text-4xl font-kulim-park-bold text-[#133E87] leading-tight uppercase">
+                            <div class="w-12 h-1 bg-primary mb-3"></div>
+                            <h2 class="text-3xl md:text-4xl font-optimus font-bold text-primary leading-tight uppercase">
                                 Tentang<br />PPID
                             </h2>
                         </div>
-                        <div class="md:w-4/5 md:pl-6 md:border-l-2 border-[#4682A9]/30">
-                            <p class="text-base md:text-lg text-[#133E87] font-inter-semibold leading-relaxed text-justify m-0">
+                        <div class="md:w-4/5 md:pl-6 md:border-l-2 border-primary/30">
+                            <p class="text-base md:text-lg text-primary font-medium leading-relaxed text-justify m-0">
                                 Dalam rangka pelaksanaan keterbukaan informasi publik di lingkungan Institut Teknologi Kalimantan, Tim Pejabat Pengelola Informasi dan Dokumentasi (PPID) tingkat Fakultas dibentuk. Pembentukan ini bertujuan untuk mempermudah pengelolaan dan pelayanan informasi kepada masyarakat sesuai dengan ketentuan peraturan perundang-undangan.
                             </p>
                         </div>
@@ -84,11 +84,11 @@ const getIcon = (jenis) => {
             </div>
         </section>
 
-      <section class="bg-white pb-16 pt-8">
+      <section class="bg-white pb-16 pt-8 font-public-sans">
             <div class="container mx-auto px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl font-kulim-park-bold text-[#133E87]">Daftar Informasi Publik</h2>
-                    <p class="mt-3 text-gray-600 font-inter-semibold">Katalog informasi yang tersedia di Fakultas Sains dan Teknologi Informasi</p>
+                    <h2 class="text-3xl font-bold text-primary">Daftar Informasi Publik</h2>
+                    <p class="mt-3 text-gray-600 font-medium">Katalog informasi yang tersedia di Fakultas Sains dan Teknologi Informasi</p>
                 </div>
 
                 <div class="flex flex-wrap justify-center gap-8 max-w-6xl mx-auto px-4">
@@ -96,30 +96,30 @@ const getIcon = (jenis) => {
                         v-for="info in $page.props.jenisInformasi" 
                         :key="info.jenis"
                         :href="`/ppid/informasi/${info.slug}`"
-                        class="bg-white p-8 rounded-2xl shadow-sm border-t-4 border-[#4682A9] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 text-center group flex flex-col h-full w-full md:w-[calc(50%-2rem)] max-w-[420px]"
+                        class="bg-white p-8 rounded-2xl shadow-sm border-t-4 border-primary hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 text-center group flex flex-col h-full w-full md:w-[calc(50%-2rem)] max-w-[420px]"
                     >
                         <div 
-                            class="flex items-center justify-center w-20 h-20 bg-[#CBDCEB]/50 rounded-full mx-auto mb-6 text-[#133E87] group-hover:bg-[#133E87] group-hover:text-white transition-colors duration-300" 
+                            class="flex items-center justify-center w-20 h-20 bg-primary/50 rounded-full mx-auto mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300" 
                             v-html="getIcon(info.jenis)">
                         </div>
                         
-                        <h3 class="text-xl font-inter-bold text-[#133E87] mb-4 uppercase">Informasi {{ info.jenis }}</h3>
+                        <h3 class="text-xl font-bold text-primary mb-4 uppercase">Informasi {{ info.jenis }}</h3>
                         
                         <p class="text-gray-600 leading-relaxed flex-grow text-[15px]">
                             Kumpulan informasi publik yang masuk ke dalam klasifikasi {{ info.jenis }} di lingkungan Fakultas Sains dan Teknologi Informasi.
                         </p>
                         
                         <div class="flex items-center justify-center gap-3 mt-6 mb-8">
-                            <span class="text-xs font-inter-bold bg-[#CBDCEB]/60 text-[#133E87] px-3 py-1.5 rounded-md">
+                            <span class="text-xs font-bold bg-primary/20 text-primary px-3 py-1.5 rounded-md">
                                 {{ info.total_kategori }} Kategori
                             </span>
-                            <span class="text-xs font-inter-bold bg-[#4682A9]/10 text-[#4682A9] px-3 py-1.5 rounded-md">
+                            <span class="text-xs font-bold bg-primary/10 text-primary px-3 py-1.5 rounded-md">
                                 {{ info.total_dokumen }} Dokumen
                             </span>
                         </div>
 
                         <div class="mt-auto border-t border-gray-100 pt-6">
-                            <span class="inline-flex items-center justify-center w-full px-5 py-2.5 bg-gray-50 text-[#133E87] border border-gray-200 font-inter-bold text-sm rounded-lg group-hover:bg-[#133E87] group-hover:text-white group-hover:border-[#133E87] transition-all duration-300">
+                            <span class="inline-flex items-center justify-center w-full px-5 py-2.5 bg-gray-50 text-primary border border-gray-200 font-bold text-sm rounded-lg group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300">
                                 Lihat Selengkapnya
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -131,26 +131,26 @@ const getIcon = (jenis) => {
             </div>
         </section>
 
-        <section class="bg-white py-16 md:py-24">
+        <section class="bg-white py-16 md:py-24 font-public-sans">
             <div class="container mx-auto px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl font-kulim-park-bold text-[#133E87]">Layanan & Tata Cara</h2>
-                    <p class="mt-3 text-gray-600 font-inter-semibold">SOP Pengelolaan Informasi Publik dan Akses Formulir Layanan</p>
+                    <h2 class="text-3xl font-bold text-primary">Layanan & Tata Cara</h2>
+                    <p class="mt-3 text-gray-600 font-medium">SOP Pengelolaan Informasi Publik dan Akses Formulir Layanan</p>
                 </div>
 
                 <div class="max-w-5xl mx-auto mb-20">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-start relative">
-                        <div class="hidden md:block absolute top-8 left-0 w-full h-1 bg-[#CBDCEB] z-0"></div>
+                        <div class="hidden md:block absolute top-8 left-0 w-full h-1 bg-primary z-0"></div>
                         <div 
                             v-for="(alur, index) in alurLayanan" 
                             :key="alur.id"
                             class="flex flex-col items-center text-center p-4 w-full md:w-1/3 z-10"
                             :class="{ 'mt-8 md:mt-0': index > 0 }"
                         >
-                            <div class="w-16 h-16 rounded-full bg-[#133E87] text-white flex items-center justify-center text-2xl font-bold mb-6 border-4 border-white shadow-md relative z-10">
+                            <div class="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-bold mb-6 border-4 border-white shadow-md relative z-10">
                                 {{ index + 1 }}
                             </div>
-                            <h4 class="font-inter-bold text-[#133E87] text-lg mb-3">{{ alur.title }}</h4>
+                            <h4 class="font-bold text-primary text-lg mb-3">{{ alur.title }}</h4>
                             <p class="text-sm text-gray-600 leading-relaxed">{{ alur.description }}</p>
                         </div>
                     </div>
@@ -160,15 +160,15 @@ const getIcon = (jenis) => {
                     <div 
                         v-for="layanan in daftarLayanan" 
                         :key="layanan.id"
-                        class="bg-white border border-gray-200 p-8 rounded-xl shadow-sm hover:border-[#4682A9] hover:shadow-md transition-all flex flex-col items-center text-center"
+                        class="bg-white border border-gray-200 p-8 rounded-xl shadow-sm hover:border-primary hover:shadow-md transition-all flex flex-col items-center text-center"
                     >
-                        <div class="p-4 bg-blue-50 text-[#4682A9] rounded-full mb-5" v-html="layanan.icon"></div>
-                        <h3 class="text-xl font-inter-bold text-gray-900 mb-3">{{ layanan.title }}</h3>
+                        <div class="p-4 bg-blue-50 text-primary rounded-full mb-5" v-html="layanan.icon"></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">{{ layanan.title }}</h3>
                         <p class="text-gray-500 text-sm mb-8 flex-grow leading-relaxed">{{ layanan.description }}</p>
                         <a 
                             :href="layanan.actionLink"
                             target="_blank"
-                            class="w-full text-center py-3 px-6 bg-[#133E87] text-white hover:bg-[#0f306b] font-inter-semibold rounded-lg shadow-sm transition-colors"
+                            class="w-full text-center py-3 px-6 bg-primary text-white hover:bg-primary-hover font-semibold rounded-lg shadow-sm transition-colors"
                         >
                             {{ layanan.actionText }}
                         </a>
@@ -178,10 +178,3 @@ const getIcon = (jenis) => {
         </section>
     </PublicLayout>
 </template>
-
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kulim+Park:wght@600;700&display=swap');
-.font-kulim-park-bold { font-family: 'Kulim Park', sans-serif; font-weight: 700; }
-.font-inter-semibold { font-family: 'Inter', sans-serif; font-weight: 600; }
-.font-inter-bold { font-family: 'Inter', sans-serif; font-weight: 700; }
-</style>

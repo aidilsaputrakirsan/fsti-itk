@@ -18,6 +18,13 @@ export default {
                 'optimus': ['"Optimus Princeps"', 'serif'],
                 'public-sans': ['"Public Sans"', 'sans-serif'],
             },
+
+            colors: {
+                primary: {
+                    DEFAULT: '#2F4DD3', // Warna utama FSTI ITK
+                    hover: '##00509D',   // Warna lebih gelap untuk efek hover
+                }
+            }
         },
     },
 
