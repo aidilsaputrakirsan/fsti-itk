@@ -9,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="bg-[#CBD5E1] rounded-xl overflow-hidden border-2 border-[#133E87] shadow-lg">
+  <div class="bg-[#CBD5E1] rounded-xl overflow-hidden border-2 border-[#2F4DD3] shadow-lg">
     <div class="relative">
       
       <img 
@@ -27,7 +27,7 @@ defineProps<{
       </span>
     </div>
 
-    <div class="p-6 border-t-2 border-[#133E87]">
+    <div class="p-6 border-t-2 border-[#2F4DD3]">
       <h2 class="text-2xl font-bold text-black mb-3 leading-tight">
         {{ post.title }}
       </h2>
@@ -50,7 +50,7 @@ defineProps<{
         <span class="italic">{{ post.tags }}</span>
       </div>
       <div class="text-right mt-8">
-        <Link :href="route('berita.show', post.slug)" class="inline-block bg-[#133E87] text-white text-sm font-bold px-8 py-3 rounded-full hover:bg-opacity-90 transition-colors">
+        <Link :href="route('berita.show', post.slug)" class="inline-block bg-[#2F4DD3] text-white text-sm font-bold px-8 py-3 rounded-full hover:bg-opacity-90 transition-colors">
           Baca Selengkapnya
         </Link>
       </div>

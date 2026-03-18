@@ -182,7 +182,7 @@ onUnmounted(() => {
 
 <template>
     <header 
-        class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out bg-white/30 backdrop-blur-lg"
+        class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out bg-white/50 backdrop-blur-lg"
         :class="{ 'shadow-md': isScrolled }"
     >
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -205,7 +205,7 @@ onUnmounted(() => {
                             :is="item.sublinks || item.megaMenu ? 'button' : Link"
                             :href="item.href"
                             class="inline-flex items-center px-1 pt-1 text-sm font-bold transition-colors duration-200"
-                            :class="'text-[#133E87] hover:text-gray-200'"
+                            :class="'text-[#00509D] hover:text-gray-200'"
                         >
                             {{ item.name }}
                             <ChevronDown v-if="item.sublinks || item.megaMenu" class="ml-1 h-4 w-4" />
@@ -240,7 +240,7 @@ onUnmounted(() => {
                                  <div class="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
                                      <div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8 grid-cols-2">
                                          <div v-for="column in item.columns" :key="column.title">
-                                             <h3 class="text-sm font-medium tracking-wide text-gray-500 uppercase">{{ column.title }}</h3>
+                                             <h3 class="text-sm font-bold tracking-wide text-gray-500 uppercase">{{ column.title }}</h3>
                                              <ul role="list" class="mt-4 space-y-4">
                                                  <li v-for="link in column.links" :key="link.name" class="text-base">
                                                      <Link :href="link.href" class="text-gray-900 hover:text-blue-800 transition-colors duration-200">{{ link.name }}</Link>
