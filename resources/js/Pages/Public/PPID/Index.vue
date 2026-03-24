@@ -87,7 +87,7 @@ const getIcon = (jenis) => {
       <section class="bg-white pb-16 pt-8 font-public-sans">
             <div class="container mx-auto px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-primary">Daftar Informasi Publik</h2>
+                    <h2 class="text-3xl font-bold font-optimus text-primary">Daftar Informasi Publik</h2>
                     <p class="mt-3 text-gray-600 font-medium">Katalog informasi yang tersedia di Fakultas Sains dan Teknologi Informasi</p>
                 </div>
 
@@ -134,7 +134,7 @@ const getIcon = (jenis) => {
         <section class="bg-white py-16 md:py-24 font-public-sans">
             <div class="container mx-auto px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl font-bold text-primary">Layanan & Tata Cara</h2>
+                    <h2 class="text-3xl font-bold font-optimus text-primary">Layanan & Tata Cara</h2>
                     <p class="mt-3 text-gray-600 font-medium">SOP Pengelolaan Informasi Publik dan Akses Formulir Layanan</p>
                 </div>
 

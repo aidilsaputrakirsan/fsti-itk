@@ -100,7 +100,7 @@ const displayDocuments = props.documents || [];
         <section class="bg-white py-12 md:py-16 font-public-sans">
             <div class="max-w-7xl mx-auto px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <div class="w-16 h-1 bg-primary mx-auto mb-4"></div>
+                    <div class="w-16 h-1 bg-primary mx-auto mb-8"></div>
                     <h2 class="text-3xl md:text-4xl font-optimus font-bold text-primary uppercase mb-4">6 Area Perubahan ZI</h2>
                     <p class="text-gray-700 font-medium max-w-2xl mx-auto">Sasaran strategis dalam mewujudkan birokrasi yang bersih, akuntabel, dan pelayanan publik yang prima.</p>
                 </div>
@@ -129,7 +129,7 @@ const displayDocuments = props.documents || [];
         <section class="bg-white py-12 md:py-16 font-public-sans">
             <div class="max-w-5xl mx-auto px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <div class="w-16 h-1 bg-primary mx-auto mb-4"></div>
+                    <div class="w-16 h-1 bg-primary mx-auto mb-8"></div>
                     <h2 class="text-3xl md:text-4xl font-optimus font-bold text-primary uppercase mb-4">Dokumen Zona Integritas</h2>
                     <p class="text-gray-700 font-medium">Arsip dokumen, SK, dan bukti fisik pendukung pelaksanaan ZI di FSTI.</p>
                 </div>

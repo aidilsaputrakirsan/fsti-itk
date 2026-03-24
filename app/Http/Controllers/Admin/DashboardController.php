@@ -7,10 +7,9 @@ use App\Models\Post;
 use App\Models\Achievement;
 use App\Models\User;
 use App\Models\Staff;
-use App\Models\PpidDocument;
 use App\Models\AlumniTracer;
 use App\Models\SatisfactionSurvey;
-use App\Models\IntegrityZone;
+use App\Models\ZiDocument; // PERBAIKAN: Menggunakan Model ZiDocument
 use App\Models\InternalService;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -22,7 +21,7 @@ class DashboardController extends Controller
 
         $totalPpid = \App\Models\DokumenPpid::count();
         $totalKategoriPpid = \App\Models\KategoriPpid::count();
-        // === STATISTIK UTAMA (Cards) ===
+
         // === STATISTIK UTAMA (Cards) ===
         $stats = [
             'totalPosts' => Post::count(),
@@ -37,7 +36,7 @@ class DashboardController extends Controller
             'totalPpid' => $totalPpid,
             'totalKategoriPpid' => $totalKategoriPpid,
             'totalAlumni' => AlumniTracer::where('is_active', true)->count(),
-            'totalZonaIntegritas' => IntegrityZone::count(),
+            'totalZonaIntegritas' => ZiDocument::count(), // PERBAIKAN: Menghitung dari tabel dokumen ZI
             'totalLayanan' => InternalService::where('is_active', true)->count(),
         ];
 

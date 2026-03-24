@@ -203,13 +203,13 @@ onMounted(() => {
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
           <div class="lg:w-1/2 text-left">
-            <h2 class="text-4xl font-bold font-public-sans text-[#2F4DD3] about-title">
+            <h2 class="text-4xl font-bold font-optimus text-[#2F4DD3] about-title">
               Sekilas Tentang FSTI ITK
             </h2>
             <p class="mt-6 text-black text-base font-normal leading-relaxed about-text">
               FSTI terus berkembang sebagai pusat pendidikan dan inovasi di bidang sains dan teknologi, dengan berbagai jurusan, program studi, dan civitas akademika yang mendukung perjalanan belajar, kreativitas, dan prestasi mahasiswa kami.
             </p>
-            <div ref="aboutStatsRef" class="mt-2 grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div ref="aboutStatsRef" class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
               <div class="bg-[#2F4DD3] text-white p-4 rounded-lg shadow-sm text-center about-stat cursor-pointer">
                 <Building2 :size="28" class="mx-auto" />
                 <span class="block mt-2 text-3xl font-bold font-public-sans">2</span>
@@ -275,7 +275,7 @@ onMounted(() => {
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="flex justify-between items-center mb-12 achievement-header">
           <div>
-            <h2 class="text-5xl font-bold font-public-sans text-[#2F4DD3]">Prestasi Terbaru</h2>
+            <h2 class="text-5xl font-bold font-optimus text-[#2F4DD3]">Prestasi Terbaru</h2>
             <p class="mt-2 text-black text-base font-normal">Capaian membanggakan dari Mahasiswa FSTI ITK</p>
           </div>
           <Link :href="route('prestasi.index')" class="inline-flex items-center font-bold font-public-sans text-white bg-[#2F4DD3] border border-transparent rounded-full px-5 py-2 hover:bg-blue-700 transition-colors duration-300 shadow-sm">
@@ -301,7 +301,7 @@ onMounted(() => {
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="flex justify-between items-center mb-12 news-header">
           <div>
-            <h2 class="text-5xl font-bold font-public-sans text-[#2F4DD3]">Berita Terbaru</h2>
+            <h2 class="text-5xl font-bold font-optimus text-[#2F4DD3]">Berita Terbaru</h2>
             <p class="mt-2 text-black text-base font-normal">Informasi terkini seputar FSTI</p>
           </div>
           <Link :href="route('berita.index')" class="inline-flex items-center font-bold font-public-sans text-black bg-white border border-gray-300 rounded-full px-5 py-2 hover:bg-gray-100 transition-colors duration-300 shadow-sm">

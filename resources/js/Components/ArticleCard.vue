@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { Tag, Calendar, Eye, ImageIcon } from 'lucide-vue-next';
+import { Calendar, Eye, ImageIcon, ArrowRight } from 'lucide-vue-next';
 import type { Post } from '@/types';
 
 defineProps<{
@@ -9,49 +9,55 @@ defineProps<{
 </script>
 
 <template>
-  <div class="bg-[#CBD5E1] rounded-xl overflow-hidden border-2 border-[#2F4DD3] shadow-lg">
-    <div class="relative">
-      
-      <img 
-        v-if="post.image_url" 
-        class="w-full h-64 object-cover" 
-        :src="post.image_url" 
-        :alt="post.title"
-      >
-      <div v-else class="w-full h-64 bg-gray-200 flex items-center justify-center">
-        <ImageIcon class="w-16 h-16 text-black" />
-      </div>
+  <div class="bg-white rounded-2xl overflow-hidden border-t-4 border-primary border-x border-b border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group font-public-sans h-full">
+    
+    <div class="relative aspect-video overflow-hidden bg-gray-100">
+      <Link :href="route('berita.show', post.slug)" class="block w-full h-full">
+        <img 
+          v-if="post.image_url" 
+          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+          :src="post.image_url" 
+          :alt="post.title"
+        >
+        <div v-else class="w-full h-full flex items-center justify-center">
+          <ImageIcon class="w-12 h-12 text-gray-300" />
+        </div>
+      </Link>
 
-      <span v-if="post.category" class="absolute top-4 left-4 bg-white text-black text-sm font-semibold px-4 py-1 rounded-full shadow">
+      <span v-if="post.category" class="absolute top-3 left-3 bg-primary text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm uppercase tracking-wider">
         {{ post.category }}
       </span>
     </div>
 
-    <div class="p-6 border-t-2 border-[#2F4DD3]">
-      <h2 class="text-2xl font-bold text-black mb-3 leading-tight">
-        {{ post.title }}
-      </h2>
-      <div class="flex items-center text-sm text-black mb-4 space-x-6">
+    <div class="p-5 md:p-6 flex flex-col flex-grow">
+      <div class="flex items-center justify-between text-xs text-gray-500 mb-3 font-semibold">
         <div class="flex items-center">
-          <Calendar class="w-4 h-4 mr-2" />
-          <span>{{ new Date(post.published_at || post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) }}</span>
+          <Calendar class="w-3.5 h-3.5 mr-1.5 text-primary" />
+          <span>{{ new Date(post.published_at || post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) }}</span>
         </div>
         <div class="flex items-center">
-          <Eye class="w-4 h-4 mr-2" />
-          <span>{{ post.views }} dilihat</span>
+          <Eye class="w-3.5 h-3.5 mr-1.5 text-primary" />
+          <span>{{ post.views }}</span>
         </div>
       </div>
-      <p class="text-black text-base mb-5">
+
+      <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-3 leading-snug group-hover:text-primary transition-colors line-clamp-2">
+        <Link :href="route('berita.show', post.slug)">
+          {{ post.title }}
+        </Link>
+      </h3>
+      
+      <p class="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3 flex-grow">
         {{ post.excerpt }}
       </p>
-      <div v-if="post.tags" class="flex items-center text-sm text-black mb-6">
-        <Tag class="w-4 h-4 mr-2" />
-        <span class="font-semibold mr-2">Tags:</span>
-        <span class="italic">{{ post.tags }}</span>
-      </div>
-      <div class="text-right mt-8">
-        <Link :href="route('berita.show', post.slug)" class="inline-block bg-[#2F4DD3] text-white text-sm font-bold px-8 py-3 rounded-full hover:bg-opacity-90 transition-colors">
+
+      <div class="mt-auto border-t border-gray-100 pt-4">
+        <Link 
+            :href="route('berita.show', post.slug)" 
+            class="inline-flex items-center text-sm font-bold text-primary hover:text-primary-hover transition-colors"
+        >
           Baca Selengkapnya
+          <ArrowRight class="w-4 h-4 ml-1.5 transform group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
     </div>

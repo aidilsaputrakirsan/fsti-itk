@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Public;
 
-use App\Http\Controllers\Controller; // Wajib ditambahkan
+use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -10,30 +10,88 @@ use Inertia\Inertia;
 class PublicPostController extends Controller
 {
     /**
-     * Menampilkan halaman daftar berita publik dengan filter.
+     * Menampilkan halaman daftar berita publik.
      */
     public function index(Request $request)
     {
-        $query = Post::where('status', 'Terbitkan');
+        // AMBIL SEMUA KATEGORI (Agar dropdown di Vue terisi)
+        $categories = Post::where('status', 'Terbitkan')
+            ->whereNotNull('category')
+            ->where('category', '!=', '')
+            ->distinct()
+            ->pluck('category');
 
-        // Terapkan filter pencarian jika ada
-        if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+        // 1. JIKA USER SEDANG MENCARI ATAU MEMFILTER KATEGORI
+        if ($request->filled('search') || $request->filled('category')) {
+            $query = Post::where('status', 'Terbitkan');
+
+            // Filter berdasarkan kata kunci
+            if ($request->filled('search')) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('title', 'like', '%' . $request->search . '%')
+                      ->orWhere('excerpt', 'like', '%' . $request->search . '%');
+                });
+            }
+
+            // Filter berdasarkan kategori dropdown
+            if ($request->filled('category')) {
+                $query->where('category', $request->category);
+            }
+
+            $searchResults = $query->latest()->paginate(12)->withQueryString();
+
+            return Inertia::render('Public/Berita/Index', [
+                'isSearching' => true,
+                'searchResults' => $searchResults,
+                'categories' => $categories, // <-- INI YANG SEBELUMNYA TERLEWAT
+                'filters' => $request->only(['search', 'category']),
+            ]);
         }
 
-        // Terapkan filter kategori jika ada
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
-        }
+        // 2. JIKA HALAMAN AWAL (Tanpa filter/pencarian)
+        
+        // Headline (Berita Terpopuler)
+        $headline = Post::where('status', 'Terbitkan')
+            ->orderBy('views', 'desc')
+            ->latest()
+            ->first();
 
-        // Ambil data setelah difilter, urutkan, dan paginasi
-        $posts = $query->latest('published_at')->paginate(9)->withQueryString();
+        // Berita Terbaru di bawah Headline
+        $latestPosts = Post::where('status', 'Terbitkan')
+            ->when($headline, function ($query) use ($headline) {
+                return $query->where('id', '!=', $headline->id);
+            })
+            ->latest()
+            ->take(6)
+            ->get();
+
+        // Berita Terkelompok per Kategori
+        $groupedPosts = [];
+        foreach ($categories as $category) {
+            $posts = Post::where('status', 'Terbitkan')
+                ->where('category', $category)
+                ->when($headline, function ($query) use ($headline) {
+                    return $query->where('id', '!=', $headline->id);
+                })
+                ->latest()
+                ->take(3)
+                ->get();
+
+            if ($posts->isNotEmpty()) {
+                $groupedPosts[] = [
+                    'category_name' => $category,
+                    'posts' => $posts
+                ];
+            }
+        }
 
         return Inertia::render('Public/Berita/Index', [
-            'posts' => $posts,
-            'recentPosts' => Post::where('status', 'Terbitkan')->latest('published_at')->take(5)->get(),
-            'categories' => Post::where('status', 'Terbitkan')->distinct()->pluck('category')->all(),
-            'filters' => $request->only(['search', 'category']),
+            'isSearching' => false,
+            'headline' => $headline,
+            'latestPosts' => $latestPosts,
+            'groupedPosts' => $groupedPosts,
+            'categories' => $categories, // <-- INI YANG SEBELUMNYA TERLEWAT
+            'filters' => ['search' => '', 'category' => ''],
         ]);
     }
 
@@ -42,24 +100,27 @@ class PublicPostController extends Controller
      */
     public function show(Post $post)
     {
-        // Pastikan hanya berita yang sudah "Terbitkan" yang bisa diakses publik.
         if ($post->status !== 'Terbitkan') {
             abort(404);
         }
 
-        // Tambah jumlah 'views' setiap kali berita ini dilihat.
         $post->increment('views');
 
-        // PERBAIKAN: Ambil berita terbaru lainnya untuk sidebar
+        // Sidebar Berita Terbaru
         $recentPosts = Post::where('status', 'Terbitkan')
-            ->where('id', '!=', $post->id) // Kecualikan berita yang sedang dibaca
-            ->latest('published_at')
+            ->where('id', '!=', $post->id)
+            ->latest()
             ->take(5)
             ->get();
 
+        // Jika berita di database baru 1, munculkan berita itu sendiri agar tidak kosong
+        if ($recentPosts->isEmpty()) {
+            $recentPosts = Post::where('status', 'Terbitkan')->latest()->take(5)->get();
+        }
+
         return Inertia::render('Public/Berita/Show', [
             'post' => $post,
-            'recentPosts' => $recentPosts, // Kirim data berita terbaru ke view
+            'recentPosts' => $recentPosts,
         ]);
     }
 }
