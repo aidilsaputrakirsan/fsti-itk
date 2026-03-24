@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Models\Staff;
 use App\Models\AlumniTracer;
 use App\Models\SatisfactionSurvey;
-use App\Models\ZiDocument; // PERBAIKAN: Menggunakan Model ZiDocument
+use App\Models\ZiDocument;
 use App\Models\InternalService;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -18,7 +18,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-
         $totalPpid = \App\Models\DokumenPpid::count();
         $totalKategoriPpid = \App\Models\KategoriPpid::count();
 
@@ -36,7 +35,7 @@ class DashboardController extends Controller
             'totalPpid' => $totalPpid,
             'totalKategoriPpid' => $totalKategoriPpid,
             'totalAlumni' => AlumniTracer::where('is_active', true)->count(),
-            'totalZonaIntegritas' => ZiDocument::count(), // PERBAIKAN: Menghitung dari tabel dokumen ZI
+            'totalZonaIntegritas' => ZiDocument::count(),
             'totalLayanan' => InternalService::where('is_active', true)->count(),
         ];
 
@@ -83,12 +82,13 @@ class DashboardController extends Controller
                 'total' => $item->total
             ]);
 
-        // 5. Berita per Kategori
-        $postsByCategory = Post::select('category', DB::raw('count(*) as total'))
-            ->groupBy('category')
+        // 5. Berita per Kategori (DIPERBAIKI: Relasi ke tabel post_categories)
+        $postsByCategory = Post::join('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
+            ->select('post_categories.name as category_name', DB::raw('count(posts.id) as total'))
+            ->groupBy('post_categories.id', 'post_categories.name')
             ->get()
             ->map(fn($item) => [
-                'name' => $item->category ?? 'Lainnya',
+                'name' => $item->category_name,
                 'total' => $item->total
             ]);
 
@@ -134,11 +134,22 @@ class DashboardController extends Controller
 
         // === DATA UNTUK RECENT ACTIVITY ===
 
-        // Berita Terbaru
-        $recentPosts = Post::select('id', 'title', 'slug', 'category', 'status', 'views', 'published_at', 'created_at')
+        // Berita Terbaru (DIPERBAIKI: Relasi category string conversion)
+        $recentPosts = Post::with('category:id,name')
+            ->select('id', 'title', 'slug', 'post_category_id', 'status', 'views', 'published_at', 'created_at')
             ->orderByDesc('created_at')
             ->take(5)
-            ->get();
+            ->get()
+            ->map(fn($post) => [
+                'id' => $post->id,
+                'title' => $post->title,
+                'slug' => $post->slug,
+                'category' => $post->category->name ?? 'Lainnya',
+                'status' => $post->status,
+                'views' => $post->views,
+                'published_at' => $post->published_at,
+                'created_at' => $post->created_at,
+            ]);
 
         // Prestasi Terbaru
         $recentAchievements = Achievement::select('id', 'student_name', 'achievement_name', 'study_program', 'level', 'category', 'year', 'created_at')
@@ -152,12 +163,20 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Top Viewed Posts
-        $topViewedPosts = Post::select('id', 'title', 'slug', 'views', 'category')
+        // Top Viewed Posts (DIPERBAIKI: Relasi category string conversion)
+        $topViewedPosts = Post::with('category:id,name')
+            ->select('id', 'title', 'slug', 'views', 'post_category_id')
             ->where('status', 'Terbitkan')
             ->orderByDesc('views')
             ->take(5)
-            ->get();
+            ->get()
+            ->map(fn($post) => [
+                'id' => $post->id,
+                'title' => $post->title,
+                'slug' => $post->slug,
+                'views' => $post->views,
+                'category' => $post->category->name ?? 'Lainnya',
+            ]);
 
         return Inertia::render('Admin/Dashboard/Index', [
             'stats' => $stats,

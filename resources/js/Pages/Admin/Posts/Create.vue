@@ -20,11 +20,14 @@ import TextAlign from '@tiptap/extension-text-align';
 
 defineOptions({ layout: AdminLayout });
 
+const props = defineProps<{
+    categories: any[];
+}>();
+
 const form = useForm({
   title: '',
-  excerpt: '',
   content: '',
-  category: '',
+  post_category_id: '',
   tags: '',
   status: 'Draft',
   image: null as File | null,
@@ -112,20 +115,6 @@ const publishPost = () => {
               <p v-if="form.errors.title" class="mt-2 text-sm text-red-600">{{ form.errors.title }}</p>
             </div>
 
-            <!-- Ringkasan Berita -->
-            <label for="excerpt" class="pt-2 text-sm font-semibold text-black">Ringkasan Berita *</label>
-            <div>
-              <textarea
-                id="excerpt"
-                v-model="form.excerpt"
-                placeholder="Tulis ringkasan berita yang akan ditampilkan pada beranda"
-                rows="3"
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                required
-              ></textarea>
-              <p v-if="form.errors.excerpt" class="mt-2 text-sm text-red-600">{{ form.errors.excerpt }}</p>
-            </div>
-
             <!-- Isi Konten (Rich Text Editor) -->
             <label for="content" class="pt-2 text-sm font-semibold text-black">Isi Konten Berita *</label>
             <div>
@@ -185,20 +174,22 @@ const publishPost = () => {
             </div>
 
             <!-- Kategori -->
-            <label for="category" class="pt-2 text-sm font-semibold text-black">Kategori *</label>
+            <label for="post_category_id" class="pt-2 text-sm font-semibold text-black">Kategori *</label>
             <div>
               <select
-                id="category"
-                v-model="form.category"
+                id="post_category_id"
+                v-model="form.post_category_id"
                 class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition-colors"
                 required
               >
                 <option value="" disabled>Pilih kategori berita</option>
-                <option value="Prestasi">Prestasi</option>
-                <option value="Liputan Kegiatan">Liputan Kegiatan</option>
-                <option value="Kerjasama">Kerjasama</option>
+                
+                <option v-for="category in categories" :key="category.id" :value="category.id">
+                    {{ category.name }}
+                </option>
+                
               </select>
-              <p v-if="form.errors.category" class="mt-2 text-sm text-red-600">{{ form.errors.category }}</p>
+              <p v-if="form.errors.post_category_id" class="mt-2 text-sm text-red-600">{{ form.errors.post_category_id }}</p>
             </div>
 
             <!-- Tags -->

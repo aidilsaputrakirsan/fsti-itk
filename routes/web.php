@@ -8,7 +8,8 @@ use Inertia\Inertia;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\AchievementsController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\SurveyCategoryController; 
+use App\Http\Controllers\Admin\SurveyCategoryController;
+use App\Http\Controllers\Admin\PostCategoryController;
 
 // Import Controllers Public (Sudah Diupdate ke folder Public)
 use App\Http\Controllers\Public\PublicPostController;
@@ -65,6 +66,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('/internal-services', \App\Http\Controllers\Admin\InternalServiceController::class);
     Route::resource('/static-pages', \App\Http\Controllers\Admin\StaticPageController::class)->only(['index', 'edit', 'update']);
     Route::resource('/staff', \App\Http\Controllers\Admin\StaffController::class);
+
+    Route::resource('post-categories', PostCategoryController::class)->except(['show']);
 });
 
 
@@ -100,7 +103,7 @@ Route::get('/alumni', function () {
 })->name('alumni.index');
 
 Route::get('/layanan-internal', function () {
-    return Inertia::render('Public/Layanan/Index'); 
+    return Inertia::render('Public/Layanan/Index');
 })->name('layanan.index');
 
 

@@ -27,7 +27,8 @@ const navigation = [
         href: null,
         icon: NewspaperIcon, 
         children: [
-            { name: 'Kelola Berita', href: '/admin/posts' }
+            { name: 'Kelola Berita', href: '/admin/posts' },
+            { name: 'Kelola Kategori Berita', href: '/admin/post-categories' },
         ] 
     },
     { 

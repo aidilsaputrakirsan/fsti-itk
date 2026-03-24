@@ -11,7 +11,7 @@ import {
     LinkIcon,
     ArrowLeftIcon,
     PencilSquareIcon,
-    XMarkIcon, // <-- Tambahkan ikon X
+    XMarkIcon,
 } from '@heroicons/vue/24/outline';
 
 // Import Tiptap
@@ -23,25 +23,28 @@ import TextAlign from '@tiptap/extension-text-align';
 
 defineOptions({ layout: AdminLayout });
 
+// PERBAIKAN: Format Typescript yang benar untuk Props
 const props = defineProps<{
   post: {
     id: number;
     title: string;
-    excerpt: string;
     content: string;
-    category: string;
+    post_category_id: number; // Excerpt dihapus, category diubah jadi id
     tags: string;
     status: string;
     image_url?: string;
-  }
+  };
+  categories: {
+    id: number;
+    name: string;
+  }[]; // Menampung data kategori dari database
 }>();
 
 const form = useForm({
   _method: 'PUT',
   title: props.post.title,
-  excerpt: props.post.excerpt,
   content: props.post.content,
-  category: props.post.category,
+  post_category_id: props.post.post_category_id,
   tags: props.post.tags,
   status: props.post.status,
   image: null as File | null,
@@ -69,7 +72,6 @@ const editor = useEditor({
 const imagePreview = ref<string | null>(props.post.image_url ?? null);
 const temporaryImageUrl = ref<string | null>(null);
 
-// PERBAIKAN: State untuk mengontrol modal
 const showImageModal = ref(false);
 
 function handleImageChange(event: Event) {
@@ -78,7 +80,6 @@ function handleImageChange(event: Event) {
     const file = target.files[0];
     form.image = file;
 
-    // Hapus object URL lama jika ada untuk mencegah memory leak
     if (temporaryImageUrl.value) {
         URL.revokeObjectURL(temporaryImageUrl.value);
     }
@@ -107,7 +108,6 @@ const setLink = () => {
   editor.value.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
 };
 
-// PERBAIKAN: Fungsi untuk membuka dan menutup modal
 const openImageModal = () => {
     if (imagePreview.value) {
         showImageModal.value = true;
@@ -116,7 +116,6 @@ const openImageModal = () => {
 const closeImageModal = () => {
     showImageModal.value = false;
 };
-
 
 onBeforeUnmount(() => {
   editor.value?.destroy();
@@ -127,7 +126,6 @@ onUnmounted(() => {
         URL.revokeObjectURL(temporaryImageUrl.value);
     }
 });
-
 
 const updatePost = () => {
   form.post(route('admin.posts.update', props.post.id));
@@ -149,12 +147,6 @@ const updatePost = () => {
             <div>
                 <input type="text" id="title" v-model="form.title" class="block w-full rounded-md border-gray-300 shadow-sm" required />
                 <p v-if="form.errors.title" class="mt-2 text-sm text-red-600">{{ form.errors.title }}</p>
-            </div>
-
-            <label for="excerpt" class="pt-2 text-sm font-semibold text-black">Ringkasan Berita *</label>
-            <div>
-                <textarea id="excerpt" v-model="form.excerpt" rows="3" class="block w-full rounded-md border-gray-300 shadow-sm" required></textarea>
-                <p v-if="form.errors.excerpt" class="mt-2 text-sm text-red-600">{{ form.errors.excerpt }}</p>
             </div>
 
             <label for="content" class="pt-2 text-sm font-semibold text-black">Isi Konten Berita *</label>
@@ -200,15 +192,15 @@ const updatePost = () => {
               <p v-if="form.errors.content" class="mt-2 text-sm text-red-600">{{ form.errors.content }}</p>
             </div>
             
-            <label for="category" class="pt-2 text-sm font-semibold text-black">Kategori *</label>
+            <label for="post_category_id" class="pt-2 text-sm font-semibold text-black">Kategori *</label>
             <div>
-                <select id="category" v-model="form.category" class="block w-full rounded-md border-gray-300 shadow-sm" required>
-                    <option value="" disabled>Pilih kategori</option>
-                    <option>Prestasi</option>
-                    <option>Liputan Kegiatan</option>
-                    <option>Kerjasama</option>
+                <select id="post_category_id" v-model="form.post_category_id" class="block w-full rounded-md border-gray-300 shadow-sm" required>
+                    <option value="" disabled>Pilih kategori berita</option>
+                    <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                        {{ cat.name }}
+                    </option>
                 </select>
-                <p v-if="form.errors.category" class="mt-2 text-sm text-red-600">{{ form.errors.category }}</p>
+                <p v-if="form.errors.post_category_id" class="mt-2 text-sm text-red-600">{{ form.errors.post_category_id }}</p>
             </div>
 
             <label for="tags" class="pt-2 text-sm font-semibold text-black">Tags</label>
@@ -220,14 +212,13 @@ const updatePost = () => {
             <label for="status" class="pt-2 text-sm font-semibold text-black">Status *</label>
             <div>
                 <select id="status" v-model="form.status" class="block w-full rounded-md border-gray-300 shadow-sm">
-                    <option>Draft</option>
-                    <option>Terbitkan</option>
+                    <option value="Draft">Draft</option>
+                    <option value="Terbitkan">Terbitkan</option>
                 </select>
             </div>
             
             <label for="image" class="pt-2 text-sm font-semibold text-black">Gambar</label>
             <div>
-              <!-- PERBAIKAN: Pratinjau gambar sekarang bisa diklik -->
               <div v-if="imagePreview" class="mb-4">
                 <img 
                     :src="imagePreview" 
@@ -274,7 +265,6 @@ const updatePost = () => {
     </div>
   </div>
 
-  <!-- PERBAIKAN: Tambahkan Modal untuk Pratinjau Gambar Penuh -->
   <Teleport to="body">
     <div v-if="showImageModal" @keydown.escape="closeImageModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75 transition-opacity">
       <div class="relative w-full max-w-4xl max-h-[90vh]" @click.stop>
@@ -288,30 +278,9 @@ const updatePost = () => {
 </template>
 
 <style>
-/* Gaya Tiptap Editor */
-.ProseMirror {
-  outline: none;
-}
-.toolbar-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-.toolbar-button:hover {
-  background-color: #e5e7eb;
-}
-.toolbar-button.is-active {
-  background-color: #d1d5db;
-}
-.toolbar-divider {
-    width: 1px;
-    height: 20px;
-    background-color: #d1d5db;
-    margin: 0 8px;
-}
+.ProseMirror { outline: none; }
+.toolbar-button { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 4px; transition: background-color 0.2s; }
+.toolbar-button:hover { background-color: #e5e7eb; }
+.toolbar-button.is-active { background-color: #d1d5db; }
+.toolbar-divider { width: 1px; height: 20px; background-color: #d1d5db; margin: 0 8px; }
 </style>
-
