@@ -160,6 +160,9 @@ const publishPost = () => {
                  <button @click="applyFormat('setTextAlign', 'right')" type="button" :class="{ 'is-active': editor.isActive({ textAlign: 'right' }) }" class="toolbar-button">
                   <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 4h18v2H3V4zm9 7h9v2h-9v-2zm-9 7h18v2H3v-2z"/></svg>
                 </button>
+                <button @click="applyFormat('setTextAlign', 'justify')" type="button" :class="{ 'is-active': editor.isActive({ textAlign: 'justify' }) }" class="toolbar-button" title="Rata Kiri Kanan">
+  <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 4h18v2H3V4zm0 5h18v2H3V9zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
+</button>
                 <div class="toolbar-divider"></div>
                 <button @click="applyFormat('undo')" type="button" :disabled="!editor.can().undo()" class="toolbar-button">
                    <ArrowUturnLeftIcon class="h-5 w-5"/>

@@ -122,6 +122,8 @@ class PostController extends Controller
         // LOGIKA EXCERPT OTOMATIS
         $validatedData['excerpt'] = Str::limit(strip_tags(html_entity_decode($request->content)), 150);
 
+        $validatedData['views'] = 0;
+
         $post->update($validatedData);
 
         return redirect()->route('admin.posts.index')->with('success', 'Berita berhasil diperbarui.');

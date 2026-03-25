@@ -4,7 +4,6 @@ import {
     MagnifyingGlassIcon, 
     PlusIcon, 
     FunnelIcon,
-    // PERUBAHAN: ChevronDownIcon tidak lagi digunakan, namun kita biarkan di sini jika diperlukan lagi
     ChevronDownIcon,
     EyeIcon,
     PencilSquareIcon,
@@ -23,7 +22,7 @@ const props = defineProps<{
         data: Array<{
             id: number;
             title: string;
-            category: string;
+            category: any; // PERBAIKAN: Diubah menjadi 'any' karena data dari backend berupa object
             created_at: string;
             status: 'Terbitkan' | 'Draft';
             views: number;
@@ -33,7 +32,6 @@ const props = defineProps<{
             label: string;
             active: boolean;
         }>;
-        // PERUBAHAN: Menambahkan tipe data untuk informasi paginasi
         from: number;
         to: number;
         total: number;
@@ -112,7 +110,6 @@ const formatDate = (datetime: string) => {
             </Link>
         </div>
 
-        <!-- Panel Aksi (Search & Filter) -->
         <div class="flex items-center justify-between gap-4 mb-6">
             <div class="relative flex-grow">
                 <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -134,7 +131,6 @@ const formatDate = (datetime: string) => {
             </div>
         </div>
 
-        <!-- Tabel -->
         <div class="bg-white shadow-sm p-6 rounded-lg">
             <h3 class="text-lg font-semibold text-black mb-4">Daftar Berita</h3>
             
@@ -154,7 +150,9 @@ const formatDate = (datetime: string) => {
                         <tr v-if="props.posts.data.length > 0" v-for="post in props.posts.data" :key="post.id" class="hover:bg-gray-50">
                             <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-black">{{ post.title }}</td>
                             <td class="whitespace-nowrap px-6 py-4 text-sm">
-                                <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">{{ post.category }}</span>
+                                <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
+                                    {{ post.category?.name ?? post.category }}
+                                </span>
                             </td>
                             <td class="whitespace-nowrap px-6 py-4 text-sm text-black">{{ formatDate(post.created_at) }}</td>
                             <td class="whitespace-nowrap px-6 py-4 text-sm">
@@ -184,9 +182,7 @@ const formatDate = (datetime: string) => {
                 </table>
             </div>
 
-            <!-- Paginasi -->
             <div class="flex items-center justify-between mt-4">
-                <!-- PERUBAHAN: Menampilkan informasi jumlah data -->
                 <p v-if="props.posts.total > 0" class="text-sm text-black">
                     Menampilkan
                     <span class="font-medium">{{ props.posts.from }}</span>
@@ -215,7 +211,6 @@ const formatDate = (datetime: string) => {
         </div>
     </div>
 
-    <!-- Modal Konfirmasi Hapus -->
     <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
         <div class="w-full max-w-md rounded-lg bg-white p-8 shadow-2xl">
             <div class="flex flex-col items-center text-center">
@@ -239,7 +234,6 @@ const formatDate = (datetime: string) => {
         </div>
     </div>
     
-    <!-- Notifikasi Sukses (Toast) -->
     <div v-if="showNotification" class="fixed top-5 right-5 z-50 transition-transform duration-300 ease-in-out">
         <div class="flex items-center gap-4 rounded-lg bg-green-600 p-4 text-white shadow-lg">
             <CheckCircleIcon class="h-8 w-8" />

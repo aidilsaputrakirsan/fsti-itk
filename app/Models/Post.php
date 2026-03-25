@@ -13,6 +13,7 @@ class Post extends Model
         'title',
         'slug',
         'content',
+        'excerpt',
         'post_category_id',
         'tags',
         'status',
@@ -27,6 +28,9 @@ class Post extends Model
         return $this->belongsTo(PostCategory::class, 'post_category_id');
     }
 
+    /**
+     * Accessor untuk image_url
+     */
     public function getImageUrlAttribute(): ?string
     {
         return $this->image_path ? asset('storage/' . $this->image_path) : null;
