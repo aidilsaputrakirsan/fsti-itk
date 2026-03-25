@@ -73,8 +73,17 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
 // --- 2. KELOMPOK ROUTE PUBLIK ---
 Route::get('/', function () {
-    $latestPosts = Post::where('category', '!=', 'Prestasi')->where('status', 'Terbitkan')->latest('published_at')->take(3)->get();
+    // PERBAIKAN: Menggunakan Join untuk mengecek nama kategori dari tabel post_categories
+    $latestPosts = Post::select('posts.*', 'post_categories.name as category')
+        ->leftJoin('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
+        ->where('post_categories.name', '!=', 'Prestasi') // Mengecualikan kategori Prestasi
+        ->where('posts.status', 'Terbitkan')
+        ->latest('posts.published_at')
+        ->take(3)
+        ->get();
+
     $latestAchievements = Achievement::latest()->take(3)->get();
+
     return Inertia::render('Home', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
