@@ -28,7 +28,6 @@ const form = useForm({
   title: '',
   content: '',
   post_category_id: '',
-  tags: '',
   status: 'Draft',
   image: null as File | null,
 });
@@ -192,18 +191,6 @@ const publishPost = () => {
               <p v-if="form.errors.post_category_id" class="mt-2 text-sm text-red-600">{{ form.errors.post_category_id }}</p>
             </div>
 
-            <!-- Tags -->
-            <label for="tags" class="pt-2 text-sm font-semibold text-black">Tags</label>
-            <div>
-                <textarea
-                    id="tags"
-                    rows="2"
-                    v-model="form.tags"
-                    placeholder="Masukkan kata kunci terkait berita untuk memudahkan pencarian, pisahkan dengan koma. Contoh: Workshop, AI, Kerjasama"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 placeholder:text-sm"
-                ></textarea>
-                <p v-if="form.errors.tags" class="mt-2 text-sm text-red-600">{{ form.errors.tags }}</p>
-            </div>
             
             <!-- Status -->
             <label for="status" class="pt-2 text-sm font-semibold text-black">Status *</label>

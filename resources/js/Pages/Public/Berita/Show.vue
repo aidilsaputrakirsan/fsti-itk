@@ -111,9 +111,9 @@ const formatDate = (dateString: string | null) => {
                                 </div>
                             </header>
 
-                            <figure v-if="post.image_url" class="mb-12 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 group" data-aos="zoom-in">
-                                <img :src="post.image_url" :alt="post.title" class="w-full h-auto max-h-[500px] object-cover group-hover:scale-105 transition-transform duration-700">
-                            </figure>
+                           <figure v-if="post.image_url" class="mb-12 text-center" data-aos="zoom-in">
+    <img :src="post.image_url" :alt="post.title" class="max-w-full h-auto max-h-[700px] mx-auto rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+</figure>
 
                             <div 
                                 class="prose prose-lg md:prose-xl max-w-none 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onUnmounted, ref } from 'vue';
+import { onBeforeUnmount, onUnmounted, ref, computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useForm, Link } from '@inertiajs/vue3';
 import { 
@@ -23,21 +23,20 @@ import TextAlign from '@tiptap/extension-text-align';
 
 defineOptions({ layout: AdminLayout });
 
-// PERBAIKAN: Format Typescript yang benar untuk Props
 const props = defineProps<{
   post: {
     id: number;
     title: string;
     content: string;
-    post_category_id: number; // Excerpt dihapus, category diubah jadi id
-    tags: string;
+    post_category_id: number;
     status: string;
     image_url?: string;
+    category?: { id: number; name: string };
   };
   categories: {
     id: number;
     name: string;
-  }[]; // Menampung data kategori dari database
+  }[];
 }>();
 
 const form = useForm({
@@ -45,9 +44,8 @@ const form = useForm({
   title: props.post.title,
   content: props.post.content,
   post_category_id: props.post.post_category_id,
-  tags: props.post.tags,
   status: props.post.status,
-  image: null as File | null,
+  image: null as File | null, // Diperbaiki: Hanya menerima File atau null agar TS tidak error
 });
 
 // Inisialisasi Tiptap dengan konten dari props
@@ -71,8 +69,15 @@ const editor = useEditor({
 
 const imagePreview = ref<string | null>(props.post.image_url ?? null);
 const temporaryImageUrl = ref<string | null>(null);
-
 const showImageModal = ref(false);
+
+// Fungsi computed untuk menampilkan nama file dengan aman
+const fileNameDisplay = computed(() => {
+    if (form.image instanceof File) {
+        return form.image.name;
+    }
+    return 'Pilih gambar baru (opsional)';
+});
 
 function handleImageChange(event: Event) {
   const target = event.target as HTMLInputElement;
@@ -203,12 +208,6 @@ const updatePost = () => {
                 <p v-if="form.errors.post_category_id" class="mt-2 text-sm text-red-600">{{ form.errors.post_category_id }}</p>
             </div>
 
-            <label for="tags" class="pt-2 text-sm font-semibold text-black">Tags</label>
-            <div>
-                <textarea id="tags" v-model="form.tags" rows="2" class="block w-full rounded-md border-gray-300 shadow-sm"></textarea>
-                <p v-if="form.errors.tags" class="mt-2 text-sm text-red-600">{{ form.errors.tags }}</p>
-            </div>
-
             <label for="status" class="pt-2 text-sm font-semibold text-black">Status *</label>
             <div>
                 <select id="status" v-model="form.status" class="block w-full rounded-md border-gray-300 shadow-sm">
@@ -230,7 +229,7 @@ const updatePost = () => {
               <div class="relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2">
                   <PaperClipIcon class="h-5 w-5 text-gray-400" />
                   <span class="ml-3 text-sm" :class="{'text-gray-400': !form.image, 'text-black': form.image}">
-                    {{ form.image ? form.image.name : 'Pilih gambar baru (opsional)' }}
+                    {{ fileNameDisplay }}
                   </span>
                   <input
                       type="file"

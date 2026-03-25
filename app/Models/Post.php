@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Post extends Model
 {
@@ -30,10 +29,6 @@ class Post extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        if ($this->image_path && Storage::disk('public')->exists($this->image_path)) {
-            return Storage::disk('public')->url($this->image_path);
-        }
-
-        return null;
+        return $this->image_path ? asset('storage/' . $this->image_path) : null;
     }
 }
