@@ -6,9 +6,9 @@ import { router, Link, Head } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import AchievementCard from '@/Components/AchievementCard.vue';
-
 // Icons
 import { Trophy, Award, Search, FileWarning, Medal, Star, Send, ChevronDown } from 'lucide-vue-next';
+import { RefreshCw } from 'lucide-vue-next'; 
 
 // Import AOS untuk animasi
 import AOS from 'aos';
@@ -125,6 +125,15 @@ const applyFilters = () => {
         replace: true,
         onFinish: () => { AOS.refresh(); } 
     });
+    };
+
+    const resetFilters = () => {
+    search.value = '';
+    selectedYear.value = '';
+    selectedLevel.value = '';
+    selectedCategory.value = '';
+    applyFilters();
+
 };
 </script>
 
@@ -218,6 +227,9 @@ const applyFilters = () => {
                             </button>
                         </div>
 
+                        <div class="flex items-center gap-3">
+      </div>
+
                         <div class="hidden sm:block w-px h-8 bg-gray-200 mt-1"></div>
 
                         <div class="relative w-full sm:w-1/3 pr-0 md:pr-1">
@@ -230,6 +242,21 @@ const applyFilters = () => {
             </section>
 
             <section class="max-w-[95%] xl:max-w-[100rem] mx-auto px-4 xl:px-8 mb-24 min-h-[400px]">
+                
+                <div v-if="search || selectedCategory || selectedLevel || selectedYear" class="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-aos="fade-up">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800 flex items-center flex-wrap gap-x-1">
+                        <div class="w-1.5 h-6 bg-primary mr-3 rounded-full hidden sm:block shrink-0"></div>
+                        <span>Hasil filter: </span>
+                        <span v-if="search" class="text-primary">"{{ search }}"</span>
+                        <span v-if="selectedCategory" class="text-primary">Kategori "{{ selectedCategory }}"</span>
+                        <span v-if="selectedLevel" class="text-primary">Tingkat "{{ selectedLevel }}"</span>
+                        <span v-if="selectedYear" class="text-primary">Tahun "{{ selectedYear }}"</span>
+                    </h3>
+                    
+                    <button @click="resetFilters" class="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl transition-colors self-start sm:self-auto shrink-0">
+                        Reset Filter
+                    </button>
+                </div>
                 <div v-if="achievements.data.length > 0">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
                         <div

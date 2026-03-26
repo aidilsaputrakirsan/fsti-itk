@@ -16,7 +16,7 @@ class PublicAchievementController extends Controller
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('student_name', 'like', '%' . $request->search . '%');
+                    ->orWhere('student_name', 'like', '%' . $request->search . '%');
             });
         }
         if ($request->filled('category')) {
@@ -31,15 +31,16 @@ class PublicAchievementController extends Controller
 
         $achievements = $query->orderByDesc('year')->latest()->paginate(12)->withQueryString()->through(fn ($item) => [
             'id' => $item->id,
-            'title' => $item->title,
-            'student_name' => $item->student_name,
-            'study_program' => $item->study_program ?? '-',
+            'student_name' => $item->student_name,            // Ubah baris di bawah ini agar mereturn null jika tidak ada, bukan '-'
+            'study_program' => $item->study_program, 
+            'achievement_name' => $item->title, 
+            'organizer' => $item->organizer ?? 'FSTI ITK', 
             'level' => $item->level,
-            'event_name' => $item->organizer ?? 'FSTI ITK',
-            'date' => $item->year . '-01-01',
-            'image_url' => $item->image_url,
+            'category' => $item->category,
+            'year' => $item->year,
+            'photo_url' => $item->image_path ? asset('storage/' . $item->image_path) : null,
         ]);
-
+        
         $stats = [
             'total_all_time' => Achievement::count(),
             'international' => Achievement::where('level', 'Internasional')->count(),

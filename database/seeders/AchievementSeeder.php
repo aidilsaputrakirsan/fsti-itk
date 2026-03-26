@@ -35,8 +35,8 @@ class AchievementSeeder extends Seeder
                 'image_path' => 'prestasi/silat.png'
             ],
             [
-                'student_name' => "(Tim Recraft)\nMuhammad Raflie Noor Risqi\nTri Wahyuni\nAchmad Zaki Zaidan",
-                'student_nim' => "10221018\n10221032\n10231002",
+                'student_name' => "Tim Recraft",
+                'student_nim' => null,
                 'study_program' => 'Sistem Informasi',
                 'title' => 'Juara 2 Lomba Teknologi Tepat Guna (TTG) Unggulan',
                 'category' => 'Akademik',
@@ -68,8 +68,8 @@ class AchievementSeeder extends Seeder
                 'image_path' => 'prestasi/koni-bayan.png'
             ],
             [
-                'student_name' => "(Tim Himawari)\nAhmad Daffa Alfattah\nAndini Permata Dewanti\nNazwa Amelia Zahra",
-                'student_nim' => "10231008\n10231014\n10231068",
+                'student_name' => "Tim Himawari",
+                'student_nim' => null,
                 'study_program' => 'Sistem Informasi',
                 'title' => 'Juara Harapan 2 UI/UX Competition Technotainment',
                 'category' => 'Akademik',
@@ -112,8 +112,8 @@ class AchievementSeeder extends Seeder
                 'image_path' => 'prestasi/uiux-itfest.png'
             ],
             [
-                'student_name' => "(Tim Sugar Monster)\nMahardika Arka\nOlivia Dafina",
-                'student_nim' => "11231037\n11231077",
+                'student_name' => "Tim Sugar Monster",
+                'student_nim' => null,
                 'study_program' => 'Informatika',
                 'title' => 'Juara 3 AI Hackathon Technoart 2025',
                 'category' => 'Akademik',
@@ -123,8 +123,8 @@ class AchievementSeeder extends Seeder
                 'image_path' => 'prestasi/technoart.png'
             ],
             [
-                'student_name' => "(Tim Medisense ITK)\nMuhammad Fajar Rivaldi\nErnayanti",
-                'student_nim' => "04221001\n18231026",
+                'student_name' => "Tim Medisense ITK",
+                'student_nim' => null,
                 'study_program' => "Teknik Elektro\nRekayasa Keselamatan",
                 'title' => 'Juara 2 Kategori Mahasiswa Techno Competition',
                 'category' => 'Akademik',
@@ -134,7 +134,7 @@ class AchievementSeeder extends Seeder
                 'image_path' => 'prestasi/techno-dies.png'
             ],
             [
-                'student_name' => "(Tim Blessplast)\nMarion Jodhy Kusuma Parenta\nBilly Michael Octavian Tandi\nAustin Miles\nAlan Marippi\nYacub William Prasetyo",
+                'student_name' => "Tim Blessplast",
                 'student_nim' => null,
                 'study_program' => 'Teknik Material Metalurgi',
                 'title' => 'Pemenang Pendanaan PFMuda Kategori Ideation',
@@ -145,8 +145,8 @@ class AchievementSeeder extends Seeder
                 'image_path' => 'prestasi/pfmuda.png'
             ],
             [
-                'student_name' => "(Tim KidUp)\n\nGibran Ivantry Dilma\nMohammad Qudus\nZahra Elycia Armans",
-                'student_nim' => "10221006\n10221048\n10221076",
+                'student_name' => "Tim KidUp",
+                'student_nim' => null,
                 'study_program' => 'Sistem Informasi',
                 'title' => 'Best Essay Compassionate Gamification Challenge 2025',
                 'category' => 'Akademik',
@@ -167,8 +167,8 @@ class AchievementSeeder extends Seeder
                 'image_path' => 'prestasi/etam-ship.png'
             ],
             [
-                'student_name' => "(Tim KidUp)\n\nGibran Ivantry Dilma\nMohammad Qudus\nZahra Elycia Armans",
-                'student_nim' => "10221006\n10221048\n10221076",
+                'student_name' => "Tim KidUp",
+                'student_nim' => null,
                 'study_program' => 'Sistem Informasi',
                 'title' => 'Juara 1 Business Model Competition',
                 'category' => 'Non-Akademik',
@@ -222,8 +222,8 @@ class AchievementSeeder extends Seeder
                 'image_path' => 'prestasi/aktuaria.png'
             ],
             [
-                'student_name' => "(Tim KidUp)\n\nGibran Ivantry Dilma\nMohammad Qudus\nZahra Elycia Armans",
-                'student_nim' => "10221006\n10221048\n10221076",
+                'student_name' => "Tim KidUp",
+                'student_nim' => null,
                 'study_program' => 'Sistem Informasi',
                 'title' => 'Juara 1 UI/UX Competition FTI Fest UKDW 2025',
                 'category' => 'Akademik',
