@@ -283,14 +283,19 @@ onMounted(() => {
             <ArrowRight class="ml-2 h-4 w-4" />
           </Link>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 -mt-10">
-          <AchievementCard 
-            v-for="achievement in latestAchievements" 
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 -mt-10 relative z-20">
+          <div 
+            v-for="(achievement, index) in latestAchievements" 
             :key="achievement.id" 
-            :achievement="achievement" 
-          />
+            class="relative z-20 bg-white rounded-lg h-full shadow-lg flex"
+          >
+            <AchievementCard 
+              :achievement="achievement" 
+              class="w-full h-full flex-grow"
+            />
+          </div>
         </div>
-      </div>
+        </div>
     </section>
 
     <section 

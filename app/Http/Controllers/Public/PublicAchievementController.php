@@ -29,18 +29,18 @@ class PublicAchievementController extends Controller
             $query->where('year', $request->year);
         }
 
-        $achievements = $query->orderByDesc('year')->latest()->paginate(12)->withQueryString()->through(fn ($item) => [
+        $achievements = $query->orderByDesc('year')->latest()->paginate(12)->withQueryString()->through(fn($item) => [
             'id' => $item->id,
-            'student_name' => $item->student_name,            // Ubah baris di bawah ini agar mereturn null jika tidak ada, bukan '-'
-            'study_program' => $item->study_program, 
-            'achievement_name' => $item->title, 
-            'organizer' => $item->organizer ?? 'FSTI ITK', 
+            'student_name' => $item->student_name,
+            'study_program' => $item->study_program,
+            'achievement_name' => $item->title,
+            'organizer' => $item->organizer ?? 'FSTI ITK',
             'level' => $item->level,
             'category' => $item->category,
             'year' => $item->year,
             'photo_url' => $item->image_path ? asset('storage/' . $item->image_path) : null,
         ]);
-        
+
         $stats = [
             'total_all_time' => Achievement::count(),
             'international' => Achievement::where('level', 'Internasional')->count(),

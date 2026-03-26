@@ -73,16 +73,28 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
 // --- 2. KELOMPOK ROUTE PUBLIK ---
 Route::get('/', function () {
-    // PERBAIKAN: Menggunakan Join untuk mengecek nama kategori dari tabel post_categories
     $latestPosts = Post::select('posts.*', 'post_categories.name as category')
         ->leftJoin('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
-        ->where('post_categories.name', '!=', 'Prestasi') // Mengecualikan kategori Prestasi
+        ->where('post_categories.name', '!=', 'Prestasi')
         ->where('posts.status', 'Terbitkan')
         ->latest('posts.published_at')
         ->take(3)
         ->get();
 
-    $latestAchievements = Achievement::latest()->take(3)->get();
+    $latestAchievements = Achievement::latest()
+        ->take(3)
+        ->get()
+        ->map(fn($item) => [
+            'id' => $item->id,
+            'student_name' => $item->student_name,
+            'study_program' => $item->study_program,
+            'achievement_name' => $item->title,
+            'organizer' => $item->organizer ?? 'FSTI ITK',
+            'level' => $item->level,
+            'category' => $item->category,
+            'year' => $item->year,
+            'photo_url' => $item->image_path ? asset('storage/' . $item->image_path) : null,
+        ]);
 
     return Inertia::render('Home', [
         'canLogin' => Route::has('login'),

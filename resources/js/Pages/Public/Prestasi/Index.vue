@@ -198,7 +198,7 @@ const applyFilters = () => {
             <section class="max-w-5xl mx-auto px-4 mt-20 mb-16" data-aos="fade-up" data-aos-delay="100">
                 <div class="text-center mb-8">
                     <h2 class="text-3xl md:text-4xl font-bold font-optimus text-primary">Jelajahi Prestasi</h2>
-                    <p class="text-gray-500 mt-2 font-medium">Temukan galeri capaian mahasiswa berdasarkan kategori, tingkat, atau tahun.</p>
+                    <p class="text-gray-500 mt-2 font-medium">Temukan galeri capaian mahasiswa berdasarkan kategori dan tingkat </p>
                 </div>
 
                 <form @submit.prevent="applyFilters" class="bg-white p-2 md:p-3 rounded-3xl md:rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 flex flex-col md:flex-row items-center gap-2 md:gap-4">

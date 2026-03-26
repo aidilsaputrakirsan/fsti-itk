@@ -152,7 +152,7 @@ class DashboardController extends Controller
             ]);
 
         // Prestasi Terbaru
-        $recentAchievements = Achievement::select('id', 'student_name', 'achievement_name', 'study_program', 'level', 'category', 'year', 'created_at')
+        $recentAchievements = Achievement::select('id', 'student_name', 'title as achievement_name', 'study_program', 'level', 'category', 'year', 'created_at')
             ->orderByDesc('created_at')
             ->take(5)
             ->get();
@@ -163,7 +163,7 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Top Viewed Posts (DIPERBAIKI: Relasi category string conversion)
+        // Top Viewed Posts 
         $topViewedPosts = Post::with('category:id,name')
             ->select('id', 'title', 'slug', 'views', 'post_category_id')
             ->where('status', 'Terbitkan')
