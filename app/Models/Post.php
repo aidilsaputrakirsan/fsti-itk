@@ -19,6 +19,7 @@ class Post extends Model
         'status',
         'image_path',
         'published_at',
+        'views',
     ];
 
     protected $appends = ['image_url'];

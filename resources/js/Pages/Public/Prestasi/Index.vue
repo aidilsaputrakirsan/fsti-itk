@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'; // PERUBAHAN
+import { ref, onMounted, onUnmounted } from 'vue';
 import { router, Link, Head } from '@inertiajs/vue3';
 
 // Layouts & Components
@@ -8,7 +8,7 @@ import Banner from '@/Components/Banner.vue';
 import AchievementCard from '@/Components/AchievementCard.vue';
 
 // Icons
-import { Trophy, Award, Search, FileWarning, Medal, Star, BookOpen, Palette, Send, ChevronDown } from 'lucide-vue-next'; // PERUBAHAN
+import { Trophy, Award, Search, FileWarning, Medal, Star, Send, ChevronDown } from 'lucide-vue-next';
 
 // Import AOS untuk animasi
 import AOS from 'aos';
@@ -53,13 +53,11 @@ const categoryDropdownStyle = ref({});
 const levelDropdownStyle = ref({});
 const yearDropdownStyle = ref({});
 
-// Fungsi generik untuk membuka dropdown dan mengatur posisi
 const toggleDropdown = (type: 'category' | 'level' | 'year') => {
     const refs = { category: categoryBtnRef, level: levelBtnRef, year: yearBtnRef };
     const isOpenRefs = { category: isCategoryOpen, level: isLevelOpen, year: isYearOpen };
     const styleRefs = { category: categoryDropdownStyle, level: levelDropdownStyle, year: yearDropdownStyle };
 
-    // Tutup semua dropdown lain
     Object.keys(isOpenRefs).forEach(key => {
         if (key !== type) isOpenRefs[key as keyof typeof isOpenRefs].value = false;
     });
@@ -73,7 +71,7 @@ const toggleDropdown = (type: 'category' | 'level' | 'year') => {
             const rect = button.getBoundingClientRect();
             styleRefs[type].value = {
                 position: 'absolute',
-                top: `${rect.bottom + window.scrollY + 4}px`,
+                top: `${rect.bottom + window.scrollY + 8}px`,
                 left: `${rect.left}px`,
                 width: `${rect.width}px`,
             };
@@ -82,7 +80,6 @@ const toggleDropdown = (type: 'category' | 'level' | 'year') => {
     }
 };
 
-// Fungsi untuk memilih opsi
 function selectOption(type: 'category' | 'level' | 'year', value: string) {
     if (type === 'category') {
         selectedCategory.value = value;
@@ -96,7 +93,6 @@ function selectOption(type: 'category' | 'level' | 'year', value: string) {
     }
 }
 
-// Menutup dropdown jika klik di luar
 const handleClickOutside = (event: MouseEvent) => {
     const target = event.target as Node;
     const check = (btnRef: typeof categoryBtnRef, menuId: string, isOpenRef: typeof isCategoryOpen) => {
@@ -117,7 +113,6 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('mousedown', handleClickOutside);
 });
-// --- END LOGIKA BARU ---
 
 const applyFilters = () => {
     router.get(route('prestasi.index'), {
@@ -128,191 +123,212 @@ const applyFilters = () => {
     }, {
         preserveState: true,
         replace: true,
-        onFinish: () => { AOS.refresh(); } // Re-init AOS jika data berubah
+        onFinish: () => { AOS.refresh(); } 
     });
 };
 </script>
 
 <template>
-    <PublicLayout title="Prestasi Mahasiswa">
-        <Head>
-            <title>Prestasi Mahasiswa FSTI</title>
-            <meta name="description" content="Jelajahi galeri prestasi membanggakan dari mahasiswa Fakultas Sains dan Teknologi Informasi ITK.">
-        </Head>
+    <PublicLayout>
+        <Head title="Prestasi Mahasiswa - FSTI ITK" />
 
-        <Banner title="Prestasi Mahasiswa" :background-image="bannerImage" />
+        <Banner
+            title="Prestasi Mahasiswa"
+            subtitle="GALERI PENCAPAIAN DAN KARYA INSPIRATIF FSTI ITK"
+            :background-image="bannerImage"
+        />
 
-        <div class="py-16 bg-white">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-
-                <section class="mb-20" data-aos="fade-up">
-                    <h2 class="text-3xl font-bold font-kulim-park text-[#4682A9]">Statistik Prestasi</h2>
-                    <p class="text-black mt-2">Ringkasan capaian mahasiswa berdasarkan tingkat dan kategori prestasi</p>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-8">
-    
-                        <div class="bg-[#CBDCEB] p-6 rounded-lg text-[#133E87] text-center transition-transform duration-300 ease-out hover:shadow-2xl hover:animate-[zoomPulse_0.8s_ease-in-out]" data-aos="fade-up" data-aos-delay="100">
-                            <Trophy class="w-8 h-8 mx-auto mb-3"/>
-                            <p class="text-4xl font-bold">{{ stats.total_all_time }}</p>
-                            <p class="font-semibold mt-1 text-sm">Total Prestasi</p>
+        <div class="bg-gray-50 font-public-sans pb-24">
+            
+            <section class="relative z-20 -mt-10 md:-mt-16 px-4 md:px-8 max-w-[95%] xl:max-w-[85rem] mx-auto" data-aos="fade-up">
+                <div class="bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-xl border border-gray-100 p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-0 md:divide-x-2 divide-gray-100">
+                    
+                    <div class="w-full md:w-1/5 flex flex-col items-center group cursor-default">
+                        <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
+                            <Trophy class="w-6 h-6 text-primary"/>
                         </div>
-
-                        <div class="bg-[#CBDCEB] p-6 rounded-lg text-[#133E87] text-center transition-transform duration-300 ease-out hover:shadow-2xl hover:animate-[zoomPulse_0.8s_ease-in-out]" data-aos="fade-up" data-aos-delay="200">
-                            <Medal class="w-8 h-8 mx-auto mb-3"/>
-                            <p class="text-4xl font-bold">{{ stats.international }}</p>
-                            <p class="font-semibold mt-1 text-sm">Prestasi Internasional</p>
-                        </div>
-
-                        <div class="bg-[#CBDCEB] p-6 rounded-lg text-[#133E87] text-center transition-transform duration-300 ease-out hover:shadow-2xl hover:animate-[zoomPulse_0.8s_ease-in-out]" data-aos="fade-up" data-aos-delay="300">
-                            <Award class="w-8 h-8 mx-auto mb-3"/>
-                            <p class="text-4xl font-bold">{{ stats.national }}</p>
-                            <p class="font-semibold mt-1 text-sm">Prestasi Nasional</p>
-                        </div>
-
-                        <div class="bg-[#CBDCEB] p-6 rounded-lg text-[#133E87] text-center transition-transform duration-300 ease-out hover:shadow-2xl hover:animate-[zoomPulse_0.8s_ease-in-out]" data-aos="fade-up" data-aos-delay="400">
-                            <Star class="w-8 h-8 mx-auto mb-3"/>
-                            <p class="text-4xl font-bold">{{ stats.academic }}</p>
-                            <p class="font-semibold mt-1 text-sm">Prestasi Akademik</p>
-                        </div>
-
-                        <div class="bg-[#CBDCEB] p-6 rounded-lg text-[#133E87] text-center transition-transform duration-300 ease-out hover:shadow-2xl hover:animate-[zoomPulse_0.8s_ease-in-out]" data-aos="fade-up" data-aos-delay="500">
-                            <Trophy class="w-8 h-8 mx-auto mb-3"/>
-                            <p class="text-4xl font-bold">{{ stats.non_academic }}</p>
-                            <p class="font-semibold mt-1 text-sm">Prestasi Non-Akademik</p>
-                        </div>
+                        <p class="text-3xl md:text-4xl font-black text-gray-800">{{ stats.total_all_time }}</p>
+                        <p class="font-bold mt-1 text-xs text-gray-500 uppercase tracking-widest">Total Prestasi</p>
                     </div>
-                </section>
 
-                <section class="mb-16" data-aos="fade-up">
-                    <h2 class="text-3xl font-bold font-kulim-park text-[#4682A9]">Jelajahi Prestasi</h2>
-                    <p class="text-black mt-2">Temukan data prestasi mahasiswa berdasarkan kategori, tingkat, atau tahun</p>
-                    <form @submit.prevent="applyFilters" class="mt-8 bg-[#CBDCEB] p-6 rounded-lg space-y-4">
-                        <div class="relative w-full">
-                            <input type="text" v-model="search" placeholder="Cari berdasarkan nama, prestasi, dll" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 transition">
-                            <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <div class="w-full md:w-1/5 flex flex-col items-center group cursor-default">
+                        <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
+                            <Medal class="w-6 h-6 text-primary"/>
                         </div>
-                        
-                        <div class="flex flex-col md:flex-row items-end gap-4">
-                            <div class="w-full md:w-1/3">
-                                <label class="font-inter font-bold text-sm text-black mb-2 block">Kategori Prestasi</label>
-                                <button ref="categoryBtnRef" @click="toggleDropdown('category')" type="button" class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-left flex items-center justify-between focus:ring-2 focus:ring-blue-500 transition">
-                                    <span class="text-black">{{ selectedCategory || 'Semua' }}</span>
-                                    <ChevronDown class="w-5 h-5 text-gray-400 transition-transform" :class="{'rotate-180': isCategoryOpen}" />
-                                </button>
-                            </div>
-                            <div class="w-full md:w-1/3">
-                                <label class="font-inter font-bold text-sm text-black mb-2 block">Tingkat Prestasi</label>
-                                <button ref="levelBtnRef" @click="toggleDropdown('level')" type="button" class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-left flex items-center justify-between focus:ring-2 focus:ring-blue-500 transition">
-                                    <span class="text-black">{{ selectedLevel || 'Semua' }}</span>
-                                    <ChevronDown class="w-5 h-5 text-gray-400 transition-transform" :class="{'rotate-180': isLevelOpen}" />
-                                </button>
-                            </div>
-                            <div class="w-full md:w-1/3">
-                                <label class="font-inter font-bold text-sm text-black mb-2 block">Tahun Prestasi</label>
-                                <button ref="yearBtnRef" @click="toggleDropdown('year')" type="button" class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-left flex items-center justify-between focus:ring-2 focus:ring-blue-500 transition">
-                                    <span class="text-black">{{ selectedYear || 'Semua' }}</span>
-                                    <ChevronDown class="w-5 h-5 text-gray-400 transition-transform" :class="{'rotate-180': isYearOpen}" />
-                                </button>
-                            </div>
-                            <button type="submit" class="w-full md:w-auto bg-[#133E87] text-white font-semibold px-8 py-3 rounded-lg hover:bg-opacity-90 transition">
+                        <p class="text-3xl md:text-4xl font-black text-gray-800">{{ stats.international }}</p>
+                        <p class="font-bold mt-1 text-xs text-gray-500 uppercase tracking-widest">Internasional</p>
+                    </div>
+
+                    <div class="w-full md:w-1/5 flex flex-col items-center group cursor-default">
+                        <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
+                            <Award class="w-6 h-6 text-primary"/>
+                        </div>
+                        <p class="text-3xl md:text-4xl font-black text-gray-800">{{ stats.national }}</p>
+                        <p class="font-bold mt-1 text-xs text-gray-500 uppercase tracking-widest">Nasional</p>
+                    </div>
+
+                    <div class="w-full md:w-1/5 flex flex-col items-center group cursor-default">
+                        <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
+                            <Star class="w-6 h-6 text-primary"/>
+                        </div>
+                        <p class="text-3xl md:text-4xl font-black text-gray-800">{{ stats.academic }}</p>
+                        <p class="font-bold mt-1 text-xs text-gray-500 uppercase tracking-widest">Akademik</p>
+                    </div>
+
+                    <div class="w-full md:w-1/5 flex flex-col items-center group cursor-default">
+                        <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
+                            <Trophy class="w-6 h-6 text-primary"/>
+                        </div>
+                        <p class="text-3xl md:text-4xl font-black text-gray-800">{{ stats.non_academic }}</p>
+                        <p class="font-bold mt-1 text-xs text-gray-500 uppercase tracking-widest">Non-Akademik</p>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="max-w-5xl mx-auto px-4 mt-20 mb-16" data-aos="fade-up" data-aos-delay="100">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl md:text-4xl font-bold font-optimus text-primary">Jelajahi Prestasi</h2>
+                    <p class="text-gray-500 mt-2 font-medium">Temukan galeri capaian mahasiswa berdasarkan kategori, tingkat, atau tahun.</p>
+                </div>
+
+                <form @submit.prevent="applyFilters" class="bg-white p-2 md:p-3 rounded-3xl md:rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 flex flex-col md:flex-row items-center gap-2 md:gap-4">
+                    
+                    <div class="relative w-full md:w-2/5 md:ml-4">
+                        <Search class="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <input type="text" v-model="search" placeholder="Cari nama mahasiswa atau judul..." class="w-full pl-8 pr-4 py-3 bg-transparent border-none text-sm font-medium focus:ring-0 placeholder-gray-400">
+                    </div>
+                    
+                    <div class="hidden md:block w-px h-8 bg-gray-200"></div>
+                    
+                    <div class="flex flex-col sm:flex-row w-full md:w-3/5 gap-2">
+                        <div class="relative w-full sm:w-1/3">
+                            <button ref="categoryBtnRef" @click="toggleDropdown('category')" type="button" class="w-full py-3 px-4 bg-gray-50 md:bg-transparent rounded-xl md:rounded-full text-xs font-bold text-gray-600 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                                <span class="truncate">{{ selectedCategory || 'Kategori' }}</span>
+                                <ChevronDown class="w-4 h-4 ml-1 text-primary flex-shrink-0" :class="{'rotate-180': isCategoryOpen}" />
+                            </button>
+                        </div>
+
+                        <div class="hidden sm:block w-px h-8 bg-gray-200 mt-1"></div>
+
+                        <div class="relative w-full sm:w-1/3">
+                            <button ref="levelBtnRef" @click="toggleDropdown('level')" type="button" class="w-full py-3 px-4 bg-gray-50 md:bg-transparent rounded-xl md:rounded-full text-xs font-bold text-gray-600 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                                <span class="truncate">{{ selectedLevel || 'Tingkat' }}</span>
+                                <ChevronDown class="w-4 h-4 ml-1 text-primary flex-shrink-0" :class="{'rotate-180': isLevelOpen}" />
+                            </button>
+                        </div>
+
+                        <div class="hidden sm:block w-px h-8 bg-gray-200 mt-1"></div>
+
+                        <div class="relative w-full sm:w-1/3 pr-0 md:pr-1">
+                            <button type="submit" class="w-full bg-primary text-white text-sm font-bold py-3 md:py-3.5 rounded-xl md:rounded-full hover:bg-primary-hover transition-colors shadow-md flex items-center justify-center gap-2">
                                 Terapkan
                             </button>
                         </div>
-                    </form>
-                </section>
+                    </div>
+                </form>
+            </section>
 
-                <section class="mb-20" data-aos="fade-up">
-                    <h2 class="text-3xl font-bold font-kulim-park text-[#4682A9]">Potret Mahasiswa Berprestasi</h2>
-                    <p class="text-black mt-2">Kumpulan mahasiswa berprestasi yang membanggakan FSTI ITK</p>
-                    <div v-if="achievements.data.length > 0" class="mt-8">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            <div
-                                v-for="(achievement, index) in achievements.data"
-                                :key="achievement.id"
-                                data-aos="zoom-in"
-                                :data-aos-delay="index * 100"
-                                class="transition-transform transition-shadow duration-300 ease-out hover:scale-[1.02] hover:-translate-y-1 hover:shadow-xl rounded-2xl"
-                            >
-                                <AchievementCard 
-                                    :achievement="achievement"
+            <section class="max-w-[95%] xl:max-w-[100rem] mx-auto px-4 xl:px-8 mb-24 min-h-[400px]">
+                <div v-if="achievements.data.length > 0">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
+                        <div
+                            v-for="(achievement, index) in achievements.data"
+                            :key="achievement.id"
+                            data-aos="fade-up"
+                            :data-aos-delay="index * 50"
+                            class="group flex h-full"
+                        >
+                            <AchievementCard :achievement="achievement" class="w-full h-full flex-grow hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-500" />
+                        </div>
+                    </div>
+
+                    <div class="mt-16 flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-gray-100" data-aos="fade-in">
+                        <p class="text-sm font-medium text-gray-500 text-center md:text-left">
+                            Menampilkan <span class="text-primary font-bold">{{ achievements.from }}</span> - <span class="text-primary font-bold">{{ achievements.to }}</span> dari <span class="text-primary font-bold">{{ achievements.total }}</span> Prestasi
+                        </p>
+                        
+                        <div v-if="achievements.links.length > 3" class="flex flex-wrap justify-center items-center gap-2">
+                            <template v-for="(link, index) in achievements.links" :key="index">
+                                <Link
+                                    v-if="link.url"
+                                    :href="link.url"
+                                    v-html="link.label"
+                                    class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
+                                    :class="{'bg-primary text-white shadow-md': link.active, 'text-gray-600 hover:bg-gray-100 hover:text-primary': !link.active}"
                                 />
-                            </div>
-                        </div>
-                        <div class="mt-12 flex flex-col md:flex-row items-center justify-between gap-4">
-                            <p class="text-sm text-black">
-                                Menampilkan <span class="font-semibold">{{ achievements.from }}</span> sampai <span class="font-semibold">{{ achievements.to }}</span> dari <span class="font-semibold">{{ achievements.total }}</span> prestasi
-                            </p>
-                            <div v-if="achievements.links.length > 3" class="flex items-center space-x-1">
-                                <template v-for="(link, index) in achievements.links" :key="index">
-                                    <Link
-                                        v-if="link.url"
-                                        :href="link.url"
-                                        v-html="link.label"
-                                        class="px-3 py-1.5 text-sm font-semibold rounded-lg transition"
-                                        :class="{'bg-[#133E87] text-white shadow-md': link.active, 'bg-gray-200 text-black hover:bg-gray-300': !link.active}"
-                                    />
-                                    <span v-else v-html="link.label" class="px-3 py-1.5 text-sm font-semibold rounded-lg text-gray-400 cursor-not-allowed"/>
-                                </template>
-                            </div>
+                                <span 
+                                    v-else 
+                                    v-html="link.label" 
+                                    class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full text-gray-300 bg-gray-50/50 cursor-not-allowed"
+                                />
+                            </template>
                         </div>
                     </div>
-                    <div v-else class="text-center py-16 bg-gray-50 rounded-lg mt-8">
-                        <FileWarning class="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                        <h3 class="text-xl font-bold text-black">Tidak Ada Prestasi Ditemukan</h3>
-                        <p class="mt-2 text-gray-500">Coba ubah atau hapus filter yang Anda gunakan.</p>
+
+                </div>
+
+                <div v-else class="text-center py-24 bg-white border border-gray-100 rounded-[3rem] shadow-sm max-w-4xl mx-auto" data-aos="zoom-in">
+                    <div class="bg-gray-50 w-24 h-24 flex items-center justify-center rounded-full mx-auto mb-6">
+                        <FileWarning class="w-12 h-12 text-gray-300" />
                     </div>
-                </section>
-                
-                <section class="bg-[#CBDCEB] p-12 rounded-lg text-center" data-aos="fade-up">
-                    <Trophy class="w-12 h-12 text-[#133E87] mx-auto mb-4"/>
-                    <h2 class="text-2xl font-bold font-kulim-park text-[#133E87]">Jangan Biarkan Prestasi Anda Terlewat!</h2>
-                    <p class="mt-3 max-w-2xl mx-auto text-[#133E87]">
-                        Bagikan pencapaian Anda kepada fakultas agar dapat dipublikasikan dan menjadi inspirasi bagi mahasiswa lain.
-                    </p>
-                    <a :href="googleFormUrl" target="_blank" class="mt-6 inline-flex items-center gap-2 rounded-full bg-white text-[#133E87] font-bold px-8 py-3 text-base hover:bg-gray-200 transition-transform transform hover:scale-105 duration-300 shadow-lg">
-                        <Send class="w-5 h-5" />
-                        Laporkan Prestasi
-                    </a>
-                </section>
-            </div>
+                    <h3 class="text-2xl md:text-3xl font-bold text-gray-800 font-optimus mb-3">Belum Ada Prestasi</h3>
+                    <p class="text-gray-500 max-w-md mx-auto">Silakan ubah filter pencarian Anda, atau tunggu admin memperbarui galeri capaian mahasiswa.</p>
+                </div>
+            </section>
+            
+            <section class="max-w-6xl mx-auto px-4 pb-12" data-aos="fade-up">
+                <div class="bg-primary rounded-[3rem] p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden shadow-2xl">
+                    <div class="absolute -top-24 -right-24 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
+                    <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
+                    
+                    <div class="relative z-10 md:w-2/3 text-center md:text-left">
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-white text-xs font-bold mb-4 uppercase tracking-widest border border-white/20">
+                            Ikut Berkontribusi
+                        </div>
+                        <h2 class="text-3xl md:text-5xl font-bold font-optimus text-white mb-4 leading-tight">Jangan Biarkan Prestasimu Terlewat!</h2>
+                        <p class="text-white/80 text-lg leading-relaxed">
+                            Apakah kamu atau timmu baru saja menjuarai sebuah kompetisi? Laporkan pencapaianmu agar dapat dipublikasikan dan menginspirasi mahasiswa FSTI lainnya.
+                        </p>
+                    </div>
+                    
+                    <div class="relative z-10 md:w-1/3 flex justify-center md:justify-end">
+                        <a :href="googleFormUrl" target="_blank" class="flex flex-col items-center justify-center w-48 h-48 bg-white text-primary rounded-full font-bold hover:scale-105 transition-transform duration-300 shadow-[0_0_40px_rgba(255,255,255,0.2)] group">
+                            <Send class="w-8 h-8 mb-2 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
+                            <span class="text-center px-4 leading-tight uppercase tracking-wider">Laporkan<br>Sekarang</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
         </div>
+
     </PublicLayout>
 
     <Teleport to="body">
         <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
-            <div v-if="isCategoryOpen" id="category-dropdown-menu" :style="categoryDropdownStyle" class="z-[9999] bg-white rounded-md shadow-lg border border-gray-200 py-1">
-                <a @click="selectOption('category', '')" class="block px-4 py-2 text-black hover:bg-gray-100 cursor-pointer">Semua</a>
-                <a v-for="c in categories" :key="c" @click="selectOption('category', c)" class="block px-4 py-2 text-black hover:bg-gray-100 cursor-pointer">{{ c }}</a>
+            <div v-if="isCategoryOpen" id="category-dropdown-menu" :style="categoryDropdownStyle" class="z-[9999] bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-100 py-2 overflow-hidden">
+                <a @click="selectOption('category', '')" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors">Semua Kategori</a>
+                <a v-for="c in categories" :key="c" @click="selectOption('category', c)" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors">{{ c }}</a>
             </div>
         </transition>
     </Teleport>
 
     <Teleport to="body">
         <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
-            <div v-if="isLevelOpen" id="level-dropdown-menu" :style="levelDropdownStyle" class="z-[9999] bg-white rounded-md shadow-lg border border-gray-200 py-1">
-                <a @click="selectOption('level', '')" class="block px-4 py-2 text-black hover:bg-gray-100 cursor-pointer">Semua</a>
-                <a v-for="l in levels" :key="l" @click="selectOption('level', l)" class="block px-4 py-2 text-black hover:bg-gray-100 cursor-pointer">{{ l }}</a>
+            <div v-if="isLevelOpen" id="level-dropdown-menu" :style="levelDropdownStyle" class="z-[9999] bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-100 py-2 overflow-hidden">
+                <a @click="selectOption('level', '')" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors">Semua Tingkat</a>
+                <a v-for="l in levels" :key="l" @click="selectOption('level', l)" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors">{{ l }}</a>
             </div>
         </transition>
     </Teleport>
 
     <Teleport to="body">
         <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
-            <div v-if="isYearOpen" id="year-dropdown-menu" :style="yearDropdownStyle" class="z-[9999] bg-white rounded-md shadow-lg border border-gray-200 py-1">
-                <a @click="selectOption('year', '')" class="block px-4 py-2 text-black hover:bg-gray-100 cursor-pointer">Semua</a>
-                <a v-for="y in years" :key="y" @click="selectOption('year', y)" class="block px-4 py-2 text-black hover:bg-gray-100 cursor-pointer">{{ y }}</a>
+            <div v-if="isYearOpen" id="year-dropdown-menu" :style="yearDropdownStyle" class="z-[9999] bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-100 py-2 overflow-hidden">
+                <a @click="selectOption('year', '')" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors">Semua Tahun</a>
+                <a v-for="y in years" :key="y" @click="selectOption('year', y)" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors">{{ y }}</a>
             </div>
         </transition>
     </Teleport>
-
 </template>
-
-<style>
-@keyframes zoomPulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.08);
-  }
-}
-</style>
