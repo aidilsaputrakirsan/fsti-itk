@@ -59,16 +59,16 @@ export interface Achievement {
   student_name: string;
   student_nim: string;
   study_program: string;
-  achievement_name: string;
+  title: string;
   category: 'Akademik' | 'Non-Akademik';
   level: 'Internasional' | 'Nasional' | 'Provinsi' | 'Kota/Kabupaten' | 'Universitas';
   organizer: string;
   year: number;
-  proof_url?: string | null; // URL lengkap untuk file bukti
-  photo_path: string;
+  image_url?: string | null; 
+  certificate_path: string;
 
-  photo_url: string;
-  proof_url?: string | null;
+  image_url: string;
+  certificate_url?: string | null;
 }
 
 export interface PaginatedAchievements {

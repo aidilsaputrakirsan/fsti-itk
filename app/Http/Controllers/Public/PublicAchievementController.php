@@ -31,7 +31,7 @@ class PublicAchievementController extends Controller
 
         $achievements = $query->orderByDesc('year')->latest()->paginate(12)->withQueryString()->through(fn($item) => [
             'id' => $item->id,
-            'student_name' => $item->student_name,
+            'student_name' => $item->student_name,            
             'study_program' => $item->study_program,
             'achievement_name' => $item->title,
             'organizer' => $item->organizer ?? 'FSTI ITK',

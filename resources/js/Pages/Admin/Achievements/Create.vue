@@ -9,13 +9,13 @@ const form = useForm({
   student_name: '',
   student_nim: '',
   study_program: '',
-  achievement_name: '',
-  category: '', // Dikosongkan agar placeholder muncul
-  level: '', // Dikosongkan agar placeholder muncul
+  title: '',
+  category: '', 
+  level: '', 
   organizer: '',
   year: new Date().getFullYear(),
-  photo: null as File | null, // <-- PENAMBAHAN FOTO
-  proof: null as File | null,
+  image: null as File | null, 
+  certificate: null as File | null,
 });
 
 const submit = () => {
@@ -65,9 +65,9 @@ const submit = () => {
             </div>
 
             <div>
-              <label for="achievement_name" class="block text-sm font-semibold text-black">Capaian Prestasi *</label>
-              <input type="text" id="achievement_name" v-model="form.achievement_name" placeholder="Masukkan nama prestasi atau lomba yang dicapai" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
-              <p v-if="form.errors.achievement_name" class="mt-2 text-sm text-red-600">{{ form.errors.achievement_name }}</p>
+              <label for="title" class="block text-sm font-semibold text-black">Judul Prestasi *</label>
+              <input type="text" id="title" v-model="form.title" placeholder="Masukkan judul prestasi atau lomba yang dicapai" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+              <p v-if="form.errors.title" class="mt-2 text-sm text-red-600">{{ form.errors.title }}</p>
             </div>
           </div>
 
@@ -112,23 +112,23 @@ const submit = () => {
             <label for="photo" class="block text-sm font-semibold text-black">Foto Mahasiswa/Tim *</label>
             <div class="mt-1 relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2">
               <PaperClipIcon class="h-5 w-5 text-gray-400" />
-              <span class="ml-3 text-sm" :class="{'text-gray-400': !form.photo, 'text-black': form.photo}">
-                {{ form.photo ? form.photo.name : 'Unggah foto mahasiswa atau tim (Wajib)' }}
+              <span class="ml-3 text-sm" :class="{'text-gray-400': !form.image, 'text-black': form.image}">
+                {{ form.image ? form.image.name : 'Unggah foto mahasiswa atau tim (Wajib)' }}
               </span>
-              <input type="file" id="photo" @input="form.photo = ($event.target as HTMLInputElement).files?.[0] || null" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+              <input type="file" id="image" @input="form.image = ($event.target as HTMLInputElement).files?.[0] || null" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
             </div>
-            <p v-if="form.errors.photo" class="mt-2 text-sm text-red-600">{{ form.errors.photo }}</p>
+            <p v-if="form.errors.image" class="mt-2 text-sm text-red-600">{{ form.errors.image }}</p>
           </div>
 
           <div class="md:col-span-2">
             <label for="proof" class="block text-sm font-semibold text-black">Bukti (Opsional)</label> <div class="mt-1 relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2">
               <PaperClipIcon class="h-5 w-5 text-gray-400" />
-              <span class="ml-3 text-sm" :class="{'text-gray-400': !form.proof, 'text-black': form.proof}">
-                {{ form.proof ? form.proof.name : 'Masukkan bukti berupa sertifikat atau gambar' }}
+              <span class="ml-3 text-sm" :class="{'text-gray-400': !form.certificate, 'text-black': form.certificate}">
+                {{ form.certificate ? form.certificate.name : 'Masukkan bukti berupa sertifikat atau gambar' }}
               </span>
-              <input type="file" id="proof" @input="form.proof = ($event.target as HTMLInputElement).files?.[0] || null" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+              <input type="file" id="proof" @input="form.certificate = ($event.target as HTMLInputElement).files?.[0] || null" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
             </div>
-            <p v-if="form.errors.proof" class="mt-2 text-sm text-red-600">{{ form.errors.proof }}</p>
+            <p v-if="form.errors.certificate" class="mt-2 text-sm text-red-600">{{ form.errors.certificate }}</p>
           </div>
         </div>
 

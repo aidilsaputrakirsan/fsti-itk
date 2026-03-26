@@ -1,17 +1,6 @@
 <script setup lang="ts">
 import { GraduationCap, Award, Calendar, Trophy, Medal } from 'lucide-vue-next';
-
-interface Achievement {
-  id: number;
-  student_name: string;
-  study_program: string | null; // Pastikan ini bisa menerima null
-  achievement_name: string;
-  organizer: string;
-  level: string;
-  category: string;
-  year: number;
-  photo_url: string;
-}
+import type { Achievement } from '@/types'; // Import dari tipe global agar sinkron!
 
 const props = defineProps<{
   achievement: Achievement;
@@ -25,7 +14,7 @@ const props = defineProps<{
   >
     <div class="aspect-video relative shrink-0">
       <img 
-        :src="achievement.photo_url" 
+        :src="achievement.image_url || 'https://placehold.co/600x400/cccccc/FFFFFF?text=Image+Not+Found'" 
         :alt="'Foto ' + achievement.student_name" 
         class="w-full h-full object-cover"
         loading="lazy"
@@ -60,7 +49,7 @@ const props = defineProps<{
       <div class="mt-auto pt-4 border-t border-blue-400/30 flex flex-col">
         <p class="flex items-start gap-2 text-base font-bold text-white min-h-[3rem]">
           <Award class="h-5 w-5 flex-shrink-0 mt-0.5 text-yellow-400 drop-shadow-md" />
-          <span class="flex-1 drop-shadow-sm">{{ achievement.achievement_name }}</span>
+          <span class="flex-1 drop-shadow-sm">{{ achievement.title }}</span>
         </p>
         <p class="text-sm text-blue-100 mt-2">
           <span class="text-blue-300 font-medium">Oleh:</span> {{ achievement.organizer }}

@@ -2,7 +2,7 @@
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useForm, Link, Head } from '@inertiajs/vue3';
 import { ArrowLeftIcon, PaperAirplaneIcon, PaperClipIcon } from '@heroicons/vue/24/outline';
-import type { Achievement } from '@/types'; // Pastikan Anda memiliki definisi tipe ini
+import type { Achievement } from '@/types'; 
 
 defineOptions({ layout: AdminLayout });
 
@@ -11,21 +11,20 @@ const props = defineProps<{
 }>();
 
 const form = useForm({
-  _method: 'patch', // Metode untuk update
+  _method: 'patch', 
   student_name: props.achievement.student_name,
   student_nim: props.achievement.student_nim,
   study_program: props.achievement.study_program,
-  achievement_name: props.achievement.achievement_name,
+  title: props.achievement.title, // Sesuaikan dengan DB
   category: props.achievement.category,
   level: props.achievement.level,
   organizer: props.achievement.organizer,
   year: props.achievement.year,
-  photo: null as File | null,
-  proof: null as File | null,
+  image: null as File | null, // Sesuaikan dengan Controller
+  certificate: null as File | null, // Sesuaikan dengan Controller
 });
 
 const submit = () => {
-  // Gunakan .post agar Inertia dapat menangani unggahan file dengan benar
   form.post(route('admin.achievements.update', props.achievement.id));
 };
 </script>
@@ -45,19 +44,19 @@ const submit = () => {
           <div class="space-y-6">
             <div>
               <label for="student_name" class="block text-sm font-semibold text-black">Nama Mahasiswa *</label>
-              <input type="text" id="student_name" v-model="form.student_name" placeholder="Masukkan Nama Mahasiswa" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+              <input type="text" id="student_name" v-model="form.student_name" placeholder="Masukkan Nama Mahasiswa" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
               <p v-if="form.errors.student_name" class="mt-2 text-sm text-red-600">{{ form.errors.student_name }}</p>
             </div>
 
             <div>
               <label for="student_nim" class="block text-sm font-semibold text-black">NIM Mahasiswa *</label>
-              <input type="text" id="student_nim" v-model="form.student_nim" placeholder="Masukkan NIM Mahasiswa" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+              <input type="text" id="student_nim" v-model="form.student_nim" placeholder="Masukkan NIM Mahasiswa" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
               <p v-if="form.errors.student_nim" class="mt-2 text-sm text-red-600">{{ form.errors.student_nim }}</p>
             </div>
 
             <div>
               <label for="study_program" class="block text-sm font-semibold text-black">Program Studi *</label>
-              <select id="study_program" v-model="form.study_program" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+              <select id="study_program" v-model="form.study_program" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm">
                 <option value="" disabled>Pilih Program Studi</option>
                 <option>Teknik Elektro</option>
                 <option>Sistem Informasi</option>
@@ -73,16 +72,16 @@ const submit = () => {
             </div>
 
             <div>
-              <label for="achievement_name" class="block text-sm font-semibold text-black">Capaian Prestasi *</label>
-              <input type="text" id="achievement_name" v-model="form.achievement_name" placeholder="Masukkan nama prestasi atau lomba yang dicapai" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
-              <p v-if="form.errors.achievement_name" class="mt-2 text-sm text-red-600">{{ form.errors.achievement_name }}</p>
+              <label for="title" class="block text-sm font-semibold text-black">Capaian Prestasi *</label>
+              <input type="text" id="title" v-model="form.title" placeholder="Masukkan nama prestasi atau lomba yang dicapai" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+              <p v-if="form.errors.title" class="mt-2 text-sm text-red-600">{{ form.errors.title }}</p>
             </div>
           </div>
 
           <div class="space-y-6">
             <div>
               <label for="category" class="block text-sm font-semibold text-black">Kategori *</label>
-              <select id="category" v-model="form.category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+              <select id="category" v-model="form.category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm">
                 <option value="" disabled>Pilih kategori prestasi</option>
                 <option>Akademik</option>
                 <option>Non-Akademik</option>
@@ -92,7 +91,7 @@ const submit = () => {
 
             <div>
               <label for="level" class="block text-sm font-semibold text-black">Tingkat *</label>
-              <select id="level" v-model="form.level" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+              <select id="level" v-model="form.level" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm">
                 <option value="" disabled>Pilih tingkat prestasi</option>
                 <option>Internasional</option>
                 <option>Nasional</option>
@@ -105,46 +104,46 @@ const submit = () => {
 
             <div>
               <label for="organizer" class="block text-sm font-semibold text-black">Penyelenggara *</label>
-              <input type="text" id="organizer" v-model="form.organizer" placeholder="Masukkan institusi penyelenggara" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+              <input type="text" id="organizer" v-model="form.organizer" placeholder="Masukkan institusi penyelenggara" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
               <p v-if="form.errors.organizer" class="mt-2 text-sm text-red-600">{{ form.errors.organizer }}</p>
             </div>
             
             <div>
               <label for="year" class="block text-sm font-semibold text-black">Tahun *</label>
-              <input type="number" id="year" v-model="form.year" placeholder="Masukkan tahun capaian prestasi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+              <input type="number" id="year" v-model="form.year" placeholder="Masukkan tahun capaian prestasi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
               <p v-if="form.errors.year" class="mt-2 text-sm text-red-600">{{ form.errors.year }}</p>
             </div>
           </div>
 
           <div class="md:col-span-2">
-            <label for="photo" class="block text-sm font-semibold text-black">Ganti Foto Mahasiswa/Tim</label>
+            <label for="image" class="block text-sm font-semibold text-black">Ganti Foto Mahasiswa/Tim</label>
             <div class="mt-2 mb-4">
-                <img :src="achievement.photo_url" :alt="'Foto ' + achievement.student_name" class="h-40 w-auto rounded-lg border p-2">
+                <img v-if="achievement.image_url" :src="achievement.image_url" :alt="'Foto ' + achievement.student_name" class="h-40 w-auto rounded-lg border p-2">
                 <p class="text-xs text-gray-500 mt-1">Foto saat ini</p>
             </div>
             <div class="relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2">
               <PaperClipIcon class="h-5 w-5 text-gray-400" />
-              <span class="ml-3 text-sm" :class="{'text-gray-400': !form.photo, 'text-black': form.photo}">
-                {{ form.photo ? form.photo.name : 'Pilih file baru untuk mengganti foto' }}
+              <span class="ml-3 text-sm" :class="{'text-gray-400': !form.image, 'text-black': form.image}">
+                {{ form.image ? form.image.name : 'Pilih file baru untuk mengganti foto' }}
               </span>
-              <input type="file" id="photo" @input="form.photo = ($event.target as HTMLInputElement).files?.[0] || null" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+              <input type="file" id="image" @input="form.image = ($event.target as HTMLInputElement).files?.[0] || null" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
             </div>
-            <p v-if="form.errors.photo" class="mt-2 text-sm text-red-600">{{ form.errors.photo }}</p>
+            <p v-if="form.errors.image" class="mt-2 text-sm text-red-600">{{ form.errors.image }}</p>
           </div>
 
           <div class="md:col-span-2">
-            <label for="proof" class="block text-sm font-semibold text-black">Ganti Bukti (Opsional)</label>
-            <a v-if="achievement.proof_url" :href="achievement.proof_url" target="_blank" class="text-sm text-blue-600 hover:underline mt-2 mb-2 block">
+            <label for="certificate" class="block text-sm font-semibold text-black">Ganti Bukti (Opsional)</label>
+            <a v-if="achievement.certificate_url" :href="achievement.certificate_url" target="_blank" class="text-sm text-blue-600 hover:underline mt-2 mb-2 block">
                 Lihat bukti yang sudah diunggah
             </a>
             <div class="mt-1 relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2">
               <PaperClipIcon class="h-5 w-5 text-gray-400" />
-              <span class="ml-3 text-sm" :class="{'text-gray-400': !form.proof, 'text-black': form.proof}">
-                {{ form.proof ? form.proof.name : 'Pilih file baru untuk mengganti bukti' }}
+              <span class="ml-3 text-sm" :class="{'text-gray-400': !form.certificate, 'text-black': form.certificate}">
+                {{ form.certificate ? form.certificate.name : 'Pilih file baru untuk mengganti bukti' }}
               </span>
-              <input type="file" id="proof" @input="form.proof = ($event.target as HTMLInputElement).files?.[0] || null" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+              <input type="file" id="certificate" @input="form.certificate = ($event.target as HTMLInputElement).files?.[0] || null" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
             </div>
-            <p v-if="form.errors.proof" class="mt-2 text-sm text-red-600">{{ form.errors.proof }}</p>
+            <p v-if="form.errors.certificate" class="mt-2 text-sm text-red-600">{{ form.errors.certificate }}</p>
           </div>
         </div>
 

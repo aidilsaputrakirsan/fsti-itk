@@ -20,7 +20,7 @@ class AchievementsController extends Controller
         // Terapkan filter pencarian jika ada
         if ($request->filled('search')) {
             $query->where('student_name', 'like', '%' . $request->search . '%')
-                ->orWhere('achievement_name', 'like', '%' . $request->search . '%');
+                ->orWhere('title', 'like', '%' . $request->search . '%');
         }
 
         // Terapkan filter kategori jika ada
@@ -55,24 +55,26 @@ class AchievementsController extends Controller
             'student_name' => 'required|string|max:255',
             'student_nim' => 'required|string|max:255',
             'study_program' => 'required|string',
-            'achievement_name' => 'required|string',
+            'title' => 'required|string',
             'category' => 'required|string',
             'level' => 'required|string',
             'organizer' => 'required|string',
             'year' => 'required|digits:4',
-            'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'proof' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
         // Simpan file foto
-        if ($request->hasFile('photo')) {
-            $validatedData['photo_path'] = $request->file('photo')->store('achievements/photos', 'public');
+        if ($request->hasFile('image')) {
+            $validatedData['image_path'] = $request->file('image')->store('achievements/images', 'public');
         }
 
         // Simpan file bukti jika ada
-        if ($request->hasFile('proof')) {
-            $validatedData['proof_path'] = $request->file('proof')->store('achievements/proofs', 'public');
+        if ($request->hasFile('certificate')) {
+            $validatedData['certificate_path'] = $request->file('certificate')->store('achievements/certificates', 'public');
         }
+
+        unset($validatedData['image'], $validatedData['certificate']);
 
         Achievement::create($validatedData);
 
@@ -99,30 +101,32 @@ class AchievementsController extends Controller
             'student_name' => 'required|string|max:255',
             'student_nim' => 'required|string|max:255',
             'study_program' => 'required|string',
-            'achievement_name' => 'required|string',
+            'title' => 'required|string',
             'category' => 'required|string',
             'level' => 'required|string',
             'organizer' => 'required|string',
             'year' => 'required|digits:4',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'proof' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
         // Cek jika ada foto baru yang diunggah
-        if ($request->hasFile('photo')) {
-            if ($achievement->photo_path) {
-                Storage::disk('public')->delete($achievement->photo_path);
+        if ($request->hasFile('image')) {
+            if ($achievement->image_path) {
+                Storage::disk('public')->delete($achievement->image_path);
             }
-            $validatedData['photo_path'] = $request->file('photo')->store('achievements/photos', 'public');
+            $validatedData['image_path'] = $request->file('image')->store('achievements/images', 'public');
         }
 
         // Cek jika ada bukti baru yang diunggah
-        if ($request->hasFile('proof')) {
-            if ($achievement->proof_path) {
-                Storage::disk('public')->delete($achievement->proof_path);
+        if ($request->hasFile('certificate')) {
+            if ($achievement->certificate_path) {
+                Storage::disk('public')->delete($achievement->certificate_path);
             }
-            $validatedData['proof_path'] = $request->file('proof')->store('achievements/proofs', 'public');
+            $validatedData['certificate_path'] = $request->file('certificate')->store('achievements/certificates', 'public');
         }
+
+        unset($validatedData['image'], $validatedData['certificate']);
 
         $achievement->update($validatedData);
 
@@ -135,13 +139,13 @@ class AchievementsController extends Controller
     public function destroy(Achievement $achievement)
     {
         // Hapus file foto dari storage
-        if ($achievement->photo_path) {
-            Storage::disk('public')->delete($achievement->photo_path);
+        if ($achievement->image_path) {
+            Storage::disk('public')->delete($achievement->image_path);
         }
 
         // Hapus file bukti dari storage
-        if ($achievement->proof_path) {
-            Storage::disk('public')->delete($achievement->proof_path);
+        if ($achievement->certificate_path) {
+            Storage::disk('public')->delete($achievement->certificate_path);
         }
 
         $achievement->delete();

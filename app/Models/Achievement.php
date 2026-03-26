@@ -22,10 +22,15 @@ class Achievement extends Model
         'certificate_path', 
     ];
 
-    protected $appends = ['image_url'];
+    protected $appends = ['image_url', 'certificate_url'];
 
     public function getImageUrlAttribute(): ?string
     {
         return $this->image_path ? asset('storage/' . $this->image_path) : null;
+    }
+
+    public function getCertificateUrlAttribute(): ?string
+    {
+        return $this->certificate_path ? asset('storage/' . $this->certificate_path) : null;
     }
 }

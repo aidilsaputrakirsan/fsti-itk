@@ -75,7 +75,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 Route::get('/', function () {
     $latestPosts = Post::select('posts.*', 'post_categories.name as category')
         ->leftJoin('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
-        ->where('post_categories.name', '!=', 'Prestasi')
+        ->where('post_categories.name', '!=', 'Prestasi') 
         ->where('posts.status', 'Terbitkan')
         ->latest('posts.published_at')
         ->take(3)

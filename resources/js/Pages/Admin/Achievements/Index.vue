@@ -145,7 +145,7 @@ const handleFileImport = (event: Event) => {
           <tbody class="divide-y divide-gray-200">
             <tr v-if="achievements.data.length > 0" v-for="item in achievements.data" :key="item.id" class="hover:bg-gray-50">
               <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-black">{{ item.student_name }}</td>
-              <td class="whitespace-nowrap px-6 py-4 text-sm text-black">{{ item.achievement_name }}</td>
+              <td class="whitespace-nowrap px-6 py-4 text-sm text-black">{{ item.title }}</td>
               <td class="whitespace-nowrap px-6 py-4">
                 <span class="rounded-full px-3 py-1 text-xs font-medium" :class="item.category === 'Akademik' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'">{{ item.category }}</span>
               </td>
@@ -225,4 +225,3 @@ const handleFileImport = (event: Event) => {
 
   </div>
 </template>
-
