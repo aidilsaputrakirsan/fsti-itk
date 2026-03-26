@@ -99,12 +99,12 @@ class AchievementsController extends Controller
         // Validasi input
         $validatedData = $request->validate([
             'student_name' => 'required|string|max:255',
-            'student_nim' => 'required|string|max:255',
-            'study_program' => 'required|string',
+            'student_nim' => 'nullable|string|max:255',
+            'study_program' => 'nullable|string',
             'title' => 'required|string',
             'category' => 'required|string',
             'level' => 'required|string',
-            'organizer' => 'required|string',
+            'organizer' => 'nullable|string',
             'year' => 'required|digits:4',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',

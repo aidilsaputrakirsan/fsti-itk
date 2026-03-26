@@ -75,7 +75,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 Route::get('/', function () {
     $latestPosts = Post::select('posts.*', 'post_categories.name as category')
         ->leftJoin('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
-        ->where('post_categories.name', '!=', 'Prestasi') 
+        ->where('post_categories.name', '!=', 'Prestasi')
         ->where('posts.status', 'Terbitkan')
         ->latest('posts.published_at')
         ->take(3)
@@ -87,13 +87,15 @@ Route::get('/', function () {
         ->map(fn($item) => [
             'id' => $item->id,
             'student_name' => $item->student_name,
+            'student_nim' => $item->student_nim ?? '',
             'study_program' => $item->study_program,
-            'achievement_name' => $item->title,
+            'title' => $item->title,
             'organizer' => $item->organizer ?? 'FSTI ITK',
             'level' => $item->level,
             'category' => $item->category,
             'year' => $item->year,
-            'photo_url' => $item->image_path ? asset('storage/' . $item->image_path) : null,
+            'image_url' => $item->image_path ? asset('storage/' . $item->image_path) : null,
+            'certificate_url' => $item->certificate_path ? asset('storage/' . $item->certificate_path) : null,
         ]);
 
     return Inertia::render('Home', [

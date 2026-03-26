@@ -42,13 +42,13 @@ const submit = () => {
             </div>
 
             <div>
-              <label for="student_nim" class="block text-sm font-semibold text-black">NIM Mahasiswa *</label>
+              <label for="student_nim" class="block text-sm font-semibold text-black">NIM Mahasiswa</label>
               <input type="text" id="student_nim" v-model="form.student_nim" placeholder="Masukkan NIM Mahasiswa" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
               <p v-if="form.errors.student_nim" class="mt-2 text-sm text-red-600">{{ form.errors.student_nim }}</p>
             </div>
 
             <div>
-              <label for="study_program" class="block text-sm font-semibold text-black">Program Studi *</label>
+              <label for="study_program" class="block text-sm font-semibold text-black">Program Studi</label>
               <select id="study_program" v-model="form.study_program" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                 <option value="" disabled>Pilih Program Studi</option>
                 <option>Teknik Elektro</option>
@@ -96,7 +96,7 @@ const submit = () => {
             </div>
 
             <div>
-              <label for="organizer" class="block text-sm font-semibold text-black">Penyelenggara *</label>
+              <label for="organizer" class="block text-sm font-semibold text-black">Penyelenggara</label>
               <input type="text" id="organizer" v-model="form.organizer" placeholder="Masukkan institusi penyelenggara" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
               <p v-if="form.errors.organizer" class="mt-2 text-sm text-red-600">{{ form.errors.organizer }}</p>
             </div>

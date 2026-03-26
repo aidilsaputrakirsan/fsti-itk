@@ -31,14 +31,16 @@ class PublicAchievementController extends Controller
 
         $achievements = $query->orderByDesc('year')->latest()->paginate(12)->withQueryString()->through(fn($item) => [
             'id' => $item->id,
-            'student_name' => $item->student_name,            
+            'student_name' => $item->student_name,
+            'student_nim' => $item->student_nim ?? '', // Mencegah error TypeScript            
             'study_program' => $item->study_program,
-            'achievement_name' => $item->title,
+            'title' => $item->title, // <-- Diubah agar sinkron dengan Vue
             'organizer' => $item->organizer ?? 'FSTI ITK',
             'level' => $item->level,
             'category' => $item->category,
             'year' => $item->year,
-            'photo_url' => $item->image_path ? asset('storage/' . $item->image_path) : null,
+            'image_url' => $item->image_path ? asset('storage/' . $item->image_path) : null, // <-- Diubah agar sinkron
+            'certificate_url' => $item->certificate_path ? asset('storage/' . $item->certificate_path) : null,
         ]);
 
         $stats = [
