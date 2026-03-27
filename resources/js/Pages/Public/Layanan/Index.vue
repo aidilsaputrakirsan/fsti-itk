@@ -1,70 +1,112 @@
 <script setup>
+import { onMounted } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import { Head } from '@inertiajs/vue3';
+import { ArrowRight, AlertCircle, Globe, AppWindow, MonitorSmartphone, Link as LinkIcon, Compass } from 'lucide-vue-next';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 defineProps({
-    services: Object
+    services: Array
 });
+
+onMounted(() => {
+    AOS.init({ duration: 800, once: true });
+});
+
+// Merotasi ikon agar bervariasi
+const getIcon = (index) => {
+    const icons = [Globe, AppWindow, LinkIcon, MonitorSmartphone, Compass];
+    return icons[index % icons.length];
+};
+
+// Rotasi warna pastel yang kalem dengan teks menggunakan warna primary
+const getIconColorClasses = (index) => {
+    const colors = [
+        'bg-blue-50 text-primary',
+        'bg-indigo-50 text-primary',
+        'bg-sky-50 text-primary',
+        'bg-slate-100 text-primary'
+    ];
+    return colors[index % colors.length];
+};
 </script>
 
 <template>
     <PublicLayout>
-        <Head title="Akses Layanan Internal" />
+        <Head title="Portal Layanan Mahasiswa" />
+        
         <Banner
-            title="PORTAL LAYANAN"
-            subtitle="AKSES CEPAT FSTI ITK"
+            title="PORTAL LAYANAN MAHASISWA"
+            subtitle="DIREKTORI TAUTAN WEBSITE DAN SISTEM INFORMASI EKSTERNAL FSTI ITK"
             background-image="/images/background-banner.png"
         />
 
-        <div class="bg-gray-50 py-12 md:py-24">
-            <div class="container mx-auto px-6 lg:px-8">
-                
-                <div v-for="(categoryServices, categoryName) in services" :key="categoryName" class="mb-16">
-                    <div class="flex items-center mb-8">
-                        <div class="w-1 h-8 bg-[#133E87] mr-4"></div>
-                        <h2 class="text-2xl font-kulim-park-bold text-[#133E87] uppercase tracking-wide">{{ categoryName || 'Layanan Umum' }}</h2>
+        <div class="bg-[#F8FAFC] py-20 font-public-sans min-h-[65vh] relative overflow-hidden">
+            
+            <Globe class="absolute -top-10 -right-10 w-80 h-80 text-primary opacity-[0.03] transform rotate-12 pointer-events-none" />
+            <Globe class="absolute -bottom-20 -left-20 w-96 h-96 text-primary opacity-[0.03] transform -rotate-12 pointer-events-none" />
+
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl relative z-10">
+
+                <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden p-8 md:p-12" data-aos="fade-up">
+                    
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-primary"></div>
+                    
+                    <div class="border-b border-gray-100 pb-8 mb-8 text-center md:text-left">
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-primary mb-2 tracking-tight">
+                            Akses Layanan FSTI
+                        </h2>
+                        <p class="text-gray-600 text-sm md:text-base leading-relaxed">
+                            Temukan berbagai portal layanan dalam satu tempat untuk memudahkan aktivitas akademik Anda.
+                        </p>
                     </div>
 
-                    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                    <div v-if="services && services.length > 0" class="flex flex-col gap-4">
                         <a 
-                            v-for="service in categoryServices" 
+                            v-for="(service, index) in services" 
                             :key="service.id"
                             :href="service.link_url"
                             target="_blank"
-                            class="group bg-white p-6 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#4682A9] transform hover:-translate-y-1"
+                            class="group flex flex-col md:flex-row items-start md:items-center gap-5 bg-white hover:bg-blue-50/30 rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
                             data-aos="fade-up"
+                            :data-aos-delay="index * 50"
                         >
-                            <div class="flex items-center justify-center w-16 h-16 bg-[#CBDCEB] rounded-full mb-6 group-hover:bg-[#133E87] transition-colors">
-                                <img v-if="service.icon_url" :src="service.icon_url" class="w-8 h-8" alt="icon">
-                                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#133E87] group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                                </svg>
+                            <div :class="[getIconColorClasses(index), 'w-14 h-14 shrink-0 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110']">
+                                <component :is="getIcon(index)" class="w-6 h-6" />
                             </div>
-                            <h3 class="text-lg font-inter-bold text-gray-800 group-hover:text-[#133E87] mb-2">{{ service.name }}</h3>
-                            <p class="text-sm text-gray-500 line-clamp-2">{{ service.description }}</p>
+                            
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-primary mb-1 group-hover:opacity-80 transition-opacity leading-snug">
+                                    {{ service.name }}
+                                </h3>
+                                <p class="text-gray-500 text-sm leading-relaxed max-w-3xl">
+                                    {{ service.description }}
+                                </p>
+                            </div>
+                            
+                            <div class="hidden md:flex shrink-0 w-10 h-10 rounded-full border border-gray-200 bg-white items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-300 relative z-10">
+                                <ArrowRight class="w-4 h-4 text-gray-400 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
+                            </div>
+                            
+                            <div class="md:hidden absolute top-5 right-5 w-8 h-8 rounded-full border border-gray-200 bg-white flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-300">
+                                <ArrowRight class="w-4 h-4 text-gray-400 group-hover:text-white transition-all duration-300" />
+                            </div>
                         </a>
                     </div>
-                </div>
 
-                <div v-if="!services || Object.keys(services).length === 0" class="text-center py-20">
-                    <div class="text-gray-400 mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        </svg>
+                    <div v-else class="flex flex-col items-center justify-center py-16 text-center bg-gray-50 rounded-2xl border border-gray-100" data-aos="zoom-in">
+                        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-gray-100">
+                            <AlertCircle class="w-8 h-8 text-gray-400" />
+                        </div>
+                        <h3 class="text-xl font-bold text-primary mb-2">Direktori Kosong</h3>
+                        <p class="text-gray-500 text-sm max-w-md">Daftar tautan website eksternal saat ini belum ditambahkan oleh Admin.</p>
                     </div>
-                    <p class="text-xl font-inter-semibold text-gray-500">Belum ada layanan internal yang ditambahkan.</p>
+
                 </div>
 
             </div>
         </div>
     </PublicLayout>
 </template>
-
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Kulim+Park:wght@700&display=swap');
-
-.font-kulim-park-bold { font-family: 'Kulim Park', sans-serif; font-weight: 700; }
-.font-inter-semibold { font-family: 'Inter', sans-serif; font-weight: 600; }
-.font-inter-bold { font-family: 'Inter', sans-serif; font-weight: 700; }
-</style>

@@ -45,7 +45,8 @@ class DatabaseSeeder extends Seeder
             ProfileSeeder::class,
             PpidSeeder::class,
             IntegrityZoneSeeder::class,
-            SurveyCategorySeeder::class
+            SurveyCategorySeeder::class,
+            InternalServiceSeeder::class,
         ]);
     }
 }

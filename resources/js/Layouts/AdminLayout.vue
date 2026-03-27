@@ -3,7 +3,6 @@ import { Link, usePage, router } from '@inertiajs/vue3';
 import {
     ChartBarSquareIcon,
     NewspaperIcon,
-    TrophyIcon,
     UsersIcon,
     ArrowLeftOnRectangleIcon,
     ChevronRightIcon,
@@ -11,8 +10,9 @@ import {
     AcademicCapIcon,
     ArchiveBoxIcon,
     ShieldCheckIcon,
+    UserGroupIcon, // Ditambahkan untuk ikon Kemahasiswaan
 } from '@heroicons/vue/24/outline';
-import { ref, onMounted, computed } from 'vue'; // Tambahkan computed
+import { ref, onMounted, computed } from 'vue';
 
 const page = usePage();
 const openMenu = ref<string | null>(null);
@@ -31,14 +31,17 @@ const navigation = [
             { name: 'Kelola Kategori Berita', href: '/admin/post-categories' },
         ] 
     },
+    // --- FIX: Menu Kemahasiswaan (Gabungan Prestasi dan Layanan) ---
     { 
-        name: 'Prestasi', 
+        name: 'Kemahasiswaan', 
         href: null,
-        icon: TrophyIcon,
+        icon: UserGroupIcon,
         children: [
-            { name: 'Kelola Daftar Prestasi', href: '/admin/achievements' }
+            { name: 'Kelola Daftar Prestasi', href: '/admin/achievements' },
+            { name: 'Kelola Portal Layanan Mahasiswa', href: '/admin/internal-services' }
         ]
     },
+    // ---------------------------------------------------------------
     {
         name: 'Profil Fakultas',
         href: null,
@@ -68,12 +71,11 @@ const navigation = [
         ]
     },
     {
-        name: 'Informasi & Layanan',
+        name: 'Alumni', // Diubah dari "Informasi & Layanan" karena Layanan sudah dipindah
         href: null,
         icon: InformationCircleIcon,
         children: [
             { name: 'Alumni & Tracer', href: '/admin/alumni' },
-            { name: 'Layanan Internal', href: '/admin/internal-services' },
         ]
     },
     { name: 'Kelola Akun Admin', href: '/admin/users', icon: UsersIcon, children: null },
@@ -105,7 +107,7 @@ onMounted(() => {
     <div class="flex h-screen bg-[#CBDCEB] text-black">
         <aside class="flex w-72 flex-col flex-shrink-0 bg-white px-5 pt-6 pb-4 border-r border-gray-200 shadow-lg">
             <div class="px-4 mb-8">
-                <img src="/images/logofsti.png" alt="Logo FSTI Prestasi" width="192" height="69" />
+                <img src="/images/logofsti.png" alt="Logo FSTI" width="192" height="69" />
             </div>
 
             <nav class="flex-1 space-y-3 overflow-y-auto">
@@ -147,7 +149,7 @@ onMounted(() => {
                                 <Link v-for="child in item.children" :key="child.name" :href="child.href"
                                     :class="[
                                         'block w-full px-12 py-3 text-sm font-semibold transition-colors duration-200',
-                                        currentUrl === child.href 
+                                        currentUrl.startsWith(child.href) 
                                             ? 'bg-[#4682A9] text-white border-l-4 border-[#133E87]' 
                                             : 'text-black hover:bg-gray-200 hover:text-[#4682A9] border-l-4 border-transparent'
                                     ]"

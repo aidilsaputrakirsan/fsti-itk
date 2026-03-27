@@ -124,7 +124,18 @@ Route::get('/alumni', function () {
 })->name('alumni.index');
 
 Route::get('/layanan-internal', function () {
-    return Inertia::render('Public/Layanan/Index');
+    $services = \App\Models\InternalService::orderBy('sort_order', 'asc')->get()->map(function ($item) {
+        return [
+            'id' => $item->id,
+            'name' => $item->name,
+            'description' => $item->description,
+            'link_url' => $item->link_url,
+        ];
+    });
+
+    return Inertia::render('Public/Layanan/Index', [
+        'services' => $services
+    ]);
 })->name('layanan.index');
 
 
