@@ -7,8 +7,8 @@ defineOptions({ layout: AdminLayout });
 
 const form = useForm({
   student_name: '',
-  student_nim: '',
-  study_program: '',
+  student_nim: '',    // Dibiarkan kosong agar nullable di backend
+  study_program: '',  // Default string kosong agar cocok dengan opsi pertama dropdown
   title: '',
   category: '', 
   level: '', 
@@ -30,27 +30,26 @@ const submit = () => {
       <p class="mt-1 text-black">Tambah prestasi baru mahasiswa Fakultas Sains dan Teknologi Institut Teknologi Kalimantan</p>
     </div>
 
-    <div class="bg-white shadow-sm p-8 rounded-lg">
-      <form @submit.prevent="submit">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-          
-          <div class="space-y-6">
-            <div>
-              <label for="student_name" class="block text-sm font-semibold text-black">Nama Mahasiswa *</label>
-              <input type="text" id="student_name" v-model="form.student_name" placeholder="Masukkan Nama Mahasiswa" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
-              <p v-if="form.errors.student_name" class="mt-2 text-sm text-red-600">{{ form.errors.student_name }}</p>
-            </div>
+   <div class="bg-white shadow-sm p-8 rounded-lg">
+    <form @submit.prevent="submit">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+        <div class="space-y-6">
+          <div>
+            <label for="student_name" class="block text-sm font-semibold text-black">Nama Mahasiswa / Tim *</label>
+            <textarea id="student_name" v-model="form.student_name" rows="3" placeholder="Masukkan Nama (Gunakan baris baru untuk lebih dari 1 orang)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+            <p v-if="form.errors.student_name" class="mt-2 text-sm text-red-600">{{ form.errors.student_name }}</p>
+          </div>
+
+          <div>
+            <label for="student_nim" class="block text-sm font-semibold text-black">NIM Mahasiswa (Opsional)</label>
+            <textarea id="student_nim" v-model="form.student_nim" rows="3" placeholder="Masukkan NIM (Gunakan baris baru jika banyak)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+            <p v-if="form.errors.student_nim" class="mt-2 text-sm text-red-600">{{ form.errors.student_nim }}</p>
+          </div>
 
             <div>
-              <label for="student_nim" class="block text-sm font-semibold text-black">NIM Mahasiswa</label>
-              <input type="text" id="student_nim" v-model="form.student_nim" placeholder="Masukkan NIM Mahasiswa" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
-              <p v-if="form.errors.student_nim" class="mt-2 text-sm text-red-600">{{ form.errors.student_nim }}</p>
-            </div>
-
-            <div>
-              <label for="study_program" class="block text-sm font-semibold text-black">Program Studi</label>
-              <select id="study_program" v-model="form.study_program" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                <option value="" disabled>Pilih Program Studi</option>
+              <label for="study_program" class="block text-sm font-semibold text-black">Program Studi (Opsional)</label>
+              <select id="study_program" v-model="form.study_program" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm">
+                <option value="">-- Tidak Ada / Pilih Prodi --</option>
                 <option>Teknik Elektro</option>
                 <option>Sistem Informasi</option>
                 <option>Informatika</option>
@@ -65,8 +64,8 @@ const submit = () => {
             </div>
 
             <div>
-              <label for="title" class="block text-sm font-semibold text-black">Judul Prestasi *</label>
-              <input type="text" id="title" v-model="form.title" placeholder="Masukkan judul prestasi atau lomba yang dicapai" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+              <label for="title" class="block text-sm font-semibold text-black">Capaian Prestasi *</label>
+              <input type="text" id="title" v-model="form.title" placeholder="Masukkan nama prestasi atau lomba yang dicapai" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
               <p v-if="form.errors.title" class="mt-2 text-sm text-red-600">{{ form.errors.title }}</p>
             </div>
           </div>
@@ -74,7 +73,7 @@ const submit = () => {
           <div class="space-y-6">
             <div>
               <label for="category" class="block text-sm font-semibold text-black">Kategori *</label>
-              <select id="category" v-model="form.category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+              <select id="category" v-model="form.category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm">
                 <option value="" disabled>Pilih kategori prestasi</option>
                 <option>Akademik</option>
                 <option>Non-Akademik</option>
@@ -84,7 +83,7 @@ const submit = () => {
 
             <div>
               <label for="level" class="block text-sm font-semibold text-black">Tingkat *</label>
-              <select id="level" v-model="form.level" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+              <select id="level" v-model="form.level" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm">
                 <option value="" disabled>Pilih tingkat prestasi</option>
                 <option>Internasional</option>
                 <option>Nasional</option>
@@ -96,20 +95,20 @@ const submit = () => {
             </div>
 
             <div>
-              <label for="organizer" class="block text-sm font-semibold text-black">Penyelenggara</label>
-              <input type="text" id="organizer" v-model="form.organizer" placeholder="Masukkan institusi penyelenggara" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+              <label for="organizer" class="block text-sm font-semibold text-black">Penyelenggara (Opsional)</label>
+              <input type="text" id="organizer" v-model="form.organizer" placeholder="Masukkan institusi penyelenggara" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
               <p v-if="form.errors.organizer" class="mt-2 text-sm text-red-600">{{ form.errors.organizer }}</p>
             </div>
             
             <div>
               <label for="year" class="block text-sm font-semibold text-black">Tahun *</label>
-              <input type="number" id="year" v-model="form.year" placeholder="Masukkan tahun capaian prestasi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+              <input type="number" id="year" v-model="form.year" placeholder="Masukkan tahun capaian prestasi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
               <p v-if="form.errors.year" class="mt-2 text-sm text-red-600">{{ form.errors.year }}</p>
             </div>
           </div>
 
           <div class="md:col-span-2">
-            <label for="photo" class="block text-sm font-semibold text-black">Foto Mahasiswa/Tim *</label>
+            <label for="image" class="block text-sm font-semibold text-black">Foto Mahasiswa/Tim *</label>
             <div class="mt-1 relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2">
               <PaperClipIcon class="h-5 w-5 text-gray-400" />
               <span class="ml-3 text-sm" :class="{'text-gray-400': !form.image, 'text-black': form.image}">
@@ -121,12 +120,13 @@ const submit = () => {
           </div>
 
           <div class="md:col-span-2">
-            <label for="proof" class="block text-sm font-semibold text-black">Bukti (Opsional)</label> <div class="mt-1 relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2">
+            <label for="certificate" class="block text-sm font-semibold text-black">Bukti (Opsional)</label> 
+            <div class="mt-1 relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2">
               <PaperClipIcon class="h-5 w-5 text-gray-400" />
               <span class="ml-3 text-sm" :class="{'text-gray-400': !form.certificate, 'text-black': form.certificate}">
                 {{ form.certificate ? form.certificate.name : 'Masukkan bukti berupa sertifikat atau gambar' }}
               </span>
-              <input type="file" id="proof" @input="form.certificate = ($event.target as HTMLInputElement).files?.[0] || null" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+              <input type="file" id="certificate" @input="form.certificate = ($event.target as HTMLInputElement).files?.[0] || null" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
             </div>
             <p v-if="form.errors.certificate" class="mt-2 text-sm text-red-600">{{ form.errors.certificate }}</p>
           </div>

@@ -53,12 +53,12 @@ class AchievementsController extends Controller
         // Validasi input: foto wajib, bukti opsional
         $validatedData = $request->validate([
             'student_name' => 'required|string|max:255',
-            'student_nim' => 'required|string|max:255',
-            'study_program' => 'required|string',
+            'student_nim' => 'nullable|string|max:255',
+            'study_program' => 'nullable|string',
             'title' => 'required|string',
             'category' => 'required|string',
             'level' => 'required|string',
-            'organizer' => 'required|string',
+            'organizer' => 'nullable|string',
             'year' => 'required|digits:4',
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
@@ -151,16 +151,5 @@ class AchievementsController extends Controller
         $achievement->delete();
 
         return redirect()->route('admin.achievements.index')->with('success', 'Prestasi berhasil dihapus.');
-    }
-
-    public function export(Request $request)
-    {
-        return redirect()->back()->with('info', 'Fitur ekspor sedang dalam pengembangan.');
-    }
-
-    public function import(Request $request)
-    {
-        $request->validate(['file' => 'required|mimes:xlsx,csv']);
-        return redirect()->back()->with('info', 'Fitur impor sedang dalam pengembangan.');
     }
 }

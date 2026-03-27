@@ -13,15 +13,16 @@ const props = defineProps<{
 const form = useForm({
   _method: 'patch', 
   student_name: props.achievement.student_name,
-  student_nim: props.achievement.student_nim,
-  study_program: props.achievement.study_program,
-  title: props.achievement.title, // Sesuaikan dengan DB
+  // Menggunakan operator || '' agar jika data null di DB, form tetap mengenali sebagai string kosong
+  student_nim: props.achievement.student_nim || '',
+  study_program: props.achievement.study_program || '',
+  title: props.achievement.title, 
   category: props.achievement.category,
   level: props.achievement.level,
-  organizer: props.achievement.organizer,
+  organizer: props.achievement.organizer || '',
   year: props.achievement.year,
-  image: null as File | null, // Sesuaikan dengan Controller
-  certificate: null as File | null, // Sesuaikan dengan Controller
+  image: null as File | null, 
+  certificate: null as File | null,
 });
 
 const submit = () => {
@@ -38,26 +39,25 @@ const submit = () => {
     </div>
 
     <div class="bg-white shadow-sm p-8 rounded-lg">
-      <form @submit.prevent="submit">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-          
-          <div class="space-y-6">
-            <div>
-              <label for="student_name" class="block text-sm font-semibold text-black">Nama Mahasiswa *</label>
-              <input type="text" id="student_name" v-model="form.student_name" placeholder="Masukkan Nama Mahasiswa" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
-              <p v-if="form.errors.student_name" class="mt-2 text-sm text-red-600">{{ form.errors.student_name }}</p>
-            </div>
+    <form @submit.prevent="submit">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+        <div class="space-y-6">
+          <div>
+            <label for="student_name" class="block text-sm font-semibold text-black">Nama Mahasiswa / Tim *</label>
+            <textarea id="student_name" v-model="form.student_name" rows="3" placeholder="Masukkan Nama Mahasiswa" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+            <p v-if="form.errors.student_name" class="mt-2 text-sm text-red-600">{{ form.errors.student_name }}</p>
+          </div>
+
+          <div>
+            <label for="student_nim" class="block text-sm font-semibold text-black">NIM Mahasiswa (Opsional)</label>
+            <textarea id="student_nim" v-model="form.student_nim" rows="3" placeholder="Masukkan NIM Mahasiswa" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+            <p v-if="form.errors.student_nim" class="mt-2 text-sm text-red-600">{{ form.errors.student_nim }}</p>
+          </div>
 
             <div>
-              <label for="student_nim" class="block text-sm font-semibold text-black">NIM Mahasiswa</label>
-              <input type="text" id="student_nim" v-model="form.student_nim" placeholder="Masukkan NIM Mahasiswa" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
-              <p v-if="form.errors.student_nim" class="mt-2 text-sm text-red-600">{{ form.errors.student_nim }}</p>
-            </div>
-
-            <div>
-              <label for="study_program" class="block text-sm font-semibold text-black">Program Studi</label>
+              <label for="study_program" class="block text-sm font-semibold text-black">Program Studi (Opsional)</label>
               <select id="study_program" v-model="form.study_program" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm">
-                <option value="" disabled>Pilih Program Studi</option>
+                <option value="">-- Tidak Ada / Pilih Prodi --</option>
                 <option>Teknik Elektro</option>
                 <option>Sistem Informasi</option>
                 <option>Informatika</option>
@@ -103,7 +103,7 @@ const submit = () => {
             </div>
 
             <div>
-              <label for="organizer" class="block text-sm font-semibold text-black">Penyelenggara</label>
+              <label for="organizer" class="block text-sm font-semibold text-black">Penyelenggara (Opsional)</label>
               <input type="text" id="organizer" v-model="form.organizer" placeholder="Masukkan institusi penyelenggara" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
               <p v-if="form.errors.organizer" class="mt-2 text-sm text-red-600">{{ form.errors.organizer }}</p>
             </div>

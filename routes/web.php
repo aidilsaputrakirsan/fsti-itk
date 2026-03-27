@@ -28,8 +28,6 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     Route::resource('/posts', AdminPostController::class);
     Route::resource('/achievements', AchievementsController::class);
-    Route::post('/achievements/import', [AchievementsController::class, 'import'])->name('achievements.import');
-    Route::get('/achievements/export', [AchievementsController::class, 'export'])->name('achievements.export');
 
     // Rute untuk Zona Integritas Admin
     Route::prefix('zona-integritas')->name('zi.')->group(function () {

@@ -80,27 +80,7 @@ const handleFileImport = (event: Event) => {
         <p class="mt-1 text-black">Manajemen daftar prestasi mahasiswa untuk website Fakultas Sains dan Teknologi <br> Institut Teknologi Kalimantan</p>
       </div>
       <div class="flex items-center gap-3 flex-shrink-0">
-        <div class="relative">
-            <button @click="isExportOpen = !isExportOpen" class="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-black border border-gray-300 shadow-sm hover:bg-gray-50">
-                <ArrowUpOnSquareIcon class="h-5 w-5" />
-                Ekspor
-                <ChevronDownIcon class="h-4 w-4" />
-            </button>
-            <div v-if="isExportOpen" @click="isExportOpen = false" class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                <div class="py-1">
-                    <a :href="route('admin.achievements.export', { format: 'xlsx' })" class="block px-4 py-2 text-sm text-black hover:bg-gray-100">Excel (.xlsx)</a>
-                    <a :href="route('admin.achievements.export', { format: 'csv' })" class="block px-4 py-2 text-sm text-black hover:bg-gray-100">CSV (.csv)</a>
-                    <a :href="route('admin.achievements.export', { format: 'pdf' })" class="block px-4 py-2 text-sm text-black hover:bg-gray-100">PDF (.pdf)</a>
-                </div>
-            </div>
-        </div>
-        <form @submit.prevent>
-            <input type="file" id="import-file-input" @change="handleFileImport" class="hidden" accept=".xlsx, .csv" />
-            <button @click="triggerImportFile" type="button" class="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-black border border-gray-300 shadow-sm hover:bg-gray-50">
-                <ArrowDownOnSquareIcon class="h-5 w-5" />
-                Impor
-            </button>
-        </form>
+        
         <Link :href="route('admin.achievements.create')" class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90">
           <PlusIcon class="h-5 w-5" />
           Tambah Prestasi
@@ -142,10 +122,12 @@ const handleFileImport = (event: Event) => {
               <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-black w-32">Aksi</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-200">
-            <tr v-if="achievements.data.length > 0" v-for="item in achievements.data" :key="item.id" class="hover:bg-gray-50">
-              <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-black">{{ item.student_name }}</td>
-              <td class="whitespace-nowrap px-6 py-4 text-sm text-black">{{ item.title }}</td>
+        <tbody class="divide-y divide-gray-200">
+  <tr v-if="achievements.data.length > 0" v-for="item in achievements.data" :key="item.id" class="hover:bg-gray-50">
+    <td class="whitespace-pre-line px-6 py-4 text-sm font-medium text-black leading-relaxed">
+      {{ item.student_name }}
+    </td>
+    <td class="whitespace-nowrap px-6 py-4 text-sm text-black">{{ item.title }}</td>
               <td class="whitespace-nowrap px-6 py-4">
                 <span class="rounded-full px-3 py-1 text-xs font-medium" :class="item.category === 'Akademik' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'">{{ item.category }}</span>
               </td>
