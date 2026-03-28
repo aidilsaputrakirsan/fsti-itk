@@ -47,8 +47,9 @@ const navigation = [
         href: null,
         icon: AcademicCapIcon,
         children: [
-            { name: 'Kelola Halaman', href: '/admin/static-pages' },
-            { name: 'Civitas Akademika', href: '/admin/staff' },
+            { name: 'Kelola Tentang Fakultas', href: '/admin/static-pages' },
+            { name: 'Kelola Civitas Akademika', href: '/admin/staff' },
+            { name: 'Kelola Kontak', href: '/admin/contacts' },
         ]
     },
     {

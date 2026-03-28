@@ -66,6 +66,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('/staff', \App\Http\Controllers\Admin\StaffController::class);
 
     Route::resource('post-categories', PostCategoryController::class)->except(['show']);
+
+    // Modul Kontak
+    Route::get('/contacts', [\App\Http\Controllers\Admin\ContactController::class, 'edit'])->name('contacts.edit');
+    Route::put('/contacts', [\App\Http\Controllers\Admin\ContactController::class, 'update'])->name('contacts.update');
 });
 
 
@@ -163,8 +167,12 @@ Route::get('/profil/tenaga-kependidikan', [PublicProfileController::class, 'tend
 Route::get('/program-studi/matematika', function () {
     return Inertia::render('Public/ProgramStudi/Matematika');
 })->name('prodi.matematika');
+
 Route::get('/kontak', function () {
-    return Inertia::render('Public/Profil/Kontak');
+    $contact = \App\Models\Contact::first(); // Ambil data kontak
+    return Inertia::render('Public/Profil/Kontak', [
+        'contact' => $contact
+    ]);
 })->name('kontak');
 
 require __DIR__ . '/auth.php';
