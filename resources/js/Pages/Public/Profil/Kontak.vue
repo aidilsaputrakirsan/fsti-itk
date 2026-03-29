@@ -84,75 +84,61 @@ defineProps({
             </div>
         </div>
 
-        <div class="bg-primary py-16 md:py-24 font-public-sans relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                <div class="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
-                <div class="absolute bottom-10 -left-20 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
-            </div>
-
-            <div class="container mx-auto px-6 lg:px-8 max-w-6xl relative z-10">
-                <div class="text-center mb-16" data-aos="fade-up">
-                    <h2 class="text-3xl md:text-4xl font-bold font-optimus text-white mb-4 tracking-tight drop-shadow-md">
+        <section class="bg-primary/10 py-16 md:py-24 font-public-sans">
+            <div class="container mx-auto px-6 lg:px-8 max-w-7xl">
+                <div class="text-center mb-12 lg:mb-16" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl font-bold font-optimus text-primary mb-3 tracking-tight">
                         Layanan Komunikasi & Konsultasi
                     </h2>
-                    <p class="text-blue-100 text-base md:text-lg max-w-2xl mx-auto">
+                    <p class="text-gray-600 text-base md:text-lg max-w-2xl mx-auto">
                         Hubungi kami untuk pertanyaan akademik, keuangan, maupun informasi resmi lainnya.
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto">
+                    
                     <a :href="contact?.academic_wa_link || '#'" target="_blank" rel="noopener noreferrer" class="group block" data-aos="fade-up" data-aos-delay="100">
-                        <div class="bg-white rounded-3xl p-8 shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 h-full text-center border-b-4 border-transparent hover:border-[#00509D] relative overflow-hidden">
-                            <div class="relative z-10 flex flex-col items-center">
-                                <span class="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-blue-50 text-primary shadow-sm mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300 group-hover:scale-110">
-                                    <GraduationCap class="h-8 w-8" />
-                                </span>
-                                <h3 class="text-gray-900 font-extrabold text-2xl mb-1">Layanan Akademik</h3>
-                                <p class="text-gray-500 text-sm mb-6">WhatsApp (Chat Only)</p>
-                                <div class="bg-gray-50 px-6 py-3 rounded-full border border-gray-100 group-hover:bg-[#00509D] group-hover:border-[#00509D] transition-colors duration-300 w-full">
-                                    <p class="text-primary group-hover:text-white font-bold text-lg tracking-wide">{{ contact?.academic_wa_number || '-' }}</p>
-                                </div>
+                        <div class="bg-white rounded-2xl p-5 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 h-full flex items-center gap-5 border border-white hover:border-primary/30">
+                            <div class="shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-xl bg-blue-50 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                <GraduationCap class="h-7 w-7" />
+                            </div>
+                            <div class="flex-1 text-left">
+                                <h3 class="text-gray-900 font-extrabold text-lg mb-0.5 leading-tight">Layanan Akademik</h3>
+                                <p class="text-gray-500 text-xs mb-2">WhatsApp (Chat Only)</p>
+                                <p class="text-primary font-bold text-sm tracking-wide">{{ contact?.academic_wa_number || '-' }}</p>
                             </div>
                         </div>
                     </a>
 
                     <a :href="contact?.finance_wa_link || '#'" target="_blank" rel="noopener noreferrer" class="group block" data-aos="fade-up" data-aos-delay="200">
-                        <div class="bg-white rounded-3xl p-8 shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 h-full text-center border-b-4 border-transparent hover:border-[#00509D] relative overflow-hidden">
-                            <div class="relative z-10 flex flex-col items-center">
-                                <span class="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-blue-50 text-primary shadow-sm mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300 group-hover:scale-110">
-                                    <Wallet class="h-8 w-8" />
-                                </span>
-                                <h3 class="text-gray-900 font-extrabold text-2xl mb-1">Layanan Keuangan</h3>
-                                <p class="text-gray-500 text-sm mb-6">WhatsApp (Chat Only)</p>
-                                <div class="bg-gray-50 px-6 py-3 rounded-full border border-gray-100 group-hover:bg-[#00509D] group-hover:border-[#00509D] transition-colors duration-300 w-full">
-                                    <p class="text-primary group-hover:text-white font-bold text-lg tracking-wide">{{ contact?.finance_wa_number || '-' }}</p>
-                                </div>
+                        <div class="bg-white rounded-2xl p-5 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 h-full flex items-center gap-5 border border-white hover:border-primary/30">
+                            <div class="shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-xl bg-blue-50 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                <Wallet class="h-7 w-7" />
+                            </div>
+                            <div class="flex-1 text-left">
+                                <h3 class="text-gray-900 font-extrabold text-lg mb-0.5 leading-tight">Layanan Keuangan</h3>
+                                <p class="text-gray-500 text-xs mb-2">WhatsApp (Chat Only)</p>
+                                <p class="text-primary font-bold text-sm tracking-wide">{{ contact?.finance_wa_number || '-' }}</p>
                             </div>
                         </div>
                     </a>
-                </div>
 
-                <div class="flex justify-center mt-6 lg:mt-8 max-w-4xl mx-auto">
-                    <div class="w-full md:w-[calc(50%-0.75rem)]">
-                        <a :href="`mailto:${contact?.email || 'fsti@itk.ac.id'}`" class="group block" data-aos="fade-up" data-aos-delay="300">
-                            <div class="bg-white rounded-3xl p-8 shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 h-full text-center border-b-4 border-transparent hover:border-[#00509D] relative overflow-hidden">
-                                <div class="relative z-10 flex flex-col items-center">
-                                    <span class="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-blue-50 text-primary shadow-sm mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300 group-hover:scale-110">
-                                        <Mail class="h-8 w-8" />
-                                    </span>
-                                    <h3 class="text-gray-900 font-extrabold text-2xl mb-1">Email Resmi</h3>
-                                    <p class="text-gray-500 text-sm mb-6">Surel Kelembagaan</p>
-                                    <div class="bg-gray-50 px-6 py-3 rounded-full border border-gray-100 group-hover:bg-[#00509D] group-hover:border-[#00509D] transition-colors duration-300 w-full overflow-hidden">
-                                        <p class="text-primary group-hover:text-white font-bold text-lg tracking-wide truncate">{{ contact?.email || '-' }}</p>
-                                    </div>
-                                </div>
+                    <a :href="`mailto:${contact?.email || 'fsti@itk.ac.id'}`" class="group block" data-aos="fade-up" data-aos-delay="300">
+                        <div class="bg-white rounded-2xl p-5 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 h-full flex items-center gap-5 border border-white hover:border-primary/30">
+                            <div class="shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-xl bg-blue-50 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                <Mail class="h-7 w-7" />
                             </div>
-                        </a>
-                    </div>
-                </div>
+                            <div class="flex-1 text-left overflow-hidden">
+                                <h3 class="text-gray-900 font-extrabold text-lg mb-0.5 leading-tight">Email Resmi</h3>
+                                <p class="text-gray-500 text-xs mb-2">Surel Kelembagaan</p>
+                                <p class="text-primary font-bold text-sm tracking-wide truncate">{{ contact?.email || '-' }}</p>
+                            </div>
+                        </div>
+                    </a>
 
+                </div>
             </div>
-        </div>
+        </section>
 
         <div class="bg-gray-50 py-16 md:py-24 font-public-sans border-t border-gray-200">
             <div class="container mx-auto px-6 lg:px-8 max-w-4xl">

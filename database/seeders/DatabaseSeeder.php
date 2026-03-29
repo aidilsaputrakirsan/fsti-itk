@@ -47,6 +47,7 @@ class DatabaseSeeder extends Seeder
             IntegrityZoneSeeder::class,
             SurveyCategorySeeder::class,
             InternalServiceSeeder::class,
+            ContactSeeder::class,
         ]);
     }
 }

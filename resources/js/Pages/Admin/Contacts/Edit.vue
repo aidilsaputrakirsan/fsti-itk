@@ -1,17 +1,35 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch, computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 import { 
     MapPinIcon, 
     ChatBubbleLeftRightIcon, 
     ShareIcon, 
     PaperAirplaneIcon,
-    InformationCircleIcon
+    InformationCircleIcon,
+    CheckCircleIcon
 } from '@heroicons/vue/24/outline';
 
 defineOptions({ layout: AdminLayout });
 const props = defineProps({ contact: Object });
+
+// --- LOGIK NOTIFIKASI PERSIS SEPERTI MODUL BERITA ---
+const page = usePage();
+const showNotification = ref(false);
+const notificationMessage = ref('');
+const flashSuccess = computed(() => page.props.flash?.success);
+
+watch(flashSuccess, (message) => {
+    if (message) {
+        notificationMessage.value = message;
+        showNotification.value = true;
+        setTimeout(() => {
+            showNotification.value = false;
+        }, 3000);
+    }
+}, { immediate: true });
+// ----------------------------------------------------
 
 // Inisialisasi Tab Aktif
 const activeTab = ref('lokasi');
@@ -39,8 +57,15 @@ const form = useForm({
 
 const submit = () => {
     form.put(route('admin.contacts.update'), {
-        preserveState: false,  
-        preserveScroll: true,  
+        preserveScroll: true,
+        // Ditambahkan onSuccess manual untuk menjamin Pop-Up selalu muncul meskipun kita tidak pindah halaman
+        onSuccess: () => {
+            notificationMessage.value = page.props.flash?.success || 'Informasi kontak berhasil diperbarui.';
+            showNotification.value = true;
+            setTimeout(() => {
+                showNotification.value = false;
+            }, 3000);
+        }
     });
 };
 </script>
@@ -96,7 +121,7 @@ const submit = () => {
                         <div class="space-y-6">
                             <div>
                                 <label class="block text-sm font-bold text-gray-800 mb-2">Alamat Lengkap Fakultas</label>
-                                <textarea v-model="form.address" rows="4" class="w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary shadow-sm bg-gray-50 focus:bg-white transition-colors" placeholder="Cth: Kampus ITK Gedung B, Lantai 1. Jl. Soekarno Hatta KM 15, Karang Joang..."></textarea>
+                                <textarea v-model="form.address" rows="4" class="w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary shadow-sm bg-gray-50 focus:bg-white transition-colors" placeholder="Cth: Kampus ITK Gedung B, Lantai 1..."></textarea>
                                 <p v-if="form.errors.address" class="text-red-500 text-xs mt-1">{{ form.errors.address }}</p>
                             </div>
                             
@@ -108,8 +133,8 @@ const submit = () => {
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold text-gray-800 mb-2">Tautan Sematan Peta (Google Maps)</label>
-                                    <input type="text" v-model="form.google_maps_iframe" placeholder="Cth: https://www.google.com/maps/embed?pb=..." class="w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary shadow-sm bg-gray-50 focus:bg-white transition-colors">
-                                    <p class="text-xs text-gray-500 mt-2 font-medium leading-relaxed">Panduan: Masuk ke Google Maps > Bagikan > Sematkan Peta > Salin URL yang berada di dalam tanda <code class="bg-blue-50 text-primary px-1.5 py-0.5 rounded">src="..."</code>.</p>
+                                    <input type="text" v-model="form.google_maps_iframe" placeholder="Cth: http://googleusercontent.com/maps..." class="w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary shadow-sm bg-gray-50 focus:bg-white transition-colors">
+                                    <p class="text-xs text-gray-500 mt-2 font-medium leading-relaxed">Panduan: Salin URL dari atribut <code class="bg-blue-50 text-primary px-1.5 py-0.5 rounded">src="..."</code> pada sematan peta.</p>
                                     <p v-if="form.errors.google_maps_iframe" class="text-red-500 text-xs mt-1">{{ form.errors.google_maps_iframe }}</p>
                                 </div>
                             </div>
@@ -124,7 +149,6 @@ const submit = () => {
                                 <label class="block text-sm font-bold text-gray-800 mb-2">Email Resmi Fakultas</label>
                                 <input type="email" v-model="form.email" placeholder="Cth: fsti@itk.ac.id" class="w-full md:w-1/2 rounded-xl border-gray-300 focus:ring-primary focus:border-primary shadow-sm transition-colors">
                                 <p class="text-xs text-gray-500 mt-2">Email ini akan digunakan sebagai tombol langsung ("Mailto") pada halaman publik.</p>
-                                <p v-if="form.errors.email" class="text-red-500 text-xs mt-1">{{ form.errors.email }}</p>
                             </div>
 
                             <hr class="border-gray-100">
@@ -138,7 +162,7 @@ const submit = () => {
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-gray-600 mb-1">Tautan Aksi (URL wa.me)</label>
-                                        <input type="url" v-model="form.academic_wa_link" placeholder="Cth: https://wa.me/6285172302157" class="w-full rounded-lg border-gray-300 focus:ring-primary focus:border-primary text-sm shadow-sm">
+                                        <input type="url" v-model="form.academic_wa_link" placeholder="Cth: https://wa.me/62851..." class="w-full rounded-lg border-gray-300 focus:ring-primary focus:border-primary text-sm shadow-sm">
                                     </div>
                                 </div>
 
@@ -150,11 +174,10 @@ const submit = () => {
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-gray-600 mb-1">Tautan Aksi (URL wa.me)</label>
-                                        <input type="url" v-model="form.finance_wa_link" placeholder="Cth: https://wa.me/6285172312157" class="w-full rounded-lg border-gray-300 focus:ring-primary focus:border-primary text-sm shadow-sm">
+                                        <input type="url" v-model="form.finance_wa_link" placeholder="Cth: https://wa.me/62851..." class="w-full rounded-lg border-gray-300 focus:ring-primary focus:border-primary text-sm shadow-sm">
                                     </div>
                                 </div>
                             </div>
-                            <p class="text-xs text-gray-400 font-medium">*Gunakan format <code class="text-primary">https://wa.me/628...</code> agar pengunjung langsung diarahkan ke chat WhatsApp tanpa perlu menyimpan nomor.</p>
 
                         </div>
                     </div>
@@ -173,7 +196,7 @@ const submit = () => {
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-gray-800 mb-1">Tautan URL Profil</label>
-                                    <input type="url" v-model="form.instagram_link" placeholder="Cth: https://www.instagram.com/fsti.itk" class="w-full rounded-lg border-gray-300 focus:ring-primary focus:border-primary text-sm shadow-sm">
+                                    <input type="url" v-model="form.instagram_link" placeholder="Cth: https://instagram.com/..." class="w-full rounded-lg border-gray-300 focus:ring-primary focus:border-primary text-sm shadow-sm">
                                 </div>
                             </div>
 
@@ -189,7 +212,7 @@ const submit = () => {
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-gray-800 mb-1">Tautan URL Profil</label>
-                                    <input type="url" v-model="form.tiktok_link" placeholder="Cth: https://www.tiktok.com/@fsti.itk" class="w-full rounded-lg border-gray-300 focus:ring-primary focus:border-primary text-sm shadow-sm">
+                                    <input type="url" v-model="form.tiktok_link" placeholder="Cth: https://tiktok.com/..." class="w-full rounded-lg border-gray-300 focus:ring-primary focus:border-primary text-sm shadow-sm">
                                 </div>
                             </div>
 
@@ -209,6 +232,13 @@ const submit = () => {
                 </div>
 
             </form>
+        </div>
+    </div>
+
+    <div v-if="showNotification" class="fixed top-5 right-5 z-50 transition-transform duration-300 ease-in-out">
+        <div class="flex items-center gap-4 rounded-lg bg-green-600 p-4 text-white shadow-lg">
+            <CheckCircleIcon class="h-8 w-8" />
+            <p class="font-semibold">{{ notificationMessage }}</p>
         </div>
     </div>
   </div>
