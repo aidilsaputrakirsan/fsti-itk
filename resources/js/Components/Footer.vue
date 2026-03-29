@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
-import { ref, onMounted, onUnmounted } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
+
+const page = usePage();
+const contact = computed(() => (page.props.contact_global as Record<string, any>) || {});
 
 // State untuk tombol "Back to Top"
 const showScrollTop = ref(false);
 
-// Fungsi untuk scroll ke atas
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-// Event listener untuk menampilkan/menyembunyikan tombol
 const handleScroll = () => {
   if (window.scrollY > 400) {
     showScrollTop.value = true;
@@ -44,10 +45,10 @@ onUnmounted(() => {
                     <p class="text-black mt-1">Ikuti kami di media sosial untuk pembaruan terkini.</p>
                 </div>
                 <div class="flex items-center gap-4 mt-6 md:mt-0">
-                    <a href="https://www.instagram.com/fsti.itk" target="_blank" rel="noopener noreferrer" class="bg-[#2F4DD3] p-3 rounded-full shadow-md hover:opacity-90 transition-opacity">
+                    <a :href="contact.instagram_link || '#'" target="_blank" rel="noopener noreferrer" class="bg-[#2F4DD3] p-3 rounded-full shadow-md hover:opacity-90 transition-opacity">
                         <svg class="h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                     </a>
-                    <a href="https://www.tiktok.com/@fsti.itk" target="_blank" rel="noopener noreferrer" class="bg-[#2F4DD3] p-3 rounded-full shadow-md hover:opacity-90 transition-opacity">
+                    <a :href="contact.tiktok_link || '#'" target="_blank" rel="noopener noreferrer" class="bg-[#2F4DD3] p-3 rounded-full shadow-md hover:opacity-90 transition-opacity">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 449.45 515.38" fill="currentColor">
                         <path d="M382.31 103.3c-27.76-18.1-47.79-47.07-54.04-80.82-1.35-7.29-2.1-14.8-2.1-22.48h-88.6l-.15 355.09c-1.48 39.77-34.21 71.68-74.33 71.68-12.47 0-24.21-3.11-34.55-8.56-23.71-12.47-39.94-37.32-39.94-65.91 0-41.07 33.42-74.49 74.48-74.49 7.67 0 15.02 1.27 21.97 3.44V190.8c-7.2-.99-14.51-1.59-21.97-1.59C73.16 189.21 0 262.36 0 352.3c0 55.17 27.56 104 69.63 133.52 26.48 18.61 58.71 29.56 93.46 29.56 89.93 0 163.08-73.16 163.08-163.08V172.23c34.75 24.94 77.33 39.64 123.28 39.64v-88.61c-24.75 0-47.8-7.35-67.14-19.96z"/>
                         </svg>
@@ -76,21 +77,21 @@ onUnmounted(() => {
                             <div class="mt-1 flex-shrink-0"><svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" /></svg></div>
                             <div>
                                 <p class="font-semibold">Alamat</p>
-                                <p>Kampus ITK, Jl. Soekarno Hatta KM 15, Karang Joang, Balikpapan Utara, Kalimantan Timur, 76127</p>
+                                <p class="whitespace-pre-line">{{ contact.address || 'Kampus ITK, Jl. Soekarno Hatta KM 15...' }}</p>
                             </div>
                         </li>
                         <li class="flex items-start gap-3">
                              <div class="mt-1 flex-shrink-0"><svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
                             <div>
                                 <p class="font-semibold">Email</p>
-                                <a href="mailto:fsti@itk.ac.id" class="hover:text-gray-200">fsti@itk.ac.id</a>
+                                <a :href="`mailto:${contact.email || 'fsti@itk.ac.id'}`" class="hover:text-gray-200">{{ contact.email || 'fsti@itk.ac.id' }}</a>
                             </div>
                         </li>
                          <li class="flex items-start gap-3">
                             <div class="mt-1 flex-shrink-0"><svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V6z" clip-rule="evenodd" /></svg></div>
                             <div>
                                 <p class="font-semibold">Jam Operasional</p>
-                                <p>Senin - Jum'at, 07.30 - 16.30 WITA</p>
+                                <p>{{ contact.operating_hours || "Senin - Jum'at, 07.30 - 16.30 WITA" }}</p>
                             </div>
                         </li>
                     </ul>

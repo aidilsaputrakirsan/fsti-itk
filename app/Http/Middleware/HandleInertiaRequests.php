@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Models\Contact;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -34,7 +35,6 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            // PERUBAHAN: Menambahkan blok ini untuk membagikan flash messages
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error'),
@@ -44,6 +44,8 @@ class HandleInertiaRequests extends Middleware
                 $locale = app()->getLocale();
                 return json_decode(file_get_contents(base_path("lang/{$locale}.json")), true);
             },
+
+            'contact_global' => fn() => Contact::first(),
         ];
     }
 }

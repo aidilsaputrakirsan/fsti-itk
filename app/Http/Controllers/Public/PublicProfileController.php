@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller; // Wajib ditambahkan
 use App\Models\Staff;
+use App\Models\Contact;
 use App\Models\StaticPage;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -105,4 +106,13 @@ class PublicProfileController extends Controller
             'staffList' => $staff
         ]);
     }
+    public function kontak()
+    {
+        $contact = Contact::first();
+
+        return Inertia::render('Public/Profil/Kontak', [
+            'contact' => $contact
+        ]);
+    }
 }
+
