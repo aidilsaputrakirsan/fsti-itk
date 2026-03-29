@@ -11,15 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('static_pages', function (Blueprint $table) {
-            $table->id();
-            $table->string('key')->unique(); // 'visi', 'misi', 'bagan-organisasi'
-            $table->string('title');
-            $table->longText('content')->nullable(); // JSON for 'misi', Text for 'visi'
-            $table->string('image_path')->nullable(); // For 'bagan-organisasi'
-            $table->timestamps();
-        });
-
         Schema::create('staff', function (Blueprint $table) {
             $table->id();
             $table->string('name');

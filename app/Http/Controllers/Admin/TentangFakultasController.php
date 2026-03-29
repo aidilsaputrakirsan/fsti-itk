@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\StaticPage;
+use App\Models\TentangFakultas; 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -11,13 +11,12 @@ class TentangFakultasController extends Controller
 {
     public function edit()
     {
-        $page = StaticPage::firstOrCreate(
-            ['key' => 'tentang_fakultas'],
+        $page = TentangFakultas::firstOrCreate(
+            ['id' => 1],
             [
-                'title' => 'Tentang Fakultas',
                 'content' => [
                     'statistik' => ['deskripsi' => '', 'data' => []],
-                    'tugas_fungsi' => ['tugas' => '', 'dasar_tugas' => '', 'fungsi' => [], 'dasar_fungsi' => ''],
+                    'tugas_fungsi' => ['tugas' => '', 'fungsi' => []],
                     'visi_misi' => ['visi' => '', 'misi_tagline' => '', 'misi' => []]
                 ]
             ]
@@ -34,9 +33,10 @@ class TentangFakultasController extends Controller
             'content' => 'required|array'
         ]);
 
-        StaticPage::where('key', 'tentang_fakultas')->update([
-            'content' => $request->content
-        ]);
+        TentangFakultas::updateOrCreate(
+            ['id' => 1],
+            ['content' => $request->content]
+        );
 
         return redirect()->back()->with('success', 'Data Tentang Fakultas berhasil diperbarui!');
     }

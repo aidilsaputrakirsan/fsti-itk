@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\Public;
 
-use App\Http\Controllers\Controller; // Wajib ditambahkan
+use App\Http\Controllers\Controller;
 use App\Models\Staff;
 use App\Models\Contact;
-use App\Models\StaticPage;
-use Illuminate\Http\Request;
+use App\Models\TentangFakultas; 
 use Inertia\Inertia;
 
 class PublicProfileController extends Controller
 {
-   public function tentang()
+    public function tentang()
     {
-        $page = StaticPage::where('key', 'tentang_fakultas')->first();
+        $page = TentangFakultas::first();
 
         return Inertia::render('Public/Profil/Tentang', [
             'tentang' => $page ? $page->content : null,
@@ -22,10 +21,8 @@ class PublicProfileController extends Controller
 
     public function baganOrganisasi()
     {
-        $bagan = StaticPage::where('key', 'bagan-organisasi')->first();
-
         return Inertia::render('Public/Profil/BaganOrganisasi', [
-            'baganImage' => $bagan ? $bagan->image_path : null,
+            'baganImage' => '/images/bagan-organisasi.webp',
         ]);
     }
 
@@ -79,9 +76,6 @@ class PublicProfileController extends Controller
 
     public function dosen()
     {
-        // Fetch all active dosen. 
-        // We pass them all to Vue because the current Vue implementation 
-        // has a nice client-side filtering system.
         $dosen = Staff::where('category', 'Dosen')
             ->where('is_active', true)
             ->orderBy('sort_order')
@@ -104,6 +98,7 @@ class PublicProfileController extends Controller
             'staffList' => $staff
         ]);
     }
+
     public function kontak()
     {
         $contact = Contact::first();
@@ -113,4 +108,3 @@ class PublicProfileController extends Controller
         ]);
     }
 }
-

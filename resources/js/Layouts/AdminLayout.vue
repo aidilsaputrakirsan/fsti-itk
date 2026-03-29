@@ -22,15 +22,6 @@ const currentUrl = computed(() => page.url);
 
 const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: ChartBarSquareIcon, children: null },
-    { 
-        name: 'Berita', 
-        href: null,
-        icon: NewspaperIcon, 
-        children: [
-            { name: 'Kelola Berita', href: '/admin/posts' },
-            { name: 'Kelola Kategori Berita', href: '/admin/post-categories' },
-        ] 
-    },
     {
         name: 'Profil Fakultas',
         href: null,
@@ -41,6 +32,8 @@ const navigation = [
             { name: 'Kelola Kontak', href: '/admin/contacts' },
         ]
     },
+    
+    
     // --- FIX: Menu Kemahasiswaan (Gabungan Prestasi dan Layanan) ---
     { 
         name: 'Kemahasiswaan', 
@@ -50,6 +43,16 @@ const navigation = [
             { name: 'Kelola Daftar Prestasi', href: '/admin/achievements' },
             { name: 'Kelola Portal Layanan Mahasiswa', href: '/admin/internal-services' }
         ]
+    },
+
+    { 
+        name: 'Berita', 
+        href: null,
+        icon: NewspaperIcon, 
+        children: [
+            { name: 'Kelola Berita', href: '/admin/posts' },
+            { name: 'Kelola Kategori Berita', href: '/admin/post-categories' },
+        ] 
     },
     // ---------------------------------------------------------------
     

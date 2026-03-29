@@ -2,55 +2,14 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\StaticPage;
-use App\Models\Staff;
+use App\Models\Staff; // <-- StaticPage dihapus dari import
 
 class ProfileSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // 1. Static Pages (Visi Misi & Bagan)
-        StaticPage::create([
-            'key' => 'visi',
-            'title' => 'Visi Fakultas',
-            'content' => 'Pada tahun 2029, Fakultas Sains dan Teknologi Informasi (FSTI) ITK akan menjadi pusat keunggulan akademik dan inovasi, menghasilkan lulusan yang kompeten, adaptif, berdaya saing global, dan karya-karya dalam bidang sains dan teknologi informasi yang berdampak bagi kemajuan Kalimantan dan Indonesia.',
-        ]);
-
-        StaticPage::create([
-            'key' => 'misi',
-            'title' => 'Misi Fakultas',
-            'content' => json_encode([
-                [
-                    'title' => 'Pendidikan Berkualitas',
-                    'description' => 'Menyelenggarakan pendidikan tinggi yang berkualitas dan relevan dengan kebutuhan industri serta masyarakat di bidang sains dan teknologi informasi.'
-                ],
-                [
-                    'title' => 'Penelitian Inovatif',
-                    'description' => 'Melaksanakan penelitian dan pengembangan ilmu pengetahuan dan teknologi terapan yang inovatif dan berwawasan lingkungan.'
-                ],
-                [
-                    'title' => 'Pengabdian Masyarakat',
-                    'description' => 'Menyelenggarakan pengabdian kepada masyarakat yang berbasis pada hasil penelitian dan pengembangan ilmu pengetahuan dan teknologi terapan.'
-                ],
-                [
-                    'title' => 'Kerjasama Strategis',
-                    'description' => 'Membangun jejaring kerjasama yang kokoh dengan berbagai pihak, baik di tingkat nasional maupun internasional, untuk mendukung pelaksanaan tridharma perguruan tinggi.'
-                ]
-            ]),
-        ]);
-
-        StaticPage::create([
-            'key' => 'bagan-organisasi',
-            'title' => 'Bagan Organisasi FSTI',
-            'image_path' => '/images/bagan-organisasi.webp',
-        ]);
-
-        // 2. Staff - Pimpinan Fakultas
+        // 1. Staff - Pimpinan Fakultas
         $pimpinan = [
             [
                 'name' => 'Adi Mahmud Jaya Marindra, S.T., M.Eng., Ph.D.',
@@ -86,7 +45,7 @@ class ProfileSeeder extends Seeder
             Staff::create($p);
         }
 
-        // 3. Staff - Dosen
+        // 2. Staff - Dosen
         $dosen = [
             ['name' => 'Adi Mahmud Jaya Marindra, S.T., M.Eng., Ph.D.', 'prodi' => 'Teknik Elektro', 'jurusan' => 'Teknik Elektro, Informatika, dan Bisnis', 'image_path' => '/images/dosen/dosen-1.png', 'nip' => '198001012005011001', 'email' => 'adi.marindra@itk.ac.id'],
             ['name' => 'Irma Fitria, S.Si., M.Si.', 'prodi' => 'Sistem Informasi', 'jurusan' => 'Teknik Elektro, Informatika, dan Bisnis', 'image_path' => '/images/dosen/dosen-2.png', 'nip' => '198202022006022002', 'email' => 'irma.fitria@itk.ac.id'],
