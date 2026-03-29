@@ -1,25 +1,89 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { X, Plus } from 'lucide-vue-next'; // 👉 icon untuk modal & tombol +
+import { onMounted, ref, computed, nextTick } from 'vue';
+import { X, Plus, GraduationCap, Trophy, CheckSquare, Building2, BookOpen, UserCheck, Users, ArrowRight, Zap, Beaker, Briefcase, Network } from 'lucide-vue-next'; 
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import HomeArticleCard from '@/Components/HomeArticleCard.vue';
 import AchievementCard from '@/Components/AchievementCard.vue';
 import { Link } from '@inertiajs/vue3';
-import { GraduationCap, Trophy, CheckSquare, Building2, BookOpen, UserCheck, Users, ArrowRight } from 'lucide-vue-next';
 import type { Post, Achievement } from '@/types';
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// 1. DEFINISI PROPS DENGAN TIPE DATA AMAN
 const props = defineProps<{
   latestPosts: Post[];
   latestAchievements: Achievement[];
   canLogin?: boolean;
   canRegister?: boolean;
+  tentang?: any; 
 }>();
 
-// refs animasi
+// 2. INTERFACE TYPESCRIPT AGAR TIDAK ERROR
+interface StatItem {
+    angka: string | number;
+    label: string;
+}
+
+// 3. COMPUTED: MEMAKSA DATA MENJADI ARRAY MURNI
+const displayStats = computed<StatItem[]>(() => {
+    let data = props.tentang;
+    
+    if (typeof data === 'string') {
+        try { data = JSON.parse(data); } catch (e) { data = {}; }
+    }
+
+    const rawData = data?.statistik?.data;
+
+    // Jika kosong, tampilkan data dummy otomatis
+    if (!rawData || typeof rawData !== 'object' || Object.keys(rawData).length === 0) {
+        return [
+            { angka: '2260', label: 'Mahasiswa' },
+            { angka: '2', label: 'Jurusan' },
+            { angka: '8', label: 'Prodi S1' },
+            { angka: '1', label: 'Prodi S2' }
+        ];
+    }
+
+    // Konversi object ke array jika Laravel mengirim indeks berantakan
+    const dataArray = Array.isArray(rawData) ? rawData : Object.values(rawData);
+    return dataArray.slice(0, 4) as StatItem[];
+});
+
+const deskripsiFakultas = computed<string>(() => {
+    let data = props.tentang;
+    if (typeof data === 'string') {
+        try { data = JSON.parse(data); } catch (e) { data = {}; }
+    }
+    return data?.statistik?.deskripsi || 'FSTI terus berkembang sebagai pusat pendidikan dan inovasi di bidang sains dan teknologi, dengan berbagai jurusan, program studi, dan civitas akademika yang mendukung perjalanan belajar, kreativitas, dan prestasi mahasiswa kami.';
+});
+
+// 4. FUNGSI ICON YANG 100% AMAN DARI TYPESCRIPT ERROR
+const getStatIcon = (idx: number | string) => {
+    // Apapun yang masuk, paksa jadi Number murni!
+    const num = Number(idx);
+    const safeIndex = isNaN(num) ? 0 : num;
+    
+    const icons = [Users, Building2, BookOpen, GraduationCap, Beaker, Zap, Briefcase, Network];
+    return icons[safeIndex % icons.length];
+};
+
+const countUpAnimation = (el: HTMLElement, target: number, duration: number) => {
+    let start = 0;
+    const increment = target / (duration / 10);
+    const timer = setInterval(() => {
+        start += increment;
+        if (start >= target) {
+            el.innerText = target.toLocaleString('id-ID'); 
+            clearInterval(timer);
+        } else {
+            el.innerText = Math.floor(start).toLocaleString('id-ID');
+        }
+    }, 10);
+};
+
+// Refs
 const heroSectionRef = ref(null);
 const heroTitle1Ref = ref(null);
 const heroTitle2Ref = ref(null);
@@ -30,31 +94,19 @@ const aboutImageRef = ref(null);
 const aboutStatsRef = ref<HTMLDivElement | null>(null);
 const newsSectionRef = ref<HTMLDivElement | null>(null);
 const achievementSectionRef = ref<HTMLDivElement | null>(null);
-
-// 👉 state modal
 const showModal = ref(false);
 
-const openModal = () => {
-  showModal.value = true;
-};
-const closeModal = () => {
-  showModal.value = false;
-};
+const openModal = () => { showModal.value = true; };
+const closeModal = () => { showModal.value = false; };
 
-// fungsi hover animasi
 const addHoverAnimation = (elements: Element[]) => {
   elements.forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      gsap.to(el, { scale: 1.05, duration: 0.3, ease: 'power2.out' });
-    });
-    el.addEventListener('mouseleave', () => {
-      gsap.to(el, { scale: 1, duration: 0.3, ease: 'power2.out' });
-    });
+    el.addEventListener('mouseenter', () => { gsap.to(el, { scale: 1.05, duration: 0.3, ease: 'power2.out' }); });
+    el.addEventListener('mouseleave', () => { gsap.to(el, { scale: 1, duration: 0.3, ease: 'power2.out' }); });
   });
 };
 
 onMounted(() => {
-  // Animasi Hero
   const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
   heroTl.from([heroTitle1Ref.value, heroTitle2Ref.value], { opacity: 0, y: 40, duration: 1, stagger: 0.2 })
         .from(heroButtonRef.value, { opacity: 0, y: 20, duration: 0.8 }, "-=0.5");
@@ -64,20 +116,12 @@ onMounted(() => {
     scrollTrigger: { trigger: heroSectionRef.value, start: "top top", end: "bottom top", scrub: 1.5 }
   });
 
-  const heroCardsElement = heroCardsRef.value;
-  if (heroCardsElement) {
-    const cards = Array.from(heroCardsElement.children);
+  if (heroCardsRef.value) {
+    const cards = Array.from(heroCardsRef.value.children);
     gsap.set(cards, { opacity: 0, y: 60 });
     gsap.to(cards, {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      stagger: 0.2,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: heroCardsElement,
-        start: "top 90%",
-      }
+      opacity: 1, y: 0, duration: 0.8, stagger: 0.2, ease: "power3.out",
+      scrollTrigger: { trigger: heroCardsRef.value, start: "top 90%" }
     });
     addHoverAnimation(cards);
   }
@@ -86,16 +130,34 @@ onMounted(() => {
     const aboutTl = gsap.timeline({ scrollTrigger: { trigger: aboutSectionRef.value, start: "top 70%" } });
     aboutTl.from(".about-title", { opacity: 0, x: -50, duration: 0.8, ease: "power3.out" })
            .from(".about-text", { opacity: 0, x: -50, duration: 0.8, ease: "power3.out" }, "-=0.6")
-           .from(".about-stat", { opacity: 0, y: 30, scale: 0.95, duration: 0.6, stagger: 0.15, ease: "back.out(1.4)" }, "-=0.6")
+           // MENGGUNAKAN fromTo AGAR OPACITY DIPAKSA MUNCUL KE 1 (Menghindari stuck di opacity 0)
+           .fromTo(".about-stat", 
+                { opacity: 0, y: 30, scale: 0.95 }, 
+                { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.15, ease: "back.out(1.4)" }, 
+                "-=0.6"
+            )
            .from(aboutImageRef.value, { opacity: 0, x: 50, scale: 0.9, duration: 1.2, ease: "power3.out" }, "<");
 
-    const aboutStatsElement = aboutStatsRef.value;
-    if (aboutStatsElement) {
-      addHoverAnimation(Array.from(aboutStatsElement.children));
-    }
+    // Tunggu DOM render, lalu pasang animasi Count Up
+    nextTick(() => {
+        setTimeout(() => {
+            if (aboutStatsRef.value) {
+                const statCards = Array.from(aboutStatsRef.value.children);
+                if(statCards.length > 0) {
+                    addHoverAnimation(statCards);
+                    aboutStatsRef.value.querySelectorAll('.stat-number').forEach(el => {
+                        const targetText = el.getAttribute('data-target') || '0';
+                        const target = parseInt(targetText.replace(/\./g, ''));
+                        if (!isNaN(target) && target > 0) {
+                            countUpAnimation(el as HTMLElement, target, 1500); 
+                        }
+                    });
+                }
+            }
+        }, 500);
+    });
   }
 
-  // Animasi Prestasi (Sekarang Di Atas, dengan animasi pattern)
   if (achievementSectionRef.value) {
     const achievementCards = achievementSectionRef.value.querySelectorAll('.grid > *');
     const achievementTl = gsap.timeline({
@@ -108,20 +170,12 @@ onMounted(() => {
     }, "-=0.5");
     addHoverAnimation(Array.from(achievementCards));
 
-    // Animasi parallax untuk CSS Pattern
     gsap.to(".achievement-background-pattern", {
-      yPercent: -15,
-      ease: "none",
-      scrollTrigger: {
-        trigger: achievementSectionRef.value,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true,
-      }
+      yPercent: -15, ease: "none",
+      scrollTrigger: { trigger: achievementSectionRef.value, start: "top bottom", end: "bottom top", scrub: true }
     });
   }
 
-  // Animasi Berita (Sekarang Di Bawah, tanpa pattern)
   if (newsSectionRef.value) {
     const newsCards = newsSectionRef.value.querySelectorAll('.grid > *');
     const newsTl = gsap.timeline({
@@ -135,9 +189,7 @@ onMounted(() => {
     addHoverAnimation(Array.from(newsCards));
   }
 
-  setTimeout(() => {
-    ScrollTrigger.refresh();
-  }, 500);
+  setTimeout(() => { ScrollTrigger.refresh(); }, 500);
 });
 </script>
 
@@ -163,35 +215,24 @@ onMounted(() => {
           </h2>
           
           <div ref="heroButtonRef" class="mt-10">
-            <a href="#" class="inline-block bg-white text-black font-public-sans font-bold text-base px-6 py-2 rounded-lg shadow-md hover:bg-gray-100 transition-transform transform hover:scale-105 duration-300 -mt-16">
+            <Link :href="route('profil.tentang')" class="inline-block bg-white text-black font-public-sans font-bold text-base px-6 py-2 rounded-lg shadow-md hover:bg-gray-100 transition-transform transform hover:scale-105 duration-300 -mt-16">
               Tentang FSTI
-            </a>
+            </Link>
           </div>
         </div>
       </section>
 
       <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full container mx-auto px-4 sm:px-6 lg:px-8">
         <div ref="heroCardsRef" class="flex justify-center items-start gap-8 flex-wrap">
-          <Link 
-            :href="route('profil.pimpinan-prodi')" 
-            class="block w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl"
-          >
+          <Link :href="route('profil.pimpinan-prodi')" class="block w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
             <GraduationCap :size="80" class="mx-auto" />
             <h3 class="mt-4 text-xl font-bold font-public-sans">Program Studi</h3>
           </Link>
-          <Link 
-            :href="route('prestasi.index')" 
-            class="block w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl"
-          >
+          <Link :href="route('prestasi.index')" class="block w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
             <Trophy :size="80" class="mx-auto" />
             <h3 class="mt-4 text-xl font-bold font-public-sans">Prestasi Mahasiswa</h3>
           </Link>
-          <a 
-            href="https://layanan-fsti.myst-tech.com/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            class="block w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl"
-          >
+          <a href="https://layanan-fsti.myst-tech.com/" target="_blank" rel="noopener noreferrer" class="block w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
             <CheckSquare :size="80" class="mx-auto" />
             <h3 class="mt-4 text-xl font-bold font-public-sans">Layanan Mahasiswa</h3>
           </a>
@@ -206,40 +247,33 @@ onMounted(() => {
             <h2 class="text-4xl font-bold font-optimus text-[#2F4DD3] about-title">
               Sekilas Tentang FSTI ITK
             </h2>
+            
             <p class="mt-6 text-black text-base font-normal leading-relaxed about-text">
-              FSTI terus berkembang sebagai pusat pendidikan dan inovasi di bidang sains dan teknologi, dengan berbagai jurusan, program studi, dan civitas akademika yang mendukung perjalanan belajar, kreativitas, dan prestasi mahasiswa kami.
+              {{ deskripsiFakultas }}
             </p>
+            
             <div ref="aboutStatsRef" class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div class="bg-[#2F4DD3] text-white p-4 rounded-lg shadow-sm text-center about-stat cursor-pointer">
-                <Building2 :size="28" class="mx-auto" />
-                <span class="block mt-2 text-3xl font-bold font-public-sans">2</span>
-                <span class="block mt-1 text-sm font-normal">Jurusan</span>
-              </div>
-              <div class="bg-[#2F4DD3] text-white p-4 rounded-lg shadow-sm text-center about-stat cursor-pointer">
-                <BookOpen :size="28" class="mx-auto" />
-                <span class="block mt-2 text-3xl font-bold font-public-sans">9</span>
-                <span class="block mt-1 text-sm font-normal">Program Studi</span>
-              </div>
-              <div class="bg-[#2F4DD3] text-white p-4 rounded-lg shadow-sm text-center about-stat cursor-pointer">
-                <UserCheck :size="28" class="mx-auto" />
-                <span class="block mt-2 text-3xl font-bold font-public-sans">118</span>
-                <span class="block mt-1 text-sm font-normal">Dosen</span>
-              </div>
-              <div class="bg-[#2F4DD3] text-white p-4 rounded-lg shadow-sm text-center about-stat cursor-pointer">
-                <Users :size="28" class="mx-auto" />
-                <span class="block mt-2 text-3xl font-bold font-public-sans">6</span>
-                <span class="block mt-1 text-sm font-normal">Tendik</span>
+              <div v-for="(stat, index) in displayStats" :key="index" class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:border-[#2F4DD3]/30 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group cursor-pointer about-stat">
+                  
+                  <div class="absolute -top-6 -right-6 w-20 h-20 bg-[#2F4DD3]/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                  <div class="absolute -bottom-6 -left-6 w-16 h-16 bg-[#2F4DD3]/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                  
+                  <div class="relative z-10 flex flex-col items-center">
+                      <div class="inline-flex items-center justify-center w-12 h-12 bg-blue-50 rounded-xl text-[#2F4DD3] mb-4 group-hover:bg-[#2F4DD3] group-hover:text-white transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 shadow-inner">
+                          <component :is="getStatIcon(index)" class="w-6 h-6" />
+                      </div>
+                      <h3 class="text-3xl lg:text-4xl font-black text-gray-900 mb-1 stat-number drop-shadow-sm" :data-target="stat.angka">0</h3>
+                      <p class="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-[#2F4DD3] transition-colors leading-tight text-center">{{ stat.label }}</p>
+                  </div>
               </div>
             </div>
+
           </div>
 
           <div ref="aboutImageRef" class="lg:w-1/2 relative">
-            <div class="bg-[#2F4DD3] p-2 rounded-xl shadow-xl relative">
-              <img src="/images/gambar-beranda-2.jpeg" alt="Pembekalan Wisuda FSTI" class="rounded-lg w-full">
-              <button 
-                @click="openModal" 
-                class="absolute top-3 right-3 bg-white rounded-full p-2 shadow hover:bg-gray-100 transition"
-              >
+            <div class="bg-[#2F4DD3] p-2 rounded-xl shadow-xl relative overflow-hidden">
+              <img src="/images/gambar-beranda-2.jpeg" alt="Pembekalan Wisuda FSTI" class="rounded-lg w-full scale-100 hover:scale-105 transition-transform duration-500">
+              <button @click="openModal" class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow hover:bg-white transition">
                 <Plus :size="20" class="text-[#2F4DD3]" />
               </button>
             </div>
@@ -248,30 +282,17 @@ onMounted(() => {
       </div>
     </section>
 
-    <div 
-      v-if="showModal" 
-      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 transition-opacity"
-    >
+    <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 transition-opacity">
       <div class="relative bg-white rounded-lg shadow-xl p-4 max-w-3xl w-full">
-        <button 
-          @click="closeModal" 
-          class="absolute top-2 right-2 bg-gray-100 rounded-full p-1 hover:bg-gray-200 transition"
-        >
+        <button @click="closeModal" class="absolute top-2 right-2 bg-gray-100 rounded-full p-1 hover:bg-gray-200 transition">
           <X :size="20" />
         </button>
         <img src="/images/gambar-beranda-2.jpeg" alt="Pembekalan Wisuda FSTI" class="rounded-lg w-full max-h-[80vh] object-contain">
       </div>
     </div>
 
-    <section 
-      ref="achievementSectionRef"
-      v-if="latestAchievements.length > 0"
-      class="relative py-20 overflow-hidden bg-white font-public-sans"
-    >
-      <div 
-        class="achievement-background-pattern absolute top-[-50%] left-0 w-full h-[200%] z-0 css-achievement-pattern"
-      ></div>
-
+    <section ref="achievementSectionRef" v-if="latestAchievements.length > 0" class="relative py-20 overflow-hidden bg-white font-public-sans">
+      <div class="achievement-background-pattern absolute top-[-50%] left-0 w-full h-[200%] z-0 css-achievement-pattern"></div>
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="flex justify-between items-center mb-12 achievement-header">
           <div>
@@ -279,30 +300,18 @@ onMounted(() => {
             <p class="mt-2 text-black text-base font-normal">Capaian membanggakan dari Mahasiswa FSTI ITK</p>
           </div>
           <Link :href="route('prestasi.index')" class="inline-flex items-center font-bold font-public-sans text-white bg-[#2F4DD3] border border-transparent rounded-full px-5 py-2 hover:bg-blue-700 transition-colors duration-300 shadow-sm">
-            Lihat Semua
-            <ArrowRight class="ml-2 h-4 w-4" />
+            Lihat Semua <ArrowRight class="ml-2 h-4 w-4" />
           </Link>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 -mt-10 relative z-20">
-          <div 
-            v-for="(achievement, index) in latestAchievements" 
-            :key="achievement.id" 
-            class="relative z-20 bg-white rounded-lg h-full shadow-lg flex"
-          >
-            <AchievementCard 
-              :achievement="achievement" 
-              class="w-full h-full flex-grow"
-            />
+          <div v-for="(achievement, index) in latestAchievements" :key="achievement.id" class="relative z-20 bg-white rounded-lg h-full shadow-lg flex">
+            <AchievementCard :achievement="achievement" class="w-full h-full flex-grow" />
           </div>
         </div>
-        </div>
+      </div>
     </section>
 
-    <section 
-      ref="newsSectionRef"
-      v-if="latestPosts.length > 0"
-      class="relative py-20 overflow-hidden bg-white font-public-sans"
-    >
+    <section ref="newsSectionRef" v-if="latestPosts.length > 0" class="relative py-20 overflow-hidden bg-white font-public-sans">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="flex justify-between items-center mb-12 news-header">
           <div>
@@ -310,8 +319,7 @@ onMounted(() => {
             <p class="mt-2 text-black text-base font-normal">Informasi terkini seputar FSTI</p>
           </div>
           <Link :href="route('berita.index')" class="inline-flex items-center font-bold font-public-sans text-black bg-white border border-gray-300 rounded-full px-5 py-2 hover:bg-gray-100 transition-colors duration-300 shadow-sm">
-            Lihat Semua
-            <ArrowRight class="ml-2 h-4 w-4" />
+            Lihat Semua <ArrowRight class="ml-2 h-4 w-4" />
           </Link>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -324,13 +332,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.text-stroke-custom {
-  -webkit-text-stroke: 2px #2F4DD3;
-  color: white;
-}
-.text-shadow-custom {
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
-}
+.text-stroke-custom { -webkit-text-stroke: 2px #2F4DD3; color: white; }
+.text-shadow-custom { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); }
 
 .css-achievement-pattern {
   background-color: transparent;

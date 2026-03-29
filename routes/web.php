@@ -98,11 +98,14 @@ Route::get('/', function () {
             'certificate_url' => $item->certificate_path ? asset('storage/' . $item->certificate_path) : null,
         ]);
 
+    $tentang = \App\Models\TentangFakultas::first();
+
     return Inertia::render('Home', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'latestPosts' => $latestPosts,
         'latestAchievements' => $latestAchievements,
+        'tentang' => $tentang ? $tentang->content : null,
     ]);
 })->name('home');
 

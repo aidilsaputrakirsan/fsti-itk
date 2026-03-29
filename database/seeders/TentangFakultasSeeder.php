@@ -14,7 +14,7 @@ class TentangFakultasSeeder extends Seeder
             [
                 'content' => [
                     'statistik' => [
-                        'deskripsi' => 'FSTI Dalam Angka',
+                        'deskripsi' => 'FSTI terus berkembang sebagai pusat pendidikan dan inovasi di bidang sains dan teknologi, dengan berbagai jurusan, program studi, dan civitas akademika yang mendukung perjalanan belajar, kreativitas, dan prestasi mahasiswa kami.',
                         'data' => [
                             ['angka' => '2260', 'label' => 'Mahasiswa'],
                             ['angka' => '2', 'label' => 'Jurusan'],
