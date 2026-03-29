@@ -31,6 +31,16 @@ const navigation = [
             { name: 'Kelola Kategori Berita', href: '/admin/post-categories' },
         ] 
     },
+    {
+        name: 'Profil Fakultas',
+        href: null,
+        icon: AcademicCapIcon,
+        children: [
+            { name: 'Kelola Tentang Fakultas', href: '/admin/tentang-fakultas' },
+            { name: 'Kelola Civitas Akademika', href: '/admin/staff' },
+            { name: 'Kelola Kontak', href: '/admin/contacts' },
+        ]
+    },
     // --- FIX: Menu Kemahasiswaan (Gabungan Prestasi dan Layanan) ---
     { 
         name: 'Kemahasiswaan', 
@@ -42,16 +52,7 @@ const navigation = [
         ]
     },
     // ---------------------------------------------------------------
-    {
-        name: 'Profil Fakultas',
-        href: null,
-        icon: AcademicCapIcon,
-        children: [
-            { name: 'Kelola Tentang Fakultas', href: '/admin/static-pages' },
-            { name: 'Kelola Civitas Akademika', href: '/admin/staff' },
-            { name: 'Kelola Kontak', href: '/admin/contacts' },
-        ]
-    },
+    
     {
         name: 'PPID',
         href: null,

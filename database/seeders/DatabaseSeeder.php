@@ -48,6 +48,7 @@ class DatabaseSeeder extends Seeder
             SurveyCategorySeeder::class,
             InternalServiceSeeder::class,
             ContactSeeder::class,
+            TentangFakultasSeeder::class,
         ]);
     }
 }

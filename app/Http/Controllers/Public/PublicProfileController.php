@@ -11,14 +11,12 @@ use Inertia\Inertia;
 
 class PublicProfileController extends Controller
 {
-    public function visiMisi()
+   public function tentang()
     {
-        $visi = StaticPage::where('key', 'visi')->first();
-        $misi = StaticPage::where('key', 'misi')->first();
+        $page = StaticPage::where('key', 'tentang_fakultas')->first();
 
-        return Inertia::render('Public/Profil/VisiMisi', [
-            'visiText' => $visi ? $visi->content : '',
-            'misiItems' => $misi ? $misi->content : [],
+        return Inertia::render('Public/Profil/Tentang', [
+            'tentang' => $page ? $page->content : null,
         ]);
     }
 

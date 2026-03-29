@@ -33,8 +33,7 @@ const navigationMenu = computed(() => [
         name: trans('Profil'),
         href: '#',
         sublinks: [
-            { name: trans('Tentang FSTI'), href: route('visi-misi') },
-            {
+{ name: trans('Tentang FSTI'), href: route('profil.tentang') },            {
                 name: trans('Struktur Organisasi'),
                 href: '#',
                 sublinks: [
@@ -53,7 +52,7 @@ const navigationMenu = computed(() => [
                     { name: trans('Tenaga Kependidikan'), href: route('profil.tenaga-kependidikan') },
                 ],
             },
-             { name: trans('Kerjasama'), href: route('visi-misi') },
+             { name: trans('Kerjasama'), href: route('profil.kerjasama') },
 
             { name: trans('Kontak'), href: route('kontak') },
 
