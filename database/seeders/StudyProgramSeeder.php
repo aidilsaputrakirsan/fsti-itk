@@ -13,6 +13,7 @@ class StudyProgramSeeder extends Seeder
             // 1. MATEMATIKA
             [
                 'name' => 'Matematika',
+                'department' => 'Sains dan Analitika Data',
                 'degree' => 'S1',
                 'slug' => 's1-matematika',
                 'description' => 'Program Studi Matematika Institut Teknologi Kalimantan (ITK), yang berdiri sejak 2015 dan telah terakreditasi Baik oleh LAMSAMA (2023), berfokus pada pengembangan kemampuan analisis matematis dan penerapannya di berbagai bidang. Mahasiswa dibekali keterampilan pemrograman dan software serta dapat memilih empat bidang minat, yaitu analisis, aljabar, matematika industri, serta simulasi dan komputasi matematika. Lulusan diharapkan mampu berkontribusi di sektor sains, teknologi, industri, hingga pendidikan, serta memiliki karakter beriman, berakhlak, dan berjiwa nasionalisme.',
@@ -43,6 +44,7 @@ class StudyProgramSeeder extends Seeder
             // 2. ILMU AKTUARIA
             [
                 'name' => 'Ilmu Aktuaria',
+                'department' => 'Sains dan Analitika Data',
                 'degree' => 'S1',
                 'slug' => 's1-ilmu-aktuaria',
                 'description' => 'Program Studi Ilmu Aktuaria mempelajari analisis dan pengukuran dampak finansial dari kejadian tidak pasti di masa depan, khususnya dalam industri asuransi, keuangan, dan bidang terkait, melalui penerapan matematika, probabilitas, dan statistika. Mahasiswa dibekali pengetahuan terintegrasi yang mencakup matematika terapan, keuangan, ekonomi, dan komputasi untuk menentukan nilai kewajiban masa depan secara tepat. Lulusan diharapkan menjadi aktuaris yang mampu menyusun strategi dan mendukung pengambilan keputusan berbasis risiko di berbagai sektor industri.',
@@ -73,6 +75,7 @@ class StudyProgramSeeder extends Seeder
             // 3. STATISTIKA
             [
                 'name' => 'Statistika',
+                'department' => 'Sains dan Analitika Data',
                 'degree' => 'S1',
                 'slug' => 's1-statistika',
                 'description' => 'Program Studi Statistika ITK berkomitmen menghasilkan lulusan yang kompeten dalam analisis statistik dan pengolahan big data melalui kurikulum yang berfokus pada manajemen data dan komputasi. Pembelajaran dirancang selaras dengan perkembangan teknologi sehingga lulusan memiliki keterampilan yang relevan dengan kebutuhan zaman. Dengan kompetensi tersebut, lulusan memiliki peluang karier luas di sektor pemerintah, pendidikan, bisnis, dan industri.',
@@ -97,6 +100,7 @@ class StudyProgramSeeder extends Seeder
             // 4. FISIKA
             [
                 'name' => 'Fisika',
+                'department' => 'Sains dan Analitika Data',
                 'degree' => 'S1',
                 'slug' => 's1-fisika',
                 'description' => 'Program Studi Fisika membekali mahasiswa dengan pemahaman konsep teoritis serta kemampuan analisis terhadap gejala dan permasalahan fisis melalui observasi dan eksperimen. Mahasiswa dilatih untuk memprediksi dan mengembangkan penerapan ilmu fisika dalam teknologi. Lulusan memiliki peluang karier luas di sektor pemerintahan maupun industri, baik di perusahaan negara maupun swasta.',
@@ -127,6 +131,7 @@ class StudyProgramSeeder extends Seeder
             // 5. TEKNIK INFORMATIKA
             [
                 'name' => 'Teknik Informatika',
+                'department' => 'Teknik Elektro, Informatika, dan Bisnis',
                 'degree' => 'S1',
                 'slug' => 's1-teknik-informatika',
                 'description' => 'Program Studi Informatika ITK berfokus pada pengembangan kompetensi dasar informatika serta keahlian pemrograman yang kuat untuk mendukung perancangan dan pengembangan sistem berbasis komputer. Mahasiswa dibekali kemampuan dalam menganalisis, mengevaluasi, serta mengimplementasikan solusi teknologi informasi yang adaptif terhadap kebutuhan industri. Dengan bekal tersebut, lulusan diharapkan mampu berkontribusi dalam pengembangan sistem digital yang inovatif dan relevan di berbagai sektor.',
@@ -153,6 +158,7 @@ class StudyProgramSeeder extends Seeder
             // 6. SISTEM INFORMASI
             [
                 'name' => 'Sistem Informasi',
+                'department' => 'Teknik Elektro, Informatika, dan Bisnis',
                 'degree' => 'S1',
                 'slug' => 's1-sistem-informasi',
                 'description' => 'Program Studi Sistem Informasi ITK berfokus pada pengembangan keahlian dalam analisis kebutuhan, proses bisnis, serta perancangan dan implementasi sistem informasi untuk meningkatkan kinerja organisasi melalui pemanfaatan teknologi. Pembelajaran menitikberatkan pada aspek Organizational Issues & Information Systems serta Application Deployment Configuration, sehingga lulusan mampu menjembatani kebutuhan bisnis dengan solusi teknologi yang efektif dan adaptif di berbagai sektor.',
@@ -178,6 +184,7 @@ class StudyProgramSeeder extends Seeder
             // 7. BISNIS DIGITAL
             [
                 'name' => 'Bisnis Digital',
+                'department' => 'Teknik Elektro, Informatika, dan Bisnis',
                 'degree' => 'S1',
                 'slug' => 's1-bisnis-digital',
                 'description' => 'Program Studi Bisnis Digital mengintegrasikan keilmuan bisnis dan teknologi untuk menyiapkan sumber daya manusia yang adaptif di era industri 4.0. Pembelajaran dirancang untuk mengembangkan kemampuan analisis bisnis, pemanfaatan teknologi digital, serta inovasi dalam pengembangan usaha. Lulusan diproyeksikan berkarier sebagai entrepreneur, pemasar digital, konsultan bisnis, pengembang bisnis, hingga data analis di berbagai sektor industri.',
@@ -205,6 +212,7 @@ class StudyProgramSeeder extends Seeder
             // 8. TEKNIK ELEKTRO
             [
                 'name' => 'Teknik Elektro',
+                'department' => 'Teknik Elektro, Informatika, dan Bisnis',
                 'degree' => 'S1',
                 'slug' => 's1-teknik-elektro',
                 'description' => 'Program Studi Teknik Elektro Institut Teknologi Kalimantan (ITK) berfokus pada penguasaan ilmu listrik, elektronika, dan elektromagnetisme dalam perancangan, pengembangan, serta implementasi sistem dan perangkat teknologi. Mahasiswa dibekali dasar kuat matematika, fisika, dan komputasi melalui pembelajaran seperti sistem kontrol, komunikasi, mikroprosesor, teknik daya, serta teknologi terkini seperti energi terbarukan, robotika, dan kecerdasan buatan. Lulusan diharapkan mampu berpikir kritis, kreatif, dan bekerja dalam tim, serta berkarier di berbagai bidang seperti rekayasa perangkat keras, sistem kontrol, jaringan, teknologi informasi, hingga riset dan pengembangan teknologi.',
@@ -226,6 +234,7 @@ class StudyProgramSeeder extends Seeder
             // 9. MAGISTER MANAJEMEN TEKNOLOGI
             [
                 'name' => 'Magister Manajemen Teknologi',
+                'department' => 'Teknik Elektro, Informatika, dan Bisnis',
                 'degree' => 'S2',
                 'slug' => 's2-magister-manajemen-teknologi',
                 'description' => 'Program Magister Manajemen Teknologi (MMT) Institut Teknologi Kalimantan (ITK) dirancang untuk mengintegrasikan keilmuan manajemen strategis dan teknologi guna menjawab tantangan industri modern. Program ini membekali mahasiswa dengan kemampuan dalam pengelolaan inovasi, strategi teknologi, serta pengambilan keputusan berbasis data melalui pendekatan interdisipliner. Lulusan dipersiapkan menjadi pemimpin yang adaptif dan inovatif dalam menghadapi transformasi digital di berbagai sektor industri.',

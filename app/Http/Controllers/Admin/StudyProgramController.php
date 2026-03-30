@@ -28,6 +28,7 @@ class StudyProgramController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'department' => 'required|string|max:255',
             'degree' => 'required|string|max:10',
             'description' => 'nullable|string',
             'vision' => 'nullable|string',
@@ -41,7 +42,7 @@ class StudyProgramController extends Controller
         ]);
 
         $data = $request->except(['accreditation_certificate_image', 'mission', 'graduate_profiles']);
-        
+
         // Buat slug otomatis dari Jenjang + Nama (Contoh: S1 Matematika -> s1-matematika)
         $data['slug'] = Str::slug($request->degree . ' ' . $request->name);
 
@@ -71,6 +72,7 @@ class StudyProgramController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'department' => 'required|string|max:255',
             'degree' => 'required|string|max:10',
             'description' => 'nullable|string',
             'vision' => 'nullable|string',

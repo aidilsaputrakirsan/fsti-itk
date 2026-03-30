@@ -11,6 +11,7 @@ class StudyProgram extends Model
 
     protected $fillable = [
         'name',
+        'department',
         'degree',
         'slug',
         'description',

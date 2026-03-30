@@ -5,31 +5,53 @@ import { ArrowLeftIcon, PaperAirplaneIcon, PaperClipIcon } from '@heroicons/vue/
 
 defineOptions({ layout: AdminLayout });
 
-const form = useForm({
-  name: '',
-  degree: 'S1',
-  description: '',
-  vision: '',
-  mission: '',
-  goals: '',
-  graduate_profiles: '',
-  accreditation_text: '',
-  accreditation_pdf_link: '',
-  website_link: '',
-  accreditation_certificate_image: null as File | null,
+// FIX TYPESCRIPT: Kita buat Interface yang jelas agar TS tidak terjebak "infinite loop"
+interface StudyProgramForm {
+    name: string;
+    department: string;
+    degree: string;
+    description: string;
+    vision: string;
+    mission: string;
+    goals: string;
+    graduate_profiles: string;
+    accreditation_text: string;
+    accreditation_pdf_link: string;
+    website_link: string;
+    accreditation_certificate_image: File | null;
+}
+
+const form = useForm<StudyProgramForm>({
+    name: '',
+    department: 'Sains dan Analitika Data',
+    degree: 'S1',
+    description: '',
+    vision: '',
+    mission: '',
+    goals: '',
+    graduate_profiles: '',
+    accreditation_text: '',
+    accreditation_pdf_link: '',
+    website_link: '',
+    accreditation_certificate_image: null,
 });
 
 const submit = () => {
-  form.post(route('admin.study-programs.store'));
+    form.post(route('admin.study-programs.store'));
 };
 </script>
 
 <template>
   <div>
     <Head title="Tambah Program Studi" />
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-black">Tambah Program Studi</h1>
-      <p class="mt-1 text-black">Tambah data program studi baru di Fakultas Sains dan Teknologi Informasi</p>
+    <div class="mb-8 flex items-center gap-4">
+      <Link :href="route('admin.study-programs.index')" class="text-gray-500 hover:text-[#4682A9] transition bg-white p-2 rounded-full shadow-sm">
+          <ArrowLeftIcon class="w-5 h-5" />
+      </Link>
+      <div>
+        <h1 class="text-3xl font-bold text-black">Tambah Program Studi</h1>
+        <p class="mt-1 text-black">Tambah data program studi baru di Fakultas Sains dan Teknologi Informasi</p>
+      </div>
     </div>
 
     <div class="bg-white shadow-sm p-8 rounded-lg">
@@ -43,76 +65,90 @@ const submit = () => {
               <p v-if="form.errors.name" class="mt-2 text-sm text-red-600">{{ form.errors.name }}</p>
             </div>
 
-            <div>
-              <label for="degree" class="block text-sm font-semibold text-black">Jenjang *</label>
-              <select id="degree" v-model="form.degree" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required>
-                <option value="S1">S1 (Sarjana)</option>
-                <option value="S2">S2 (Magister)</option>
-              </select>
-              <p v-if="form.errors.degree" class="mt-2 text-sm text-red-600">{{ form.errors.degree }}</p>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label for="degree" class="block text-sm font-semibold text-black">Jenjang *</label>
+                  <select id="degree" v-model="form.degree" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required>
+                    <option value="S1">S1 (Sarjana)</option>
+                    <option value="S2">S2 (Magister)</option>
+                  </select>
+                  <p v-if="form.errors.degree" class="mt-2 text-sm text-red-600">{{ form.errors.degree }}</p>
+                </div>
+                <div>
+                  <label for="department" class="block text-sm font-semibold text-black">Jurusan *</label>
+                  <select id="department" v-model="form.department" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required>
+                    <option value="Sains dan Analitika Data">Sains dan Analitika Data</option>
+                    <option value="Teknik Elektro, Informatika, dan Bisnis">Teknik Elektro, Informatika, dan Bisnis</option>
+                  </select>
+                  <p v-if="form.errors.department" class="mt-2 text-sm text-red-600">{{ form.errors.department }}</p>
+                </div>
             </div>
 
             <div>
-              <label for="description" class="block text-sm font-semibold text-black">Profil Ringkas (Deskripsi)</label>
-              <textarea id="description" v-model="form.description" rows="4" placeholder="Masukkan deskripsi singkat tentang prodi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+              <label for="description" class="block text-sm font-semibold text-black">Profil Ringkas (Deskripsi) *</label>
+              <textarea id="description" v-model="form.description" rows="4" placeholder="Masukkan deskripsi singkat tentang prodi..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
             </div>
 
             <div>
-              <label for="vision" class="block text-sm font-semibold text-black">Visi</label>
-              <textarea id="vision" v-model="form.vision" rows="3" placeholder="Masukkan teks visi prodi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+              <label for="vision" class="block text-sm font-semibold text-black">Visi *</label>
+              <textarea id="vision" v-model="form.vision" rows="3" placeholder="Masukkan teks visi prodi..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
             </div>
 
             <div>
-              <label for="goals" class="block text-sm font-semibold text-black">Tujuan (Gunakan 'Enter' untuk poin bernomor)</label>
-              <textarea id="goals" v-model="form.goals" rows="6" placeholder="1. Tujuan pertama...&#10;2. Tujuan kedua..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+              <label for="goals" class="block text-sm font-semibold text-black">Tujuan * <span class="font-normal text-gray-500">(Pisahkan dengan 'Enter')</span></label>
+              <textarea id="goals" v-model="form.goals" rows="5" placeholder="1. Tujuan pertama...&#10;2. Tujuan kedua..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
             </div>
           </div>
 
           <div class="space-y-6">
             <div>
-              <label for="mission" class="block text-sm font-semibold text-black">Misi <span class="font-normal text-gray-500">(Gunakan 'Enter' untuk memisah poin)</span></label>
-              <textarea id="mission" v-model="form.mission" rows="6" placeholder="1. Misi pertama...&#10;2. Misi kedua..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+              <label for="mission" class="block text-sm font-semibold text-black">Misi * <span class="font-normal text-gray-500">(Pisahkan dengan 'Enter')</span></label>
+              <textarea id="mission" v-model="form.mission" rows="6" placeholder="1. Misi pertama...&#10;2. Misi kedua..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
             </div>
 
             <div>
-              <label for="graduate_profiles" class="block text-sm font-semibold text-black">Profil Lulusan / Karier <span class="font-normal text-gray-500">(Gunakan 'Enter' untuk memisah poin)</span></label>
-              <textarea id="graduate_profiles" v-model="form.graduate_profiles" rows="4" placeholder="Data Analyst&#10;Aktuaris&#10;Konsultan" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+              <label for="graduate_profiles" class="block text-sm font-semibold text-black">Profil Lulusan / Karier * <span class="font-normal text-gray-500">(Pisahkan dengan 'Enter')</span></label>
+              <textarea id="graduate_profiles" v-model="form.graduate_profiles" rows="4" placeholder="Data Analyst&#10;Aktuaris&#10;Konsultan" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
             </div>
-
+            
             <div>
-              <label for="website_link" class="block text-sm font-semibold text-black">Link Website Resmi Prodi (Opsional)</label>
-              <input type="url" id="website_link" v-model="form.website_link" placeholder="Contoh: https://math.itk.ac.id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+              <label for="accreditation_text" class="block text-sm font-semibold text-black">Teks Penjelasan Akreditasi *</label>
+              <textarea id="accreditation_text" v-model="form.accreditation_text" rows="2" placeholder="Contoh: Terakreditasi Baik oleh LAMSAMA." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
             </div>
 
-            <div>
-              <label for="accreditation_text" class="block text-sm font-semibold text-black">Teks Penjelasan Akreditasi</label>
-              <textarea id="accreditation_text" v-model="form.accreditation_text" rows="2" placeholder="Telah terakreditasi dengan peringkat Baik." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
-            </div>
+            <div class="p-4 bg-gray-50 border border-gray-200 rounded-xl space-y-4">
+                <h4 class="text-sm font-bold text-gray-700">Tautan & Media (Opsional)</h4>
+                
+                <div>
+                  <label for="website_link" class="block text-sm font-semibold text-gray-600">Link Website Resmi Prodi</label>
+                  <input type="url" id="website_link" v-model="form.website_link" placeholder="https://math.itk.ac.id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+                </div>
 
-            <div>
-              <label for="accreditation_pdf_link" class="block text-sm font-semibold text-black">Link URL File PDF Akreditasi (Opsional)</label>
-              <input type="url" id="accreditation_pdf_link" v-model="form.accreditation_pdf_link" placeholder="Contoh: https://ult.itk.ac.id/.../sertifikat.pdf" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+                <div>
+                  <label for="accreditation_pdf_link" class="block text-sm font-semibold text-gray-600">Link File PDF Akreditasi</label>
+                  <input type="url" id="accreditation_pdf_link" v-model="form.accreditation_pdf_link" placeholder="https://ult.itk.ac.id/.../sertifikat.pdf" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+                </div>
+                
+                <div>
+                  <label for="image" class="block text-sm font-semibold text-gray-600">Gambar Sertifikat Akreditasi</label>
+                  <div class="mt-1 relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2 hover:bg-gray-100 transition">
+                    <PaperClipIcon class="h-5 w-5 text-gray-400" />
+                    <span class="ml-3 text-sm" :class="{'text-gray-400': !form.accreditation_certificate_image, 'text-black': form.accreditation_certificate_image}">
+                      {{ form.accreditation_certificate_image ? form.accreditation_certificate_image.name : 'Upload gambar (JPG/PNG)' }}
+                    </span>
+                    <input type="file" id="image" @input="form.accreditation_certificate_image = ($event.target as HTMLInputElement).files?.[0] || null" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                  </div>
+                  <p v-if="form.errors.accreditation_certificate_image" class="mt-2 text-sm text-red-600">{{ form.errors.accreditation_certificate_image }}</p>
+                </div>
             </div>
-          </div>
-
-          <div class="md:col-span-2">
-            <label for="image" class="block text-sm font-semibold text-black">Unggah Gambar Sertifikat Akreditasi (Opsional)</label>
-            <div class="mt-1 relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2">
-              <PaperClipIcon class="h-5 w-5 text-gray-400" />
-              <span class="ml-3 text-sm" :class="{'text-gray-400': !form.accreditation_certificate_image, 'text-black': form.accreditation_certificate_image}">
-                {{ form.accreditation_certificate_image ? form.accreditation_certificate_image.name : 'Pilih file gambar sertifikat (JPG/PNG)' }}
-              </span>
-              <input type="file" id="image" @input="form.accreditation_certificate_image = ($event.target as HTMLInputElement).files?.[0] || null" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-            </div>
-            <p v-if="form.errors.accreditation_certificate_image" class="mt-2 text-sm text-red-600">{{ form.errors.accreditation_certificate_image }}</p>
           </div>
         </div>
 
-        <div class="mt-12 flex items-center justify-end gap-4">
-            <Link :href="route('admin.study-programs.index')" class="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-6 py-2 text-sm font-semibold text-black shadow-sm hover:bg-gray-50">
-                <ArrowLeftIcon class="h-5 w-5" /> Batal
+        <div class="mt-10 flex items-center justify-end gap-4 border-t border-gray-100 pt-6">
+            <Link :href="route('admin.study-programs.index')" class="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition">
+                Batal
             </Link>
-            <button type="submit" :disabled="form.processing" class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90 disabled:opacity-50">
+            <button type="submit" :disabled="form.processing" class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-opacity-90 disabled:opacity-50 transition">
                 <PaperAirplaneIcon class="h-5 w-5" /> Simpan
             </button>
         </div>

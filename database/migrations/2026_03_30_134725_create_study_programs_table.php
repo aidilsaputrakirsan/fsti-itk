@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('study_programs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('department');
             $table->string('degree', 10);
             $table->string('slug')->unique();
             $table->text('description')->nullable();

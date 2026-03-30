@@ -38,7 +38,7 @@ class HandleInertiaRequests extends Middleware
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),
             ],
-            'globalProdi' => \App\Models\StudyProgram::select('name', 'degree', 'slug')
+            'globalProdi' => \App\Models\StudyProgram::select('name', 'degree', 'slug', 'department') // <-- Tambahkan 'department'
                 ->orderBy('degree')
                 ->orderBy('name')
                 ->get(),

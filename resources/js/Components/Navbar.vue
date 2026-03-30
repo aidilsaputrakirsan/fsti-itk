@@ -16,6 +16,7 @@ interface StudyProgramGlobal {
     name: string;
     degree: string;
     slug: string;
+    department: string; // <-- Tambahkan ini
 }
 
 interface NavLink {
@@ -30,15 +31,18 @@ interface NavLink {
     }[];
 }
 
-// --- 2. DATA DINAMIS DARI MIDDLEWARE (DI-CASTING) ---
+// --- 2. LOGIKA AUTO-GROUPING JURUSAN SANGAT CERDAS ---
 const globalProdi = computed<StudyProgramGlobal[]>(() => {
     return ((page.props as any).globalProdi as StudyProgramGlobal[]) || [];
 });
 
-const sarjanaProdi = computed(() => globalProdi.value.filter((p: StudyProgramGlobal) => p.degree === 'S1'));
-const magisterProdi = computed(() => globalProdi.value.filter((p: StudyProgramGlobal) => p.degree === 'S2'));
+// Mengambil daftar nama jurusan yang unik (tidak duplikat)
+const uniqueDepartments = computed(() => {
+    const deps = globalProdi.value.map(p => p.department);
+    return [...new Set(deps)].filter(Boolean); // Menghapus duplikat dan nilai kosong
+});
 
-// --- 3. DATA MENU NAVIGASI (DENGAN TIPE NAVLINK[]) ---
+// --- 3. DATA MENU NAVIGASI ---
 const navigationMenu = computed<NavLink[]>(() => [
     { name: trans('Beranda'), href: route('home') },
     {
@@ -73,22 +77,16 @@ const navigationMenu = computed<NavLink[]>(() => [
         name: trans('Program Studi'),
         href: '#',
         megaMenu: true,
-        columns: [
-            {
-                title: 'Program Sarjana (S1)',
-                links: sarjanaProdi.value.map((p: StudyProgramGlobal) => ({
-                    name: `S1 ${p.name}`,
+        // NAVBAR SEKARANG OTOMATIS MEMBUAT KOLOM BERDASARKAN JURUSAN!
+        columns: uniqueDepartments.value.map(dep => ({
+            title: `Jurusan ${dep}`,
+            links: globalProdi.value
+                .filter(p => p.department === dep)
+                .map(p => ({
+                    name: `Program Studi ${p.degree} ${p.name}`, // Output: "Program Studi S1 Matematika"
                     href: route('public.prodi.show', p.slug)
                 }))
-            },
-            {
-                title: 'Program Magister (S2)',
-                links: magisterProdi.value.map((p: StudyProgramGlobal) => ({
-                    name: `S2 ${p.name}`,
-                    href: route('public.prodi.show', p.slug)
-                }))
-            },
-        ],
+        }))
     },
     {
         name: trans('Kemahasiswaan'),
