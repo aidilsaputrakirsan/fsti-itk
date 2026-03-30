@@ -1,19 +1,23 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import { ChevronDown, Search, X, Menu, Globe } from 'lucide-vue-next';
-
 import LanguageSwitcher from '@/Components/LanguageSwitcher.vue';
-import { usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
 
 const page = usePage();
+
 const trans = (key: string): string => {
-    const translations = page.props.translations as Record<string, string> | undefined;
+    const translations = (page.props as any).translations as Record<string, string> | undefined;
     return translations?.[key] || key;
 };
 
-// --- Interface untuk struktur data ---
+// --- 1. DEKLARASI INTERFACE TYPESCRIPT ---
+interface StudyProgramGlobal {
+    name: string;
+    degree: string;
+    slug: string;
+}
+
 interface NavLink {
     name: string;
     href: string;
@@ -22,12 +26,20 @@ interface NavLink {
     megaMenu?: boolean;
     columns?: {
         title: string;
-        links: NavLink[];
+        links: { name: string; href: string }[];
     }[];
 }
 
-// --- Data Menu Navigasi ---
-const navigationMenu = computed(() => [
+// --- 2. DATA DINAMIS DARI MIDDLEWARE (DI-CASTING) ---
+const globalProdi = computed<StudyProgramGlobal[]>(() => {
+    return ((page.props as any).globalProdi as StudyProgramGlobal[]) || [];
+});
+
+const sarjanaProdi = computed(() => globalProdi.value.filter((p: StudyProgramGlobal) => p.degree === 'S1'));
+const magisterProdi = computed(() => globalProdi.value.filter((p: StudyProgramGlobal) => p.degree === 'S2'));
+
+// --- 3. DATA MENU NAVIGASI (DENGAN TIPE NAVLINK[]) ---
+const navigationMenu = computed<NavLink[]>(() => [
     { name: trans('Beranda'), href: route('home') },
     {
         name: trans('Profil'),
@@ -53,8 +65,7 @@ const navigationMenu = computed(() => [
                     { name: trans('Tenaga Kependidikan'), href: route('profil.tenaga-kependidikan') },
                 ],
             },
-             { name: trans('Kerjasama'), href: route('profil.kerjasama') },
-
+            { name: trans('Kerjasama'), href: route('profil.kerjasama') },
             { name: trans('Kontak'), href: route('kontak') },
         ],
     },
@@ -64,23 +75,18 @@ const navigationMenu = computed(() => [
         megaMenu: true,
         columns: [
             {
-                title: 'Jurusan Teknik Elektro, Informatika, dan Bisnis',
-                links: [
-                    { name: 'Program Studi Teknik Elektro', href: route('public.prodi.show', 's1-teknik-elektro') },
-                    { name: 'Program Studi Sistem Informasi', href: route('public.prodi.show', 's1-sistem-informasi') },
-                    { name: 'Program Studi Informatika', href: route('public.prodi.show', 's1-teknik-informatika') },
-                    { name: 'Program Studi Bisnis Digital', href: route('public.prodi.show', 's1-bisnis-digital') },
-                    { name: 'Magister Manajemen Teknologi', href: route('public.prodi.show', 's2-magister-manajemen-teknologi') },
-                ],
+                title: 'Program Sarjana (S1)',
+                links: sarjanaProdi.value.map((p: StudyProgramGlobal) => ({
+                    name: `S1 ${p.name}`,
+                    href: route('public.prodi.show', p.slug)
+                }))
             },
             {
-                title: 'Jurusan Sains dan Analitika Data',
-                links: [
-                    { name: 'Program Studi Fisika', href: route('public.prodi.show', 's1-fisika') },
-                    { name: 'Program Studi Matematika', href: route('public.prodi.show', 's1-matematika') },
-                    { name: 'Program Studi Statistika', href: route('public.prodi.show', 's1-statistika') },
-                    { name: 'Program Studi Ilmu Aktuaria', href: route('public.prodi.show', 's1-ilmu-aktuaria') },
-                ],
+                title: 'Program Magister (S2)',
+                links: magisterProdi.value.map((p: StudyProgramGlobal) => ({
+                    name: `S2 ${p.name}`,
+                    href: route('public.prodi.show', p.slug)
+                }))
             },
         ],
     },
@@ -95,28 +101,25 @@ const navigationMenu = computed(() => [
             { name: 'Penerimaan Mahasiswa Baru (PMB)', href: route('layanan.index') }, 
         ],
     },
-
-     {
-    name: trans('Alumni'),
+    {
+        name: trans('Alumni'),
         href: '#',
         sublinks: [
             { name: trans('Data Alumni'), href: route('alumni.index') },
             { name: 'Tracer Study', href: route('alumni.index') }, 
         ],
     },
-
     {
         name: trans('Informasi'),
         href: '#',
         sublinks: [
-           { name: trans('Agenda'), href: route('berita.index') },
-    { name: trans('Berita'), href: route('berita.index') },
-    { name: ('Pengumuman'), href: route('berita.index') },
-    { name: ('Prosedur Publikasi'), href: route('berita.index') },
+            { name: trans('Agenda'), href: route('berita.index') },
+            { name: trans('Berita'), href: route('berita.index') },
+            { name: 'Pengumuman', href: route('berita.index') },
+            { name: 'Prosedur Publikasi', href: route('berita.index') },
         ],
     },
-    
-{ name: 'PPID', href: route('public.ppid.index') },    
+    { name: 'PPID', href: route('public.ppid.index') },    
     {
         name: trans('Zona Integritas'),
         href: '#',
@@ -125,8 +128,7 @@ const navigationMenu = computed(() => [
             { name: trans('Survei Kepuasan'), href: route('survei.index') },
         ],
     },
-    
-     {
+    {
         name: trans('Riset'),
         href: '#',
         sublinks: [
@@ -143,16 +145,13 @@ const isSearchOpen = ref(false);
 const searchQuery = ref('');
 const isMobileMenuOpen = ref(false);
 
-// --- Fungsi untuk Dropdown ---
 const showDropdown = (menuName: string) => activeDropdown.value = menuName;
 const hideDropdown = () => activeDropdown.value = null;
 
-// --- Fungsi untuk mengubah tampilan Navbar saat scroll ---
 const handleScroll = () => {
     isScrolled.value = window.scrollY > 10;
 };
 
-// --- Fungsionalitas Pencarian ---
 const openSearch = () => isSearchOpen.value = true;
 const closeSearch = () => isSearchOpen.value = false;
 const submitSearch = () => {
@@ -167,15 +166,8 @@ const submitSearch = () => {
     }
 };
 
-// --- Fungsionalitas Ganti Bahasa (moved to Component) ---
-
-// --- Lifecycle hooks untuk event listener ---
-onMounted(() => {
-    window.addEventListener('scroll', handleScroll);
-});
-onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll);
-});
+onMounted(() => window.addEventListener('scroll', handleScroll));
+onUnmounted(() => window.removeEventListener('scroll', handleScroll));
 </script>
 
 <template>

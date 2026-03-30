@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-use App\Models\Contact;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -36,16 +35,13 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'flash' => [
-                'success' => fn() => $request->session()->get('success'),
-                'error' => fn() => $request->session()->get('error'),
+                'success' => $request->session()->get('success'),
+                'error' => $request->session()->get('error'),
             ],
-            'locale' => app()->getLocale(),
-            'translations' => function () {
-                $locale = app()->getLocale();
-                return json_decode(file_get_contents(base_path("lang/{$locale}.json")), true);
-            },
-
-            'contact_global' => fn() => Contact::first(),
+            'globalProdi' => \App\Models\StudyProgram::select('name', 'degree', 'slug')
+                ->orderBy('degree')
+                ->orderBy('name')
+                ->get(),
         ];
     }
 }

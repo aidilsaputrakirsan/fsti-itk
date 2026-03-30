@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\StudyProgram;
-use Illuminate\Support\Str;
 
 class StudyProgramSeeder extends Seeder
 {
@@ -26,9 +25,14 @@ class StudyProgramSeeder extends Seeder
                 ],
                 'goals' => 'Menjadi wadah pengembangan keilmuan matematika dan proses pembelajaran yang berkualitas untuk meningkatkan kompetensi mahasiswa matematika sehingga menghasilkan sarjana yang mampu memahami sepenuhnya konsep dasar matematika, serta beretos kerja tinggi dalam berkarya dan berkontribusi.',
                 'graduate_profiles' => [
-                    'Data Analyst', 'Data Scientist', 'Praktisi Industri dan Pemerintahan',
-                    'Akademisi dan Peneliti', 'Business Analyst', 'Aktuaris',
-                    'Konsultan', 'Analisis Keuangan'
+                    'Data Analyst',
+                    'Data Scientist',
+                    'Praktisi Industri dan Pemerintahan',
+                    'Akademisi dan Peneliti',
+                    'Business Analyst',
+                    'Aktuaris',
+                    'Konsultan',
+                    'Analisis Keuangan'
                 ],
                 'accreditation_certificate_image' => '/images/prodi/akreditasi_matematika.jpg',
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Matematika-2023-2028.pdf',
@@ -51,8 +55,13 @@ class StudyProgramSeeder extends Seeder
                 ],
                 'goals' => null,
                 'graduate_profiles' => [
-                    'Aktuaris', 'Analisis Risiko', 'Analisis Data', 'Banker',
-                    'Pengelola Investasi', 'Praktisi Dana Pensiun', 'Praktisi Social Care',
+                    'Aktuaris',
+                    'Analisis Risiko',
+                    'Analisis Data',
+                    'Banker',
+                    'Pengelola Investasi',
+                    'Praktisi Dana Pensiun',
+                    'Praktisi Social Care',
                     'Lembaga Pemerintahan'
                 ],
                 'accreditation_certificate_image' => '/images/prodi/akreditasi_aktuaria.jpg',
@@ -75,7 +84,9 @@ class StudyProgramSeeder extends Seeder
                 ],
                 'goals' => "1. Menyelenggarakan pendidikan tinggi yang unggul dan berkualitas sehingga menghasilkan lulusan yang profesional dan memiliki daya saing.\n2. Menerapkan dan mengembangkan keilmuan statistika melalui kegiatan penelitian.\n3. Berkontirbusi dalam pengabdian kepada masyarakat.",
                 'graduate_profiles' => [
-                    'Data Scientist', 'Data Analyst', 'Konsultan Riset'
+                    'Data Scientist',
+                    'Data Analyst',
+                    'Konsultan Riset'
                 ],
                 'accreditation_certificate_image' => '/images/prodi/akreditasi_statistika.jpg',
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Statistika-2022-2027.pdf',
@@ -97,9 +108,15 @@ class StudyProgramSeeder extends Seeder
                 ],
                 'goals' => "1. Menyelenggarakan pendidikan dan pengajaran yang efektif sekaligus akuntabel yang mendukung pada peningkatan kemampuan akademik mahasiswa,\n2. Menghasilkan lulusan yang memiliki daya saing sesuai dengan kebutuhan nasional,\n3. Mengembangkan soft skill dan kepemimpinan mahasiswa,\n4. Mengembangkan kegiatan penelitian yang aplikatif, sesuai dengan potensi sumber daya daerah kalimantan,\n5. Melaksanakan kegiatan pengabdian masyarakat berbasis potensi daerah untuk meningkatkan kesejahteraan masyarakat,\n6. Mengembangkan kemitraan dengan perguruan tinggi lain, pemerintah daerah, dan instansi lain untuk mendukung kegiatan penelitian dan pengabdian masyarakat.",
                 'graduate_profiles' => [
-                    'Data Analyst', 'Data Scientist', 'Laboran', 'Fisikawan Medis',
-                    'Entrepreneur', 'Jurnalis', 'Software Developer', 
-                    'Ahli Semikonduktor & Elektronika', 'Geofisikawan'
+                    'Data Analyst',
+                    'Data Scientist',
+                    'Laboran',
+                    'Fisikawan Medis',
+                    'Entrepreneur',
+                    'Jurnalis',
+                    'Software Developer',
+                    'Ahli Semikonduktor & Elektronika',
+                    'Geofisikawan'
                 ],
                 'accreditation_certificate_image' => '/images/prodi/akreditasi_fisika.jpg',
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Fisika-2023-2028.pdf',
@@ -121,8 +138,11 @@ class StudyProgramSeeder extends Seeder
                 ],
                 'goals' => "1. Menghasilkan lulusan yang memiliki kompetensi di bidang Informatika, berjiwa wirausaha dan dapat dipercaya sehingga mampu bekerja sama dan memberikan kontribusi di tingkat nasional maupun internasional.\n2. Menjalankan sistem pendidikan dengan penjaminan mutu sesuai standar nasional dan internasional.\n3. Melibatkan civitas academica dalam penelitian yang memperkaya keilmuan di bidang komputasi.\n4. Melibatkan civitas academica dalam pengabdian masyarakat.\n5. Meningkatkan kontribusi dan kolaborasi dengan mengembangkan inovasi.\n6. Mengembangkan sertifikasi kompetensi di bidang Informatika.",
                 'graduate_profiles' => [
-                    'Software Engineer', 'Digital Entrepreneur', 'Artificial Intelligence Engineer',
-                    'Computer Scientist', 'Data Scientist'
+                    'Software Engineer',
+                    'Digital Entrepreneur',
+                    'Artificial Intelligence Engineer',
+                    'Computer Scientist',
+                    'Data Scientist'
                 ],
                 'accreditation_certificate_image' => '/images/prodi/akreditasi_informatika.jpg',
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Informatika-2024-2029.pdf',
@@ -145,7 +165,9 @@ class StudyProgramSeeder extends Seeder
                 ],
                 'goals' => null,
                 'graduate_profiles' => [
-                    'Information System Engineer', 'IT Governance Engineer', 'IT Project Manager'
+                    'Information System Engineer',
+                    'IT Governance Engineer',
+                    'IT Project Manager'
                 ],
                 'accreditation_certificate_image' => '/images/prodi/akreditasi_sisteminformasi.jpg',
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Sistem-Informasi-2023-2028.pdf',
@@ -168,8 +190,11 @@ class StudyProgramSeeder extends Seeder
                 ],
                 'goals' => null,
                 'graduate_profiles' => [
-                    'Wirausaha', 'Konsultan Bisnis', 'Pemasar Digital', 
-                    'Analisis Data', 'Pengembangan Bisnis Digital'
+                    'Wirausaha',
+                    'Konsultan Bisnis',
+                    'Pemasar Digital',
+                    'Analisis Data',
+                    'Pengembangan Bisnis Digital'
                 ],
                 'accreditation_certificate_image' => '/images/prodi/akreditasi_bisdig.jpg',
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Bisnis-Digital-2024-2029.pdf',
@@ -208,8 +233,11 @@ class StudyProgramSeeder extends Seeder
                 'mission' => null,
                 'goals' => null,
                 'graduate_profiles' => [
-                    'Manajer Proyek', 'Manajer Industri', 'Konsultan',
-                    'Entrepreneur', 'Peneliti dan Akademisi'
+                    'Manajer Proyek',
+                    'Manajer Industri',
+                    'Konsultan',
+                    'Entrepreneur',
+                    'Peneliti dan Akademisi'
                 ],
                 'accreditation_certificate_image' => null,
                 'accreditation_pdf_link' => null,
