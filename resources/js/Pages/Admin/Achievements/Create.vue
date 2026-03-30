@@ -5,6 +5,11 @@ import { ArrowLeftIcon, PaperAirplaneIcon, PaperClipIcon } from '@heroicons/vue/
 
 defineOptions({ layout: AdminLayout });
 
+// Menangkap data prodi dari controller
+const props = defineProps<{
+  studyPrograms: Array<any>;
+}>();
+
 const form = useForm({
   student_name: '',
   student_nim: '',    // Dibiarkan kosong agar nullable di backend
@@ -50,15 +55,9 @@ const submit = () => {
               <label for="study_program" class="block text-sm font-semibold text-black">Program Studi (Opsional)</label>
               <select id="study_program" v-model="form.study_program" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm">
                 <option value="">-- Tidak Ada / Pilih Prodi --</option>
-                <option>Teknik Elektro</option>
-                <option>Sistem Informasi</option>
-                <option>Informatika</option>
-                <option>Bisnis Digital</option>
-                <option>Magister Manajemen Teknologi</option>
-                <option>Fisika</option>
-                <option>Matematika</option>
-                <option>Statistika</option>
-                <option>Ilmu Aktuaria</option>
+                <option v-for="prodi in studyPrograms" :key="prodi.id" :value="prodi.name">
+                  {{ prodi.degree }} {{ prodi.name }}
+                </option>
               </select>
               <p v-if="form.errors.study_program" class="mt-2 text-sm text-red-600">{{ form.errors.study_program }}</p>
             </div>

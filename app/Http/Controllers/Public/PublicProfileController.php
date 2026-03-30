@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Staff;
 use App\Models\Contact;
 use App\Models\TentangFakultas; 
+use App\Models\StudyProgram;
 use Inertia\Inertia;
 
 class PublicProfileController extends Controller

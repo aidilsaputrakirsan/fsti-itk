@@ -33,7 +33,8 @@ const navigationMenu = computed(() => [
         name: trans('Profil'),
         href: '#',
         sublinks: [
-{ name: trans('Tentang FSTI'), href: route('profil.tentang') },            {
+            { name: trans('Tentang FSTI'), href: route('profil.tentang') },            
+            {
                 name: trans('Struktur Organisasi'),
                 href: '#',
                 sublinks: [
@@ -55,7 +56,6 @@ const navigationMenu = computed(() => [
              { name: trans('Kerjasama'), href: route('profil.kerjasama') },
 
             { name: trans('Kontak'), href: route('kontak') },
-
         ],
     },
     {
@@ -66,20 +66,20 @@ const navigationMenu = computed(() => [
             {
                 title: 'Jurusan Teknik Elektro, Informatika, dan Bisnis',
                 links: [
-                    { name: 'Program Studi Teknik Elektro', href: '#' },
-                    { name: 'Program Studi Sistem Informasi', href: '#' },
-                    { name: 'Program Studi Informatika', href: '#' },
-                    { name: 'Program Studi Bisnis Digital', href: '#' },
-                    { name: 'Magister Manajemen Teknologi', href: '#' },
+                    { name: 'Program Studi Teknik Elektro', href: route('public.prodi.show', 's1-teknik-elektro') },
+                    { name: 'Program Studi Sistem Informasi', href: route('public.prodi.show', 's1-sistem-informasi') },
+                    { name: 'Program Studi Informatika', href: route('public.prodi.show', 's1-teknik-informatika') },
+                    { name: 'Program Studi Bisnis Digital', href: route('public.prodi.show', 's1-bisnis-digital') },
+                    { name: 'Magister Manajemen Teknologi', href: route('public.prodi.show', 's2-magister-manajemen-teknologi') },
                 ],
             },
             {
                 title: 'Jurusan Sains dan Analitika Data',
                 links: [
-                    { name: 'Program Studi Fisika', href: '#' },
-                    { name: 'Program Studi Matematika', href: route('prodi.matematika') },
-                    { name: 'Program Studi Statistika', href: '#' },
-                    { name: 'Program Studi Ilmu Aktuaria', href: '#' },
+                    { name: 'Program Studi Fisika', href: route('public.prodi.show', 's1-fisika') },
+                    { name: 'Program Studi Matematika', href: route('public.prodi.show', 's1-matematika') },
+                    { name: 'Program Studi Statistika', href: route('public.prodi.show', 's1-statistika') },
+                    { name: 'Program Studi Ilmu Aktuaria', href: route('public.prodi.show', 's1-ilmu-aktuaria') },
                 ],
             },
         ],
@@ -104,7 +104,6 @@ const navigationMenu = computed(() => [
             { name: 'Tracer Study', href: route('alumni.index') }, 
         ],
     },
-
 
     {
         name: trans('Informasi'),
@@ -210,7 +209,6 @@ onUnmounted(() => {
                             <ChevronDown v-if="item.sublinks || item.megaMenu" class="ml-1 h-4 w-4" />
                         </component>
                         
-                        <!-- Dropdown biasa -->
                         <transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0 translate-y-1" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition ease-in duration-150" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-1">
                             <div v-if="activeDropdown === item.name && item.sublinks" class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                 <div class="py-1">
@@ -233,7 +231,6 @@ onUnmounted(() => {
                             </div>
                         </transition>
 
-                        <!-- Mega Menu -->
                         <transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0 translate-y-1" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition ease-in duration-150" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-1">
                              <div v-if="activeDropdown === item.name && item.megaMenu" class="absolute left-1/2 transform -translate-x-1/2 mt-2 w-screen max-w-4xl px-4 sm:px-0">
                                  <div class="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
@@ -276,7 +273,6 @@ onUnmounted(() => {
         </transition>
     </header>
 
-    <!-- Modal Search -->
     <transition enter-active-class="ease-out duration-300" enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="ease-in duration-200" leave-from-class="opacity-100" leave-to-class="opacity-0">
         <div v-if="isSearchOpen" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-start justify-center pt-20" @click.self="closeSearch">
             <div class="bg-white rounded-lg shadow-2xl w-full max-w-xl">

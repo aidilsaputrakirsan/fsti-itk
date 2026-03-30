@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\PostCategory; 
+use App\Models\PostCategory;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Non Akademik', 'slug' => 'non-akademik'],
             ['name' => 'Kerjasama', 'slug' => 'kerjasama'],
         ];
-        
+
         foreach ($categories as $cat) {
             PostCategory::firstOrCreate(['slug' => $cat['slug']], $cat);
         }
@@ -49,6 +49,7 @@ class DatabaseSeeder extends Seeder
             InternalServiceSeeder::class,
             ContactSeeder::class,
             TentangFakultasSeeder::class,
+            StudyProgramSeeder::class,
         ]);
     }
 }

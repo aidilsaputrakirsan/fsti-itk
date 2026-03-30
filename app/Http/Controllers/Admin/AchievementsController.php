@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Achievement;
+use App\Models\StudyProgram;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
@@ -42,8 +43,14 @@ class AchievementsController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Admin/Achievements/Create');
+        // Ambil data prodi dinamis
+        $studyPrograms = StudyProgram::orderBy('degree')->orderBy('name')->get();
+
+        return Inertia::render('Admin/Achievements/Create', [
+            'studyPrograms' => $studyPrograms
+        ]);
     }
+
 
     /**
      * Menyimpan prestasi baru ke dalam database.
@@ -84,10 +91,14 @@ class AchievementsController extends Controller
     /**
      * Menampilkan form untuk mengedit prestasi.
      */
+
     public function edit(Achievement $achievement)
     {
+        $studyPrograms = StudyProgram::orderBy('degree')->orderBy('name')->get();
+
         return Inertia::render('Admin/Achievements/Edit', [
             'achievement' => $achievement,
+            'studyPrograms' => $studyPrograms
         ]);
     }
 

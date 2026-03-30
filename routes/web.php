@@ -10,7 +10,8 @@ use App\Http\Controllers\Admin\AchievementsController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SurveyCategoryController;
 use App\Http\Controllers\Admin\PostCategoryController;
-use App\Http\Controllers\Admin\TentangFakultasController; // <-- Tambahan untuk Tentang Fakultas
+use App\Http\Controllers\Admin\TentangFakultasController;
+use App\Http\Controllers\Admin\StudyProgramController as AdminStudyProgramController;
 
 // Import Controllers Public
 use App\Http\Controllers\Public\PublicPostController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\Public\PublicProfileController;
 use App\Http\Controllers\Public\PublicPpidController;
 use App\Http\Controllers\Public\PublicZonaIntegritasController;
 use App\Http\Controllers\Public\PublicSurveiController;
+use App\Http\Controllers\Public\PublicProgramStudiController;
 
 use App\Models\Post;
 use App\Models\Achievement;
@@ -68,6 +70,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     // Modul Tentang Fakultas Admin (Pengganti static-pages)
     Route::get('/tentang-fakultas', [TentangFakultasController::class, 'edit'])->name('tentang.edit');
     Route::put('/tentang-fakultas', [TentangFakultasController::class, 'update'])->name('tentang.update');
+
+    // Modul Program Studi Admin
+    Route::resource('/study-programs', AdminStudyProgramController::class)->except(['show']);
 });
 
 
@@ -119,6 +124,9 @@ Route::get('/zona-integritas', [PublicZonaIntegritasController::class, 'index'])
 Route::get('/survei-kepuasan', [PublicSurveiController::class, 'index'])->name('survei.index');
 Route::post('/survei-kepuasan', [PublicSurveiController::class, 'store'])->name('survei.store');
 
+// --- Modul Program Studi (Publik) ---
+Route::get('/prodi/{slug}', [PublicProgramStudiController::class, 'show'])->name('public.prodi.show');
+
 Route::get('/alumni', function () {
     return Inertia::render('Public/Alumni/Index');
 })->name('alumni.index');
@@ -126,7 +134,10 @@ Route::get('/alumni', function () {
 Route::get('/layanan-internal', function () {
     $services = \App\Models\InternalService::orderBy('sort_order', 'asc')->get()->map(function ($item) {
         return [
-            'id' => $item->id, 'name' => $item->name, 'description' => $item->description, 'link_url' => $item->link_url,
+            'id' => $item->id,
+            'name' => $item->name,
+            'description' => $item->description,
+            'link_url' => $item->link_url,
         ];
     });
     return Inertia::render('Public/Layanan/Index', ['services' => $services]);
@@ -163,9 +174,6 @@ Route::get('/profil/kerjasama', function () {
     return "Halaman Kerjasama Segera Hadir";
 })->name('profil.kerjasama');
 
-Route::get('/program-studi/matematika', function () {
-    return Inertia::render('Public/ProgramStudi/Matematika');
-})->name('prodi.matematika');
 
 Route::get('/kontak', function () {
     $contact = \App\Models\Contact::first();

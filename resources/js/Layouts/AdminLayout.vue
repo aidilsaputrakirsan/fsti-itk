@@ -10,7 +10,8 @@ import {
     AcademicCapIcon,
     ArchiveBoxIcon,
     ShieldCheckIcon,
-    UserGroupIcon, // Ditambahkan untuk ikon Kemahasiswaan
+    UserGroupIcon, 
+    BookOpenIcon, // <-- Tambahan Ikon Buku untuk Program Studi
 } from '@heroicons/vue/24/outline';
 import { ref, onMounted, computed } from 'vue';
 
@@ -33,8 +34,10 @@ const navigation = [
         ]
     },
     
+    // --- MENU PROGRAM STUDI (TERPISAH SEBAGAI MENU UTAMA) ---
+    { name: 'Program Studi', href: '/admin/study-programs', icon: BookOpenIcon, children: null },
     
-    // --- FIX: Menu Kemahasiswaan (Gabungan Prestasi dan Layanan) ---
+    // --- Menu Kemahasiswaan (Gabungan Prestasi dan Layanan) ---
     { 
         name: 'Kemahasiswaan', 
         href: null,
@@ -54,7 +57,6 @@ const navigation = [
             { name: 'Kelola Kategori Berita', href: '/admin/post-categories' },
         ] 
     },
-    // ---------------------------------------------------------------
     
     {
         name: 'PPID',
@@ -76,7 +78,7 @@ const navigation = [
         ]
     },
     {
-        name: 'Alumni', // Diubah dari "Informasi & Layanan" karena Layanan sudah dipindah
+        name: 'Alumni', 
         href: null,
         icon: InformationCircleIcon,
         children: [
@@ -88,7 +90,6 @@ const navigation = [
 
 const isParentUrlActive = (item: any) => {
     if (!item.children) return false;
-    // Gunakan currentUrl.value agar reaktif
     return item.children.some((child: any) => currentUrl.value.startsWith(child.href));
 };
 
