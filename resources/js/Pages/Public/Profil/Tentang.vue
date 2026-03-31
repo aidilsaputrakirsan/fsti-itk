@@ -2,7 +2,7 @@
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import { Head } from '@inertiajs/vue3';
-import { onMounted } from 'vue';
+import { onMounted, computed, nextTick } from 'vue'; // Tambahkan computed & nextTick
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
@@ -10,7 +10,32 @@ import {
     Users, GraduationCap, Building, Zap, Beaker, UserCheck, Briefcase, Network, Quote, FileText, Globe, Cpu, Code
 } from 'lucide-vue-next';
 
-defineProps({ tentang: Object });
+// Tangkap props statistik dinamis dari Controller
+const props = defineProps({ 
+    tentang: Object,
+    statistik: Object 
+});
+
+// FUNGSI BARU: Menggabungkan data Seeder dengan Hitungan Database
+const displayStats = computed(() => {
+    // Ambil data 8 kotak dari Seeder JSON Admin
+    const cmsData = props.tentang?.statistik?.data || [];
+
+    // Lakukan mapping: Jika kotak bernama "Dosen" atau "Tendik", ganti angkanya dengan hitungan Database!
+    return cmsData.map(stat => {
+        const labelLower = stat.label.toLowerCase();
+        
+        if (labelLower === 'dosen') {
+            return { ...stat, angka: props.statistik?.dosen ?? stat.angka };
+        }
+        if (labelLower === 'tendik') {
+            return { ...stat, angka: props.statistik?.tendik ?? stat.angka };
+        }
+        
+        // Sisanya (Mahasiswa, Jurusan, Alumni, Lab, dll) biarkan pakai angka dari Seeder Admin
+        return stat; 
+    });
+});
 
 const getStatIcon = (index) => {
     const icons = [Users, GraduationCap, Building, Zap, Beaker, Users, UserCheck, Network];
@@ -34,11 +59,17 @@ const countUpAnimation = (el, target, duration) => {
 onMounted(() => {
     AOS.init({ duration: 800, once: true });
     
-    document.querySelectorAll('.stat-number').forEach(el => {
-        const target = parseInt(el.getAttribute('data-target').replace(/\./g, ''));
-        if (!isNaN(target)) {
-            countUpAnimation(el, target, 1500);
-        }
+    // Gunakan nextTick agar Vue selesai menggambar array displayStats sebelum animasi GSAP berjalan
+    nextTick(() => {
+        setTimeout(() => {
+            document.querySelectorAll('.stat-number').forEach(el => {
+                const targetText = el.getAttribute('data-target') || '0';
+                const target = parseInt(targetText.replace(/\./g, ''));
+                if (!isNaN(target)) {
+                    countUpAnimation(el, target, 1500);
+                }
+            });
+        }, 100);
     });
 });
 </script>
@@ -61,7 +92,7 @@ onMounted(() => {
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mx-auto max-w-7xl">
-                    <div v-for="(stat, index) in tentang?.statistik?.data" :key="index" class="bg-white rounded-2xl p-6 text-center border-t-4 border-transparent hover:border-t-primary border border-x-gray-100 border-b-gray-100 shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 transition-all duration-300 group" data-aos="zoom-in" :data-aos-delay="index * 40">
+                    <div v-for="(stat, index) in displayStats" :key="index" class="bg-white rounded-2xl p-6 text-center border-t-4 border-transparent hover:border-t-primary border border-x-gray-100 border-b-gray-100 shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 transition-all duration-300 group" data-aos="zoom-in" :data-aos-delay="index * 40">
                         <div class="inline-flex items-center justify-center w-12 h-12 bg-blue-50/50 rounded-xl text-primary mb-5 group-hover:bg-primary group-hover:text-white group-hover:rotate-6 group-hover:scale-110 transition-all duration-300">
                             <component :is="getStatIcon(index)" class="w-6 h-6" />
                         </div>

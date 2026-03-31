@@ -42,7 +42,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PostSeeder::class,
             AchievementSeeder::class,
-            ProfileSeeder::class,
             PpidSeeder::class,
             IntegrityZoneSeeder::class,
             SurveyCategorySeeder::class,
@@ -50,6 +49,7 @@ class DatabaseSeeder extends Seeder
             ContactSeeder::class,
             TentangFakultasSeeder::class,
             StudyProgramSeeder::class,
+            StaffSeeder::class,
         ]);
     }
 }

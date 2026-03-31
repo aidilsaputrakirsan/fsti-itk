@@ -26,9 +26,9 @@ class DashboardController extends Controller
             'totalPosts' => Post::count(),
             'publishedPosts' => Post::where('status', 'Terbitkan')->count(),
             'totalAchievements' => Achievement::count(),
-            'totalStaff' => Staff::where('is_active', true)->count(),
-            'totalDosen' => Staff::where('category', 'Dosen')->where('is_active', true)->count(),
-            'totalTendik' => Staff::whereIn('category', ['Tendik', 'Tenaga Kependidikan'])->where('is_active', true)->count(),
+            'total_dosen' => Staff::where('type', 'Dosen')->where('is_active', true)->count(),
+            'total_tendik' => Staff::where('type', 'Tendik')->where('is_active', true)->count(),
+            'total_staff' => Staff::where('is_active', true)->count(),
             'totalUsers' => User::count(),
             'totalSurveys' => SatisfactionSurvey::count(),
             'avgRating' => round(SatisfactionSurvey::avg('rating') ?? 0, 1),
@@ -82,7 +82,7 @@ class DashboardController extends Controller
                 'total' => $item->total
             ]);
 
-        // 5. Berita per Kategori (DIPERBAIKI: Relasi ke tabel post_categories)
+        // 5. Berita per Kategori 
         $postsByCategory = Post::join('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
             ->select('post_categories.name as category_name', DB::raw('count(posts.id) as total'))
             ->groupBy('post_categories.id', 'post_categories.name')
@@ -122,19 +122,15 @@ class DashboardController extends Controller
             ]);
 
         // 9. Staff per Kategori
-        $staffByCategory = Staff::select('category', DB::raw('count(*) as total'))
+        $staffByCategory = Staff::select('type as category', DB::raw('count(*) as total'))
             ->where('is_active', true)
-            ->groupBy('category')
-            ->orderByDesc('total')
-            ->get()
-            ->map(fn($item) => [
-                'name' => $item->category ?? 'Lainnya',
-                'total' => $item->total
-            ]);
+            ->groupBy('type')
+            ->orderBy('total', 'desc')
+            ->get();
 
         // === DATA UNTUK RECENT ACTIVITY ===
 
-        // Berita Terbaru (DIPERBAIKI: Relasi category string conversion)
+        // Berita Terbaru 
         $recentPosts = Post::with('category:id,name')
             ->select('id', 'title', 'slug', 'post_category_id', 'status', 'views', 'published_at', 'created_at')
             ->orderByDesc('created_at')

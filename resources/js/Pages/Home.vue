@@ -11,22 +11,21 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// 1. DEFINISI PROPS DENGAN TIPE DATA AMAN
 const props = defineProps<{
   latestPosts: Post[];
   latestAchievements: Achievement[];
   canLogin?: boolean;
   canRegister?: boolean;
   tentang?: any; 
+  statistik?: { dosen: number; tendik: number; prodi: number };
 }>();
 
-// 2. INTERFACE TYPESCRIPT AGAR TIDAK ERROR
+// 2. INTERFACE TYPESCRIPT
 interface StatItem {
     angka: string | number;
     label: string;
 }
 
-// 3. COMPUTED: MEMAKSA DATA MENJADI ARRAY MURNI
 const displayStats = computed<StatItem[]>(() => {
     let data = props.tentang;
     
@@ -36,19 +35,25 @@ const displayStats = computed<StatItem[]>(() => {
 
     const rawData = data?.statistik?.data;
 
-    // Jika kosong, tampilkan data dummy otomatis
     if (!rawData || typeof rawData !== 'object' || Object.keys(rawData).length === 0) {
         return [
             { angka: '2260', label: 'Mahasiswa' },
-            { angka: '2', label: 'Jurusan' },
-            { angka: '8', label: 'Prodi S1' },
-            { angka: '1', label: 'Prodi S2' }
+            { angka: props.statistik?.prodi || '8', label: 'Program Studi' },
+            { angka: props.statistik?.dosen || '0', label: 'Dosen Tetap' },
+            { angka: props.statistik?.tendik || '0', label: 'Tenaga Kependidikan' }
         ];
     }
 
-    // Konversi object ke array jika Laravel mengirim indeks berantakan
     const dataArray = Array.isArray(rawData) ? rawData : Object.values(rawData);
-    return dataArray.slice(0, 4) as StatItem[];
+    const slicedData = dataArray.slice(0, 4) as StatItem[];
+
+    return slicedData.map(stat => {
+        const label = stat.label.toLowerCase();
+        if (label.includes('dosen')) return { ...stat, angka: props.statistik?.dosen ?? stat.angka };
+        if (label.includes('tendik') || label.includes('tenaga kependidikan')) return { ...stat, angka: props.statistik?.tendik ?? stat.angka };
+        if (label.includes('prodi') || label.includes('program studi')) return { ...stat, angka: props.statistik?.prodi ?? stat.angka };
+        return stat;
+    });
 });
 
 const deskripsiFakultas = computed<string>(() => {
@@ -59,12 +64,10 @@ const deskripsiFakultas = computed<string>(() => {
     return data?.statistik?.deskripsi || 'FSTI terus berkembang sebagai pusat pendidikan dan inovasi di bidang sains dan teknologi, dengan berbagai jurusan, program studi, dan civitas akademika yang mendukung perjalanan belajar, kreativitas, dan prestasi mahasiswa kami.';
 });
 
-// 4. FUNGSI ICON YANG 100% AMAN DARI TYPESCRIPT ERROR
+// 4. FUNGSI ICON (Tetap seperti asli Anda)
 const getStatIcon = (idx: number | string) => {
-    // Apapun yang masuk, paksa jadi Number murni!
     const num = Number(idx);
     const safeIndex = isNaN(num) ? 0 : num;
-    
     const icons = [Users, Building2, BookOpen, GraduationCap, Beaker, Zap, Briefcase, Network];
     return icons[safeIndex % icons.length];
 };
@@ -83,7 +86,8 @@ const countUpAnimation = (el: HTMLElement, target: number, duration: number) => 
     }, 10);
 };
 
-// Refs
+// --- SEMUA LOGIKA REFS & GSAP DI BAWAH INI TETAP SAMA PERSIS SEPERTI ASLINYA ---
+
 const heroSectionRef = ref(null);
 const heroTitle1Ref = ref(null);
 const heroTitle2Ref = ref(null);
@@ -130,7 +134,6 @@ onMounted(() => {
     const aboutTl = gsap.timeline({ scrollTrigger: { trigger: aboutSectionRef.value, start: "top 70%" } });
     aboutTl.from(".about-title", { opacity: 0, x: -50, duration: 0.8, ease: "power3.out" })
            .from(".about-text", { opacity: 0, x: -50, duration: 0.8, ease: "power3.out" }, "-=0.6")
-           // MENGGUNAKAN fromTo AGAR OPACITY DIPAKSA MUNCUL KE 1 (Menghindari stuck di opacity 0)
            .fromTo(".about-stat", 
                 { opacity: 0, y: 30, scale: 0.95 }, 
                 { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.15, ease: "back.out(1.4)" }, 
@@ -138,7 +141,6 @@ onMounted(() => {
             )
            .from(aboutImageRef.value, { opacity: 0, x: 50, scale: 0.9, duration: 1.2, ease: "power3.out" }, "<");
 
-    // Tunggu DOM render, lalu pasang animasi Count Up
     nextTick(() => {
         setTimeout(() => {
             if (aboutStatsRef.value) {

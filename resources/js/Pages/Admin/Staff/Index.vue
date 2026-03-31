@@ -1,183 +1,124 @@
-<script setup lang="ts">
+<script setup>
+import { ref, watch } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { Link, router } from '@inertiajs/vue3';
-import { ref, watch, computed } from 'vue';
-import { MagnifyingGlassIcon, PlusIcon, PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { Plus, Search, Edit, Trash2, CheckCircle, XCircle } from 'lucide-vue-next';
 import debounce from 'lodash/debounce';
 
-defineOptions({ layout: AdminLayout });
+const props = defineProps({
+    staff: Object,
+    filters: Object,
+});
 
-interface StaffMember {
-    id: number;
-    name: string;
-    nip: string | null;
-    email: string | null;
-    position: string | null;
-    prodi: string | null;
-    jurusan: string | null;
-    category: string;
-    image_path: string | null;
-    is_active: boolean;
-}
+const search = ref(props.filters.search || '');
+const typeFilter = ref(props.filters.type || 'Semua');
 
-interface PaginatedStaff {
-    data: StaffMember[];
-    links: { url: string | null; label: string; active: boolean }[];
-}
-
-interface Filters {
-    search?: string;
-    category?: string;
-}
-
-const props = defineProps<{
-    staff: PaginatedStaff;
-    filters: Filters;
-}>();
-
-const search = ref(props.filters?.search || '');
-const category = ref(props.filters?.category || '');
-
-const categories = [
-    'Pimpinan Fakultas',
-    'Dosen',
-    'Tenaga Kependidikan',
-    'Pimpinan Jurusan',
-    'Pimpinan Prodi',
-    'Pimpinan Laboratorium'
-];
-
-watch([search, category], debounce(() => {
-    router.get(route('admin.staff.index'), {
-        search: search.value,
-        category: category.value
+watch([search, typeFilter], debounce(([newSearch, newType]) => {
+    router.get(route('admin.staff.index'), { 
+        search: newSearch, 
+        type: newType 
     }, { preserveState: true, replace: true });
 }, 300));
 
-const deleteStaff = (id: number) => {
-    if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+const deleteStaff = (id) => {
+    if (confirm('Apakah Anda yakin ingin menghapus data civitas ini?')) {
         router.delete(route('admin.staff.destroy', id));
     }
 };
 </script>
 
 <template>
-    <div>
-        <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-                <h1 class="text-3xl font-bold text-black">Kelola Civitas Akademika</h1>
-                <p class="mt-1 text-black">Manajemen data Dosen, Pimpinan, dan Staf</p>
-            </div>
-            <Link :href="route('admin.staff.create')" class="inline-flex items-center px-4 py-2 bg-[#4682A9] text-white rounded-lg hover:bg-opacity-90 font-semibold text-sm">
-                <PlusIcon class="w-5 h-5 mr-2" />
-                Tambah Baru
+    <AdminLayout>
+        <Head title="Kelola Civitas" />
+
+        <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <h2 class="text-2xl font-bold text-gray-800">Kelola Civitas Akademika</h2>
+            <Link :href="route('admin.staff.create')" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                <Plus class="w-5 h-5 mr-2" /> Tambah Civitas
             </Link>
         </div>
 
-        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="relative">
-                    <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input 
-                        v-model="search" 
-                        type="text" 
-                        placeholder="Cari Nama atau NIP..." 
-                        class="w-full pl-10 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                    >
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row gap-4">
+                <div class="relative flex-grow max-w-md">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Search class="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input v-model="search" type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="Cari nama atau NIP...">
                 </div>
-                <div>
-                     <select v-model="category" class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">Semua Kategori</option>
-                        <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
-                    </select>
-                </div>
+                <select v-model="typeFilter" class="border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    <option value="Semua">Semua Tipe</option>
+                    <option value="Dosen">Dosen</option>
+                    <option value="Tendik">Tenaga Kependidikan</option>
+                </select>
             </div>
-        </div>
 
-        <div class="overflow-hidden rounded-lg bg-white shadow-sm">
-            <table class="w-full whitespace-nowrap text-left text-sm">
-                <thead class="bg-gray-50 text-gray-900 font-semibold">
-                    <tr>
-                        <th class="px-6 py-4">Nama & NIP</th>
-                        <th class="px-6 py-4">Kategori / Jabatan</th>
-                        <th class="px-6 py-4">Prodi / Jurusan</th>
-                        <th class="px-6 py-4 text-center">Status</th>
-                        <th class="px-6 py-4 text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    <tr v-for="person in staff.data" :key="person.id" class="hover:bg-gray-50">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center">
-                                <img 
-                                    :src="person.image_path || 'https://ui-avatars.com/api/?name=' + person.name" 
-                                    class="h-10 w-10 rounded-full object-cover mr-3 border"
-                                    alt=""
-                                >
-                                <div>
-                                    <div class="font-medium text-gray-900">{{ person.name }}</div>
-                                    <div class="text-xs text-gray-500 font-mono">{{ person.nip || '-' }}</div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profil</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe & Jabatan</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-for="person in staff.data" :key="person.id" class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-12 w-12 rounded-full border border-gray-200 overflow-hidden bg-gray-100">
+                                        <img :src="person.display_image" alt="" class="h-full w-full object-cover">
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-bold text-gray-900">{{ person.name }}</div>
+                                        <div class="text-sm text-gray-500">NIP: {{ person.nip || '-' }}</div>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                         <td class="px-6 py-4">
-                            <div class="text-gray-900 font-semibold">{{ person.category }}</div>
-                            <div class="text-xs text-gray-500">{{ person.position || '-' }}</div>
-                        </td>
-                         <td class="px-6 py-4">
-                            <div class="text-gray-900">{{ person.prodi || '-' }}</div>
-                            <div class="text-xs text-gray-500">{{ person.jurusan }}</div>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <span 
-                                class="px-2 py-1 text-xs rounded-full font-semibold"
-                                :class="person.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
-                            >
-                                {{ person.is_active ? 'Aktif' : 'Non-Aktif' }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                             <div class="flex items-center justify-center gap-2">
-                                <Link
-                                    :href="route('admin.staff.edit', person.id)"
-                                    class="rounded p-2 text-blue-600 hover:bg-blue-50"
-                                    title="Edit"
-                                >
-                                    <PencilSquareIcon class="h-5 w-5" />
-                                </Link>
-                                <button
-                                    @click="deleteStaff(person.id)"
-                                    class="rounded p-2 text-red-600 hover:bg-red-50"
-                                    title="Hapus"
-                                >
-                                    <TrashIcon class="h-5 w-5" />
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr v-if="staff.data.length === 0">
-                        <td colspan="5" class="px-6 py-8 text-center text-gray-500">
-                            Tidak ada data ditemukan.
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-         <div v-if="staff.links.length > 3" class="mt-6 flex justify-center">
-            <div class="flex gap-1">
-                <Component
-                    :is="link.url ? Link : 'span'"
-                    v-for="(link, key) in staff.links"
-                    :key="key"
-                    :href="link.url"
-                    v-html="link.label"
-                    class="px-4 py-2 border rounded-lg text-sm transition-colors duration-200"
-                    :class="[
-                        link.active ? 'bg-[#4682A9] text-white border-[#4682A9]' : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300',
-                        !link.url ? 'text-gray-400 cursor-not-allowed hover:bg-white' : ''
-                    ]"
-                />
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mb-1" :class="person.type === 'Dosen' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'">
+                                    {{ person.type }}
+                                </span>
+                                <div class="text-xs text-gray-700 mt-1 line-clamp-1">{{ person.structural_position || person.functional_position || 'Belum ada jabatan' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <span v-if="person.is_active" class="inline-flex items-center text-green-600 bg-green-50 px-2 py-1 rounded-md text-xs font-semibold">
+                                    <CheckCircle class="w-4 h-4 mr-1" /> Aktif
+                                </span>
+                                <span v-else class="inline-flex items-center text-red-600 bg-red-50 px-2 py-1 rounded-md text-xs font-semibold">
+                                    <XCircle class="w-4 h-4 mr-1" /> Nonaktif
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex justify-end gap-2">
+                                    <Link :href="route('admin.staff.edit', person.id)" class="text-amber-600 hover:text-amber-900 bg-amber-50 p-2 rounded-lg transition-colors">
+                                        <Edit class="w-4 h-4" />
+                                    </Link>
+                                    <button @click="deleteStaff(person.id)" class="text-red-600 hover:text-red-900 bg-red-50 p-2 rounded-lg transition-colors">
+                                        <Trash2 class="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr v-if="staff.data.length === 0">
+                            <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                                Tidak ada data civitas ditemukan.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between" v-if="staff.links && staff.links.length > 3">
+                <div class="flex flex-wrap gap-1">
+                    <Link v-for="(link, k) in staff.links" :key="k" :href="link.url || '#'" 
+                          class="px-3 py-1 text-sm border rounded-md" 
+                          :class="{'bg-blue-600 text-white border-blue-600': link.active, 'text-gray-500 border-gray-300 hover:bg-gray-50': !link.active, 'opacity-50 cursor-not-allowed': !link.url}"
+                          v-html="link.label">
+                    </Link>
+                </div>
             </div>
         </div>
-    </div>
+    </AdminLayout>
 </template>

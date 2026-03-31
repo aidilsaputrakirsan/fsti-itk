@@ -21,11 +21,14 @@ use App\Http\Controllers\Public\PublicPpidController;
 use App\Http\Controllers\Public\PublicZonaIntegritasController;
 use App\Http\Controllers\Public\PublicSurveiController;
 use App\Http\Controllers\Public\PublicProgramStudiController;
+use App\Http\Controllers\Public\PublicStaffController;
 
 use App\Models\Post;
 use App\Models\Achievement;
 
-// --- 1. KELOMPOK ROUTE ADMIN  ---
+// ==============================================================================
+// 1. KELOMPOK ROUTE ADMIN
+// ==============================================================================
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -67,7 +70,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/contacts', [\App\Http\Controllers\Admin\ContactController::class, 'edit'])->name('contacts.edit');
     Route::put('/contacts', [\App\Http\Controllers\Admin\ContactController::class, 'update'])->name('contacts.update');
 
-    // Modul Tentang Fakultas Admin (Pengganti static-pages)
+    // Modul Tentang Fakultas Admin
     Route::get('/tentang-fakultas', [TentangFakultasController::class, 'edit'])->name('tentang.edit');
     Route::put('/tentang-fakultas', [TentangFakultasController::class, 'update'])->name('tentang.update');
 
@@ -76,7 +79,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 });
 
 
-// --- 2. KELOMPOK ROUTE PUBLIK ---
+// ==============================================================================
+// 2. KELOMPOK ROUTE PUBLIK
+// ==============================================================================
+
+// --- Beranda ---
 Route::get('/', function () {
     $latestPosts = Post::select('posts.*', 'post_categories.name as category')
         ->leftJoin('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
@@ -105,27 +112,61 @@ Route::get('/', function () {
 
     $tentang = \App\Models\TentangFakultas::first();
 
+    $statistik = [
+        'dosen' => \App\Models\Staff::where('type', 'Dosen')->where('is_active', true)->count(),
+        'tendik' => \App\Models\Staff::where('type', 'Tendik')->where('is_active', true)->count(),
+        'prodi' => \App\Models\StudyProgram::count(),
+    ];
+
     return Inertia::render('Home', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'latestPosts' => $latestPosts,
         'latestAchievements' => $latestAchievements,
         'tentang' => $tentang ? $tentang->content : null,
+        'statistik' => $statistik, // Lempar ke Home.vue
     ]);
 })->name('home');
 
+// --- Berita & Prestasi ---
 Route::get('/berita', [PublicPostController::class, 'index'])->name('berita.index');
 Route::get('/berita/{post:slug}', [PublicPostController::class, 'show'])->name('berita.show');
 Route::get('/prestasi', [PublicAchievementController::class, 'index'])->name('prestasi.index');
 
+// --- Layanan & Informasi ---
 Route::get('/ppid', [PublicPpidController::class, 'index'])->name('public.ppid.index');
 Route::get('/ppid/informasi/{slug}', [PublicPpidController::class, 'show'])->name('public.ppid.show');
 Route::get('/zona-integritas', [PublicZonaIntegritasController::class, 'index'])->name('zona-integritas.index');
 Route::get('/survei-kepuasan', [PublicSurveiController::class, 'index'])->name('survei.index');
 Route::post('/survei-kepuasan', [PublicSurveiController::class, 'store'])->name('survei.store');
 
-// --- Modul Program Studi (Publik) ---
+// --- Program Studi ---
 Route::get('/prodi/{slug}', [PublicProgramStudiController::class, 'show'])->name('public.prodi.show');
+
+// --- PROFIL & CIVITAS AKADEMIKA ---
+// Profil Statis (PublicProfileController)
+Route::get('/profil/tentang', [PublicProfileController::class, 'tentang'])->name('profil.tentang');
+Route::get('/profil/bagan-organisasi', [PublicProfileController::class, 'baganOrganisasi'])->name('bagan-organisasi');
+
+// Profil Dinamis / Civitas (PublicStaffController) -> JANGAN DIDUPLIKAT LAGI
+Route::get('/profil/pimpinan-fakultas', [PublicStaffController::class, 'pimpinanFakultas'])->name('profil.pimpinan-fakultas');
+Route::get('/profil/pimpinan-jurusan', [PublicStaffController::class, 'pimpinanJurusan'])->name('profil.pimpinan-jurusan');
+Route::get('/profil/pimpinan-prodi', [PublicStaffController::class, 'pimpinanProdi'])->name('profil.pimpinan-prodi');
+Route::get('/profil/pimpinan-laboratorium', [PublicStaffController::class, 'pimpinanLaboratorium'])->name('profil.pimpinan-laboratorium');
+Route::get('/profil/dosen', [PublicStaffController::class, 'dosen'])->name('profil.dosen');
+Route::get('/profil/tenaga-kependidikan', [PublicStaffController::class, 'tendik'])->name('profil.tenaga-kependidikan');
+
+// Halaman Placeholder/Statis Lainnya
+Route::get('/profil/kerjasama', function () {
+    return "Halaman Kerjasama Segera Hadir";
+})->name('profil.kerjasama');
+
+Route::get('/kontak', function () {
+    $contact = \App\Models\Contact::first();
+    return Inertia::render('Public/Profil/Kontak', [
+        'contact' => $contact
+    ]);
+})->name('kontak');
 
 Route::get('/alumni', function () {
     return Inertia::render('Public/Alumni/Index');
@@ -144,7 +185,9 @@ Route::get('/layanan-internal', function () {
 })->name('layanan.index');
 
 
-// --- 3. KELOMPOK AUTH ---
+// ==============================================================================
+// 3. KELOMPOK ROUTE AUTHENTICATION
+// ==============================================================================
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -154,32 +197,5 @@ Route::middleware('auth')->group(function () {
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
-
-// --- 4. Profil & Prodi (Publik) ---
-// Rute Tentang Fakultas yang sudah diupdate dari visi-misi sebelumnya
-Route::get('/profil/tentang', [PublicProfileController::class, 'tentang'])->name('profil.tentang');
-
-Route::get('/profil/bagan-organisasi', [PublicProfileController::class, 'baganOrganisasi'])->name('bagan-organisasi');
-Route::get('/profil/pimpinan-fakultas', [PublicProfileController::class, 'pimpinanFakultas'])->name('profil.pimpinan-fakultas');
-Route::get('/profil/pimpinan-jurusan', [PublicProfileController::class, 'pimpinanJurusan'])->name('profil.pimpinan-jurusan');
-Route::get('/profil/pimpinan-prodi', [PublicProfileController::class, 'pimpinanProdi'])->name('profil.pimpinan-prodi');
-Route::get('/profil/pimpinan-laboratorium', [PublicProfileController::class, 'pimpinanLaboratorium'])->name('profil.pimpinan-laboratorium');
-Route::get('/profil/dosen', [PublicProfileController::class, 'dosen'])->name('profil.dosen');
-Route::get('/profil/tenaga-kependidikan', [PublicProfileController::class, 'tendik'])->name('profil.tenaga-kependidikan');
-
-// Rute Placeholder Kerjasama agar Navbar tidak error (Karena halaman belum dibuat)
-Route::get('/profil/kerjasama', function () {
-    // Kembalikan ke halaman coming soon atau biarkan string kosong
-    return "Halaman Kerjasama Segera Hadir";
-})->name('profil.kerjasama');
-
-
-Route::get('/kontak', function () {
-    $contact = \App\Models\Contact::first();
-    return Inertia::render('Public/Profil/Kontak', [
-        'contact' => $contact
-    ]);
-})->name('kontak');
 
 require __DIR__ . '/auth.php';

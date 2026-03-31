@@ -1,224 +1,166 @@
 <script setup>
-import { ref, computed, watch } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
-import Modal from '@/Components/Modal.vue';
-import { X, Eye, Mail, Search, Filter } from 'lucide-vue-next';
+import { Head } from '@inertiajs/vue3';
+import { ref, onMounted } from 'vue';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+import { Briefcase, Award, BookOpen, UserCircle, X, ChevronRight, GraduationCap, Link as LinkIcon, BadgeCheck } from 'lucide-vue-next';
 
-// --- DATA STATIS ---
-const props = defineProps({
-    dosenList: Array
+defineProps({
+    dosen: Array
 });
 
-// --- DATA DARI DATABASE ---
-const allDosen = ref(props.dosenList);
+const isModalOpen = ref(false);
+const selectedPerson = ref(null);
 
-// --- State untuk Filter dan Pencarian ---
-const search = ref('');
-const selectedJurusan = ref('');
-const selectedProdi = ref('');
-
-// --- State untuk Pagination ---
-const currentPage = ref(1);
-const perPage = ref(8);
-
-// --- State untuk Modal ---
-const isModalVisible = ref(false);
-const selectedDosen = ref(null);
-
-// --- Opsi untuk Filter Dropdown ---
-const jurusanOptions = ['Sains dan Analitika Data', 'Teknik Elektro, Informatika, dan Bisnis'];
-const prodiOptions = {
-    'Sains dan Analitika Data': ['Fisika', 'Matematika', 'Statistika', 'Ilmu Aktuaria'],
-    'Teknik Elektro, Informatika, dan Bisnis': ['Teknik Elektro', 'Sistem Informasi', 'Informatika', 'Bisnis Digital', 'Magister Manajemen Teknologi'],
+const openModal = (person) => {
+    selectedPerson.value = person;
+    isModalOpen.value = true;
+    document.body.style.overflow = 'hidden';
 };
-const currentProdiOptions = computed(() => selectedJurusan.value ? prodiOptions[selectedJurusan.value] : []);
 
-// --- Logika Filtering Real-time ---
-const filteredDosen = computed(() => {
-    return allDosen.value.filter(dosen => 
-        dosen.name.toLowerCase().includes(search.value.toLowerCase()) &&
-        (!selectedJurusan.value || dosen.jurusan === selectedJurusan.value) &&
-        (!selectedProdi.value || dosen.prodi === selectedProdi.value)
-    );
-});
+const closeModal = () => {
+    isModalOpen.value = false;
+    setTimeout(() => { selectedPerson.value = null; }, 300);
+    document.body.style.overflow = 'auto';
+};
 
-// PERBAIKAN PAGINATION: Reset halaman ke 1 hanya jika filter berubah
-watch([search, selectedJurusan, selectedProdi], () => {
-    currentPage.value = 1;
-});
-
-// --- Logika Pagination ---
-const totalPages = computed(() => Math.ceil(filteredDosen.value.length / perPage.value));
-const paginatedDosen = computed(() => {
-    const start = (currentPage.value - 1) * perPage.value;
-    const end = start + perPage.value;
-    return filteredDosen.value.slice(start, end);
-});
-// 3. Pagination Info dipecah agar bisa di-style
-const paginationInfo = computed(() => {
-    const total = filteredDosen.value.length;
-    const from = total > 0 ? (currentPage.value - 1) * perPage.value + 1 : 0;
-    const to = Math.min(currentPage.value * perPage.value, total);
-    return { from, to, total };
-});
-const paginationPages = computed(() => {
-    return Array.from({ length: totalPages.value }, (_, i) => i + 1);
-});
-
-function changePage(page) {
-    if (page >= 1 && page <= totalPages.value) {
-        currentPage.value = page;
-        const filterSection = document.getElementById('filter-section');
-        if (filterSection) {
-            filterSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    }
-}
-
-// --- Logika Modal ---
-function openModal(dosen) {
-    selectedDosen.value = dosen;
-    isModalVisible.value = true;
-}
-function closeModal() {
-    isModalVisible.value = false;
-}
+onMounted(() => { AOS.init({ duration: 800, once: true }); });
 </script>
 
 <template>
     <PublicLayout>
-        <Banner
-            title="DOSEN"
-            subtitle="DOSEN"
-            background-image="/images/background-banner.png"
-        />
+        <Head title="Daftar Dosen" />
+        <Banner title="DOSEN" subtitle="Fakultas Sains dan Teknologi Informasi" background-image="/images/background-banner.png" />
 
-        <div class="bg-white">
-            <div class="bg-[#CBDCEB] py-6 mt-8">
-                <div class="container mx-auto px-4">
-                    <h2 class="text-3xl md:text-4xl font-kulim-park font-bold text-[#133E87]">Daftar Dosen FSTI ITK</h2>
-                    <p class="mt-2 font-inter text-black max-w-3xl">
-                        Temukan dan kenali para dosen yang mendukung perjalanan akademik anda.
-                    </p>
-                </div>
-            </div>
-
-            <div class="container mx-auto px-4">
-
-                <div id="filter-section" class="bg-[#CBDCEB] py-8 px-6 rounded-xl my-10">
-                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="relative">
-                            <label for="search" class="sr-only">Cari Dosen</label>
-                            <input v-model="search" type="text" placeholder="Cari Dosen..." class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-black focus:ring-[#133E87] focus:border-[#133E87]">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Search class="h-6 w-6 text-black" />
-                            </div>
-                        </div>
-                        <div class="relative">
-                            <label for="jurusan" class="sr-only">Filter Jurusan</label>
-                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
-                                <Filter class="h-6 w-6 text-black" />
-                            </div>
-                            <select v-model="selectedJurusan" id="jurusan" class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg appearance-none text-black focus:ring-[#133E87] focus:border-[#133E87]">
-                                <option value="">Semua Jurusan</option>
-                                <option v-for="jurusan in jurusanOptions" :key="jurusan" :value="jurusan">{{ jurusan }}</option>
-                            </select>
-                        </div>
-                        <div class="relative">
-                             <label for="prodi" class="sr-only">Filter Prodi</label>
-                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
-                                <Filter class="h-6 w-6 text-black" />
-                            </div>
-                            <select v-model="selectedProdi" id="prodi" :disabled="!selectedJurusan" class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg appearance-none text-black focus:ring-[#133E87] focus:border-[#133E87] disabled:bg-gray-100">
-                                <option value="">Semua Prodi</option>
-                                <option v-for="prodi in currentProdiOptions" :key="prodi" :value="prodi">{{ prodi }}</option>
-                            </select>
-                        </div>
-                    </div>
+        <div class="bg-gray-50 py-20 md:py-28 font-public-sans min-h-screen">
+            <div class="container mx-auto px-6 max-w-7xl">
+                
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl font-optimus font-bold text-gray-900 mb-4">
+                        Tenaga Pendidik <span class="text-primary">(Dosen)</span>
+                    </h2>
+                    <div class="w-20 h-1.5 bg-primary mx-auto rounded-full mb-6"></div>
+                    <p class="text-gray-600 font-medium text-lg">Mengenal lebih dekat para pakar dan akademisi di lingkungan FSTI ITK.</p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center">
-                    <div
-                        v-for="dosen in paginatedDosen"
-                        :key="dosen.id"
-                        class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col w-[299px] h-[420px]"
-                        data-aos="fade-up"
-                    >
-                        <div class="h-[245px] flex-shrink-0">
-                            <img :src="dosen.image_path || 'https://ui-avatars.com/api/?name=' + dosen.name" :alt="dosen.name" class="object-cover w-full h-full">
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                    <div v-for="(person, index) in dosen" :key="person.id" 
+                         class="bg-white rounded-3xl shadow-sm border border-primary/10 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col group"
+                         data-aos="fade-up" :data-aos-delay="index * 50">
+                        
+                        <div class="h-80 w-full bg-primary/5 relative overflow-hidden">
+                            <img :src="person.display_image" :alt="person.name" 
+                                 class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500 mix-blend-multiply">
                         </div>
-                        <div class="p-4 flex flex-col flex-grow bg-[#CBDCEB]">
-                             <div class="flex-grow">
-                                <h3 class="font-kulim-park font-bold text-lg text-[#133E87]">{{ dosen.name }}</h3>
-                                <p class="text-sm text-black mt-2">Prodi {{ dosen.prodi }}</p>
-                                <p class="text-xs text-black">Jurusan {{ dosen.jurusan }}</p>
-                            </div>
-                            <div class="mt-2 text-right flex-shrink-0">
-                                <button @click="openModal(dosen)" class="inline-flex items-center px-4 py-2 bg-white text-[#133E87] text-sm font-semibold rounded-full hover:bg-gray-200 transition shadow">
-                                    <Eye class="w-4 h-4 mr-2" />
-                                    Lihat Detail
+
+                        <div class="p-8 flex flex-col flex-grow text-center">
+                            <h3 class="font-optimus font-bold text-xl text-gray-900 mb-3 leading-tight">{{ person.name }}</h3>
+                            <p class="text-sm font-bold text-primary uppercase tracking-wide mb-6">{{ person.functional_position || 'Dosen ITK' }}</p>
+                            
+                            <div class="mt-auto pt-6 border-t border-gray-100">
+                                <button @click="openModal(person)" class="inline-flex items-center justify-center gap-2 w-full py-3 bg-primary/10 text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-colors">
+                                    Lihat Profil Lengkap
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                 <div v-if="filteredDosen.length === 0" class="text-center py-16 text-black">
-                    <p>Dosen tidak ditemukan. Silakan coba kata kunci atau filter lain.</p>
-                </div>
 
-                <div v-if="filteredDosen.length > 0 && totalPages > 1" class="mt-12 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                    <p class="text-sm text-black">
-                        Menampilkan <span class="font-semibold">{{ paginationInfo.from }}</span> sampai <span class="font-semibold">{{ paginationInfo.to }}</span> dari <span class="font-semibold">{{ paginationInfo.total }}</span> Dosen
-                    </p>
-                    <div class="flex items-center space-x-1">
-                        <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" v-html="'&laquo; Previous'" class="px-3 py-1.5 text-sm font-semibold rounded-lg transition bg-gray-200 text-black hover:bg-gray-300 disabled:opacity-50"></button>
-                        
-                        <template v-for="page in paginationPages" :key="page">
-                             <button @click="changePage(page)" 
-                                :class="page === currentPage ? 'bg-[#133E87] text-white shadow-md' : 'bg-gray-200 text-black hover:bg-gray-300'"
-                                class="px-3 py-1.5 text-sm font-semibold rounded-lg transition w-9 h-9">
-                                {{ page }}
-                            </button>
-                        </template>
-
-                        <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages" v-html="'Next &raquo;'" class="px-3 py-1.5 text-sm font-semibold rounded-lg transition bg-gray-200 text-black hover:bg-gray-300 disabled:opacity-50"></button>
-                    </div>
-                </div>
             </div>
-            
-            <div class="pb-16 md:pb-24"></div>
         </div>
 
-        <Modal :show="isModalVisible" @close="closeModal" max-width="lg">
-            <div v-if="selectedDosen" class="bg-[#CBDCEB] rounded-lg relative">
-                 <button @click="closeModal" class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 z-10">
-                    <X class="w-6 h-6" />
-                </button>
-                <div class="p-8 text-center">
-                    <h2 class="text-2xl font-kulim-park font-bold text-[#133E87] mb-6">Detail Dosen</h2>
-                    <div class="flex justify-center mb-4">
-                        <div class="w-40 h-40 rounded-full border-4 border-[#133E87] p-1 shadow-lg">
-                            <img :src="selectedDosen.image_path || 'https://ui-avatars.com/api/?name=' + selectedDosen.name" :alt="selectedDosen.name" class="w-full h-full object-cover rounded-full">
-                        </div>
+        <transition enter-active-class="transition ease-out duration-300" enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="transition ease-in duration-200" leave-from-class="opacity-100" leave-to-class="opacity-0">
+            <div v-if="isModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 font-public-sans" @click.self="closeModal">
+                
+                <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col transform transition-all" v-if="selectedPerson">
+                    
+                    <div class="bg-primary p-6 flex items-center justify-between text-white flex-shrink-0">
+                        <h3 class="text-xl font-bold font-optimus tracking-wide">Profil Akademik</h3>
+                        <button @click="closeModal" class="p-2 bg-white/20 hover:bg-white/40 rounded-full transition-colors"><X class="w-6 h-6" /></button>
                     </div>
-                    <h3 class="text-2xl font-kulim-park font-bold text-[#133E87]">{{ selectedDosen.name }}</h3>
-                    <p class="text-black">Prodi {{ selectedDosen.prodi }}</p>
-                    <p class="text-sm text-black">Jurusan {{ selectedDosen.jurusan }}</p>
-                    <hr class="my-6 border-t border-[#133E87]">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left text-sm">
-                        <div>
-                            <p class="font-semibold text-gray-800">NIP/NIDN</p>
-                            <p class="text-black">{{ selectedDosen.nip }}</p>
-                        </div>
-                         <div>
-                            <p class="font-semibold text-gray-800 flex items-center"><Mail class="w-4 h-4 mr-2 text-[#133E87]"/> Email</p>
-                            <a :href="'mailto:' + selectedDosen.email" class="text-black hover:underline break-all">{{ selectedDosen.email }}</a>
+
+                    <div class="p-6 md:p-10 overflow-y-auto">
+                        <div class="flex flex-col lg:flex-row gap-10">
+                            
+                            <div class="lg:w-1/3 flex-shrink-0 text-center">
+                                <div class="w-48 h-48 mx-auto rounded-full border-4 border-primary/20 p-2 mb-6 bg-primary/5">
+                                    <img :src="selectedPerson.display_image" :alt="selectedPerson.name" class="w-full h-full object-cover rounded-full mix-blend-multiply">
+                                </div>
+                                <h2 class="text-2xl font-bold font-optimus text-gray-900 leading-tight mb-2">{{ selectedPerson.name }}</h2>
+                                <p v-if="selectedPerson.nip" class="text-gray-500 font-medium mb-4">NIP/NIPH. {{ selectedPerson.nip }}</p>
+                                
+                                <div class="space-y-3 text-left bg-gray-50 p-5 rounded-2xl border border-gray-100 mt-6">
+                                    <div v-if="selectedPerson.structural_position" class="flex items-start gap-3">
+                                        <Briefcase class="w-5 h-5 text-primary flex-shrink-0" />
+                                        <span class="text-sm font-semibold text-gray-700">{{ selectedPerson.structural_position }}</span>
+                                    </div>
+                                    <div v-if="selectedPerson.functional_position" class="flex items-start gap-3">
+                                        <UserCircle class="w-5 h-5 text-primary flex-shrink-0" />
+                                        <span class="text-sm font-semibold text-gray-700">{{ selectedPerson.functional_position }}</span>
+                                    </div>
+                                </div>
+
+                                <div v-if="selectedPerson.academic_profiles && selectedPerson.academic_profiles.length > 0" class="mt-6 flex flex-wrap justify-center gap-2">
+                                    <a v-for="(link, i) in selectedPerson.academic_profiles" :key="i" :href="link" target="_blank" rel="noopener noreferrer" class="p-2.5 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-white transition-colors">
+                                        <LinkIcon class="w-5 h-5" />
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="lg:w-2/3 flex flex-col gap-8">
+                                
+                                <div v-if="selectedPerson.expertise && selectedPerson.expertise.length > 0">
+                                    <h4 class="flex items-center gap-3 text-lg font-bold text-primary mb-4 border-b border-primary/10 pb-2"><BookOpen class="w-6 h-6" /> Bidang Keahlian</h4>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span v-for="(expert, i) in selectedPerson.expertise" :key="i" class="px-3 py-1.5 bg-blue-50 text-blue-700 text-sm font-bold rounded-lg border border-blue-100">
+                                            {{ expert }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div v-if="selectedPerson.education_history && selectedPerson.education_history.length > 0">
+                                    <h4 class="flex items-center gap-3 text-lg font-bold text-primary mb-4 border-b border-primary/10 pb-2"><GraduationCap class="w-6 h-6" /> Riwayat Pendidikan</h4>
+                                    <ul class="space-y-3">
+                                        <li v-for="(edu, i) in selectedPerson.education_history" :key="i" class="flex items-start gap-3 text-gray-700">
+                                            <ChevronRight class="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" /> {{ edu }}
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div v-if="selectedPerson.work_experience && selectedPerson.work_experience.length > 0">
+                                    <h4 class="flex items-center gap-3 text-lg font-bold text-primary mb-4 border-b border-primary/10 pb-2"><Briefcase class="w-6 h-6" /> Pengalaman & Jabatan</h4>
+                                    <ul class="space-y-3">
+                                        <li v-for="(work, i) in selectedPerson.work_experience" :key="i" class="flex items-start gap-3 text-gray-700">
+                                            <ChevronRight class="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" /> {{ work }}
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div v-if="selectedPerson.research_history && selectedPerson.research_history.length > 0">
+                                    <h4 class="flex items-center gap-3 text-lg font-bold text-primary mb-4 border-b border-primary/10 pb-2"><BookOpen class="w-6 h-6" /> Riwayat Riset</h4>
+                                    <ul class="space-y-3">
+                                        <li v-for="(research, i) in selectedPerson.research_history" :key="i" class="flex items-start gap-3 text-gray-700">
+                                            <ChevronRight class="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" /> {{ research }}
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div v-if="selectedPerson.awards && selectedPerson.awards.length > 0">
+                                    <h4 class="flex items-center gap-3 text-lg font-bold text-primary mb-4 border-b border-primary/10 pb-2"><Award class="w-6 h-6" /> Penghargaan</h4>
+                                    <ul class="space-y-3 bg-yellow-50 p-5 rounded-2xl border border-yellow-100">
+                                        <li v-for="(award, i) in selectedPerson.awards" :key="i" class="flex items-start gap-3 text-gray-700">
+                                            <Award class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" /> {{ award }}
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </Modal>
-
+        </transition>
     </PublicLayout>
 </template>
