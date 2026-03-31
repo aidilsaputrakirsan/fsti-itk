@@ -106,13 +106,13 @@ Route::get('/', function () {
     // PERBAIKAN STATISTIK: Membedakan hitungan S1 dan S2
     // =========================================================
     $allProdi = \App\Models\StudyProgram::all();
-    $s1 = 0; $s2 = 0;
-    
-    foreach($allProdi as $p) {
+    $s1 = 0;
+    $s2 = 0;
+
+    foreach ($allProdi as $p) {
         $level = $p->level ?? '';
         $name = strtolower($p->name);
-        
-        // Deteksi cerdas: Cek kolom level atau cek kata "s2" / "magister" di nama prodi
+
         if (strtoupper($level) === 'S1' || (!str_contains($name, 's2') && !str_contains($name, 'magister') && strtoupper($level) !== 'S2')) {
             $s1++;
         } else {
@@ -134,7 +134,7 @@ Route::get('/', function () {
         'latestPosts' => $latestPosts,
         'latestAchievements' => $latestAchievements,
         'tentang' => $tentang ? $tentang->content : null,
-        'statistik' => $statistik, 
+        'statistik' => $statistik,
     ]);
 })->name('home');
 

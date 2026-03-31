@@ -56,9 +56,12 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.put(route('admin.contacts.update'), {
+    // SANGAT PENTING: Gunakan transform untuk menyisipkan active_tab saat klik simpan
+    form.transform((data) => ({
+        ...data,
+        active_tab: activeTab.value // Mengirim informasi tab yang sedang terbuka
+    })).put(route('admin.contacts.update'), {
         preserveScroll: true,
-        // Ditambahkan onSuccess manual untuk menjamin Pop-Up selalu muncul meskipun kita tidak pindah halaman
         onSuccess: () => {
             notificationMessage.value = page.props.flash?.success || 'Informasi kontak berhasil diperbarui.';
             showNotification.value = true;

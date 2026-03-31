@@ -11,9 +11,8 @@ class ContactController extends Controller
 {
     public function edit()
     {
-        // Ambil data pertama, jika kosong kembalikan array kosong
         $contact = Contact::first() ?? new Contact();
-        
+
         return Inertia::render('Admin/Contacts/Edit', [
             'contact' => $contact
         ]);
@@ -21,13 +20,12 @@ class ContactController extends Controller
 
     public function update(Request $request)
     {
-        // Validasi yang lebih longgar agar tidak mudah error
         $validated = $request->validate([
             'address' => 'nullable|string',
             'operating_hours' => 'nullable|string',
             'google_maps_iframe' => 'nullable|string',
             'academic_wa_number' => 'nullable|string|max:50',
-            'academic_wa_link' => 'nullable|string', 
+            'academic_wa_link' => 'nullable|string',
             'finance_wa_number' => 'nullable|string|max:50',
             'finance_wa_link' => 'nullable|string',
             'email' => 'nullable|string',
@@ -37,12 +35,20 @@ class ContactController extends Controller
             'tiktok_link' => 'nullable|string',
         ]);
 
-        // Simpan atau Perbarui berdasarkan ID = 1 (Singleton)
         Contact::updateOrCreate(
             ['id' => 1],
             $validated
         );
 
-        return redirect()->back()->with('success', 'Informasi kontak berhasil diperbarui.');
+        $pesan = 'Informasi kontak berhasil diperbarui.';
+        if ($request->active_tab === 'lokasi') {
+            $pesan = 'Lokasi & Jam Operasional berhasil diperbarui!';
+        } elseif ($request->active_tab === 'komunikasi') {
+            $pesan = 'Layanan Komunikasi berhasil diperbarui!';
+        } elseif ($request->active_tab === 'sosmed') {
+            $pesan = 'Tautan Media Sosial berhasil diperbarui!';
+        }
+
+        return redirect()->back()->with('success', $pesan);
     }
 }

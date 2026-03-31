@@ -17,7 +17,6 @@ const props = defineProps<{
   canLogin?: boolean;
   canRegister?: boolean;
   tentang?: any; 
-  // Update interface untuk menerima data S1 dan S2 yang dipisah dari backend
   statistik?: { dosen: number; tendik: number; prodi_s1: number; prodi_s2: number; prodi_total: number };
 }>();
 
@@ -236,10 +235,12 @@ onMounted(() => {
             <Trophy :size="80" class="mx-auto" />
             <h3 class="mt-4 text-xl font-bold font-public-sans">Prestasi Mahasiswa</h3>
           </Link>
-          <a href="https://layanan-fsti.myst-tech.com/" target="_blank" rel="noopener noreferrer" class="block w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
+          
+          <Link :href="route('layanan.index')" class="block w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
             <CheckSquare :size="80" class="mx-auto" />
             <h3 class="mt-4 text-xl font-bold font-public-sans">Layanan Mahasiswa</h3>
-          </a>
+          </Link>
+
         </div>
       </div>
     </div>
