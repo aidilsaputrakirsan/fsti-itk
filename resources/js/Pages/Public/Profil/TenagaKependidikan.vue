@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, computed } from 'vue';
+import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
 import { router, Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
@@ -8,9 +8,10 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { 
     Briefcase, Award, BookOpen, UserCircle, X, 
-    GraduationCap, Link as LinkIcon, Search, BookMarked, Linkedin, FileX2, Users
+    GraduationCap, Link as LinkIcon, Search, BookMarked, Linkedin, FileX2, Users, ImageOff
 } from 'lucide-vue-next';
 
+// Mendefinisikan tipe data untuk paginasi Laravel
 interface PaginatedStaff {
     data: any[];
     links: any[];
@@ -22,16 +23,22 @@ const props = defineProps<{
 }>();
 
 const search = ref(props.filters.search || '');
+
+// Indikator apakah user sedang melakukan pencarian
 const isFiltering = computed(() => search.value !== '');
 
-watch(search, debounce((value) => {
-    router.get(route('profil.tendik'), { search: value }, {
+onMounted(() => { 
+    AOS.init({ duration: 800, once: true }); 
+});
+
+// Watcher untuk fitur pencarian real-time (Debounce 400ms agar tidak membebani server)
+watch(search, debounce(() => {
+    router.get(route('profil.tenaga-kependidikan'), { search: search.value }, {
         preserveState: true, replace: true, onFinish: () => AOS.refresh()
     });
 }, 400));
 
-onMounted(() => { AOS.init({ duration: 800, once: true }); });
-
+// --- LOGIKA MODAL ---
 const isModalOpen = ref(false);
 const selectedPerson = ref<any>(null);
 
@@ -47,11 +54,17 @@ const closeModal = () => {
     document.body.style.overflow = 'auto';
 };
 
+// Mengecek apakah tendik memiliki detail tambahan untuk ditampilkan di modal lebar
 const hasDetailedInfo = computed(() => {
     if (!selectedPerson.value) return false;
     const p = selectedPerson.value;
     return (p.expertise?.length > 0) || (p.education_history?.length > 0) || (p.work_experience?.length > 0) || (p.research_history?.length > 0) || (p.awards?.length > 0);
 });
+
+// Fungsi untuk mengecek apakah gambar valid berupa link URL
+const hasValidImage = (url: string | null) => {
+    return url && url.startsWith('http');
+};
 </script>
 
 <template>
@@ -62,8 +75,9 @@ const hasDetailedInfo = computed(() => {
         <div class="relative bg-slate-50 py-16 md:py-24 font-public-sans min-h-screen overflow-hidden">
             
             <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-                <div class="absolute top-[5%] right-[-5%] w-[40rem] h-[40rem] bg-blue-400/5 rounded-full blur-[100px]"></div>
-                <div class="absolute bottom-[10%] left-[-10%] w-[35rem] h-[35rem] bg-primary/5 rounded-full blur-[120px]"></div>
+                <div class="absolute top-[-10%] left-[-5%] w-[40rem] h-[40rem] bg-primary/5 rounded-full blur-[100px]"></div>
+                <div class="absolute top-[20%] right-[-10%] w-[35rem] h-[35rem] bg-blue-400/5 rounded-full blur-[100px]"></div>
+                <div class="absolute bottom-[-10%] left-[20%] w-[30rem] h-[30rem] bg-indigo-300/10 rounded-full blur-[120px]"></div>
             </div>
 
             <div class="container relative z-10 mx-auto px-4 md:px-6 max-w-7xl">
@@ -84,28 +98,28 @@ const hasDetailedInfo = computed(() => {
                             Tenaga <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">Kependidikan</span>
                         </h2>
                         <p class="text-gray-600 font-medium text-[15px] md:text-[16px] max-w-xl mx-auto leading-relaxed">
-                            Mengenal lebih dekat staf profesional yang menjadi pilar layanan operasional dan administrasi di lingkungan Fakultas Sains dan Teknologi Informasi ITK.
+                            Kenali lebih dekat staf dan tenaga kependidikan Fakultas Sains dan Teknologi Informasi ITK yang siap mendukung layanan akademik dan administratif Anda.
                         </p>
                     </div>
                 </div>
 
-                <div class="mb-14 bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4" data-aos="fade-down">
-                    <div class="relative flex-grow">
-                        <input type="text" placeholder="Ketik nama tenaga kependidikan atau NIP..." v-model="search"
-                            class="w-full pl-12 pr-10 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50 text-gray-800 font-medium transition-all" />
-                        <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                        <button v-if="search" @click="search = ''" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors">
+                <div class="mb-12 max-w-2xl mx-auto relative z-20" data-aos="fade-down">
+                    <div class="relative w-full shadow-sm rounded-xl">
+                        <input type="text" placeholder="Cari nama atau jabatan tenaga kependidikan..." v-model="search"
+                            class="w-full pl-14 pr-12 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-white text-gray-800 font-medium transition-all text-base" />
+                        <Search class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <button v-if="search" @click="search = ''" class="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100">
                             <X class="w-5 h-5" />
                         </button>
                     </div>
                 </div>
 
-                <div v-if="isFiltering" class="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-aos="fade-up">
+                <div v-if="isFiltering" class="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 max-w-5xl mx-auto" data-aos="fade-up">
                     <h3 class="text-lg md:text-xl font-bold text-gray-800 flex items-center">
                         <div class="w-1.5 h-6 bg-primary mr-3 rounded-full hidden sm:block"></div>
                         <span>Hasil pencarian untuk <span class="text-primary">"{{ search }}"</span></span>
                     </h3>
-                    <button @click="search = ''" class="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl transition-colors self-start sm:self-auto">
+                    <button @click="search = ''" class="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl transition-colors">
                         Reset Pencarian
                     </button>
                 </div>
@@ -117,11 +131,15 @@ const hasDetailedInfo = computed(() => {
                              data-aos="fade-up" :data-aos-delay="(index % 4) * 50">
                             
                             <div class="h-64 w-full bg-gray-100 relative overflow-hidden">
-                                <img :src="person.display_image" :alt="person.name" 
+                                <img v-if="hasValidImage(person.image_url)" :src="person.display_image" :alt="person.name" 
                                      class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 mix-blend-multiply">
                                 
+                                <div v-else class="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-400 group-hover:scale-105 transition-transform duration-700">
+                                    <ImageOff class="w-12 h-12 mb-3 opacity-40" />
+                                    <span class="text-sm font-semibold text-gray-500">Foto Belum Tersedia</span>
+                                </div>
+
                                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
-                                
                                 <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-[2px]">
                                     <button @click="openModal(person)" class="bg-white/95 text-primary text-sm font-bold px-6 py-2.5 rounded-xl shadow-lg hover:bg-primary hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 flex items-center gap-2">
                                         <UserCircle class="w-4 h-4" /> Lihat Profil
@@ -131,7 +149,9 @@ const hasDetailedInfo = computed(() => {
 
                             <div class="p-6 flex flex-col flex-grow text-center relative bg-white z-10 border-t border-gray-100">
                                 <h3 class="font-bold text-[17px] text-gray-900 mb-1.5 leading-snug line-clamp-2 group-hover:text-primary transition-colors">{{ person.name }}</h3>
-                                <p class="text-sm font-semibold text-primary/80 mb-4 line-clamp-1">{{ person.structural_position || person.functional_position || 'Staff FSTI' }}</p>
+                                
+                                <p class="text-sm font-semibold text-primary/80 mb-4 line-clamp-2">{{ person.functional_position || person.structural_position || 'Tenaga Kependidikan ITK' }}</p>
+                                
                                 <p class="text-xs text-gray-400 font-medium mt-auto">{{ person.nip ? 'NIP. ' + person.nip : '-' }}</p>
                             </div>
                         </div>
@@ -153,7 +173,7 @@ const hasDetailedInfo = computed(() => {
                     </div>
                     <h3 class="text-xl font-bold text-gray-900">Tidak Ditemukan</h3>
                     <p class="mt-2 text-gray-500 font-medium max-w-md mx-auto">
-                        Tenaga Kependidikan yang Anda cari tidak tersedia. Silakan coba kata kunci ejaan yang lain.
+                        Tenaga kependidikan dengan kata kunci "{{ search }}" tidak ditemukan.
                     </p>
                 </div>
 
@@ -161,7 +181,7 @@ const hasDetailedInfo = computed(() => {
         </div>
 
         <transition enter-active-class="transition ease-out duration-300" enter-from-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100" leave-active-class="transition ease-in duration-200" leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
-            <div v-if="isModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 font-public-sans" @click.self="closeModal">
+            <div v-if="isModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 sm:p-6 font-public-sans" @click.self="closeModal">
                 
                 <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-h-[90vh] overflow-hidden flex flex-col transform transition-all border border-white/20" 
                      :class="hasDetailedInfo ? 'max-w-5xl' : 'max-w-[450px]'" v-if="selectedPerson">
@@ -179,8 +199,15 @@ const hasDetailedInfo = computed(() => {
                         <div class="flex flex-col gap-10" :class="hasDetailedInfo ? 'lg:flex-row' : 'items-center text-center'">
                             
                             <div class="flex-shrink-0" :class="hasDetailedInfo ? 'lg:w-[32%] text-center' : 'w-full'">
-                                <div class="w-48 h-48 mx-auto rounded-full border-[8px] border-white shadow-xl p-1 mb-6 bg-gradient-to-b from-gray-100 to-gray-200 relative">
-                                    <img :src="selectedPerson.display_image" :alt="selectedPerson.name" class="w-full h-full object-cover object-center rounded-full mix-blend-multiply">
+                                <div class="w-48 h-48 mx-auto rounded-full border-[8px] border-white shadow-xl p-1 mb-6 bg-gradient-to-b from-gray-100 to-gray-200 relative overflow-hidden">
+                                    
+                                    <img v-if="hasValidImage(selectedPerson.image_url)" :src="selectedPerson.display_image" :alt="selectedPerson.name" class="w-full h-full object-cover object-center mix-blend-multiply">
+                                    
+                                    <div v-else class="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-400">
+                                        <ImageOff class="w-10 h-10 mb-2 opacity-40" />
+                                        <span class="text-xs font-semibold text-gray-500">Belum Tersedia</span>
+                                    </div>
+
                                     <div class="absolute bottom-2 right-2 bg-green-500 w-6 h-6 border-4 border-white rounded-full" title="Aktif"></div>
                                 </div>
                                 <h2 class="text-2xl font-bold text-gray-900 leading-snug mb-2">{{ selectedPerson.name }}</h2>
@@ -215,7 +242,6 @@ const hasDetailedInfo = computed(() => {
                             </div>
 
                             <div v-if="hasDetailedInfo" class="lg:w-[68%] flex flex-col gap-10 lg:pl-10">
-                                
                                 <div v-if="selectedPerson.expertise?.length > 0" class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                                     <h4 class="flex items-center gap-3 text-lg font-bold text-gray-900 mb-5"><BookOpen class="w-6 h-6 text-primary" /> Bidang Keahlian</h4>
                                     <div class="flex flex-wrap gap-2.5">
@@ -245,12 +271,12 @@ const hasDetailedInfo = computed(() => {
                                     </div>
                                 </div>
 
-                                <div v-if="selectedPerson.research_history?.length > 0" class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-                                    <h4 class="flex items-center gap-3 text-lg font-bold text-gray-900 mb-5"><BookOpen class="w-6 h-6 text-primary" /> Riwayat Riset</h4>
+                                <div v-if="selectedPerson.competency_certification?.length > 0" class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                                    <h4 class="flex items-center gap-3 text-lg font-bold text-gray-900 mb-5"><Award class="w-6 h-6 text-primary" /> Sertifikasi Kompetensi</h4>
                                     <ul class="space-y-4">
-                                        <li v-for="(research, i) in selectedPerson.research_history" :key="i" class="flex items-start gap-4 text-gray-700 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <li v-for="(cert, i) in selectedPerson.competency_certification" :key="i" class="flex items-start gap-4 text-gray-700 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                                             <div class="mt-1 w-2.5 h-2.5 rounded-full bg-primary/50 ring-4 ring-primary/10 flex-shrink-0"></div>
-                                            <span class="text-[15px] font-medium leading-relaxed">{{ research }}</span>
+                                            <span class="text-[15px] font-medium leading-relaxed">{{ cert }}</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -264,7 +290,6 @@ const hasDetailedInfo = computed(() => {
                                         </li>
                                     </ul>
                                 </div>
-
                             </div>
                         </div>
                     </div>

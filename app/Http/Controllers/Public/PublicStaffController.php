@@ -94,8 +94,8 @@ class PublicStaffController extends Controller
         ]);
     }
 
-    // =========================================================
-    // 5. MENU DOSEN (Dengan Filter, Search, dan Paginasi)
+   // =========================================================
+    // 5. MENU DOSEN (Versi Grouping per Program Studi)
     // =========================================================
     public function dosen(Request $request)
     {
@@ -116,14 +116,32 @@ class PublicStaffController extends Controller
             });
         }
 
-        // Paginasi 12 data per halaman
-        $dosen = $query->orderBy('name', 'asc')->paginate(12)->withQueryString();
+        // Ambil semua data (tanpa paginasi agar grouping tidak terpotong halaman)
+        $dosenRaw = $query->orderBy('name', 'asc')->get();
 
-        // Mengambil daftar program studi dari database
+        // Proses Pengelompokan (Grouping) berdasarkan Jabatan Fungsional
+        $groupedDosen = [];
+        foreach ($dosenRaw as $dosen) {
+            $jabatan = $dosen->functional_position ?? '';
+            $prodiName = 'Umum / Lainnya'; // Fallback jika format tidak sesuai
+            
+            // Mengekstrak nama prodi dari format "Dosen Program Studi X"
+            if (str_contains($jabatan, 'Program Studi')) {
+                $prodiName = trim(str_replace('Dosen Program Studi', '', $jabatan));
+            }
+
+            $groupedDosen[$prodiName][] = $dosen;
+        }
+
+        // Mengurutkan nama kelompok prodi sesuai abjad (A-Z)
+        ksort($groupedDosen);
+
+        // Mengambil daftar program studi dari database untuk opsi filter dropdown
         $prodiList = StudyProgram::orderBy('name', 'asc')->pluck('name')->toArray();
 
         return Inertia::render('Public/Profil/Dosen', [
-            'dosen' => $dosen,
+            // Kirim data yang sudah di-grouping ke Vue
+            'groupedDosen' => $groupedDosen, 
             'filters' => $request->only(['search', 'prodi']),
             'prodiList' => $prodiList
         ]);

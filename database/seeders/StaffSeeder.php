@@ -1385,6 +1385,38 @@ class StaffSeeder extends Seeder
             ],
 
             [
+                'name' => 'Yanuar Bhakti Wira Tama, M.Si.',
+                'nip' => '199501252022031022',
+                'type' => 'Dosen',
+                'structural_position' => '',
+                'functional_position' => 'Dosen Program Studi Matematika',
+                'image_url' => 'https://drive.google.com/file/d/1SdDFrSTTsByc5A81n5O00RTmFVOtjo31/view?usp=sharing',
+
+                'education_history' => [
+                    'S1 Matematika, Institut Teknologi Bandung',
+                    'S2 Matematika, Institut Teknologi Bandung'
+                ],
+
+                'expertise' => [
+                    'Aljabar Terapan'
+                ],
+
+                'competency_certification' => null,
+
+                'research_history' => null,
+
+                'community_service_history' => null,
+
+                'work_experience' => null,
+
+                'awards' => null,
+
+                'academic_profiles' => [
+                    'https://scholar.google.com/citations?user=JvKKOlkAAAAJ&hl'
+                ]
+            ],
+
+            [
                 'name' => 'M. Ihsan Alfani Putera, S.Tr.Kom, M.Kom',
                 'nip' => '199208302019031016',
                 'type' => 'Dosen',
@@ -2589,8 +2621,8 @@ class StaffSeeder extends Seeder
                 'name' => 'Yun Tonce Kusuma Priyanto, S.T., M.T.',
                 'nip' => '198406162012121001',
                 'type' => 'Dosen',
-                'structural_position' => '',
-                'functional_position' => 'Wakil Dekan Bidang Keuangan dan Umum Fakultas Sains dan Teknologi Informasi ITK',
+                'structural_position' => 'Wakil Dekan Bidang Keuangan dan Umum Fakultas Sains dan Teknologi Informasi ITK',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'https://drive.google.com/file/d/1pHRiycTBPMuKy5dPMX0e9rtNk-EhwoC4/view?usp=sharing',
 
                 'education_history' => [
@@ -2680,7 +2712,7 @@ class StaffSeeder extends Seeder
                 'nip' => '198802252019032017',
                 'type' => 'Dosen',
                 'structural_position' => '',
-                'functional_position' => '',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'https://drive.google.com/file/d/17vT_LrkG69JNQ3vGZza70TR_FWH0avKz/view?usp=sharing',
 
                 'education_history' => [
@@ -2759,8 +2791,8 @@ class StaffSeeder extends Seeder
                 'name' => 'Happy Aprillia, S.ST., M.T., M.Eng.,Ph.D.',
                 'nip' => '199104112020122004',
                 'type' => 'Dosen',
-                'structural_position' => '',
-                'functional_position' => 'Kepala Pusat Pengembangan Pendidikan',
+                'structural_position' => 'Kepala Pusat Pengembangan Pendidikan',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'https://drive.google.com/file/d/1lyu_i_IscO5QBhI-NvC90qAJ243Y0cKM/view?usp=sharing',
 
                 'education_history' => [
@@ -2806,8 +2838,8 @@ class StaffSeeder extends Seeder
                 'name' => 'Himawan Wicaksono, S.ST.,M.T.',
                 'nip' => '198904012021211002',
                 'type' => 'Dosen',
-                'structural_position' => '',
-                'functional_position' => 'Kepala Inkubator Bisnis Teknologi',
+                'structural_position' => 'Kepala Inkubator Bisnis Teknologi',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'https://drive.google.com/file/d/1oyaWa0JomREWftRgunfxP_-MqxnG8sNP/view?usp=sharing',
 
                 'education_history' => [

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Staff;
+use App\Models\StudyProgram;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
@@ -35,7 +36,12 @@ class StaffController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Staff/Create');
+        // Mengambil daftar prodi untuk dijadikan dropdown
+        $studyPrograms = StudyProgram::orderBy('name', 'asc')->get();
+
+        return Inertia::render('Admin/Staff/Create', [
+            'studyPrograms' => $studyPrograms
+        ]);
     }
 
     public function store(Request $request)
@@ -47,7 +53,7 @@ class StaffController extends Controller
             'structural_position' => 'nullable|string|max:255',
             'functional_position' => 'nullable|string|max:255',
             'image_url' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'is_active' => 'boolean',
 
             'education_history' => 'nullable|array',
@@ -60,7 +66,6 @@ class StaffController extends Controller
             'academic_profiles' => 'nullable|array',
         ]);
 
-        // Prioritaskan file upload jika ada
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('staff', 'public');
             $validated['image_url'] = $path;
@@ -76,8 +81,12 @@ class StaffController extends Controller
 
     public function edit(Staff $staff)
     {
+        // Mengambil daftar prodi untuk dijadikan dropdown
+        $studyPrograms = StudyProgram::orderBy('name', 'asc')->get();
+
         return Inertia::render('Admin/Staff/Edit', [
-            'staff' => $staff
+            'staff' => $staff,
+            'studyPrograms' => $studyPrograms
         ]);
     }
 
@@ -103,16 +112,13 @@ class StaffController extends Controller
             'academic_profiles' => 'nullable|array',
         ]);
 
-        // Cek jika ada file baru
         if ($request->hasFile('image')) {
-            // Hapus file lama jika bentuknya path lokal (bukan link eksternal/GDrive)
             if ($staff->image_url && !str_starts_with($staff->image_url, 'http')) {
                 Storage::disk('public')->delete($staff->image_url);
             }
             $path = $request->file('image')->store('staff', 'public');
             $validated['image_url'] = $path;
         } elseif ($request->filled('image_url') && $request->image_url !== $staff->image_url) {
-            // Jika user secara manual mengganti dengan link Gdrive baru, hapus juga file lokal lama jika ada
             if ($staff->image_url && !str_starts_with($staff->image_url, 'http')) {
                 Storage::disk('public')->delete($staff->image_url);
             }
@@ -128,11 +134,10 @@ class StaffController extends Controller
 
     public function destroy(Staff $staff)
     {
-        // Hapus foto lokal jika ada
         if ($staff->image_url && !str_starts_with($staff->image_url, 'http')) {
             Storage::disk('public')->delete($staff->image_url);
         }
-        
+
         $staff->delete();
 
         return redirect()->route('admin.staff.index')

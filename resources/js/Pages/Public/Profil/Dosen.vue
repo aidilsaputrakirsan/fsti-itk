@@ -8,16 +8,11 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { 
     Briefcase, Award, BookOpen, UserCircle, X, ChevronDown, 
-    GraduationCap, Link as LinkIcon, Search, ListFilter, BookMarked, Linkedin, FileX2, Users
+    GraduationCap, Link as LinkIcon, Search, ListFilter, BookMarked, Linkedin, FileX2, Users, ImageOff
 } from 'lucide-vue-next';
 
-interface PaginatedStaff {
-    data: any[];
-    links: any[];
-}
-
 const props = defineProps<{
-    dosen: PaginatedStaff;
+    groupedDosen: Record<string, any[]>;
     filters: { search?: string; prodi?: string };
     prodiList: string[];
 }>();
@@ -100,6 +95,11 @@ const hasDetailedInfo = computed(() => {
     const p = selectedPerson.value;
     return (p.expertise?.length > 0) || (p.education_history?.length > 0) || (p.work_experience?.length > 0) || (p.research_history?.length > 0) || (p.awards?.length > 0);
 });
+
+// Fungsi untuk mengecek apakah gambar valid berupa link URL
+const hasValidImage = (url: string | null) => {
+    return url && url.startsWith('http');
+};
 </script>
 
 <template>
@@ -138,9 +138,9 @@ const hasDetailedInfo = computed(() => {
                     </div>
                 </div>
 
-                <div class="mb-12 bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4" data-aos="fade-down">
+                <div class="mb-12 bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 relative z-20" data-aos="fade-down">
                     <div class="relative flex-grow">
-                        <input type="text" placeholder="Cari nama dosen, NIP..." v-model="search"
+                        <input type="text" placeholder="Cari nama dosen..." v-model="search"
                             class="w-full pl-12 pr-10 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50 text-gray-800 font-medium transition-all" />
                         <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <button v-if="search" @click="search = ''" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors">
@@ -172,50 +172,57 @@ const hasDetailedInfo = computed(() => {
                 <div v-if="isFiltering" class="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-aos="fade-up">
                     <h3 class="text-lg md:text-xl font-bold text-gray-800 flex items-center">
                         <div class="w-1.5 h-6 bg-primary mr-3 rounded-full hidden sm:block"></div>
-                        <span v-if="search && prodi">Pencarian <span class="text-primary">"{{ search }}"</span> di Program Studi <span class="text-primary">"{{ prodi }}"</span></span>
+                        <span v-if="search && prodi">Pencarian <span class="text-primary">"{{ search }}"</span> di <span class="text-primary">"{{ prodi }}"</span></span>
                         <span v-else-if="search">Hasil pencarian untuk <span class="text-primary">"{{ search }}"</span></span>
-                        <span v-else-if="prodi">Semua dosen Program Studi <span class="text-primary">{{ prodi }}</span></span>
+                        <span v-else-if="prodi">Menampilkan Dosen <span class="text-primary">{{ prodi }}</span></span>
                     </h3>
-                    
-                    <button @click="search = ''; selectProdi('')" class="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl transition-colors self-start sm:self-auto">
+                    <button @click="search = ''; selectProdi('')" class="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl transition-colors">
                         Reset Filter
                     </button>
                 </div>
 
-                <div v-if="dosen.data.length > 0">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-8">
-                        <div v-for="(person, index) in dosen.data" :key="person.id" 
-                             class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] hover:-translate-y-1.5 transition-all duration-500 flex flex-col group relative"
-                             data-aos="fade-up" :data-aos-delay="(index % 4) * 50">
-                            
-                            <div class="h-64 w-full bg-gray-100 relative overflow-hidden">
-                                <img :src="person.display_image" :alt="person.name" 
-                                     class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 mix-blend-multiply">
+                <div v-if="Object.keys(groupedDosen).length > 0" class="space-y-16">
+                    
+                    <div v-for="(lecturers, prodiName) in groupedDosen" :key="prodiName" data-aos="fade-up">
+                        
+                        <div class="flex items-center gap-4 mb-8">
+                            <div class="w-3 h-10 bg-primary rounded-full"></div>
+                            <h3 class="text-2xl font-bold text-gray-900">Program Studi {{ prodiName }}</h3>
+                            <div class="h-px bg-gray-300 flex-grow ml-4"></div>
+                            <span class="text-sm font-bold text-gray-500 bg-gray-100 px-4 py-1.5 rounded-full">{{ lecturers.length }} Dosen</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-8">
+                            <div v-for="(person, index) in lecturers" :key="person.id" 
+                                 class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] hover:-translate-y-1.5 transition-all duration-500 flex flex-col group relative">
                                 
-                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
-                                
-                                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-[2px]">
-                                    <button @click="openModal(person)" class="bg-white/95 text-primary text-sm font-bold px-6 py-2.5 rounded-xl shadow-lg hover:bg-primary hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 flex items-center gap-2">
-                                        <UserCircle class="w-4 h-4" /> Lihat Profil
-                                    </button>
+                                <div class="h-64 w-full bg-gray-100 relative overflow-hidden">
+                                    <img v-if="hasValidImage(person.image_url)" :src="person.display_image" :alt="person.name" 
+                                         class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 mix-blend-multiply">
+                                    
+                                    <div v-else class="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-400 group-hover:scale-105 transition-transform duration-700">
+                                        <ImageOff class="w-12 h-12 mb-3 opacity-40" />
+                                        <span class="text-sm font-semibold text-gray-500">Foto Belum Tersedia</span>
+                                    </div>
+
+                                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-[2px]">
+                                        <button @click="openModal(person)" class="bg-white/95 text-primary text-sm font-bold px-6 py-2.5 rounded-xl shadow-lg hover:bg-primary hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 flex items-center gap-2">
+                                            <UserCircle class="w-4 h-4" /> Lihat Profil
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="p-6 flex flex-col flex-grow text-center relative bg-white z-10 border-t border-gray-100">
+                                    <h3 class="font-bold text-[17px] text-gray-900 mb-1.5 leading-snug line-clamp-2 group-hover:text-primary transition-colors">{{ person.name }}</h3>
+                                    
+                                    <p class="text-sm font-semibold text-primary/80 mb-4 line-clamp-1">{{ person.functional_position || 'Dosen ITK' }}</p>
+                                    
+                                    <p class="text-xs text-gray-400 font-medium mt-auto">{{ person.nip ? 'NIP. ' + person.nip : '-' }}</p>
                                 </div>
                             </div>
-
-                            <div class="p-6 flex flex-col flex-grow text-center relative bg-white z-10 border-t border-gray-100">
-                                <h3 class="font-bold text-[17px] text-gray-900 mb-1.5 leading-snug line-clamp-2 group-hover:text-primary transition-colors">{{ person.name }}</h3>
-                                <p class="text-sm font-semibold text-primary/80 mb-4 line-clamp-1">{{ person.functional_position || 'Dosen ITK' }}</p>
-                                <p class="text-xs text-gray-400 font-medium mt-auto">{{ person.nip ? 'NIP. ' + person.nip : '-' }}</p>
-                            </div>
                         </div>
-                    </div>
 
-                    <div v-if="dosen.links && dosen.links.length > 3" class="mt-16 flex justify-center items-center flex-wrap gap-2 pb-8" data-aos="fade-up">
-                        <template v-for="(link, index) in dosen.links" :key="index">
-                            <Link v-if="link.url" :href="link.url" v-html="link.label" 
-                                class="px-4 py-2 text-sm font-bold rounded-lg border transition-colors" 
-                                :class="{'bg-primary text-white border-primary shadow-sm': link.active, 'text-gray-600 border-gray-200 bg-white hover:bg-gray-50 hover:text-primary': !link.active}" />
-                            <span v-else v-html="link.label" class="px-4 py-2 text-sm font-bold rounded-lg text-gray-400 border border-gray-100 bg-gray-50" />
-                        </template>
                     </div>
                 </div>
 
@@ -251,8 +258,15 @@ const hasDetailedInfo = computed(() => {
                         <div class="flex flex-col gap-10" :class="hasDetailedInfo ? 'lg:flex-row' : 'items-center text-center'">
                             
                             <div class="flex-shrink-0" :class="hasDetailedInfo ? 'lg:w-[32%] text-center' : 'w-full'">
-                                <div class="w-48 h-48 mx-auto rounded-full border-[8px] border-white shadow-xl p-1 mb-6 bg-gradient-to-b from-gray-100 to-gray-200 relative">
-                                    <img :src="selectedPerson.display_image" :alt="selectedPerson.name" class="w-full h-full object-cover object-center rounded-full mix-blend-multiply">
+                                <div class="w-48 h-48 mx-auto rounded-full border-[8px] border-white shadow-xl p-1 mb-6 bg-gradient-to-b from-gray-100 to-gray-200 relative overflow-hidden">
+                                    
+                                    <img v-if="hasValidImage(selectedPerson.image_url)" :src="selectedPerson.display_image" :alt="selectedPerson.name" class="w-full h-full object-cover object-center mix-blend-multiply">
+                                    
+                                    <div v-else class="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-400">
+                                        <ImageOff class="w-10 h-10 mb-2 opacity-40" />
+                                        <span class="text-xs font-semibold text-gray-500">Belum Tersedia</span>
+                                    </div>
+
                                     <div class="absolute bottom-2 right-2 bg-green-500 w-6 h-6 border-4 border-white rounded-full" title="Aktif"></div>
                                 </div>
                                 <h2 class="text-2xl font-bold text-gray-900 leading-snug mb-2">{{ selectedPerson.name }}</h2>
@@ -287,7 +301,6 @@ const hasDetailedInfo = computed(() => {
                             </div>
 
                             <div v-if="hasDetailedInfo" class="lg:w-[68%] flex flex-col gap-10 lg:pl-10">
-                                
                                 <div v-if="selectedPerson.expertise?.length > 0" class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                                     <h4 class="flex items-center gap-3 text-lg font-bold text-gray-900 mb-5"><BookOpen class="w-6 h-6 text-primary" /> Bidang Keahlian</h4>
                                     <div class="flex flex-wrap gap-2.5">
@@ -336,7 +349,6 @@ const hasDetailedInfo = computed(() => {
                                         </li>
                                     </ul>
                                 </div>
-
                             </div>
                         </div>
                     </div>
