@@ -12,32 +12,18 @@ class PublicStaffController extends Controller
 {
     public function pimpinanFakultas()
     {
-        $pimpinanRaw = Staff::where(function ($query) {
+        $pimpinan = Staff::where(function ($query) {
             $query->where('structural_position', 'like', '%Dekan%')
                 ->orWhere('functional_position', 'like', '%Dekan%')
                 ->orWhere('structural_position', 'like', '%Kepala Subbagian Umum%')
                 ->orWhere('functional_position', 'like', '%Kepala Subbagian Umum%');
-        })
-            ->where('is_active', true)
-            ->orderBy('updated_at', 'desc')
-            ->get();
-
-        $pimpinan = $pimpinanRaw->unique(function ($item) {
-            $jabatan = strtolower($item->structural_position . ' ' . $item->functional_position);
-            if (str_contains($jabatan, 'wakil dekan 1')) return 'wd1';
-            if (str_contains($jabatan, 'wakil dekan 2')) return 'wd2';
-            if (str_contains($jabatan, 'dekan')) return 'dekan';
-            if (str_contains($jabatan, 'kepala subbagian umum')) return 'kasubbag';
-            return $item->id; // Jika jabatan lainnya, biarkan unik berdasarkan ID
-        })
-            ->sortBy(function ($staff) {
-                $jabatan = strtolower($staff->structural_position . ' ' . $staff->functional_position);
-                if (str_contains($jabatan, 'wakil dekan')) return 2;
-                if (str_contains($jabatan, 'dekan')) return 1;
-                if (str_contains($jabatan, 'kepala subbagian umum')) return 3;
-                return 4;
-            })
-            ->values();
+        })->where('is_active', true)->get()->sortBy(function ($staff) {
+            $jabatan = $staff->structural_position . ' ' . $staff->functional_position;
+            if (str_contains($jabatan, 'Wakil Dekan')) return 2;
+            if (str_contains($jabatan, 'Dekan')) return 1;
+            if (str_contains($jabatan, 'Kepala Subbagian Umum')) return 3;
+            return 4;
+        })->values();
 
         return Inertia::render('Public/Profil/PimpinanFakultas', ['pimpinan' => $pimpinan]);
     }
@@ -45,40 +31,27 @@ class PublicStaffController extends Controller
     public function pimpinanJurusan()
     {
         $pimpinan = Staff::where('structural_position', 'like', '%Ketua Jurusan%')
-            ->where('is_active', true)
-            ->orderBy('updated_at', 'desc')
-            ->get()
-            ->unique('structural_position')
-            ->sortBy('name')
-            ->values();
-
+            ->where('is_active', true)->orderBy('name', 'asc')->get();
         return Inertia::render('Public/Profil/PimpinanJurusan', ['pimpinan' => $pimpinan]);
     }
 
     public function pimpinanProdi()
     {
-        $pimpinanRaw = Staff::where('structural_position', 'like', '%Koordinator Program Studi%')
-            ->where('is_active', true)
-            ->orderBy('updated_at', 'desc')
-            ->get();
+        $pimpinan = Staff::where('structural_position', 'like', '%Koordinator Program Studi%')
+            ->where('is_active', true)->orderBy('name', 'asc')->get();
 
-        $pimpinan = $pimpinanRaw->unique(function ($item) {
-            return strtolower($item->structural_position);
-        })
-            ->map(function ($item) {
-                $jabatan = strtolower($item->structural_position);
+        $pimpinan = $pimpinan->map(function ($item) {
+            $jabatan = strtolower($item->structural_position);
 
-                if (str_contains($jabatan, 'matematika') || str_contains($jabatan, 'fisika') || str_contains($jabatan, 'aktuaria') || str_contains($jabatan, 'statistika')) {
-                    $jurusan = 'Sains dan Analitika Data';
-                } else {
-                    $jurusan = 'Teknik Elektro, Informatika, dan Bisnis';
-                }
+            if (str_contains($jabatan, 'matematika') || str_contains($jabatan, 'fisika') || str_contains($jabatan, 'aktuaria') || str_contains($jabatan, 'statistika')) {
+                $jurusan = 'Sains dan Analitika Data';
+            } else {
+                $jurusan = 'Teknik Elektro, Informatika, dan Bisnis';
+            }
 
-                $item->jurusan = $jurusan;
-                return $item;
-            })
-            ->sortBy('name')
-            ->values();
+            $item->jurusan = $jurusan;
+            return $item;
+        });
 
         return Inertia::render('Public/Profil/PimpinanProdi', ['pimpinan' => $pimpinan]);
     }
@@ -86,16 +59,13 @@ class PublicStaffController extends Controller
     public function pimpinanLaboratorium()
     {
         $pimpinan = Staff::where('structural_position', 'like', '%Kepala Laboratorium%')
-            ->where('is_active', true)
-            ->orderBy('updated_at', 'desc')
-            ->get()
-            ->unique('structural_position')
-            ->sortBy('name')
-            ->values();
-
+            ->where('is_active', true)->orderBy('name', 'asc')->get();
         return Inertia::render('Public/Profil/PimpinanLaboratorium', ['pimpinan' => $pimpinan]);
     }
 
+    // ====================================================================
+    // DOSEN PUBLIK 
+    // ====================================================================
     public function dosen(Request $request)
     {
         $query = Staff::where('type', 'Dosen')->where('is_active', true);
@@ -104,7 +74,7 @@ class PublicStaffController extends Controller
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('name', 'like', "%{$searchTerm}%")
-                    ->orWhere('nip', 'like', "%{$searchTerm}%")
+                    ->orWhere('nip', 'like', "%{$searchTerm}%") // <--- NIP DITAMBAHKAN DI SINI
                     ->orWhereJsonContains('expertise', $searchTerm);
             });
         }
@@ -126,6 +96,7 @@ class PublicStaffController extends Controller
         }
 
         ksort($groupedDosen);
+
         $groupedData = empty($groupedDosen) ? new \stdClass() : (object) $groupedDosen;
         $prodiList = StudyProgram::orderBy('name', 'asc')->pluck('name')->toArray();
 
@@ -143,7 +114,7 @@ class PublicStaffController extends Controller
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhere('nip', 'like', '%' . $request->search . '%')
+                    ->orWhere('nip', 'like', '%' . $request->search . '%') // NIP DITAMBAHKAN UNTUK TENDIK JUGA
                     ->orWhere('functional_position', 'like', '%' . $request->search . '%')
                     ->orWhere('structural_position', 'like', '%' . $request->search . '%');
             });
