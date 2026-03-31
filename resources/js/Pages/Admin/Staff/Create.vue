@@ -3,8 +3,13 @@ import { ref, watch } from 'vue';
 import { useForm, Link } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { 
-    ArrowLeftIcon, DocumentCheckIcon, PaperClipIcon,
-    TrashIcon, PlusIcon, LinkIcon, XMarkIcon
+    ArrowLeftIcon, 
+    DocumentCheckIcon, 
+    PaperClipIcon,
+    TrashIcon,
+    PlusIcon,
+    LinkIcon,
+    XMarkIcon
 } from '@heroicons/vue/24/outline';
 
 defineOptions({ layout: AdminLayout });
@@ -46,7 +51,10 @@ watch(() => form.type, (newType) => {
 
 type ArrayFields = 'education_history' | 'expertise' | 'competency_certification' | 'research_history' | 'community_service_history' | 'work_experience' | 'awards' | 'academic_profiles';
 
-const addArrayItem = (field: ArrayFields) => { form[field].push(''); };
+const addArrayItem = (field: ArrayFields) => { 
+    form[field].push(''); 
+};
+
 const removeArrayItem = (field: ArrayFields, index: number | string) => { 
     const idx = typeof index === 'string' ? parseInt(index, 10) : index;
     form[field].splice(idx, 1); 
@@ -56,7 +64,7 @@ const handleImageChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files[0]) {
         form.image = target.files[0];
-        form.image_url = ''; 
+        form.image_url = ''; // Bersihkan URL jika user memilih upload file
     } else {
         form.image = null;
     }
@@ -64,10 +72,14 @@ const handleImageChange = (event: Event) => {
 
 const clearImage = () => {
     form.image = null;
-    if (fileInput.value) fileInput.value.value = '';
+    if (fileInput.value) {
+        fileInput.value.value = '';
+    }
 };
 
-const submit = () => { form.post(route('admin.staff.store')); };
+const submit = () => {
+    form.post(route('admin.staff.store'));
+};
 </script>
 
 <template>
@@ -84,7 +96,7 @@ const submit = () => { form.post(route('admin.staff.store')); };
                     <label class="pt-2 text-sm font-semibold text-black">Nama Lengkap & Gelar <span class="text-red-600">*</span></label>
                     <div>
                         <input v-model="form.name" type="text" placeholder="Contoh: Dr. Budi Santoso, S.T., M.T." class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                        <p class="mt-1 text-xs text-gray-500">Wajib diisi beserta gelar akademik.</p>
+                        <p class="mt-1 text-xs text-gray-500 font-medium">Wajib diisi. Tuliskan nama lengkap beserta gelar akademik.</p>
                         <p v-if="form.errors.name" class="mt-2 text-sm text-red-600">{{ form.errors.name }}</p>
                     </div>
                     
@@ -94,19 +106,19 @@ const submit = () => { form.post(route('admin.staff.store')); };
                             <option value="Dosen">Dosen</option>
                             <option value="Tendik">Tenaga Kependidikan</option>
                         </select>
-                        <p class="mt-1 text-xs text-gray-500">Wajib dipilih untuk pengelompokan data.</p>
+                        <p class="mt-1 text-xs text-gray-500 font-medium">Wajib dipilih untuk mengelompokkan data di website publik.</p>
                     </div>
 
                     <label class="pt-2 text-sm font-semibold text-black">NIP / NIPH / NIDN</label>
                     <div>
                         <input v-model="form.nip" type="text" placeholder="Masukkan Nomor Induk" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <p class="mt-1 text-xs text-gray-500">Opsional. Boleh dikosongkan jika belum ada.</p>
+                        <p class="mt-1 text-xs text-gray-500">Idealnya diisi sebagai identitas resmi, namun boleh dikosongkan jika staf belum memiliki.</p>
                     </div>
 
                     <label class="pt-2 text-sm font-semibold text-black">Status Visibilitas</label>
                     <div>
                         <select v-model="form.is_active" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            <option :value="true">Aktif (Ditampilkan)</option>
+                            <option :value="true">Aktif (Ditampilkan di Website)</option>
                             <option :value="false">Nonaktif (Disembunyikan)</option>
                         </select>
                     </div>
@@ -131,28 +143,40 @@ const submit = () => { form.post(route('admin.staff.store')); };
                     <label class="pt-2 text-sm font-semibold text-black">Jabatan Struktural</label>
                     <div>
                         <input v-model="form.structural_position" type="text" placeholder="Contoh: Dekan, Koordinator Program Studi" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <p class="mt-1 text-xs text-gray-500">Opsional. Diisi jika menjabat posisi pimpinan.</p>
+                        <p class="mt-1 text-xs text-gray-500">Opsional. Diisi jika yang bersangkutan menjabat posisi pimpinan di fakultas atau jurusan.</p>
                     </div>
 
                     <label class="pt-2 text-sm font-semibold text-black">Foto Diri Formal</label>
                     <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                        <p class="text-xs text-blue-600 font-medium mb-3">Disarankan ada agar profil tidak terlihat kosong. Jika dikosongkan, sistem akan menampilkan placeholder "Foto Belum Tersedia".</p>
+                        
                         <label class="block text-sm text-gray-700 mb-1 font-medium">Opsi 1: Upload File Gambar</label>
                         <div class="relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2 mb-4 hover:bg-gray-50 transition">
                             <PaperClipIcon class="h-5 w-5 text-gray-400" />
                             <span class="ml-3 text-sm text-gray-500 truncate flex-1">
-                              {{ form.image ? form.image.name : 'Pilih file gambar...' }}
+                              {{ form.image ? form.image.name : 'Klik di sini untuk memilih file gambar dari perangkat...' }}
                             </span>
-                            <button v-if="form.image" type="button" @click.prevent="clearImage" class="ml-2 p-1 text-red-500 hover:bg-red-50 rounded-md relative z-10"><XMarkIcon class="w-5 h-5"/></button>
+                            
+                            <button v-if="form.image" type="button" @click.prevent="clearImage" class="ml-2 p-1 text-red-500 hover:bg-red-50 rounded-md relative z-10" title="Batal Pilih File">
+                                <XMarkIcon class="w-5 h-5"/>
+                            </button>
+
                             <input ref="fileInput" type="file" accept="image/*" @change="handleImageChange" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" :class="{'hidden': form.image}" />
                         </div>
+                        <p v-if="form.errors.image" class="mb-4 text-sm text-red-600">{{ form.errors.image }}</p>
 
                         <label class="block text-sm text-gray-700 mb-1 font-medium" :class="{'opacity-50': form.image}">Opsi 2: Link Google Drive</label>
                         <input type="url" v-model="form.image_url" :disabled="form.image !== null" placeholder="https://drive.google.com/file/d/..." class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
-                        <p class="mt-2 text-xs text-gray-500 italic">Opsi link dinonaktifkan jika file gambar telah dipilih pada Opsi 1.</p>
+                        <p class="mt-2 text-xs text-gray-500 italic">
+                            Gunakan opsi ini jika foto disimpan di GDrive (pastikan visibilitas link: "Anyone with the link"). 
+                            <br/><span v-if="form.image" class="text-red-500 font-semibold mt-1 inline-block">🔒 Opsi Link Drive dinonaktifkan karena Anda telah memilih file upload (Opsi 1). Hapus file di Opsi 1 jika ingin menggunakan link.</span>
+                        </p>
+                        <p v-if="form.errors.image_url" class="mt-2 text-sm text-red-600">{{ form.errors.image_url }}</p>
                     </div>
 
                     <label class="pt-2 text-sm font-semibold text-black">Bidang Keahlian</label>
                     <div>
+                        <p class="text-xs text-gray-500 font-medium mb-2">Opsional. Bidang keahlian yang relevan dengan bidang studi dosen.</p>
                         <div class="space-y-3">
                             <div v-for="(item, index) in form.expertise" :key="index" class="flex gap-2">
                                 <input v-model="form.expertise[index]" type="text" placeholder="Contoh: Artificial Intelligence" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
@@ -164,9 +188,10 @@ const submit = () => { form.post(route('admin.staff.store')); };
 
                     <label class="pt-2 text-sm font-semibold text-black">Riwayat Pendidikan Terakhir</label>
                     <div>
+                        <p class="text-xs text-gray-500 mb-2">Idealnya diisi sebagai pelengkap informasi akademik (S1/S2/S3).</p>
                         <div class="space-y-3">
                             <div v-for="(item, index) in form.education_history" :key="index" class="flex gap-2 items-start">
-                                <textarea v-model="form.education_history[index]" rows="2" placeholder="Contoh: S1 Teknik Elektro, Universitas X" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
+                                <textarea v-model="form.education_history[index]" rows="2" placeholder="Contoh: S1 Teknik Elektro, Universitas Brawijaya" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
                                 <button type="button" @click="removeArrayItem('education_history', index)" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0"><TrashIcon class="w-5 h-5"/></button>
                             </div>
                             <button type="button" @click="addArrayItem('education_history')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah Pendidikan</button>
@@ -175,22 +200,71 @@ const submit = () => { form.post(route('admin.staff.store')); };
 
                     <label class="pt-2 text-sm font-semibold text-black">Sertifikasi Kompetensi</label>
                     <div>
+                        <p class="text-xs text-gray-500 mb-2">Opsional. Sertifikat profesi atau kompetensi pendukung (khususnya Tendik/Dosen praktisi).</p>
                         <div class="space-y-3">
                             <div v-for="(item, index) in form.competency_certification" :key="index" class="flex gap-2 items-start">
-                                <textarea v-model="form.competency_certification[index]" rows="2" placeholder="Contoh: Sertifikasi BNSP (2022)" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
+                                <textarea v-model="form.competency_certification[index]" rows="2" placeholder="Contoh: Sertifikasi Asesor Kompetensi BNSP (2022)" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
                                 <button type="button" @click="removeArrayItem('competency_certification', index)" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0"><TrashIcon class="w-5 h-5"/></button>
                             </div>
                             <button type="button" @click="addArrayItem('competency_certification')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah Sertifikasi</button>
                         </div>
                     </div>
 
+                    <label class="pt-2 text-sm font-semibold text-black">Riwayat Penelitian</label>
+                    <div>
+                        <p class="text-xs text-gray-500 mb-2">Opsional. Judul riset atau jurnal yang pernah dikerjakan dosen.</p>
+                        <div class="space-y-3">
+                            <div v-for="(item, index) in form.research_history" :key="index" class="flex gap-2 items-start">
+                                <textarea v-model="form.research_history[index]" rows="2" placeholder="Contoh: Optimasi Sistem menggunakan Metode X (2021)" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
+                                <button type="button" @click="removeArrayItem('research_history', index)" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0"><TrashIcon class="w-5 h-5"/></button>
+                            </div>
+                            <button type="button" @click="addArrayItem('research_history')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah Penelitian</button>
+                        </div>
+                    </div>
+
+                    <label class="pt-2 text-sm font-semibold text-black">Riwayat Pengabdian Masyarakat</label>
+                    <div>
+                        <p class="text-xs text-gray-500 mb-2">Opsional. Judul kegiatan pengabdian kepada masyarakat (PKM).</p>
+                        <div class="space-y-3">
+                            <div v-for="(item, index) in form.community_service_history" :key="index" class="flex gap-2 items-start">
+                                <textarea v-model="form.community_service_history[index]" rows="2" placeholder="Contoh: Pelatihan Komputer untuk UMKM Desa X (2022)" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
+                                <button type="button" @click="removeArrayItem('community_service_history', index)" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0"><TrashIcon class="w-5 h-5"/></button>
+                            </div>
+                            <button type="button" @click="addArrayItem('community_service_history')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah PKM</button>
+                        </div>
+                    </div>
+
+                    <label class="pt-2 text-sm font-semibold text-black">Pengalaman Kerja</label>
+                    <div>
+                        <p class="text-xs text-gray-500 mb-2">Opsional. Pengalaman profesional atau organisasi di luar ITK.</p>
+                        <div class="space-y-3">
+                            <div v-for="(item, index) in form.work_experience" :key="index" class="flex gap-2 items-start">
+                                <textarea v-model="form.work_experience[index]" rows="2" placeholder="Contoh: 2018 - 2020: System Analyst di PT. XYZ" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
+                                <button type="button" @click="removeArrayItem('work_experience', index)" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0"><TrashIcon class="w-5 h-5"/></button>
+                            </div>
+                            <button type="button" @click="addArrayItem('work_experience')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah Pengalaman</button>
+                        </div>
+                    </div>
+
+                    <label class="pt-2 text-sm font-semibold text-black">Penghargaan / Awards</label>
+                    <div>
+                        <p class="text-xs text-gray-500 mb-2">Opsional. Prestasi atau penghargaan yang pernah diraih.</p>
+                        <div class="space-y-3">
+                            <div v-for="(item, index) in form.awards" :key="index" class="flex gap-2 items-start">
+                                <textarea v-model="form.awards[index]" rows="2" placeholder="Contoh: Dosen Berprestasi ITK Tahun 2021" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
+                                <button type="button" @click="removeArrayItem('awards', index)" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0"><TrashIcon class="w-5 h-5"/></button>
+                            </div>
+                            <button type="button" @click="addArrayItem('awards')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah Penghargaan</button>
+                        </div>
+                    </div>
+
                     <label class="pt-2 text-sm font-semibold text-black">Profil Akademik</label>
                     <div>
-                        <p class="text-xs text-gray-500 mb-2 font-medium">Link profil <span class="text-blue-600 font-bold">LinkedIn</span>, <span class="text-blue-500 font-bold">Google Scholar</span>, atau <span class="text-orange-500 font-bold">Scopus</span>.</p>
+                        <p class="text-xs text-gray-500 mb-2 font-medium">Opsional. Masukkan link profil akademik seperti <span class="text-blue-600 font-bold">LinkedIn</span>, <span class="text-blue-500 font-bold">Google Scholar</span>, atau <span class="text-orange-500 font-bold">Scopus</span>.</p>
                         <div class="space-y-3">
                             <div v-for="(item, index) in form.academic_profiles" :key="index" class="flex gap-2 items-center relative">
                                 <LinkIcon class="w-5 h-5 text-gray-400 absolute left-3" />
-                                <input v-model="form.academic_profiles[index]" type="url" placeholder="Contoh: https://scholar.google.com/..." class="block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                                <input v-model="form.academic_profiles[index]" type="url" placeholder="Contoh: https://scholar.google.com/citations?user=..." class="block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                                 <button type="button" @click="removeArrayItem('academic_profiles', index)" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0"><TrashIcon class="w-5 h-5"/></button>
                             </div>
                             <button type="button" @click="addArrayItem('academic_profiles')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah Link Profil</button>
@@ -201,10 +275,13 @@ const submit = () => { form.post(route('admin.staff.store')); };
 
                 <div class="mt-12 flex items-center justify-between border-t border-gray-100 pt-6">
                     <Link :href="route('admin.staff.index')" class="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">
-                        <ArrowLeftIcon class="h-5 w-5" /> Kembali
+                        <ArrowLeftIcon class="h-5 w-5" />
+                        Kembali
                     </Link>
+
                     <button type="submit" :disabled="form.processing" class="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50">
-                        <DocumentCheckIcon class="h-5 w-5" /> {{ form.processing ? 'Menyimpan...' : 'Simpan Data' }}
+                        <DocumentCheckIcon class="h-5 w-5" />
+                        {{ form.processing ? 'Menyimpan...' : 'Simpan Data' }}
                     </button>
                 </div>
             </form>
