@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Staff;
+use App\Models\StudyProgram;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PublicStaffController extends Controller
@@ -11,7 +13,6 @@ class PublicStaffController extends Controller
     // 1. MENU PIMPINAN FAKULTAS
     public function pimpinanFakultas()
     {
-        // 1. Ambil staff dengan kata kunci "Dekan" atau "Kepala Subbagian Umum"
         $pimpinan = Staff::where(function ($query) {
             $query->where('structural_position', 'like', '%Dekan%')
                 ->orWhere('functional_position', 'like', '%Dekan%')
@@ -28,16 +29,16 @@ class PublicStaffController extends Controller
 
                 return 4;
             })
-            ->values(); // Reset indeks array agar terbaca benar di Vue/JSON
+            ->values();
 
         return Inertia::render('Public/Profil/PimpinanFakultas', [
             'pimpinan' => $pimpinan
         ]);
     }
+
     // 2. MENU PIMPINAN JURUSAN
     public function pimpinanJurusan()
     {
-        // Cari staff yang jabatannya mengandung kata "Ketua Jurusan"
         $pimpinan = Staff::where('structural_position', 'like', '%Ketua Jurusan%')
             ->orderBy('name')
             ->get();
@@ -50,14 +51,10 @@ class PublicStaffController extends Controller
     // 3. MENU PIMPINAN PRODI
     public function pimpinanProdi()
     {
-        // Cari staff yang jabatannya mengandung kata "Koordinator Program Studi"
         $pimpinan = Staff::where('structural_position', 'like', '%Koordinator Program Studi%')
             ->orderBy('name')
             ->get();
 
-        // Di PimpinanProdi.vue Anda butuh properti tambahan 'jurusan'.
-        // Karena di seeder Anda tidak ada kolom jurusan khusus dosen, 
-        // kita tambahkan secara virtual/mapping di sini berdasarkan nama prodinya.
         $pimpinan = $pimpinan->map(function ($item) {
             $jurusan = 'Lainnya';
             if (str_contains($item->structural_position, 'Matematika') || str_contains($item->structural_position, 'Fisika') || str_contains($item->structural_position, 'Aktuaria') || str_contains($item->structural_position, 'Statistika')) {
@@ -77,7 +74,6 @@ class PublicStaffController extends Controller
     // 4. MENU PIMPINAN LABORATORIUM
     public function pimpinanLaboratorium()
     {
-        // Cari staff yang jabatannya mengandung kata "Kepala Laboratorium"
         $pimpinan = Staff::where('structural_position', 'like', '%Kepala Laboratorium%')
             ->orderBy('name')
             ->get();
@@ -87,25 +83,55 @@ class PublicStaffController extends Controller
         ]);
     }
 
-    // 5. MENU DOSEN (Semua Dosen)
-    public function dosen()
+    // 5. MENU DOSEN (Dengan Filter, Search, dan Paginasi)
+    public function dosen(Request $request)
     {
-        // Ambil semua yang tipe-nya Dosen
-        $dosen = Staff::where('type', 'Dosen')->orderBy('name')->get();
+        $query = Staff::where('type', 'Dosen')->where('is_active', true);
+
+        // Filter berdasarkan nama
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter berdasarkan program studi
+        if ($request->filled('prodi')) {
+            $prodi = $request->prodi;
+            $query->where(function($q) use ($prodi) {
+                $q->where('structural_position', 'like', "%{$prodi}%")
+                  ->orWhere('functional_position', 'like', "%{$prodi}%")
+                  ->orWhereJsonContains('expertise', $prodi); 
+            });
+        }
+
+        // Paginasi 12 data per halaman
+        $dosen = $query->orderBy('name', 'asc')->paginate(12)->withQueryString();
+
+        // Mengambil daftar program studi dari database
+        $prodiList = StudyProgram::orderBy('name', 'asc')->pluck('name')->toArray();
 
         return Inertia::render('Public/Profil/Dosen', [
-            'dosen' => $dosen
+            'dosen' => $dosen,
+            'filters' => $request->only(['search', 'prodi']),
+            'prodiList' => $prodiList
         ]);
     }
 
-    // 6. MENU TENAGA KEPENDIDIKAN (Semua Tendik)
-    public function tendik()
+    // 6. MENU TENAGA KEPENDIDIKAN (Dengan Search dan Paginasi)
+    public function tendik(Request $request)
     {
-        // Ambil semua yang tipe-nya Tendik
-        $tendik = Staff::where('type', 'Tendik')->orderBy('name')->get();
+        $query = Staff::where('type', 'Tendik')->where('is_active', true);
+
+        // Filter berdasarkan nama
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // Paginasi 12 data per halaman
+        $tendik = $query->orderBy('name', 'asc')->paginate(12)->withQueryString();
 
         return Inertia::render('Public/Profil/TenagaKependidikan', [
-            'tendik' => $tendik
+            'tendik' => $tendik,
+            'filters' => $request->only(['search'])
         ]);
     }
 }

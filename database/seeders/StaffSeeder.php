@@ -2633,7 +2633,7 @@ class StaffSeeder extends Seeder
                 'nip' => '198702242019031007',
                 'type' => 'Dosen',
                 'structural_position' => '',
-                'functional_position' => '',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'https://drive.google.com/file/d/1wvvmCge212Wppm8FaeDnYRd1X1C-WOO2/view?usp=sharing',
 
                 'education_history' => [

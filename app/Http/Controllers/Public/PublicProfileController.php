@@ -7,20 +7,20 @@ use App\Models\Staff;
 use App\Models\Contact;
 use App\Models\TentangFakultas;
 use App\Models\StudyProgram;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PublicProfileController extends Controller
 {
     public function tentang()
     {
-        $tentangData = \App\Models\TentangFakultas::first();
-
+        $tentangData = TentangFakultas::first();
         $tentangContent = $tentangData ? $tentangData->content : null;
 
         $statistik = [
-            'dosen' => \App\Models\Staff::where('type', 'Dosen')->where('is_active', true)->count(),
-            'tendik' => \App\Models\Staff::where('type', 'Tendik')->where('is_active', true)->count(),
-            'prodi' => \App\Models\StudyProgram::count(),
+            'dosen' => Staff::where('type', 'Dosen')->where('is_active', true)->count(),
+            'tendik' => Staff::where('type', 'Tendik')->where('is_active', true)->count(),
+            'prodi' => StudyProgram::count(),
         ];
 
         return inertia('Public/Profil/Tentang', [
@@ -31,92 +31,63 @@ class PublicProfileController extends Controller
 
     public function baganOrganisasi()
     {
-        // Ambil data profil fakultas dari database
-        $profil = \App\Models\TentangFakultas::first();
-
-        // Ambil URL gambar bagan organisasi jika ada
-        $baganImage = null;
-        if ($profil && $profil->bagan_organisasi_image) {
-            $baganImage = $profil->bagan_organisasi_image;
-        }
+        $profil = TentangFakultas::first();
+        $baganImage = $profil ? $profil->bagan_organisasi_image : null;
 
         return inertia('Public/Profil/BaganOrganisasi', [
             'baganImage' => $baganImage
         ]);
     }
 
-    // public function pimpinanFakultas()
-    // {
-    //     $staff = Staff::where('category', 'Pimpinan Fakultas')
-    //         ->where('is_active', true)
-    //         ->orderBy('sort_order')
-    //         ->get();
+    public function dosen(Request $request)
+    {
+        $query = Staff::where('type', 'Dosen')->where('is_active', true);
 
-    //     return Inertia::render('Public/Profil/PimpinanFakultas', [
-    //         'pimpinan' => $staff
-    //     ]);
-    // }
+        // Filter berdasarkan nama
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
 
-    // public function pimpinanJurusan()
-    // {
-    //     $staff = Staff::where('category', 'Pimpinan Jurusan')
-    //         ->where('is_active', true)
-    //         ->orderBy('sort_order')
-    //         ->get();
+        // Filter berdasarkan program studi (dicari dari jabatan atau keahlian)
+        if ($request->filled('prodi')) {
+            $prodi = $request->prodi;
+            $query->where(function ($q) use ($prodi) {
+                $q->where('structural_position', 'like', "%{$prodi}%")
+                    ->orWhere('functional_position', 'like', "%{$prodi}%")
+                    ->orWhereJsonContains('expertise', $prodi);
+            });
+        }
 
-    //     return Inertia::render('Public/Profil/PimpinanJurusan', [
-    //         'pimpinan' => $staff
-    //     ]);
-    // }
+        // Paginasi 12 data per halaman, pertahankan parameter pencarian di URL
+        $dosen = $query->orderBy('name', 'asc')->paginate(12)->withQueryString();
 
-    // public function pimpinanProdi()
-    // {
-    //     $staff = Staff::where('category', 'Pimpinan Prodi')
-    //         ->where('is_active', true)
-    //         ->orderBy('sort_order')
-    //         ->get();
+        // Mengambil daftar program studi dari database untuk opsi filter dropdown
+        $prodiList = StudyProgram::orderBy('name', 'asc')->pluck('name')->toArray();
 
-    //     return Inertia::render('Public/Profil/PimpinanProdi', [
-    //         'pimpinan' => $staff
-    //     ]);
-    // }
+        return Inertia::render('Public/Profil/Dosen', [
+            'dosen' => $dosen,
+            'filters' => $request->only(['search', 'prodi']),
+            'prodiList' => $prodiList
+        ]);
+    }
 
-    // public function pimpinanLaboratorium()
-    // {
-    //     $staff = Staff::where('category', 'Pimpinan Laboratorium')
-    //         ->where('is_active', true)
-    //         ->orderBy('sort_order')
-    //         ->get();
+    public function tendik(Request $request)
+    {
+        $query = Staff::where('type', 'Tendik')->where('is_active', true);
 
-    //     return Inertia::render('Public/Profil/PimpinanLaboratorium', [
-    //         'pimpinan' => $staff
-    //     ]);
-    // }
+        // Filter berdasarkan nama
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
 
-    // public function dosen()
-    // {
-    //     $dosen = Staff::where('category', 'Dosen')
-    //         ->where('is_active', true)
-    //         ->orderBy('sort_order')
-    //         ->orderBy('name')
-    //         ->get();
+        // Paginasi 12 data per halaman, pertahankan parameter pencarian di URL
+        $tendik = $query->orderBy('name', 'asc')->paginate(12)->withQueryString();
 
-    //     return Inertia::render('Public/Profil/Dosen', [
-    //         'dosenList' => $dosen
-    //     ]);
-    // }
-
-    // public function tendik()
-    // {
-    //     $staff = Staff::where('category', 'Tenaga Kependidikan')
-    //         ->where('is_active', true)
-    //         ->orderBy('sort_order')
-    //         ->get();
-
-    //     return Inertia::render('Public/Profil/TenagaKependidikan', [
-    //         'staffList' => $staff
-    //     ]);
-    // }
+        return Inertia::render('Public/Profil/TenagaKependidikan', [
+            'tendik' => $tendik,
+            'filters' => $request->only(['search'])
+        ]);
+    }
 
     public function kontak()
     {

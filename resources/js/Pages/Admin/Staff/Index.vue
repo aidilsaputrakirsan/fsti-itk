@@ -1,124 +1,242 @@
-<script setup>
-import { ref, watch } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+<script setup lang="ts">
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { Plus, Search, Edit, Trash2, CheckCircle, XCircle } from 'lucide-vue-next';
-import debounce from 'lodash/debounce';
+import { 
+    MagnifyingGlassIcon, 
+    PlusIcon, 
+    FunnelIcon,
+    PencilSquareIcon,
+    TrashIcon,
+    ExclamationTriangleIcon,
+    CheckCircleIcon,
+} from '@heroicons/vue/24/outline';
+import { Link, router, usePage } from '@inertiajs/vue3';
+import { ref, watch, computed } from 'vue';
+import { throttle } from 'lodash';
 
-const props = defineProps({
-    staff: Object,
-    filters: Object,
-});
+defineOptions({ layout: AdminLayout });
 
-const search = ref(props.filters.search || '');
-const typeFilter = ref(props.filters.type || 'Semua');
+const props = defineProps<{
+    staff: {
+        data: Array<{
+            id: number;
+            name: string;
+            nip: string | null;
+            type: string;
+            structural_position: string | null;
+            functional_position: string | null;
+            is_active: boolean;
+            display_image: string;
+        }>;
+        links: Array<{
+            url: string | null;
+            label: string;
+            active: boolean;
+        }>;
+        from: number;
+        to: number;
+        total: number;
+    };
+    filters: {
+        search: string | null;
+        type: string | null;
+    };
+}>();
 
-watch([search, typeFilter], debounce(([newSearch, newType]) => {
-    router.get(route('admin.staff.index'), { 
-        search: newSearch, 
-        type: newType 
-    }, { preserveState: true, replace: true });
+const search = ref(props.filters.search);
+const typeFilter = ref(props.filters.type || '');
+
+watch([search, typeFilter], throttle(function ([searchVal, typeVal]: [(string | null), (string | null)]) {
+    router.get(route('admin.staff.index'), {
+        search: searchVal,
+        type: typeVal === '' ? null : typeVal,
+    }, {
+        preserveState: true,
+        replace: true,
+    });
 }, 300));
 
-const deleteStaff = (id) => {
-    if (confirm('Apakah Anda yakin ingin menghapus data civitas ini?')) {
-        router.delete(route('admin.staff.destroy', id));
+const isModalOpen = ref(false);
+const staffToDelete = ref<typeof props.staff.data[0] | null>(null);
+
+const openDeleteModal = (staff: typeof props.staff.data[0]) => {
+    staffToDelete.value = staff;
+    isModalOpen.value = true;
+};
+
+const closeDeleteModal = () => {
+    isModalOpen.value = false;
+    staffToDelete.value = null;
+};
+
+const confirmDelete = () => {
+    if (staffToDelete.value) {
+        router.delete(route('admin.staff.destroy', staffToDelete.value.id), {
+            onSuccess: () => closeDeleteModal(),
+        });
     }
 };
+
+const page = usePage();
+const showNotification = ref(false);
+const notificationMessage = ref('');
+const flashSuccess = computed(() => (page.props as any).flash?.success);
+
+watch(flashSuccess, (message) => {
+    if (message) {
+        notificationMessage.value = message as string;
+        showNotification.value = true;
+        setTimeout(() => {
+            showNotification.value = false;
+        }, 3000);
+    }
+}, { immediate: true });
 </script>
 
 <template>
-    <AdminLayout>
-        <Head title="Kelola Civitas" />
-
-        <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <h2 class="text-2xl font-bold text-gray-800">Kelola Civitas Akademika</h2>
-            <Link :href="route('admin.staff.create')" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                <Plus class="w-5 h-5 mr-2" /> Tambah Civitas
+    <div>
+        <div class="flex items-start justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-black">Kelola Civitas</h1>
+                <p class="mt-1 text-black">Manajemen data dosen dan tenaga kependidikan Fakultas Sains dan Teknologi.</p>
+            </div>
+            <Link :href="route('admin.staff.create')" class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90 flex-shrink-0">
+                <PlusIcon class="h-5 w-5" />
+                Tambah Civitas
             </Link>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row gap-4">
-                <div class="relative flex-grow max-w-md">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Search class="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input v-model="search" type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="Cari nama atau NIP...">
-                </div>
-                <select v-model="typeFilter" class="border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
-                    <option value="Semua">Semua Tipe</option>
+        <div class="flex items-center justify-between gap-4 mb-6">
+            <div class="relative flex-grow">
+                <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                <input 
+                    v-model="search"
+                    type="text" 
+                    placeholder="Cari nama atau NIP..." 
+                    class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                />
+            </div>
+            
+            <div class="relative flex-shrink-0">
+                <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
+                <select v-model="typeFilter" class="w-full rounded-lg border border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
+                    <option value="">Semua Tipe</option>
                     <option value="Dosen">Dosen</option>
-                    <option value="Tendik">Tenaga Kependidikan</option>
+                    <option value="Tendik">Tendik</option>
                 </select>
             </div>
+        </div>
 
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+        <div class="bg-white shadow-sm p-6 rounded-lg">
+            <h3 class="text-lg font-semibold text-black mb-4">Daftar Civitas Akademika</h3>
+            
+            <div class="border rounded-lg overflow-x-auto">
+                <table class="w-full min-w-full">
+                    <thead class="bg-[#CBDCEB]">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profil</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe & Jabatan</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-black">Profil</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-black">Tipe & Jabatan</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-bold uppercase tracking-wider text-black">Status</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-black">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="person in staff.data" :key="person.id" class="hover:bg-gray-50">
+                    <tbody class="divide-y divide-gray-200">
+                        <tr v-if="props.staff.data.length > 0" v-for="person in props.staff.data" :key="person.id" class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-12 w-12 rounded-full border border-gray-200 overflow-hidden bg-gray-100">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-full border border-gray-200 overflow-hidden bg-gray-100">
                                         <img :src="person.display_image" alt="" class="h-full w-full object-cover">
                                     </div>
                                     <div class="ml-4">
                                         <div class="text-sm font-bold text-gray-900">{{ person.name }}</div>
-                                        <div class="text-sm text-gray-500">NIP: {{ person.nip || '-' }}</div>
+                                        <div class="text-xs text-gray-500 mt-1">NIP: {{ person.nip || '-' }}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mb-1" :class="person.type === 'Dosen' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'">
+                            <td class="whitespace-nowrap px-6 py-4">
+                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-medium mb-1" :class="person.type === 'Dosen' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'">
                                     {{ person.type }}
                                 </span>
-                                <div class="text-xs text-gray-700 mt-1 line-clamp-1">{{ person.structural_position || person.functional_position || 'Belum ada jabatan' }}</div>
+                                <div class="text-xs text-gray-700 mt-1 truncate max-w-xs">{{ person.structural_position || person.functional_position || 'Belum ada jabatan' }}</div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                <span v-if="person.is_active" class="inline-flex items-center text-green-600 bg-green-50 px-2 py-1 rounded-md text-xs font-semibold">
-                                    <CheckCircle class="w-4 h-4 mr-1" /> Aktif
+                            <td class="whitespace-nowrap px-6 py-4 text-center">
+                                <span v-if="person.is_active" class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
+                                    Aktif
                                 </span>
-                                <span v-else class="inline-flex items-center text-red-600 bg-red-50 px-2 py-1 rounded-md text-xs font-semibold">
-                                    <XCircle class="w-4 h-4 mr-1" /> Nonaktif
+                                <span v-else class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">
+                                    Nonaktif
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <div class="flex justify-end gap-2">
-                                    <Link :href="route('admin.staff.edit', person.id)" class="text-amber-600 hover:text-amber-900 bg-amber-50 p-2 rounded-lg transition-colors">
-                                        <Edit class="w-4 h-4" />
+                            <td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
+                                <div class="flex items-center gap-2">
+                                    <Link :href="route('admin.staff.edit', person.id)" class="flex items-center gap-1 text-[#4682A9] hover:opacity-80">
+                                        <PencilSquareIcon class="h-4 w-4" />
+                                        Edit
                                     </Link>
-                                    <button @click="deleteStaff(person.id)" class="text-red-600 hover:text-red-900 bg-red-50 p-2 rounded-lg transition-colors">
-                                        <Trash2 class="w-4 h-4" />
+                                    <span class="text-gray-300">|</span>
+                                    <button @click="openDeleteModal(person)" type="button" class="flex items-center gap-1 text-[#DC645E] hover:opacity-80">
+                                        <TrashIcon class="h-4 w-4" />
+                                        Hapus
                                     </button>
                                 </div>
                             </td>
                         </tr>
-                        <tr v-if="staff.data.length === 0">
-                            <td colspan="4" class="px-6 py-8 text-center text-gray-500">
-                                Tidak ada data civitas ditemukan.
-                            </td>
+                        <tr v-else>
+                            <td colspan="4" class="text-center py-4 text-gray-500">Tidak ada data civitas yang cocok dengan pencarian Anda.</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            
-            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between" v-if="staff.links && staff.links.length > 3">
-                <div class="flex flex-wrap gap-1">
-                    <Link v-for="(link, k) in staff.links" :key="k" :href="link.url || '#'" 
-                          class="px-3 py-1 text-sm border rounded-md" 
-                          :class="{'bg-blue-600 text-white border-blue-600': link.active, 'text-gray-500 border-gray-300 hover:bg-gray-50': !link.active, 'opacity-50 cursor-not-allowed': !link.url}"
-                          v-html="link.label">
-                    </Link>
+
+            <div class="flex items-center justify-between mt-4">
+                <p v-if="props.staff.total > 0" class="text-sm text-black">
+                    Menampilkan <span class="font-medium">{{ props.staff.from }}</span> sampai <span class="font-medium">{{ props.staff.to }}</span> dari <span class="font-medium">{{ props.staff.total }}</span> hasil
+                </p>
+                <p v-else></p>
+
+                <div class="flex items-center gap-1">
+                    <Link 
+                        v-for="(link, index) in props.staff.links" 
+                        :key="index"
+                        :href="link.url ?? '#'"
+                        v-html="link.label"
+                        :class="[
+                            'px-3 py-1 text-sm rounded border border-gray-300',
+                            link.active ? 'bg-[#4682A9] text-white' : 'bg-[#CBDCEB] text-gray-800 hover:bg-opacity-80',
+                            !link.url ? 'text-gray-400 cursor-not-allowed' : ''
+                        ]"
+                    />
                 </div>
             </div>
         </div>
-    </AdminLayout>
+    </div>
+
+    <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="w-full max-w-md rounded-lg bg-white p-8 shadow-2xl">
+            <div class="flex flex-col items-center text-center">
+                <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                    <ExclamationTriangleIcon class="h-10 w-10 text-red-500" />
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">Hapus Civitas</h2>
+                <p class="mt-2 text-gray-600">
+                    Apakah Anda yakin ingin menghapus data <br>
+                    <span class="font-semibold">"{{ staffToDelete?.name }}"</span>?
+                </p>
+            </div>
+            <div class="mt-8 flex justify-center gap-4">
+                <button @click="closeDeleteModal" class="rounded-lg bg-gray-200 px-6 py-2 font-semibold text-gray-800 hover:bg-gray-300">
+                    Batal
+                </button>
+                <button @click="confirmDelete" class="rounded-lg bg-red-600 px-6 py-2 font-semibold text-white hover:bg-red-700">
+                    Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div v-if="showNotification" class="fixed top-5 right-5 z-50 transition-transform duration-300 ease-in-out">
+        <div class="flex items-center gap-4 rounded-lg bg-green-600 p-4 text-white shadow-lg">
+            <CheckCircleIcon class="h-8 w-8" />
+            <p class="font-semibold">{{ notificationMessage }}</p>
+        </div>
+    </div>
 </template>
