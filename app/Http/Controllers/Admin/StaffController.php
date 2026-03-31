@@ -18,15 +18,11 @@ class StaffController extends Controller
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
-
         if ($request->filled('type') && $request->type !== 'Semua') {
             $query->where('type', $request->type);
         }
 
-        $staff = $query->orderBy('type', 'asc')
-            ->orderBy('name', 'asc')
-            ->paginate(10)
-            ->withQueryString();
+        $staff = $query->orderBy('type', 'asc')->orderBy('name', 'asc')->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/Staff/Index', [
             'staff' => $staff,
@@ -36,9 +32,7 @@ class StaffController extends Controller
 
     public function create()
     {
-        // Mengambil daftar prodi untuk dijadikan dropdown
         $studyPrograms = StudyProgram::orderBy('name', 'asc')->get();
-
         return Inertia::render('Admin/Staff/Create', [
             'studyPrograms' => $studyPrograms
         ]);
@@ -53,9 +47,8 @@ class StaffController extends Controller
             'structural_position' => 'nullable|string|max:255',
             'functional_position' => 'nullable|string|max:255',
             'image_url' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'is_active' => 'boolean',
-
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', 
+            'is_active' => 'required|boolean',
             'education_history' => 'nullable|array',
             'expertise' => 'nullable|array',
             'competency_certification' => 'nullable|array',
@@ -71,19 +64,15 @@ class StaffController extends Controller
             $validated['image_url'] = $path;
         }
 
-        $validated['is_active'] = $request->boolean('is_active', true);
+        $validated['is_active'] = filter_var($request->is_active, FILTER_VALIDATE_BOOLEAN);
 
         Staff::create($validated);
-
-        return redirect()->route('admin.staff.index')
-            ->with('success', 'Data Civitas (Staff) berhasil ditambahkan.');
+        return redirect()->route('admin.staff.index')->with('success', 'Data berhasil ditambahkan.');
     }
 
     public function edit(Staff $staff)
     {
-        // Mengambil daftar prodi untuk dijadikan dropdown
         $studyPrograms = StudyProgram::orderBy('name', 'asc')->get();
-
         return Inertia::render('Admin/Staff/Edit', [
             'staff' => $staff,
             'studyPrograms' => $studyPrograms
@@ -99,9 +88,8 @@ class StaffController extends Controller
             'structural_position' => 'nullable|string|max:255',
             'functional_position' => 'nullable|string|max:255',
             'image_url' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'is_active' => 'boolean',
-
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'is_active' => 'required|boolean',
             'education_history' => 'nullable|array',
             'expertise' => 'nullable|array',
             'competency_certification' => 'nullable|array',
@@ -112,24 +100,36 @@ class StaffController extends Controller
             'academic_profiles' => 'nullable|array',
         ]);
 
+        // LOGIKA PENYELAMAT GAMBAR
         if ($request->hasFile('image')) {
+            // Jika ada upload gambar baru, hapus gambar lokal lama
             if ($staff->image_url && !str_starts_with($staff->image_url, 'http')) {
                 Storage::disk('public')->delete($staff->image_url);
             }
-            $path = $request->file('image')->store('staff', 'public');
-            $validated['image_url'] = $path;
-        } elseif ($request->filled('image_url') && $request->image_url !== $staff->image_url) {
-            if ($staff->image_url && !str_starts_with($staff->image_url, 'http')) {
+            $validated['image_url'] = $request->file('image')->store('staff', 'public');
+
+        } elseif ($request->filled('image_url')) {
+            // Jika admin memasukkan link eksternal/Gdrive baru, hapus gambar lokal lama jika ada
+            if ($staff->image_url && !str_starts_with($staff->image_url, 'http') && $staff->image_url !== $request->image_url) {
                 Storage::disk('public')->delete($staff->image_url);
+            }
+            $validated['image_url'] = $request->image_url;
+
+        } else {
+            // Jika input kosong (karena Vue menyembunyikan link lokal)
+            if ($staff->image_url && str_starts_with($staff->image_url, 'http')) {
+                // Berarti sebelumnya link Gdrive lalu dihapus manual oleh admin
+                $validated['image_url'] = null;
+            } else {
+                // Berarti sebelumnya adalah file lokal, pertahankan! Jangan ditimpa null!
+                unset($validated['image_url']);
             }
         }
 
-        $validated['is_active'] = $request->boolean('is_active', true);
+        $validated['is_active'] = filter_var($request->is_active, FILTER_VALIDATE_BOOLEAN);
 
         $staff->update($validated);
-
-        return redirect()->route('admin.staff.index')
-            ->with('success', 'Data Civitas (Staff) berhasil diperbarui.');
+        return redirect()->route('admin.staff.index')->with('success', 'Data berhasil diperbarui.');
     }
 
     public function destroy(Staff $staff)
@@ -137,10 +137,7 @@ class StaffController extends Controller
         if ($staff->image_url && !str_starts_with($staff->image_url, 'http')) {
             Storage::disk('public')->delete($staff->image_url);
         }
-
         $staff->delete();
-
-        return redirect()->route('admin.staff.index')
-            ->with('success', 'Data Civitas (Staff) berhasil dihapus.');
+        return redirect()->route('admin.staff.index')->with('success', 'Data berhasil dihapus.');
     }
 }

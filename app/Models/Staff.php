@@ -16,6 +16,7 @@ class Staff extends Model
         'structural_position',
         'functional_position',
         'image_url',
+        'is_active', // WAJIB ADA AGAR STATUS NONAKTIF BISA DISIMPAN
         'education_history',
         'expertise',
         'competency_certification',
@@ -44,16 +45,32 @@ class Staff extends Model
     {
         $url = $this->image_url;
 
-        if (!$url) return '/images/default-avatar.png';
+        // 1. Jika URL foto kosong atau data seeder berisi teks "Belum tersedia"
+        if (empty($url) || trim($url) === 'Belum tersedia pada website') {
+            return null; // Memicu Placeholder Abu-abu "Foto Belum Tersedia" di Frontend
+        }
 
+        // 2. JIKA FOTO DARI GOOGLE DRIVE (Bypass Pemblokiran Google Terbaru)
         if (str_contains($url, 'drive.google.com')) {
             preg_match('/\/d\/([a-zA-Z0-9_-]+)/', $url, $matches);
             if (isset($matches[1])) {
-                $fileId = $matches[1];
-                return "https://lh3.googleusercontent.com/d/{$fileId}";
+                // Menggunakan lh3.googleusercontent agar terhindar dari error 403 Forbidden di tag <img>
+                return "https://lh3.googleusercontent.com/d/{$matches[1]}";
             }
         }
 
-        return $url;
+        // 3. JIKA URL ADALAH LINK INTERNET EKSTERNAL BIASA
+        if (str_starts_with($url, 'http')) {
+            return $url;
+        }
+
+        // 4. JIKA FOTO HASIL UPLOAD DARI ADMIN (Otomatis masuk ke folder staff/)
+        if (str_starts_with($url, 'staff/')) {
+            return asset('storage/' . $url);
+        }
+
+        // 5. JIKA FOTO DARI SEEDER BAWAAN (Contoh: '/images/dosen/dosen-1.png')
+        // Menggunakan ltrim agar slash tidak dobel (http://localhost//images/...)
+        return asset('/' . ltrim($url, '/'));
     }
 }
