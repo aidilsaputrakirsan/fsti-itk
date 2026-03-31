@@ -17,11 +17,11 @@ use App\Http\Controllers\Admin\StudyProgramController as AdminStudyProgramContro
 use App\Http\Controllers\Public\PublicPostController;
 use App\Http\Controllers\Public\PublicAchievementController;
 use App\Http\Controllers\Public\PublicProfileController;
+use App\Http\Controllers\Public\PublicStaffController;
 use App\Http\Controllers\Public\PublicPpidController;
 use App\Http\Controllers\Public\PublicZonaIntegritasController;
 use App\Http\Controllers\Public\PublicSurveiController;
 use App\Http\Controllers\Public\PublicProgramStudiController;
-use App\Http\Controllers\Public\PublicStaffController;
 
 use App\Models\Post;
 use App\Models\Achievement;
@@ -124,7 +124,7 @@ Route::get('/', function () {
         'latestPosts' => $latestPosts,
         'latestAchievements' => $latestAchievements,
         'tentang' => $tentang ? $tentang->content : null,
-        'statistik' => $statistik, // Lempar ke Home.vue
+        'statistik' => $statistik, 
     ]);
 })->name('home');
 
@@ -139,39 +139,6 @@ Route::get('/ppid/informasi/{slug}', [PublicPpidController::class, 'show'])->nam
 Route::get('/zona-integritas', [PublicZonaIntegritasController::class, 'index'])->name('zona-integritas.index');
 Route::get('/survei-kepuasan', [PublicSurveiController::class, 'index'])->name('survei.index');
 Route::post('/survei-kepuasan', [PublicSurveiController::class, 'store'])->name('survei.store');
-
-// --- Program Studi ---
-Route::get('/prodi/{slug}', [PublicProgramStudiController::class, 'show'])->name('public.prodi.show');
-
-// --- PROFIL & CIVITAS AKADEMIKA ---
-// Profil Statis (PublicProfileController)
-Route::get('/profil/tentang', [PublicProfileController::class, 'tentang'])->name('profil.tentang');
-Route::get('/profil/bagan-organisasi', [PublicProfileController::class, 'baganOrganisasi'])->name('bagan-organisasi');
-
-// Profil Dinamis / Civitas (PublicStaffController) -> JANGAN DIDUPLIKAT LAGI
-Route::get('/profil/pimpinan-fakultas', [PublicStaffController::class, 'pimpinanFakultas'])->name('profil.pimpinan-fakultas');
-Route::get('/profil/pimpinan-jurusan', [PublicStaffController::class, 'pimpinanJurusan'])->name('profil.pimpinan-jurusan');
-Route::get('/profil/pimpinan-prodi', [PublicStaffController::class, 'pimpinanProdi'])->name('profil.pimpinan-prodi');
-Route::get('/profil/pimpinan-laboratorium', [PublicStaffController::class, 'pimpinanLaboratorium'])->name('profil.pimpinan-laboratorium');
-Route::get('/profil/dosen', [PublicStaffController::class, 'dosen'])->name('profil.dosen');
-Route::get('/profil/tenaga-kependidikan', [PublicStaffController::class, 'tendik'])->name('profil.tenaga-kependidikan');
-
-// Halaman Placeholder/Statis Lainnya
-Route::get('/profil/kerjasama', function () {
-    return "Halaman Kerjasama Segera Hadir";
-})->name('profil.kerjasama');
-
-Route::get('/kontak', function () {
-    $contact = \App\Models\Contact::first();
-    return Inertia::render('Public/Profil/Kontak', [
-        'contact' => $contact
-    ]);
-})->name('kontak');
-
-Route::get('/alumni', function () {
-    return Inertia::render('Public/Alumni/Index');
-})->name('alumni.index');
-
 Route::get('/layanan-internal', function () {
     $services = \App\Models\InternalService::orderBy('sort_order', 'asc')->get()->map(function ($item) {
         return [
@@ -183,6 +150,30 @@ Route::get('/layanan-internal', function () {
     });
     return Inertia::render('Public/Layanan/Index', ['services' => $services]);
 })->name('layanan.index');
+
+// --- Program Studi ---
+Route::get('/prodi/{slug}', [PublicProgramStudiController::class, 'show'])->name('public.prodi.show');
+
+// --- PROFIL INSTITUSI (PublicProfileController) ---
+Route::get('/profil/tentang', [PublicProfileController::class, 'tentang'])->name('profil.tentang');
+Route::get('/profil/bagan-organisasi', [PublicProfileController::class, 'baganOrganisasi'])->name('bagan-organisasi');
+Route::get('/kontak', [PublicProfileController::class, 'kontak'])->name('kontak');
+Route::get('/profil/kerjasama', function () {
+    return "Halaman Kerjasama Segera Hadir";
+})->name('profil.kerjasama');
+
+// --- CIVITAS AKADEMIKA / SDM (PublicStaffController) ---
+Route::get('/profil/pimpinan-fakultas', [PublicStaffController::class, 'pimpinanFakultas'])->name('profil.pimpinan-fakultas');
+Route::get('/profil/pimpinan-jurusan', [PublicStaffController::class, 'pimpinanJurusan'])->name('profil.pimpinan-jurusan');
+Route::get('/profil/pimpinan-prodi', [PublicStaffController::class, 'pimpinanProdi'])->name('profil.pimpinan-prodi');
+Route::get('/profil/pimpinan-laboratorium', [PublicStaffController::class, 'pimpinanLaboratorium'])->name('profil.pimpinan-laboratorium');
+Route::get('/profil/dosen', [PublicStaffController::class, 'dosen'])->name('profil.dosen');
+Route::get('/profil/tenaga-kependidikan', [PublicStaffController::class, 'tendik'])->name('profil.tenaga-kependidikan');
+
+// --- ALUMNI ---
+Route::get('/alumni', function () {
+    return Inertia::render('Public/Alumni/Index');
+})->name('alumni.index');
 
 
 // ==============================================================================

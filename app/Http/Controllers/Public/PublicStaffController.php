@@ -10,37 +10,41 @@ use Inertia\Inertia;
 
 class PublicStaffController extends Controller
 {
+    // =========================================================
     // 1. MENU PIMPINAN FAKULTAS
+    // =========================================================
     public function pimpinanFakultas()
     {
         $pimpinan = Staff::where(function ($query) {
             $query->where('structural_position', 'like', '%Dekan%')
-                ->orWhere('functional_position', 'like', '%Dekan%')
-                ->orWhere('structural_position', 'like', '%Kepala Subbagian Umum%')
-                ->orWhere('functional_position', 'like', '%Kepala Subbagian Umum%');
+                  ->orWhere('functional_position', 'like', '%Dekan%')
+                  ->orWhere('structural_position', 'like', '%Kepala Subbagian Umum%')
+                  ->orWhere('functional_position', 'like', '%Kepala Subbagian Umum%');
         })
-            ->get()
-            ->sortBy(function ($staff) {
-                $jabatan = $staff->structural_position . ' ' . $staff->functional_position;
+        ->get()
+        ->sortBy(function ($staff) {
+            $jabatan = $staff->structural_position . ' ' . $staff->functional_position;
 
-                if (str_contains($jabatan, 'Wakil Dekan')) return 2; // Urutan 2: Wakil Dekan
-                if (str_contains($jabatan, 'Dekan')) return 1;       // Urutan 1: Dekan (Paling Atas)
-                if (str_contains($jabatan, 'Kepala Subbagian Umum')) return 3; // Urutan 3: Kasubbag
+            if (str_contains($jabatan, 'Wakil Dekan')) return 2; // Urutan 2: Wakil Dekan
+            if (str_contains($jabatan, 'Dekan')) return 1;       // Urutan 1: Dekan (Paling Atas)
+            if (str_contains($jabatan, 'Kepala Subbagian Umum')) return 3; // Urutan 3: Kasubbag
 
-                return 4;
-            })
-            ->values();
+            return 4;
+        })
+        ->values();
 
         return Inertia::render('Public/Profil/PimpinanFakultas', [
             'pimpinan' => $pimpinan
         ]);
     }
 
+    // =========================================================
     // 2. MENU PIMPINAN JURUSAN
+    // =========================================================
     public function pimpinanJurusan()
     {
         $pimpinan = Staff::where('structural_position', 'like', '%Ketua Jurusan%')
-            ->orderBy('name')
+            ->orderBy('name', 'asc')
             ->get();
 
         return Inertia::render('Public/Profil/PimpinanJurusan', [
@@ -48,20 +52,25 @@ class PublicStaffController extends Controller
         ]);
     }
 
+    // =========================================================
     // 3. MENU PIMPINAN PRODI
+    // =========================================================
     public function pimpinanProdi()
     {
         $pimpinan = Staff::where('structural_position', 'like', '%Koordinator Program Studi%')
-            ->orderBy('name')
+            ->orderBy('name', 'asc')
             ->get();
 
         $pimpinan = $pimpinan->map(function ($item) {
             $jurusan = 'Lainnya';
-            if (str_contains($item->structural_position, 'Matematika') || str_contains($item->structural_position, 'Fisika') || str_contains($item->structural_position, 'Aktuaria') || str_contains($item->structural_position, 'Statistika')) {
+            $jabatan = $item->structural_position;
+
+            if (str_contains($jabatan, 'Matematika') || str_contains($jabatan, 'Fisika') || str_contains($jabatan, 'Aktuaria') || str_contains($jabatan, 'Statistika')) {
                 $jurusan = 'Sains dan Analitika Data';
-            } elseif (str_contains($item->structural_position, 'Informatika') || str_contains($item->structural_position, 'Sistem Informasi') || str_contains($item->structural_position, 'Elektro') || str_contains($item->structural_position, 'Elektronika') || str_contains($item->structural_position, 'Bisnis Digital')) {
+            } elseif (str_contains($jabatan, 'Informatika') || str_contains($jabatan, 'Sistem Informasi') || str_contains($jabatan, 'Elektro') || str_contains($jabatan, 'Elektronika') || str_contains($jabatan, 'Bisnis Digital')) {
                 $jurusan = 'Teknik Elektro, Informatika, dan Bisnis';
             }
+            
             $item->jurusan = $jurusan;
             return $item;
         });
@@ -71,11 +80,13 @@ class PublicStaffController extends Controller
         ]);
     }
 
+    // =========================================================
     // 4. MENU PIMPINAN LABORATORIUM
+    // =========================================================
     public function pimpinanLaboratorium()
     {
         $pimpinan = Staff::where('structural_position', 'like', '%Kepala Laboratorium%')
-            ->orderBy('name')
+            ->orderBy('name', 'asc')
             ->get();
 
         return Inertia::render('Public/Profil/PimpinanLaboratorium', [
@@ -83,7 +94,9 @@ class PublicStaffController extends Controller
         ]);
     }
 
+    // =========================================================
     // 5. MENU DOSEN (Dengan Filter, Search, dan Paginasi)
+    // =========================================================
     public function dosen(Request $request)
     {
         $query = Staff::where('type', 'Dosen')->where('is_active', true);
@@ -116,7 +129,9 @@ class PublicStaffController extends Controller
         ]);
     }
 
+    // =========================================================
     // 6. MENU TENAGA KEPENDIDIKAN (Dengan Search dan Paginasi)
+    // =========================================================
     public function tendik(Request $request)
     {
         $query = Staff::where('type', 'Tendik')->where('is_active', true);
