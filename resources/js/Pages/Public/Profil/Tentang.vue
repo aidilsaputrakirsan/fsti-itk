@@ -2,7 +2,7 @@
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import { Head } from '@inertiajs/vue3';
-import { onMounted, computed, nextTick } from 'vue'; // Tambahkan computed & nextTick
+import { onMounted, computed, nextTick } from 'vue'; 
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
@@ -16,23 +16,31 @@ const props = defineProps({
     statistik: Object 
 });
 
-// FUNGSI BARU: Menggabungkan data Seeder dengan Hitungan Database
+// FUNGSI PINTAR: Menggabungkan data Seeder dengan Hitungan Database secara Real-Time
 const displayStats = computed(() => {
-    // Ambil data 8 kotak dari Seeder JSON Admin
     const cmsData = props.tentang?.statistik?.data || [];
 
-    // Lakukan mapping: Jika kotak bernama "Dosen" atau "Tendik", ganti angkanya dengan hitungan Database!
     return cmsData.map(stat => {
         const labelLower = stat.label.toLowerCase();
         
-        if (labelLower === 'dosen') {
+        // Pengecekan cerdas (includes) agar CMS bebas menggunakan sebutan apa saja asal ada keywordnya
+        if (labelLower.includes('dosen')) {
             return { ...stat, angka: props.statistik?.dosen ?? stat.angka };
         }
-        if (labelLower === 'tendik') {
+        if (labelLower.includes('tendik') || labelLower.includes('kependidikan')) {
             return { ...stat, angka: props.statistik?.tendik ?? stat.angka };
         }
+        if (labelLower.includes('s1')) {
+            return { ...stat, angka: props.statistik?.prodi_s1 ?? stat.angka };
+        }
+        if (labelLower.includes('s2') || labelLower.includes('magister')) {
+            return { ...stat, angka: props.statistik?.prodi_s2 ?? stat.angka };
+        }
+        if (labelLower.includes('prodi') || labelLower.includes('program studi')) {
+            return { ...stat, angka: props.statistik?.prodi_total ?? stat.angka };
+        }
         
-        // Sisanya (Mahasiswa, Jurusan, Alumni, Lab, dll) biarkan pakai angka dari Seeder Admin
+        // Sisanya (Mahasiswa, Alumni, Lab, dll) biarkan pakai angka manual dari Seeder Admin
         return stat; 
     });
 });
@@ -59,7 +67,6 @@ const countUpAnimation = (el, target, duration) => {
 onMounted(() => {
     AOS.init({ duration: 800, once: true });
     
-    // Gunakan nextTick agar Vue selesai menggambar array displayStats sebelum animasi GSAP berjalan
     nextTick(() => {
         setTimeout(() => {
             document.querySelectorAll('.stat-number').forEach(el => {

@@ -39,16 +39,20 @@ const props = defineProps<{
     filters: {
         search: string | null;
         type: string | null;
+        status: string | null; // Filter baru ditambahkan
     };
 }>();
 
 const search = ref(props.filters.search);
 const typeFilter = ref(props.filters.type || '');
+const statusFilter = ref(props.filters.status || ''); // Ref baru untuk status
 
-watch([search, typeFilter], throttle(function ([searchVal, typeVal]: [(string | null), (string | null)]) {
+// Watcher diperbarui untuk memantau 3 filter sekaligus
+watch([search, typeFilter, statusFilter], throttle(function ([searchVal, typeVal, statusVal]: [(string | null), (string | null), (string | null)]) {
     router.get(route('admin.staff.index'), {
         search: searchVal,
         type: typeVal === '' ? null : typeVal,
+        status: statusVal === '' ? null : statusVal,
     }, {
         preserveState: true,
         replace: true,
@@ -105,8 +109,8 @@ watch(flashSuccess, (message) => {
             </Link>
         </div>
 
-        <div class="flex items-center justify-between gap-4 mb-6">
-            <div class="relative flex-grow">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div class="relative w-full sm:flex-grow">
                 <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
                 <input 
                     v-model="search"
@@ -116,13 +120,24 @@ watch(flashSuccess, (message) => {
                 />
             </div>
             
-            <div class="relative flex-shrink-0">
-                <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
-                <select v-model="typeFilter" class="w-full rounded-lg border border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
-                    <option value="">Semua Tipe</option>
-                    <option value="Dosen">Dosen</option>
-                    <option value="Tendik">Tendik</option>
-                </select>
+            <div class="flex w-full sm:w-auto items-center gap-4 flex-shrink-0">
+                <div class="relative w-full sm:w-auto">
+                    <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
+                    <select v-model="typeFilter" class="w-full sm:w-auto rounded-lg border border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
+                        <option value="">Semua Tipe</option>
+                        <option value="Dosen">Dosen</option>
+                        <option value="Tendik">Tendik</option>
+                    </select>
+                </div>
+
+                <div class="relative w-full sm:w-auto">
+                    <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
+                    <select v-model="statusFilter" class="w-full sm:w-auto rounded-lg border border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
+                        <option value="">Semua Status</option>
+                        <option value="Aktif">Aktif</option>
+                        <option value="Nonaktif">Nonaktif</option>
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -144,7 +159,7 @@ watch(flashSuccess, (message) => {
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div class="flex-shrink-0 h-10 w-10 rounded-full border border-gray-200 overflow-hidden bg-gray-100">
-                                        <img :src="person.display_image" alt="" class="h-full w-full object-cover">
+                                        <img v-if="person.display_image" :src="person.display_image" alt="" class="h-full w-full object-cover">
                                     </div>
                                     <div class="ml-4">
                                         <div class="text-sm font-bold text-gray-900">{{ person.name }}</div>

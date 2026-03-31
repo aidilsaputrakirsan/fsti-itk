@@ -63,7 +63,7 @@ class PublicStaffController extends Controller
     }
 
     // ====================================================================
-    // DOSEN PUBLIK
+    // DOSEN PUBLIK (PERBAIKAN PENCARIAN NIP)
     // ====================================================================
     public function dosen(Request $request)
     {
@@ -73,12 +73,12 @@ class PublicStaffController extends Controller
             $searchTerm = $request->search;
             $query->where(function($q) use ($searchTerm) {
                 $q->where('name', 'like', "%{$searchTerm}%")
+                  ->orWhere('nip', 'like', "%{$searchTerm}%") // <--- NIP DITAMBAHKAN DI SINI
                   ->orWhereJsonContains('expertise', $searchTerm);
             });
         }
 
         if ($request->filled('prodi')) {
-            // HANYA MENCARI DI JABATAN AGAR PRODI TIDAK BOCOR
             $query->where('functional_position', 'like', "%{$request->prodi}%");
         }
 
@@ -96,9 +96,7 @@ class PublicStaffController extends Controller
 
         ksort($groupedDosen);
 
-        // Mencegah error 'Missing Prop' di Vue jika data kosong
         $groupedData = empty($groupedDosen) ? new \stdClass() : (object) $groupedDosen;
-
         $prodiList = StudyProgram::orderBy('name', 'asc')->pluck('name')->toArray();
 
         return Inertia::render('Public/Profil/Dosen', [
@@ -108,9 +106,6 @@ class PublicStaffController extends Controller
         ]);
     }
 
-    // ====================================================================
-    // TENDIK PUBLIK
-    // ====================================================================
     public function tendik(Request $request)
     {
         $query = Staff::where('type', 'Tendik')->where('is_active', true);
@@ -118,6 +113,7 @@ class PublicStaffController extends Controller
         if ($request->filled('search')) {
             $query->where(function($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('nip', 'like', '%' . $request->search . '%') // NIP DITAMBAHKAN UNTUK TENDIK JUGA
                   ->orWhere('functional_position', 'like', '%' . $request->search . '%')
                   ->orWhere('structural_position', 'like', '%' . $request->search . '%');
             });

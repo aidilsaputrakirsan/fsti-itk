@@ -17,10 +17,11 @@ const props = defineProps<{
   canLogin?: boolean;
   canRegister?: boolean;
   tentang?: any; 
-  statistik?: { dosen: number; tendik: number; prodi: number };
+  // Update interface untuk menerima data S1 dan S2 yang dipisah dari backend
+  statistik?: { dosen: number; tendik: number; prodi_s1: number; prodi_s2: number; prodi_total: number };
 }>();
 
-// 2. INTERFACE TYPESCRIPT
+// INTERFACE TYPESCRIPT
 interface StatItem {
     angka: string | number;
     label: string;
@@ -35,10 +36,11 @@ const displayStats = computed<StatItem[]>(() => {
 
     const rawData = data?.statistik?.data;
 
+    // Jika data CMS kosong, berikan fallback default
     if (!rawData || typeof rawData !== 'object' || Object.keys(rawData).length === 0) {
         return [
             { angka: '2260', label: 'Mahasiswa' },
-            { angka: props.statistik?.prodi || '8', label: 'Program Studi' },
+            { angka: props.statistik?.prodi_s1 || '8', label: 'Program Studi S1' },
             { angka: props.statistik?.dosen || '0', label: 'Dosen Tetap' },
             { angka: props.statistik?.tendik || '0', label: 'Tenaga Kependidikan' }
         ];
@@ -47,11 +49,14 @@ const displayStats = computed<StatItem[]>(() => {
     const dataArray = Array.isArray(rawData) ? rawData : Object.values(rawData);
     const slicedData = dataArray.slice(0, 4) as StatItem[];
 
+    // LOGIKA PINTAR: Timpa angka CMS dengan hitungan Database Real-time
     return slicedData.map(stat => {
         const label = stat.label.toLowerCase();
         if (label.includes('dosen')) return { ...stat, angka: props.statistik?.dosen ?? stat.angka };
-        if (label.includes('tendik') || label.includes('tenaga kependidikan')) return { ...stat, angka: props.statistik?.tendik ?? stat.angka };
-        if (label.includes('prodi') || label.includes('program studi')) return { ...stat, angka: props.statistik?.prodi ?? stat.angka };
+        if (label.includes('tendik') || label.includes('kependidikan')) return { ...stat, angka: props.statistik?.tendik ?? stat.angka };
+        if (label.includes('s1')) return { ...stat, angka: props.statistik?.prodi_s1 ?? stat.angka };
+        if (label.includes('s2') || label.includes('magister')) return { ...stat, angka: props.statistik?.prodi_s2 ?? stat.angka };
+        if (label.includes('prodi') || label.includes('program studi')) return { ...stat, angka: props.statistik?.prodi_total ?? stat.angka };
         return stat;
     });
 });
@@ -64,7 +69,6 @@ const deskripsiFakultas = computed<string>(() => {
     return data?.statistik?.deskripsi || 'FSTI terus berkembang sebagai pusat pendidikan dan inovasi di bidang sains dan teknologi, dengan berbagai jurusan, program studi, dan civitas akademika yang mendukung perjalanan belajar, kreativitas, dan prestasi mahasiswa kami.';
 });
 
-// 4. FUNGSI ICON (Tetap seperti asli Anda)
 const getStatIcon = (idx: number | string) => {
     const num = Number(idx);
     const safeIndex = isNaN(num) ? 0 : num;
@@ -85,8 +89,6 @@ const countUpAnimation = (el: HTMLElement, target: number, duration: number) => 
         }
     }, 10);
 };
-
-// --- SEMUA LOGIKA REFS & GSAP DI BAWAH INI TETAP SAMA PERSIS SEPERTI ASLINYA ---
 
 const heroSectionRef = ref(null);
 const heroTitle1Ref = ref(null);

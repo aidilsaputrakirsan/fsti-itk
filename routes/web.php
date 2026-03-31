@@ -4,7 +4,6 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Import Controllers Admin
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\AchievementsController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -13,7 +12,6 @@ use App\Http\Controllers\Admin\PostCategoryController;
 use App\Http\Controllers\Admin\TentangFakultasController;
 use App\Http\Controllers\Admin\StudyProgramController as AdminStudyProgramController;
 
-// Import Controllers Public
 use App\Http\Controllers\Public\PublicPostController;
 use App\Http\Controllers\Public\PublicAchievementController;
 use App\Http\Controllers\Public\PublicProfileController;
@@ -35,7 +33,6 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('/posts', AdminPostController::class);
     Route::resource('/achievements', AchievementsController::class);
 
-    // Rute untuk Zona Integritas Admin
     Route::prefix('zona-integritas')->name('zi.')->group(function () {
         Route::get('/profil', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'profileEdit'])->name('profile.edit');
         Route::post('/profil', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'profileUpdate'])->name('profile.update');
@@ -48,14 +45,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
         Route::delete('/dokumen/{id}', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'documentDestroy'])->name('document.destroy');
     });
 
-    // Modul PPID Admin
     Route::resource('/ppid', \App\Http\Controllers\Admin\PpidController::class);
     Route::resource('/kategori-ppid', \App\Http\Controllers\Admin\KategoriPpidController::class);
-
     Route::resource('/alumni', \App\Http\Controllers\Admin\AlumniController::class);
     Route::resource('/users', \App\Http\Controllers\Admin\UserController::class);
 
-    // Modul Survei Kepuasan
     Route::resource('/satisfaction-surveys', \App\Http\Controllers\Admin\SatisfactionSurveyController::class);
     Route::get('/survey-categories', [SurveyCategoryController::class, 'index'])->name('survey-categories.index');
     Route::post('/survey-categories', [SurveyCategoryController::class, 'store'])->name('survey-categories.store');
@@ -66,15 +60,12 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('/staff', \App\Http\Controllers\Admin\StaffController::class);
     Route::resource('post-categories', PostCategoryController::class)->except(['show']);
 
-    // Modul Kontak Admin
     Route::get('/contacts', [\App\Http\Controllers\Admin\ContactController::class, 'edit'])->name('contacts.edit');
     Route::put('/contacts', [\App\Http\Controllers\Admin\ContactController::class, 'update'])->name('contacts.update');
 
-    // Modul Tentang Fakultas Admin
     Route::get('/tentang-fakultas', [TentangFakultasController::class, 'edit'])->name('tentang.edit');
     Route::put('/tentang-fakultas', [TentangFakultasController::class, 'update'])->name('tentang.update');
 
-    // Modul Program Studi Admin
     Route::resource('/study-programs', AdminStudyProgramController::class)->except(['show']);
 });
 
@@ -83,7 +74,6 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 // 2. KELOMPOK ROUTE PUBLIK
 // ==============================================================================
 
-// --- Beranda ---
 Route::get('/', function () {
     $latestPosts = Post::select('posts.*', 'post_categories.name as category')
         ->leftJoin('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
@@ -112,10 +102,30 @@ Route::get('/', function () {
 
     $tentang = \App\Models\TentangFakultas::first();
 
+    // =========================================================
+    // PERBAIKAN STATISTIK: Membedakan hitungan S1 dan S2
+    // =========================================================
+    $allProdi = \App\Models\StudyProgram::all();
+    $s1 = 0; $s2 = 0;
+    
+    foreach($allProdi as $p) {
+        $level = $p->level ?? '';
+        $name = strtolower($p->name);
+        
+        // Deteksi cerdas: Cek kolom level atau cek kata "s2" / "magister" di nama prodi
+        if (strtoupper($level) === 'S1' || (!str_contains($name, 's2') && !str_contains($name, 'magister') && strtoupper($level) !== 'S2')) {
+            $s1++;
+        } else {
+            $s2++;
+        }
+    }
+
     $statistik = [
         'dosen' => \App\Models\Staff::where('type', 'Dosen')->where('is_active', true)->count(),
         'tendik' => \App\Models\Staff::where('type', 'Tendik')->where('is_active', true)->count(),
-        'prodi' => \App\Models\StudyProgram::count(),
+        'prodi_s1' => $s1,
+        'prodi_s2' => $s2,
+        'prodi_total' => $allProdi->count(),
     ];
 
     return Inertia::render('Home', [
@@ -128,12 +138,10 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-// --- Berita & Prestasi ---
 Route::get('/berita', [PublicPostController::class, 'index'])->name('berita.index');
 Route::get('/berita/{post:slug}', [PublicPostController::class, 'show'])->name('berita.show');
 Route::get('/prestasi', [PublicAchievementController::class, 'index'])->name('prestasi.index');
 
-// --- Layanan & Informasi ---
 Route::get('/ppid', [PublicPpidController::class, 'index'])->name('public.ppid.index');
 Route::get('/ppid/informasi/{slug}', [PublicPpidController::class, 'show'])->name('public.ppid.show');
 Route::get('/zona-integritas', [PublicZonaIntegritasController::class, 'index'])->name('zona-integritas.index');
@@ -151,10 +159,8 @@ Route::get('/layanan-internal', function () {
     return Inertia::render('Public/Layanan/Index', ['services' => $services]);
 })->name('layanan.index');
 
-// --- Program Studi ---
 Route::get('/prodi/{slug}', [PublicProgramStudiController::class, 'show'])->name('public.prodi.show');
 
-// --- PROFIL INSTITUSI (PublicProfileController) ---
 Route::get('/profil/tentang', [PublicProfileController::class, 'tentang'])->name('profil.tentang');
 Route::get('/profil/bagan-organisasi', [PublicProfileController::class, 'baganOrganisasi'])->name('bagan-organisasi');
 Route::get('/kontak', [PublicProfileController::class, 'kontak'])->name('kontak');
@@ -162,7 +168,6 @@ Route::get('/profil/kerjasama', function () {
     return "Halaman Kerjasama Segera Hadir";
 })->name('profil.kerjasama');
 
-// --- CIVITAS AKADEMIKA / SDM (PublicStaffController) ---
 Route::get('/profil/pimpinan-fakultas', [PublicStaffController::class, 'pimpinanFakultas'])->name('profil.pimpinan-fakultas');
 Route::get('/profil/pimpinan-jurusan', [PublicStaffController::class, 'pimpinanJurusan'])->name('profil.pimpinan-jurusan');
 Route::get('/profil/pimpinan-prodi', [PublicStaffController::class, 'pimpinanProdi'])->name('profil.pimpinan-prodi');
@@ -170,7 +175,6 @@ Route::get('/profil/pimpinan-laboratorium', [PublicStaffController::class, 'pimp
 Route::get('/profil/dosen', [PublicStaffController::class, 'dosen'])->name('profil.dosen');
 Route::get('/profil/tenaga-kependidikan', [PublicStaffController::class, 'tendik'])->name('profil.tenaga-kependidikan');
 
-// --- ALUMNI ---
 Route::get('/alumni', function () {
     return Inertia::render('Public/Alumni/Index');
 })->name('alumni.index');

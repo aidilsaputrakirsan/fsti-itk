@@ -15,18 +15,29 @@ class StaffController extends Controller
     {
         $query = Staff::query();
 
+        // Diperbarui: Bisa mencari berdasarkan Nama atau NIP
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('nip', 'like', '%' . $request->search . '%');
+            });
         }
+        
         if ($request->filled('type') && $request->type !== 'Semua') {
             $query->where('type', $request->type);
+        }
+
+        // BARU: Filter berdasarkan Status Aktif/Nonaktif
+        if ($request->filled('status') && $request->status !== 'Semua') {
+            $isActive = $request->status === 'Aktif' ? true : false;
+            $query->where('is_active', $isActive);
         }
 
         $staff = $query->orderBy('type', 'asc')->orderBy('name', 'asc')->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/Staff/Index', [
             'staff' => $staff,
-            'filters' => $request->only(['search', 'type']),
+            'filters' => $request->only(['search', 'type', 'status']), // Status ditambahkan
         ]);
     }
 
@@ -100,28 +111,22 @@ class StaffController extends Controller
             'academic_profiles' => 'nullable|array',
         ]);
 
-        // LOGIKA PENYELAMAT GAMBAR
         if ($request->hasFile('image')) {
-            // Jika ada upload gambar baru, hapus gambar lokal lama
             if ($staff->image_url && !str_starts_with($staff->image_url, 'http')) {
                 Storage::disk('public')->delete($staff->image_url);
             }
             $validated['image_url'] = $request->file('image')->store('staff', 'public');
 
         } elseif ($request->filled('image_url')) {
-            // Jika admin memasukkan link eksternal/Gdrive baru, hapus gambar lokal lama jika ada
             if ($staff->image_url && !str_starts_with($staff->image_url, 'http') && $staff->image_url !== $request->image_url) {
                 Storage::disk('public')->delete($staff->image_url);
             }
             $validated['image_url'] = $request->image_url;
 
         } else {
-            // Jika input kosong (karena Vue menyembunyikan link lokal)
             if ($staff->image_url && str_starts_with($staff->image_url, 'http')) {
-                // Berarti sebelumnya link Gdrive lalu dihapus manual oleh admin
                 $validated['image_url'] = null;
             } else {
-                // Berarti sebelumnya adalah file lokal, pertahankan! Jangan ditimpa null!
                 unset($validated['image_url']);
             }
         }
