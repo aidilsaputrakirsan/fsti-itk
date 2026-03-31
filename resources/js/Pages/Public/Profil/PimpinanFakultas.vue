@@ -2,6 +2,7 @@
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import { Head } from '@inertiajs/vue3';
+import { ImageOff } from 'lucide-vue-next';
 
 const props = defineProps({
     pimpinan: Array
@@ -26,7 +27,11 @@ const props = defineProps({
                         :class="{ 'md:flex-row-reverse': index % 2 !== 0 }"
                     >
                         <div class="w-full md:w-2/5 flex-shrink-0 bg-primary/5 relative">
-                            <img :src="p.image_path || '/images/default-avatar.png'" :alt="p.name" class="w-full h-80 md:h-full object-cover object-top mix-blend-multiply">
+                             <img v-if="p.display_image" :src="p.display_image" :alt="p.name" class="w-full h-80 md:h-full object-cover object-top mix-blend-multiply">
+                             <div v-else class="w-full h-80 md:h-full flex flex-col items-center justify-center bg-gray-100 text-gray-400">
+                                <ImageOff class="w-12 h-12 mb-3 opacity-40" />
+                                <span class="text-sm font-semibold text-gray-500">Foto Belum Tersedia</span>
+                            </div>
                         </div>
 
                         <div class="w-full md:w-3/5 flex flex-col justify-center p-8 md:p-12 lg:p-16 text-center md:text-left">
@@ -38,7 +43,7 @@ const props = defineProps({
                             </h3>
                             <div class="w-16 h-1.5 bg-primary rounded-full mb-6 opacity-80 mx-auto md:mx-0"></div>
                             <p class="text-lg md:text-xl text-primary font-bold leading-relaxed tracking-wide">
-                                {{ p.position }}
+                                {{ p.structural_position }}
                             </p>
                         </div>
                     </div>
