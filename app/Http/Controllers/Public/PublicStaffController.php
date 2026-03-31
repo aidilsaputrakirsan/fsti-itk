@@ -74,7 +74,7 @@ class PublicStaffController extends Controller
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('name', 'like', "%{$searchTerm}%")
-                    ->orWhere('nip', 'like', "%{$searchTerm}%") // <--- NIP DITAMBAHKAN DI SINI
+                    ->orWhere('nip', 'like', "%{$searchTerm}%")
                     ->orWhereJsonContains('expertise', $searchTerm);
             });
         }
@@ -114,7 +114,7 @@ class PublicStaffController extends Controller
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhere('nip', 'like', '%' . $request->search . '%') // NIP DITAMBAHKAN UNTUK TENDIK JUGA
+                    ->orWhere('nip', 'like', '%' . $request->search . '%')
                     ->orWhere('functional_position', 'like', '%' . $request->search . '%')
                     ->orWhere('structural_position', 'like', '%' . $request->search . '%');
             });
