@@ -49,7 +49,9 @@ class TentangFakultasSeeder extends Seeder
                             ['huruf' => 'S', 'teks' => 'Sistem Layanan Prima'],
                             ['huruf' => 'I', 'teks' => 'Internasionalisasi'],
                         ]
-                    ]
+                    ],
+
+                    'bagan_organisasi' => 'images/bagan-organisasi.webp'
                 ]
             ]
         );

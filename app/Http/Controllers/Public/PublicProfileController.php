@@ -16,9 +16,6 @@ class PublicProfileController extends Controller
     {
         $tentang = TentangFakultas::first();
 
-        // =========================================================
-        // PERBAIKAN STATISTIK: Dihitung Realtime dari Database
-        // =========================================================
         $allProdi = StudyProgram::all();
         $s1 = 0; $s2 = 0;
         
@@ -43,13 +40,35 @@ class PublicProfileController extends Controller
 
         return Inertia::render('Public/Profil/Tentang', [
             'tentang' => $tentang ? $tentang->content : null,
-            'statistik' => $statistik // Ini dikirim agar Vue bisa memanggilnya
+            'statistik' => $statistik 
         ]);
     }
 
     public function baganOrganisasi()
     {
-        return Inertia::render('Public/Profil/BaganOrganisasi');
+        $tentang = TentangFakultas::first();
+        
+        $baganImage = null;
+
+        // CEK APAKAH GAMBAR BAGAN ADA DI DATABASE
+        if ($tentang && isset($tentang->content['bagan_organisasi']) && $tentang->content['bagan_organisasi']) {
+             $path = $tentang->content['bagan_organisasi'];
+             
+             // Jika berawalan 'images/', berarti itu gambar bawaan seeder
+             if (str_starts_with($path, 'images/')) {
+                 $baganImage = asset($path);
+             } else {
+                 // Jika tidak, berarti gambar baru yang di-upload admin
+                 $baganImage = asset('storage/' . $path);
+             }
+        } else {
+            // Gambar fallback darurat
+            $baganImage = asset('images/bagan-organisasi.webp');
+        }
+
+        return Inertia::render('Public/Profil/BaganOrganisasi', [
+            'baganImage' => $baganImage
+        ]);
     }
 
     public function kontak()

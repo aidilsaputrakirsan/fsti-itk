@@ -4,13 +4,12 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { 
     ChartBarIcon, DocumentTextIcon, FlagIcon, 
-    PaperAirplaneIcon, CheckCircleIcon
+    PaperAirplaneIcon, CheckCircleIcon, PhotoIcon, PaperClipIcon, XMarkIcon
 } from '@heroicons/vue/24/outline';
 
 defineOptions({ layout: AdminLayout });
 const props = defineProps({ tentang: Object });
 
-// Sistem Notifikasi Toast
 const page = usePage();
 const showNotification = ref(false);
 const notificationMessage = ref('');
@@ -29,24 +28,57 @@ const tabs = [
     { id: 'statistik', name: 'Statistik Data', icon: ChartBarIcon, desc: 'Ubah angka mahasiswa, dosen, dll.' },
     { id: 'tugas', name: 'Tugas & Fungsi', icon: DocumentTextIcon, desc: 'Edit uraian tugas pokok dan fungsi.' },
     { id: 'visi', name: 'Visi & Misi', icon: FlagIcon, desc: 'Ubah redaksi visi dan 8 misi utama.' },
+    { id: 'bagan', name: 'Bagan Organisasi', icon: PhotoIcon, desc: 'Ubah gambar bagan organisasi.' },
 ];
 
-// Form super bersih, tanpa variabel hukum
+const fileInput = ref(null);
+
 const form = useForm({
+    _method: 'PUT', 
     content: props.tentang?.content || {
         statistik: { deskripsi: '', data: [] },
         tugas_fungsi: { tugas: '', fungsi: [] },
-        visi_misi: { visi: '', misi_tagline: '', misi: [] }
-    }
+        visi_misi: { visi: '', misi_tagline: '', misi: [] },
+        bagan_organisasi: 'images/bagan-organisasi.webp'
+    },
+    bagan_image: null
 });
 
+const handleImageChange = (event) => {
+    const target = event.target;
+    if (target.files && target.files[0]) {
+        form.bagan_image = target.files[0];
+    } else {
+        form.bagan_image = null;
+    }
+};
+
+const clearImage = () => {
+    form.bagan_image = null;
+    if (fileInput.value) {
+        fileInput.value.value = '';
+    }
+};
+
+const getImageUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('images/')) return `/${path}`; 
+    return `/storage/${path}`; 
+};
+
 const submit = () => {
-    form.put(route('admin.tentang.update'), {
+    form.transform((data) => ({
+        ...data,
+        _method: 'put',
+        active_tab: activeTab.value // Mengirim status tab yang sedang dibuka ke Backend
+    })).post(route('admin.tentang.update'), {
         preserveScroll: true, 
         preserveState: false,
         onSuccess: () => {
             notificationMessage.value = page.props.flash?.success || 'Berhasil disimpan!';
             showNotification.value = true;
+            form.bagan_image = null; 
+            if (fileInput.value) fileInput.value.value = '';
             setTimeout(() => showNotification.value = false, 3000);
         }
     });
@@ -57,7 +89,7 @@ const submit = () => {
   <div>
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-gray-900">Kelola Tentang Fakultas</h1>
-      <p class="mt-2 text-gray-600">Perbarui redaksi data statistik, fungsi, dan visi misi yang tampil pada halaman publik.</p>
+      <p class="mt-2 text-gray-600">Perbarui redaksi data statistik, fungsi, visi misi, dan bagan yang tampil pada halaman publik.</p>
     </div>
 
     <div class="flex flex-col lg:flex-row gap-8 items-start">
@@ -126,7 +158,7 @@ const submit = () => {
                     </div>
 
                     <div v-show="activeTab === 'visi'">
-                        <h2 class="text-2xl font-bold mb-6">Visi & Misi (PRESTASI)</h2>
+                        <h2 class="text-2xl font-bold mb-6">Visi & Misi</h2>
                         <div class="space-y-6">
                             <div>
                                 <label class="block text-sm font-bold mb-2">Teks Visi Fakultas</label>
@@ -149,11 +181,38 @@ const submit = () => {
                         </div>
                     </div>
 
+                    <div v-show="activeTab === 'bagan'">
+                        <h2 class="text-2xl font-bold mb-6">Bagan Organisasi</h2>
+                        <div class="space-y-6">
+                             <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                                
+                                <div class="mb-5 flex flex-col md:flex-row gap-4 items-start" v-if="form.content.bagan_organisasi">
+                                    <div>
+                                        <p class="text-sm text-gray-600 font-medium mb-2">Bagan Saat Ini:</p>
+                                        <img :src="getImageUrl(form.content.bagan_organisasi)" alt="Bagan Organisasi" class="h-auto w-full max-w-sm object-contain rounded-lg border border-gray-300 shadow-sm bg-white p-2">
+                                    </div>
+                                </div>
+
+                                <label class="block text-sm text-gray-700 mb-1 font-medium">Upload Gambar Bagan Baru</label>
+                                <div class="relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2 mb-4 hover:bg-gray-50 transition">
+                                    <PaperClipIcon class="h-5 w-5 text-gray-400" />
+                                    <span class="ml-3 text-sm text-gray-500 truncate flex-1">
+                                        {{ form.bagan_image ? form.bagan_image.name : 'Pilih file gambar baru...' }}
+                                    </span>
+                                    <button v-if="form.bagan_image" type="button" @click.prevent="clearImage" class="ml-2 p-1 text-red-500 hover:bg-red-50 rounded-md relative z-10"><XMarkIcon class="w-5 h-5"/></button>
+                                    <input ref="fileInput" type="file" accept="image/*" @change="handleImageChange" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" :class="{'hidden': form.bagan_image}" />
+                                </div>
+                                <p v-if="form.errors.bagan_image" class="mt-2 text-sm text-red-600">{{ form.errors.bagan_image }}</p>
+                                <p class="text-xs text-gray-500 italic mt-2">Pastikan gambar memiliki background putih atau transparan untuk hasil terbaik. Format yang didukung: JPG, PNG, WEBP. Maksimal 2MB.</p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <div class="bg-gray-50 px-8 py-5 border-t border-gray-100 flex items-center justify-end shrink-0">
                     <button type="submit" :disabled="form.processing" class="flex items-center gap-2 px-8 py-3 rounded-xl bg-primary text-white font-bold hover:bg-opacity-90 transition shadow-sm w-full sm:w-auto">
-                        <PaperAirplaneIcon class="w-5 h-5" /> <span>Simpan Perubahan</span>
+                        <PaperAirplaneIcon class="w-5 h-5" /> <span>{{ form.processing ? 'Menyimpan...' : 'Simpan Perubahan' }}</span>
                     </button>
                 </div>
             </form>

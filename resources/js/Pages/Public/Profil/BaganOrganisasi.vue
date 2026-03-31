@@ -2,8 +2,10 @@
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import { Head } from '@inertiajs/vue3';
+
 const props = defineProps({
-    baganImage: String
+    // Menangkap link gambar dari Controller
+    baganImage: String 
 });
 </script>
 
@@ -34,11 +36,13 @@ const props = defineProps({
                         <div class="flex-shrink-0 w-3 bg-primary self-stretch"></div>
                         <div class="flex-grow p-6 md:p-10">
                             <div class="flex justify-center bg-primary/5 rounded-2xl p-4 border border-primary/10">
+                                
                                 <img
-                                    :src="baganImage || '/images/bagan-organisasi.webp'"
+                                    :src="baganImage"
                                     alt="Bagan Organisasi FSTI ITK"
                                     class="w-full h-auto object-contain drop-shadow-sm mix-blend-multiply"
                                 />
+                                
                             </div>
                         </div>
                     </div>
