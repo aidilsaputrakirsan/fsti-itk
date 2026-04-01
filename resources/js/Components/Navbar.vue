@@ -94,7 +94,7 @@ const navigationMenu = computed<NavLink[]>(() => [
         sublinks: [
             { name: trans('Prestasi Mahasiswa'), href: route('prestasi.index') },
             { name: 'Portal Layanan Mahasiswa', href: route('layanan.index') }, 
-            { name: 'Kegiatan Mahasiswa', href: route('layanan.index') }, 
+            { name: 'Kegiatan Mahasiswa', href: route('kegiatan.index') }, 
             { name: 'Informasi Beasiswa', href: route('layanan.index') }, 
             { name: 'Penerimaan Mahasiswa Baru (PMB)', href: route('layanan.index') }, 
         ],

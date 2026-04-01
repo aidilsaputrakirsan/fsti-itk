@@ -44,7 +44,8 @@ const navigation = [
         icon: UserGroupIcon,
         children: [
             { name: 'Kelola Daftar Prestasi', href: '/admin/achievements' },
-            { name: 'Kelola Portal Layanan Mahasiswa', href: '/admin/internal-services' }
+            { name: 'Kelola Portal Layanan Mahasiswa', href: '/admin/internal-services' },
+            { name: 'Kelola Kegiatan Mahasiswa', href: '/admin/kegiatan-mahasiswa' },
         ]
     },
 

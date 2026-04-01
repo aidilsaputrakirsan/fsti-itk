@@ -20,6 +20,7 @@ use App\Http\Controllers\Public\PublicPpidController;
 use App\Http\Controllers\Public\PublicZonaIntegritasController;
 use App\Http\Controllers\Public\PublicSurveiController;
 use App\Http\Controllers\Public\PublicProgramStudiController;
+use App\Http\Controllers\Public\PublicKegiatanMahasiswaController;
 
 use App\Models\Post;
 use App\Models\Achievement;
@@ -32,6 +33,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     Route::resource('/posts', AdminPostController::class);
     Route::resource('/achievements', AchievementsController::class);
+
+    Route::resource('kegiatan-mahasiswa', \App\Http\Controllers\Admin\KegiatanMahasiswaController::class);
+
 
     Route::prefix('zona-integritas')->name('zi.')->group(function () {
         Route::get('/profil', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'profileEdit'])->name('profile.edit');
@@ -102,9 +106,6 @@ Route::get('/', function () {
 
     $tentang = \App\Models\TentangFakultas::first();
 
-    // =========================================================
-    // PERBAIKAN STATISTIK: Membedakan hitungan S1 dan S2
-    // =========================================================
     $allProdi = \App\Models\StudyProgram::all();
     $s1 = 0;
     $s2 = 0;
@@ -174,6 +175,8 @@ Route::get('/profil/pimpinan-prodi', [PublicStaffController::class, 'pimpinanPro
 Route::get('/profil/pimpinan-laboratorium', [PublicStaffController::class, 'pimpinanLaboratorium'])->name('profil.pimpinan-laboratorium');
 Route::get('/profil/dosen', [PublicStaffController::class, 'dosen'])->name('profil.dosen');
 Route::get('/profil/tenaga-kependidikan', [PublicStaffController::class, 'tendik'])->name('profil.tenaga-kependidikan');
+
+Route::get('/kegiatan-mahasiswa', [PublicKegiatanMahasiswaController::class, 'index'])->name('kegiatan.index');
 
 Route::get('/alumni', function () {
     return Inertia::render('Public/Alumni/Index');
