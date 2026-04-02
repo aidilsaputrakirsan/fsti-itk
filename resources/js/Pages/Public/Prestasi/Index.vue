@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { router, Link, Head } from '@inertiajs/vue3';
 
 // Layouts & Components
@@ -125,15 +125,62 @@ const applyFilters = () => {
         replace: true,
         onFinish: () => { AOS.refresh(); } 
     });
-    };
+};
 
-    const resetFilters = () => {
+const resetFilters = () => {
     search.value = '';
     selectedYear.value = '';
     selectedLevel.value = '';
     selectedCategory.value = '';
     applyFilters();
+};
 
+// --- LOGIKA SMART PAGINATION ---
+const currentPage = computed(() => {
+    const activeLink = props.achievements.links.find(link => link.active);
+    return activeLink ? parseInt(activeLink.label) : 1;
+});
+
+const totalPages = computed(() => {
+    return props.achievements.links.length > 2 ? props.achievements.links.length - 2 : 1;
+});
+
+const visiblePages = computed(() => {
+    const total = totalPages.value;
+    const current = currentPage.value;
+
+    if (total <= 7) {
+        return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    if (current <= 4) {
+        return [1, 2, 3, 4, 5, '...', total];
+    }
+
+    if (current >= total - 3) {
+        return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+    }
+
+    return [1, '...', current - 1, current, current + 1, '...', total];
+});
+
+const changePage = (page: number | string) => {
+    if (typeof page === 'number' && page >= 1 && page <= totalPages.value) {
+        router.get(route('prestasi.index'), {
+            search: search.value,
+            year: selectedYear.value,
+            level: selectedLevel.value,
+            category: selectedCategory.value,
+            page: page 
+        }, {
+            preserveState: true,
+            replace: true,
+            onFinish: () => { 
+                AOS.refresh(); 
+                window.scrollTo({ top: 450, behavior: 'smooth' }); 
+            } 
+        });
+    }
 };
 </script>
 
@@ -147,7 +194,7 @@ const applyFilters = () => {
             :background-image="bannerImage"
         />
 
-        <div class="bg-gray-50 font-public-sans pb-24">
+        <div class="bg-white font-public-sans pb-24">
             
             <section class="relative z-20 -mt-10 md:-mt-16 px-4 md:px-8 max-w-[95%] xl:max-w-[85rem] mx-auto" data-aos="fade-up">
                 <div class="bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-xl border border-gray-100 p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-0 md:divide-x-2 divide-gray-100">
@@ -228,7 +275,7 @@ const applyFilters = () => {
                         </div>
 
                         <div class="flex items-center gap-3">
-      </div>
+                        </div>
 
                         <div class="hidden sm:block w-px h-8 bg-gray-200 mt-1"></div>
 
@@ -257,6 +304,7 @@ const applyFilters = () => {
                         Reset Filter
                     </button>
                 </div>
+
                 <div v-if="achievements.data.length > 0">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
                         <div
@@ -270,26 +318,44 @@ const applyFilters = () => {
                         </div>
                     </div>
 
-                    <div class="mt-16 flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-gray-100" data-aos="fade-in">
+                    <div v-if="totalPages > 1" class="mt-16 flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-gray-100" data-aos="fade-in">
                         <p class="text-sm font-medium text-gray-500 text-center md:text-left">
                             Menampilkan <span class="text-primary font-bold">{{ achievements.from }}</span> - <span class="text-primary font-bold">{{ achievements.to }}</span> dari <span class="text-primary font-bold">{{ achievements.total }}</span> Prestasi
                         </p>
                         
-                        <div v-if="achievements.links.length > 3" class="flex flex-wrap justify-center items-center gap-2">
-                            <template v-for="(link, index) in achievements.links" :key="index">
-                                <Link
-                                    v-if="link.url"
-                                    :href="link.url"
-                                    v-html="link.label"
-                                    class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
-                                    :class="{'bg-primary text-white shadow-md': link.active, 'text-gray-600 hover:bg-gray-100 hover:text-primary': !link.active}"
-                                />
+                        <div class="flex flex-wrap justify-center items-center gap-2">
+                            <button 
+                                @click="changePage(currentPage - 1)"
+                                :disabled="currentPage === 1"
+                                class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
+                                :class="currentPage === 1 ? 'text-gray-300 bg-gray-50/50 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
+                                v-html="'&laquo; Previous'"
+                            ></button>
+
+                            <template v-for="(page, index) in visiblePages" :key="index">
                                 <span 
-                                    v-else 
-                                    v-html="link.label" 
+                                    v-if="page === '...'"
                                     class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full text-gray-300 bg-gray-50/50 cursor-not-allowed"
-                                />
+                                >
+                                    ...
+                                </span>
+                                <button 
+                                    v-else
+                                    @click="changePage(page)"
+                                    class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
+                                    :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
+                                >
+                                    {{ page }}
+                                </button>
                             </template>
+
+                            <button 
+                                @click="changePage(currentPage + 1)"
+                                :disabled="currentPage === totalPages"
+                                class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
+                                :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50/50 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
+                                v-html="'Next &raquo;'"
+                            ></button>
                         </div>
                     </div>
 
@@ -305,24 +371,26 @@ const applyFilters = () => {
             </section>
             
             <section class="max-w-6xl mx-auto px-4 pb-12" data-aos="fade-up">
-                <div class="bg-primary rounded-[3rem] p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden shadow-2xl">
-                    <div class="absolute -top-24 -right-24 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
-                    <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
+                <div class="bg-gradient-to-br from-primary via-[#243db3] to-primary-hover rounded-[3rem] p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden shadow-2xl border border-primary-hover/50">
+                    
+                    <div class="absolute -top-[20%] -right-[10%] w-[60%] h-[140%] bg-blue-300/20 rounded-[100%] blur-[100px] pointer-events-none transform -rotate-12"></div>
+                    <div class="absolute -bottom-[30%] -left-[10%] w-[60%] h-[120%] bg-white/10 rounded-[100%] blur-[120px] pointer-events-none transform rotate-12"></div>
+                    <div class="absolute top-[20%] left-[40%] w-[30%] h-[50%] bg-blue-200/15 rounded-full blur-[80px] pointer-events-none"></div>
                     
                     <div class="relative z-10 md:w-2/3 text-center md:text-left">
-                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-white text-xs font-bold mb-4 uppercase tracking-widest border border-white/20">
-                            Ikut Berkontribusi
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-white text-xs font-bold mb-4 uppercase tracking-widest border border-white/20 shadow-sm">
+                            <Trophy class="w-4 h-4" /> Ikut Berkontribusi
                         </div>
-                        <h2 class="text-3xl md:text-5xl font-bold font-optimus text-white mb-4 leading-tight">Jangan Biarkan Prestasimu Terlewat!</h2>
-                        <p class="text-white/80 text-lg leading-relaxed">
+                        <h2 class="text-3xl md:text-5xl font-bold font-optimus text-white mb-4 leading-tight drop-shadow-sm">Jangan Biarkan Prestasimu Terlewat!</h2>
+                        <p class="text-blue-50 text-lg leading-relaxed opacity-90 max-w-xl">
                             Apakah kamu atau timmu baru saja menjuarai sebuah kompetisi? Laporkan pencapaianmu agar dapat dipublikasikan dan menginspirasi mahasiswa FSTI lainnya.
                         </p>
                     </div>
                     
                     <div class="relative z-10 md:w-1/3 flex justify-center md:justify-end">
-                        <a :href="googleFormUrl" target="_blank" class="flex flex-col items-center justify-center w-48 h-48 bg-white text-primary rounded-full font-bold hover:scale-105 transition-transform duration-300 shadow-[0_0_40px_rgba(255,255,255,0.2)] group">
-                            <Send class="w-8 h-8 mb-2 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
-                            <span class="text-center px-4 leading-tight uppercase tracking-wider">Laporkan<br>Sekarang</span>
+                        <a :href="googleFormUrl" target="_blank" class="flex flex-col items-center justify-center w-48 h-48 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-bold hover:-rotate-3 hover:scale-105 hover:bg-white hover:text-primary transition-all duration-500 shadow-[0_0_40px_rgba(0,0,0,0.1)] group">
+                            <Send class="w-8 h-8 mb-2 transform group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform duration-300" />
+                            <span class="text-center px-4 leading-tight uppercase tracking-wider text-sm">Laporkan<br>Sekarang</span>
                         </a>
                     </div>
                 </div>

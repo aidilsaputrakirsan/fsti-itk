@@ -16,11 +16,11 @@ class PublicKegiatanMahasiswaController extends Controller
 
         $kegiatanRaw = KegiatanMahasiswa::orderBy('start_date', 'desc')->get();
 
-        $groupedKegiatan = $kegiatanRaw->groupBy(function($item) {
-            return Carbon::parse($item->start_date)->translatedFormat('F Y'); 
+        $groupedKegiatan = $kegiatanRaw->groupBy(function ($item) {
+            return Carbon::parse($item->start_date)->translatedFormat('F Y');
         });
 
-        return Inertia::render('Public/Kegiatan/Kegiatan', [
+        return Inertia::render('Public/Kegiatan/Index', [
             'groupedKegiatan' => $groupedKegiatan
         ]);
     }
