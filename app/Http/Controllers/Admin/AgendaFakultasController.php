@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\AgendaFakultas;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
+class AgendaFakultasController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = AgendaFakultas::query();
+
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('title', 'like', '%' . $request->search . '%')
+                  ->orWhere('organizer', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        if ($request->filled('year')) {
+            $query->whereYear('start_date', $request->year);
+        }
+
+        $years = AgendaFakultas::selectRaw('YEAR(start_date) as year')
+            ->distinct()->orderBy('year', 'desc')->pluck('year');
+
+        $agendas = $query->orderBy('start_date', 'desc')->paginate(10)->withQueryString();
+
+        return Inertia::render('Admin/Agenda/Index', [
+            'agendas' => $agendas,
+            'filters' => $request->only(['search', 'year']),
+            'availableYears' => $years
+        ]);
+    }
+
+    public function create() { return Inertia::render('Admin/Agenda/Create'); }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'organizer' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+        AgendaFakultas::create($validated);
+        return redirect()->route('admin.agenda-fakultas.index')->with('success', 'Agenda berhasil ditambahkan.');
+    }
+
+    public function edit(AgendaFakultas $agenda_fakulta)
+    {
+        return Inertia::render('Admin/Agenda/Edit', ['agenda' => $agenda_fakulta]);
+    }
+
+    public function update(Request $request, AgendaFakultas $agenda_fakulta)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'organizer' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+        $agenda_fakulta->update($validated);
+        return redirect()->route('admin.agenda-fakultas.index')->with('success', 'Agenda berhasil diperbarui.');
+    }
+
+    public function destroy(AgendaFakultas $agenda_fakulta)
+    {
+        $agenda_fakulta->delete();
+        return redirect()->route('admin.agenda-fakultas.index')->with('success', 'Agenda berhasil dihapus.');
+    }
+}

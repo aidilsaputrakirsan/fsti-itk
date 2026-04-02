@@ -11,12 +11,11 @@ const trans = (key: string): string => {
     return translations?.[key] || key;
 };
 
-// --- 1. DEKLARASI INTERFACE TYPESCRIPT ---
 interface StudyProgramGlobal {
     name: string;
     degree: string;
     slug: string;
-    department: string; // <-- Tambahkan ini
+    department: string;
 }
 
 interface NavLink {
@@ -31,18 +30,15 @@ interface NavLink {
     }[];
 }
 
-// --- 2. LOGIKA AUTO-GROUPING JURUSAN SANGAT CERDAS ---
 const globalProdi = computed<StudyProgramGlobal[]>(() => {
     return ((page.props as any).globalProdi as StudyProgramGlobal[]) || [];
 });
 
-// Mengambil daftar nama jurusan yang unik (tidak duplikat)
 const uniqueDepartments = computed(() => {
     const deps = globalProdi.value.map(p => p.department);
-    return [...new Set(deps)].filter(Boolean); // Menghapus duplikat dan nilai kosong
+    return [...new Set(deps)].filter(Boolean);
 });
 
-// --- 3. DATA MENU NAVIGASI ---
 const navigationMenu = computed<NavLink[]>(() => [
     { name: trans('Beranda'), href: route('home') },
     {
@@ -77,13 +73,12 @@ const navigationMenu = computed<NavLink[]>(() => [
         name: trans('Program Studi'),
         href: '#',
         megaMenu: true,
-        // NAVBAR SEKARANG OTOMATIS MEMBUAT KOLOM BERDASARKAN JURUSAN!
         columns: uniqueDepartments.value.map(dep => ({
             title: `Jurusan ${dep}`,
             links: globalProdi.value
                 .filter(p => p.department === dep)
                 .map(p => ({
-                    name: `Program Studi ${p.degree} ${p.name}`, // Output: "Program Studi S1 Matematika"
+                    name: `Program Studi ${p.degree} ${p.name}`,
                     href: route('public.prodi.show', p.slug)
                 }))
         }))
@@ -111,7 +106,7 @@ const navigationMenu = computed<NavLink[]>(() => [
         name: trans('Informasi'),
         href: '#',
         sublinks: [
-            { name: trans('Agenda'), href: route('berita.index') },
+            { name: trans('Agenda'), href: route('agenda.index') }, // <-- TELAH DIPERBAIKI
             { name: trans('Berita'), href: route('berita.index') },
             { name: 'Pengumuman', href: route('berita.index') },
             { name: 'Prosedur Publikasi', href: route('berita.index') },
@@ -136,7 +131,6 @@ const navigationMenu = computed<NavLink[]>(() => [
     },    
 ]);
 
-// --- State untuk interaktivitas ---
 const activeDropdown = ref<string | null>(null);
 const isScrolled = ref(false);
 const isSearchOpen = ref(false);

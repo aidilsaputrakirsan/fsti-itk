@@ -202,12 +202,6 @@ const formatDateLengkap = (dateStr) => {
                         >
                             <div class="h-28 bg-gradient-to-r from-primary to-primary-hover rounded-t-[2rem] relative overflow-hidden">
                                 <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
-                                
-                                <div v-if="keg.is_past" class="absolute top-4 right-4 z-10">
-                                    <span class="px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest bg-white/20 text-white backdrop-blur-sm border border-white/30 shadow-sm">
-                                        Selesai
-                                    </span>
-                                </div>
 
                                 <div class="absolute -bottom-6 left-6 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-gray-200 z-10 group-hover:scale-105 group-hover:border-primary/40 transition-all duration-300 flex flex-col items-center justify-center w-[76px] h-[76px] pb-3.5">
                                     <span class="text-[10px] font-bold uppercase text-gray-500 leading-none mb-1 mt-1">{{ formatMonth(keg.start_date) }}</span>

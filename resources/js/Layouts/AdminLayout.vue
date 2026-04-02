@@ -11,7 +11,7 @@ import {
     ArchiveBoxIcon,
     ShieldCheckIcon,
     UserGroupIcon, 
-    BookOpenIcon, // <-- Tambahan Ikon Buku untuk Program Studi
+    BookOpenIcon
 } from '@heroicons/vue/24/outline';
 import { ref, onMounted, computed } from 'vue';
 
@@ -49,11 +49,13 @@ const navigation = [
         ]
     },
 
+    // --- Menu Informasi (Gabungan Agenda & Berita) ---
     { 
-        name: 'Berita', 
+        name: 'Informasi', 
         href: null,
         icon: NewspaperIcon, 
         children: [
+            { name: 'Kelola Agenda', href: '/admin/agenda-fakultas' },
             { name: 'Kelola Berita', href: '/admin/posts' },
             { name: 'Kelola Kategori Berita', href: '/admin/post-categories' },
         ] 
@@ -78,6 +80,7 @@ const navigation = [
             { name: 'Kelola Survei Kepuasan', href: '/admin/satisfaction-surveys' },
         ]
     },
+    
     {
         name: 'Alumni', 
         href: null,

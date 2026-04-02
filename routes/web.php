@@ -36,7 +36,6 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     Route::resource('kegiatan-mahasiswa', \App\Http\Controllers\Admin\KegiatanMahasiswaController::class);
 
-
     Route::prefix('zona-integritas')->name('zi.')->group(function () {
         Route::get('/profil', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'profileEdit'])->name('profile.edit');
         Route::post('/profil', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'profileUpdate'])->name('profile.update');
@@ -71,6 +70,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::put('/tentang-fakultas', [TentangFakultasController::class, 'update'])->name('tentang.update');
 
     Route::resource('/study-programs', AdminStudyProgramController::class)->except(['show']);
+
+    Route::resource('/agenda-fakultas', \App\Http\Controllers\Admin\AgendaFakultasController::class);
 });
 
 
@@ -177,6 +178,9 @@ Route::get('/profil/dosen', [PublicStaffController::class, 'dosen'])->name('prof
 Route::get('/profil/tenaga-kependidikan', [PublicStaffController::class, 'tendik'])->name('profil.tenaga-kependidikan');
 
 Route::get('/kegiatan-mahasiswa', [PublicKegiatanMahasiswaController::class, 'index'])->name('kegiatan.index');
+
+// Route Agenda Publik
+Route::get('/agenda-fakultas', [\App\Http\Controllers\Public\PublicAgendaFakultasController::class, 'index'])->name('agenda.index');
 
 Route::get('/alumni', function () {
     return Inertia::render('Public/Alumni/Index');
