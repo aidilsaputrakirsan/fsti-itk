@@ -51,6 +51,7 @@ class DatabaseSeeder extends Seeder
             StudyProgramSeeder::class,
             StaffSeeder::class,
             KegiatanMahasiswaSeeder::class,
+            AgendaFakultasSeeder::class,
             BeasiswaSeeder::class,
         ]);
     }

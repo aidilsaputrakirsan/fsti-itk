@@ -16,4 +16,5 @@ class PublicBeasiswaController extends Controller
             'beasiswas' => $beasiswas
         ]);
     }
+
 }

@@ -13,7 +13,6 @@ return new class extends Migration
             $table->string('title');
             $table->string('provider')->nullable();
             $table->text('description');
-            $table->string('status')->default('Tersedia');
             $table->string('link_url')->nullable();
             $table->timestamps();
         });

@@ -46,6 +46,7 @@ const navigation = [
             { name: 'Kelola Daftar Prestasi', href: '/admin/achievements' },
             { name: 'Kelola Portal Layanan Mahasiswa', href: '/admin/internal-services' },
             { name: 'Kelola Kegiatan Mahasiswa', href: '/admin/kegiatan-mahasiswa' },
+            { name: 'Kelola Informasi Beasiswa', href: '/admin/beasiswa' },
         ]
     },
 

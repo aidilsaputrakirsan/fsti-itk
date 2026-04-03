@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import { Head } from '@inertiajs/vue3';
@@ -12,7 +12,7 @@ import {
     Search, 
     X, 
     AlertCircle, 
-    ChevronRight 
+    ExternalLink
 } from 'lucide-vue-next';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -35,6 +35,56 @@ const filteredBeasiswas = computed(() => {
         (b.provider && b.provider.toLowerCase().includes(query))
     );
 });
+
+// --- LOGIKA PAGINATION ---
+const itemsPerPage = 6; 
+const currentPage = ref(1);
+
+// Kembali ke halaman 1 setiap kali pengguna melakukan pencarian
+watch(searchQuery, () => {
+    currentPage.value = 1;
+});
+
+const totalBeasiswas = computed(() => filteredBeasiswas.value.length);
+const totalPages = computed(() => Math.ceil(totalBeasiswas.value / itemsPerPage));
+const showingFrom = computed(() => totalBeasiswas.value === 0 ? 0 : (currentPage.value - 1) * itemsPerPage + 1);
+const showingTo = computed(() => Math.min(currentPage.value * itemsPerPage, totalBeasiswas.value));
+
+// Smart Pagination (Membatasi jumlah angka yang tampil agar tetap ramping)
+const visiblePages = computed(() => {
+    const total = totalPages.value;
+    const current = currentPage.value;
+
+    if (total <= 7) {
+        return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    if (current <= 4) {
+        return [1, 2, 3, 4, 5, '...', total];
+    }
+
+    if (current >= total - 3) {
+        return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+    }
+
+    return [1, '...', current - 1, current, current + 1, '...', total];
+});
+
+// Memotong data yang akan ditampilkan sesuai halaman saat ini
+const paginatedBeasiswas = computed(() => {
+    const start = (currentPage.value - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return filteredBeasiswas.value.slice(start, end);
+});
+
+// Fungsi untuk mengganti halaman dan sedikit melakukan scroll
+const changePage = (page) => {
+    if (page >= 1 && page <= totalPages.value) {
+        currentPage.value = page;
+        window.scrollTo({ top: 400, behavior: 'smooth' }); 
+    }
+};
+// --- END LOGIKA PAGINATION ---
 
 onMounted(() => {
     AOS.init({ duration: 800, once: true });
@@ -79,13 +129,13 @@ const getIconColorClasses = (index) => {
 
                     <div class="relative z-10 text-white w-full max-w-2xl">
                         <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-[11px] font-bold mb-5 shadow-sm uppercase tracking-[0.15em] text-blue-50">
-                            <GraduationCap class="w-3.5 h-3.5" /> Bantuan Pendidikan
+                            <GraduationCap class="w-3.5 h-3.5" /> Daftar Beasiswa
                         </div>
                         <h2 class="text-3xl md:text-5xl font-optimus font-bold mb-4 leading-tight drop-shadow-sm">
-                            Raih Peluang Masa<br/>Depan Gemilang
+                            Lihat Peluang<br/>Beasiswa FSTI
                         </h2>
                         <p class="text-blue-100 md:text-lg leading-relaxed font-light opacity-90">
-                            FSTI ITK berkomitmen mendukung potensi mahasiswa. Temukan berbagai program beasiswa dari pemerintah, institusi, dan mitra industri kami.
+                         Lihat berbagai pilihan beasiswa dan temukan yang sesuai untukmu.
                         </p>
                     </div>
 
@@ -109,42 +159,96 @@ const getIconColorClasses = (index) => {
                     </div>
                 </div>
 
-                <div v-if="filteredBeasiswas.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div 
-                        v-for="(beasiswa, index) in filteredBeasiswas" 
-                        :key="beasiswa.id"
-                        class="group bg-white rounded-[2rem] border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_15px_40px_rgba(47,77,211,0.08)] hover:-translate-y-1 hover:border-primary/20 transition-all duration-300 flex flex-col overflow-hidden relative"
-                        data-aos="fade-up"
-                        :data-aos-delay="(index % 3) * 50"
-                    >
-                        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary to-primary-hover opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div v-if="filteredBeasiswas.length > 0">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div 
+                            v-for="(beasiswa, index) in paginatedBeasiswas" 
+                            :key="beasiswa.id"
+                            class="group bg-white rounded-[2rem] border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_15px_40px_rgba(47,77,211,0.08)] hover:-translate-y-1 hover:border-primary/20 transition-all duration-300 flex flex-col overflow-hidden relative"
+                            data-aos="fade-up"
+                            :data-aos-delay="(index % 3) * 50"
+                        >
+                            <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary to-primary-hover opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                        <div class="p-8 flex-grow flex flex-col">
-                            <div class="flex items-start justify-between mb-6">
-                                <div :class="[getIconColorClasses(index), 'w-14 h-14 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-sm']">
-                                    <component :is="getIcon(index)" class="w-7 h-7" />
+                            <div class="p-8 flex-grow flex flex-col">
+                                <div class="mb-6">
+                                    <div :class="[getIconColorClasses(index), 'w-14 h-14 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-sm']">
+                                        <component :is="getIcon(index)" class="w-7 h-7" />
+                                    </div>
                                 </div>
-                                <span class="px-3 py-1 bg-green-50 text-green-600 border border-green-100 font-bold text-[10px] uppercase tracking-widest rounded-full">
-                                    {{ beasiswa.status || 'Tersedia' }}
-                                </span>
+
+                                <h3 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors leading-snug">
+                                    {{ beasiswa.title }}
+                                </h3>
+                                
+                                <p class="text-xs font-semibold tracking-wider text-slate-400 uppercase mb-4 flex items-center gap-1.5">
+                                    <Landmark class="w-3.5 h-3.5" /> {{ beasiswa.provider || 'Mitra FSTI ITK' }}
+                                </p>
+
+                                <p class="text-slate-500 text-sm leading-relaxed flex-grow mb-6 whitespace-pre-line text-justify">
+                                    {{ beasiswa.description }}
+                                </p>
+
+                                <a 
+                                    v-if="beasiswa.link_url" 
+                                    :href="beasiswa.link_url" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    class="mt-auto flex items-center justify-between w-full py-3.5 px-5 bg-slate-50 hover:bg-primary group-hover:bg-primary rounded-xl text-slate-600 hover:text-white group-hover:text-white text-sm font-bold transition-all duration-300"
+                                >
+                                    Informasi Selengkapnya
+                                    <ExternalLink class="w-4 h-4 transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
+                                </a>
+                                
+                                <button 
+                                    v-else 
+                                    disabled 
+                                    class="mt-auto flex items-center justify-between w-full py-3.5 px-5 bg-slate-50 rounded-xl text-slate-400 text-sm font-bold cursor-not-allowed border border-slate-100"
+                                >
+                                    Tautan Belum Tersedia
+                                </button>
                             </div>
+                        </div>
+                    </div>
 
-                            <h3 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors leading-snug line-clamp-2">
-                                {{ beasiswa.title }}
-                            </h3>
-                            
-                            <p class="text-xs font-semibold tracking-wider text-slate-400 uppercase mb-4 flex items-center gap-1.5">
-                                <Landmark class="w-3.5 h-3.5" /> {{ beasiswa.provider || 'Mitra FSTI ITK' }}
-                            </p>
+                    <div v-if="totalPages > 1" class="mt-16 flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-gray-100" data-aos="fade-in">
+                        <p class="text-sm font-medium text-gray-500 text-center md:text-left">
+                            Menampilkan <span class="text-primary font-bold">{{ showingFrom }}</span> - <span class="text-primary font-bold">{{ showingTo }}</span> dari <span class="text-primary font-bold">{{ totalBeasiswas }}</span> Beasiswa
+                        </p>
+                        
+                        <div class="flex flex-wrap justify-center items-center gap-2">
+                            <button 
+                                @click="changePage(currentPage - 1)"
+                                :disabled="currentPage === 1"
+                                class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
+                                :class="currentPage === 1 ? 'text-gray-300 bg-gray-50/50 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
+                                v-html="'&laquo; Sebelumnya'"
+                            ></button>
 
-                            <p class="text-slate-500 text-sm leading-relaxed flex-grow line-clamp-4 mb-6">
-                                {{ beasiswa.description }}
-                            </p>
+                            <template v-for="(page, index) in visiblePages" :key="index">
+                                <span 
+                                    v-if="page === '...'"
+                                    class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full text-gray-300 bg-gray-50/50 cursor-not-allowed"
+                                >
+                                    ...
+                                </span>
+                                <button 
+                                    v-else
+                                    @click="changePage(page)"
+                                    class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
+                                    :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
+                                >
+                                    {{ page }}
+                                </button>
+                            </template>
 
-                            <button class="mt-auto flex items-center justify-between w-full py-3.5 px-5 bg-slate-50 hover:bg-primary group-hover:bg-primary rounded-xl text-slate-600 hover:text-white group-hover:text-white text-sm font-bold transition-all duration-300">
-                                Info Selengkapnya 
-                                <ChevronRight class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-                            </button>
+                            <button 
+                                @click="changePage(currentPage + 1)"
+                                :disabled="currentPage === totalPages"
+                                class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
+                                :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50/50 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
+                                v-html="'Selanjutnya &raquo;'"
+                            ></button>
                         </div>
                     </div>
                 </div>

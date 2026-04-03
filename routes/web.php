@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\SurveyCategoryController;
 use App\Http\Controllers\Admin\PostCategoryController;
 use App\Http\Controllers\Admin\TentangFakultasController;
 use App\Http\Controllers\Admin\StudyProgramController as AdminStudyProgramController;
+use App\Http\Controllers\Admin\BeasiswaController as AdminBeasiswaController;
 
 use App\Http\Controllers\Public\PublicPostController;
 use App\Http\Controllers\Public\PublicAchievementController;
@@ -36,6 +37,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('/achievements', AchievementsController::class);
 
     Route::resource('kegiatan-mahasiswa', \App\Http\Controllers\Admin\KegiatanMahasiswaController::class);
+
+    Route::resource('beasiswa', AdminBeasiswaController::class);
 
     Route::prefix('zona-integritas')->name('zi.')->group(function () {
         Route::get('/profil', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'profileEdit'])->name('profile.edit');
