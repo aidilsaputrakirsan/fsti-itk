@@ -91,7 +91,7 @@ const navigationMenu = computed<NavLink[]>(() => [
             { name: 'Portal Layanan Mahasiswa', href: route('layanan.index') }, 
             { name: 'Kegiatan Mahasiswa', href: route('kegiatan.index') }, 
             { name: 'Informasi Beasiswa', href: route('beasiswa.index') }, 
-            { name: 'Penerimaan Mahasiswa Baru (PMB)', href: route('layanan.index') }, 
+            { name: 'Penerimaan Mahasiswa Baru (PMB)', href: route('pmb.index') }, 
         ],
     },
     {

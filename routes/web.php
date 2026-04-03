@@ -188,6 +188,10 @@ Route::get('/agenda-fakultas', [\App\Http\Controllers\Public\PublicAgendaFakulta
 
 Route::get('/beasiswa', [PublicBeasiswaController::class, 'index'])->name('beasiswa.index');
 
+Route::get('/informasi-pmb', function () {
+    return Inertia::render('Public/PMB/Index');
+})->name('pmb.index');
+
 Route::get('/alumni', function () {
     return Inertia::render('Public/Alumni/Index');
 })->name('alumni.index');
