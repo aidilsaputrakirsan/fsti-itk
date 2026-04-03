@@ -82,14 +82,6 @@ const navigation = [
         ]
     },
     
-    {
-        name: 'Alumni', 
-        href: null,
-        icon: InformationCircleIcon,
-        children: [
-            { name: 'Alumni & Tracer', href: '/admin/alumni' },
-        ]
-    },
     { name: 'Kelola Akun Admin', href: '/admin/users', icon: UsersIcon, children: null },
 ];
 

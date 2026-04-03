@@ -54,7 +54,6 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     Route::resource('/ppid', \App\Http\Controllers\Admin\PpidController::class);
     Route::resource('/kategori-ppid', \App\Http\Controllers\Admin\KategoriPpidController::class);
-    Route::resource('/alumni', \App\Http\Controllers\Admin\AlumniController::class);
     Route::resource('/users', \App\Http\Controllers\Admin\UserController::class);
 
     Route::resource('/satisfaction-surveys', \App\Http\Controllers\Admin\SatisfactionSurveyController::class);
@@ -192,9 +191,9 @@ Route::get('/informasi-pmb', function () {
     return Inertia::render('Public/PMB/Index');
 })->name('pmb.index');
 
-Route::get('/alumni', function () {
-    return Inertia::render('Public/Alumni/Index');
-})->name('alumni.index');
+Route::get('/tracer-study', function () {
+    return Inertia::render('Public/Alumni/TracerStudy');
+})->name('tracer-study.index');
 
 
 // ==============================================================================

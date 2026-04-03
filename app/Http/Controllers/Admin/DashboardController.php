@@ -7,7 +7,6 @@ use App\Models\Post;
 use App\Models\Achievement;
 use App\Models\User;
 use App\Models\Staff;
-use App\Models\AlumniTracer;
 use App\Models\SatisfactionSurvey;
 use App\Models\ZiDocument;
 use App\Models\InternalService;
@@ -34,7 +33,6 @@ class DashboardController extends Controller
             'avgRating' => round(SatisfactionSurvey::avg('rating') ?? 0, 1),
             'totalPpid' => $totalPpid,
             'totalKategoriPpid' => $totalKategoriPpid,
-            'totalAlumni' => AlumniTracer::where('is_active', true)->count(),
             'totalZonaIntegritas' => ZiDocument::count(),
             'totalLayanan' => InternalService::where('is_active', true)->count(),
         ];
