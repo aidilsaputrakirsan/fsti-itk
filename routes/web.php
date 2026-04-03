@@ -21,6 +21,7 @@ use App\Http\Controllers\Public\PublicZonaIntegritasController;
 use App\Http\Controllers\Public\PublicSurveiController;
 use App\Http\Controllers\Public\PublicProgramStudiController;
 use App\Http\Controllers\Public\PublicKegiatanMahasiswaController;
+use App\Http\Controllers\Public\PublicBeasiswaController;
 
 use App\Models\Post;
 use App\Models\Achievement;
@@ -181,6 +182,8 @@ Route::get('/kegiatan-mahasiswa', [PublicKegiatanMahasiswaController::class, 'in
 
 // Route Agenda Publik
 Route::get('/agenda-fakultas', [\App\Http\Controllers\Public\PublicAgendaFakultasController::class, 'index'])->name('agenda.index');
+
+Route::get('/beasiswa', [PublicBeasiswaController::class, 'index'])->name('beasiswa.index');
 
 Route::get('/alumni', function () {
     return Inertia::render('Public/Alumni/Index');
