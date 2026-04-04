@@ -98,7 +98,7 @@ const navigationMenu = computed<NavLink[]>(() => [
         name: trans('Alumni'),
         href: '#',
         sublinks: [
-            // { name: trans('Data Alumni'), href: route('alumni.index') },
+            { name: trans('Data Alumni'), href: route('alumni.index') },
             { name: 'Tracer Study', href: route('tracer-study.index') }, 
         ],
     },

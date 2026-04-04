@@ -23,6 +23,7 @@ use App\Http\Controllers\Public\PublicSurveiController;
 use App\Http\Controllers\Public\PublicProgramStudiController;
 use App\Http\Controllers\Public\PublicKegiatanMahasiswaController;
 use App\Http\Controllers\Public\PublicBeasiswaController;
+use App\Http\Controllers\Public\PublicAlumniController;
 
 use App\Models\Post;
 use App\Models\Achievement;
@@ -39,6 +40,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('kegiatan-mahasiswa', \App\Http\Controllers\Admin\KegiatanMahasiswaController::class);
 
     Route::resource('beasiswa', AdminBeasiswaController::class);
+
+    Route::resource('/alumni', \App\Http\Controllers\Admin\AlumniController::class)->parameters([
+        'alumni' => 'alumnus' // Menghindari pluralisasi yang aneh oleh Laravel (alumnis)
+    ]);
 
     Route::prefix('zona-integritas')->name('zi.')->group(function () {
         Route::get('/profil', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'profileEdit'])->name('profile.edit');
@@ -191,9 +196,12 @@ Route::get('/informasi-pmb', function () {
     return Inertia::render('Public/PMB/Index');
 })->name('pmb.index');
 
+
 Route::get('/tracer-study', function () {
     return Inertia::render('Public/Alumni/TracerStudy');
 })->name('tracer-study.index');
+
+Route::get('/alumni', [PublicAlumniController::class, 'index'])->name('alumni.index');
 
 
 // ==============================================================================

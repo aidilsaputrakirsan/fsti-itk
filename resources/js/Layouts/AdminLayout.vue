@@ -50,6 +50,9 @@ const navigation = [
         ]
     },
 
+        { name: 'Data Alumni', href: '/admin/alumni', icon: BookOpenIcon, children: null },
+
+
     // --- Menu Informasi (Gabungan Agenda & Berita) ---
     { 
         name: 'Informasi', 
