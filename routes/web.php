@@ -42,10 +42,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('beasiswa', AdminBeasiswaController::class);
 
     Route::resource('/alumni', \App\Http\Controllers\Admin\AlumniController::class)->parameters([
-        'alumni' => 'alumnus' 
+        'alumni' => 'alumnus' // Menghindari pluralisasi yang aneh oleh Laravel (alumnis)
     ]);
-
-    Route::resource('/partners', \App\Http\Controllers\Admin\PartnerController::class);
 
     Route::prefix('zona-integritas')->name('zi.')->group(function () {
         Route::get('/profil', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'profileEdit'])->name('profile.edit');
@@ -205,7 +203,6 @@ Route::get('/tracer-study', function () {
 
 Route::get('/alumni', [PublicAlumniController::class, 'index'])->name('alumni.index');
 
-Route::get('/kerjasama', [\App\Http\Controllers\Public\PublicPartnerController::class, 'index'])->name('kerjasama.index');
 
 // ==============================================================================
 // 3. KELOMPOK ROUTE AUTHENTICATION
