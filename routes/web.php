@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\StudyProgramController as AdminStudyProgramContro
 use App\Http\Controllers\Admin\BeasiswaController as AdminBeasiswaController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\AnnouncementController;
+use App\Http\Controllers\Admin\PenelitianController as AdminPenelitian;
+
 
 use App\Http\Controllers\Public\PublicPostController;
 use App\Http\Controllers\Public\PublicAchievementController;
@@ -28,6 +30,7 @@ use App\Http\Controllers\Public\PublicBeasiswaController;
 use App\Http\Controllers\Public\PublicAlumniController;
 use App\Http\Controllers\Public\PublicPartnerController;
 use App\Http\Controllers\Public\PublicAnnouncementController;
+use App\Http\Controllers\Public\PublicPenelitianController;
 
 use App\Models\Post;
 use App\Models\Achievement;
@@ -48,6 +51,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('/alumni', \App\Http\Controllers\Admin\AlumniController::class)->parameters([
         'alumni' => 'alumnus'
     ]);
+
+    Route::resource('penelitian', AdminPenelitian::class)->except(['create', 'show', 'edit']);
+
 
 
     Route::resource('partners', PartnerController::class);
@@ -213,6 +219,8 @@ Route::get('/alumni', [PublicAlumniController::class, 'index'])->name('alumni.in
 
 Route::get('/kerjasama', [PublicPartnerController::class, 'index'])->name('kerjasama.index');
 Route::get('/pengumuman', [PublicAnnouncementController::class, 'index'])->name('pengumuman.index');
+
+Route::get('/penelitian', [PublicPenelitianController::class, 'index'])->name('penelitian.index');
 // ==============================================================================
 // 3. KELOMPOK ROUTE AUTHENTICATION
 // ==============================================================================

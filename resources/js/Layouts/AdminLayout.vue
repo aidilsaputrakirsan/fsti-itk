@@ -87,6 +87,16 @@ const navigation = [
             { name: 'Kelola Survei Kepuasan', href: '/admin/satisfaction-surveys' },
         ]
     },
+{
+     name: 'Riset', 
+        href: null,
+        icon: NewspaperIcon, 
+        children: [
+            { name: 'Kelola Penelitian', href: '/admin/penelitian' },
+            { name: 'Kelola Pengabdian kepada Masyarakat', href: '/admin/pengabdian' },
+        ] 
+    },
+    
     
     { name: 'Kelola Akun Admin', href: '/admin/users', icon: UsersIcon, children: null },
 ];

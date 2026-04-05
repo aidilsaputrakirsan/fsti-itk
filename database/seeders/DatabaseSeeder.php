@@ -53,6 +53,10 @@ class DatabaseSeeder extends Seeder
             KegiatanMahasiswaSeeder::class,
             AgendaFakultasSeeder::class,
             BeasiswaSeeder::class,
+            PartnerSeeder::class,
+            AnnouncementSeeder::class,
+            PenelitianSeeder::class,
+            AlumniSeeder::class,
         ]);
     }
 }
