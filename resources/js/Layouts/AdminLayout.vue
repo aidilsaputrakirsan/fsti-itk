@@ -30,7 +30,9 @@ const navigation = [
         children: [
             { name: 'Kelola Tentang Fakultas', href: '/admin/tentang-fakultas' },
             { name: 'Kelola Civitas Akademika', href: '/admin/staff' },
+            { name: 'Kelola Kerjasama', href: '/admin/partners' },
             { name: 'Kelola Kontak', href: '/admin/contacts' },
+            
         ]
     },
     

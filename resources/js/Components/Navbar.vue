@@ -65,7 +65,7 @@ const navigationMenu = computed<NavLink[]>(() => [
                     { name: trans('Tenaga Kependidikan'), href: route('profil.tenaga-kependidikan') },
                 ],
             },
-            { name: trans('Kerjasama'), href: route('profil.kerjasama') },
+            { name: trans('Kerjasama'), href: route('kerjasama.index') },
             { name: trans('Kontak'), href: route('kontak') },
         ],
     },
