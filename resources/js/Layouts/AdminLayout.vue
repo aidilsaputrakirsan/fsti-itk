@@ -64,6 +64,7 @@ const navigation = [
             { name: 'Kelola Agenda', href: '/admin/agenda-fakultas' },
             { name: 'Kelola Berita', href: '/admin/posts' },
             { name: 'Kelola Kategori Berita', href: '/admin/post-categories' },
+                  { name: 'Kelola Pengumuman', href: '/admin/announcements' },
         ] 
     },
     

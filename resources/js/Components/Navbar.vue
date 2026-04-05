@@ -106,9 +106,9 @@ const navigationMenu = computed<NavLink[]>(() => [
         name: trans('Informasi'),
         href: '#',
         sublinks: [
-            { name: trans('Agenda'), href: route('agenda.index') }, // <-- TELAH DIPERBAIKI
+            { name: trans('Agenda'), href: route('agenda.index') },
             { name: trans('Berita'), href: route('berita.index') },
-            { name: 'Pengumuman', href: route('berita.index') },
+            { name: 'Pengumuman', href: route('pengumuman.index') },
             { name: 'Prosedur Publikasi', href: route('berita.index') },
         ],
     },

@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\PostCategoryController;
 use App\Http\Controllers\Admin\TentangFakultasController;
 use App\Http\Controllers\Admin\StudyProgramController as AdminStudyProgramController;
 use App\Http\Controllers\Admin\BeasiswaController as AdminBeasiswaController;
+use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\Admin\AnnouncementController;
 
 use App\Http\Controllers\Public\PublicPostController;
 use App\Http\Controllers\Public\PublicAchievementController;
@@ -24,6 +26,8 @@ use App\Http\Controllers\Public\PublicProgramStudiController;
 use App\Http\Controllers\Public\PublicKegiatanMahasiswaController;
 use App\Http\Controllers\Public\PublicBeasiswaController;
 use App\Http\Controllers\Public\PublicAlumniController;
+use App\Http\Controllers\Public\PublicPartnerController;
+use App\Http\Controllers\Public\PublicAnnouncementController;
 
 use App\Models\Post;
 use App\Models\Achievement;
@@ -42,10 +46,12 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('beasiswa', AdminBeasiswaController::class);
 
     Route::resource('/alumni', \App\Http\Controllers\Admin\AlumniController::class)->parameters([
-        'alumni' => 'alumnus' 
+        'alumni' => 'alumnus'
     ]);
 
-    Route::resource('/partners', \App\Http\Controllers\Admin\PartnerController::class);
+
+    Route::resource('partners', PartnerController::class);
+    Route::resource('announcements', AnnouncementController::class);
 
     Route::prefix('zona-integritas')->name('zi.')->group(function () {
         Route::get('/profil', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'profileEdit'])->name('profile.edit');
@@ -205,8 +211,8 @@ Route::get('/tracer-study', function () {
 
 Route::get('/alumni', [PublicAlumniController::class, 'index'])->name('alumni.index');
 
-Route::get('/kerjasama', [\App\Http\Controllers\Public\PublicPartnerController::class, 'index'])->name('kerjasama.index');
-
+Route::get('/kerjasama', [PublicPartnerController::class, 'index'])->name('kerjasama.index');
+Route::get('/pengumuman', [PublicAnnouncementController::class, 'index'])->name('pengumuman.index');
 // ==============================================================================
 // 3. KELOMPOK ROUTE AUTHENTICATION
 // ==============================================================================

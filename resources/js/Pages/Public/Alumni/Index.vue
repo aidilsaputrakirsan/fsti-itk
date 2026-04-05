@@ -172,7 +172,7 @@ const changePage = (page) => {
             background-image="/images/background-banner.png"
         />
 
-        <div class="bg-slate-50 py-16 md:py-24 min-h-screen font-public-sans overflow-x-hidden">
+        <div class="bg-white py-16 md:py-24 min-h-screen font-public-sans overflow-x-hidden">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
                 <div class="relative w-full bg-gradient-to-br from-primary via-[#243db3] to-primary-hover rounded-[2rem] p-8 md:p-12 mb-8 overflow-hidden shadow-xl flex items-center justify-between border border-primary-hover/50" data-aos="fade-up">
