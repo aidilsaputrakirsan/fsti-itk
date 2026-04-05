@@ -52,8 +52,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
         'alumni' => 'alumnus'
     ]);
 
-    Route::resource('penelitian', AdminPenelitian::class)->except(['create', 'show', 'edit']);
-
+    Route::resource('penelitian', AdminPenelitian::class)->except(['show']);
 
 
     Route::resource('partners', PartnerController::class);

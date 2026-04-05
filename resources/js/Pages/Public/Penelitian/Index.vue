@@ -21,7 +21,6 @@ const search = ref(props.filters.search || '');
 const selectedYear = ref(props.filters.year || '');
 const selectedProdi = ref(props.filters.prodi || '');
 
-// Otomatis apply filter saat diketik/dipilih (tanpa tombol submit)
 watch(search, debounce(() => { applyFilters(); }, 500));
 watch([selectedYear, selectedProdi], () => { applyFilters(); });
 
@@ -124,7 +123,7 @@ const nextPage = () => changePage(currentPage.value + 1);
         <Head title="Penelitian - FSTI ITK" />
         <Banner title="Direktori Penelitian" subtitle="PANGKALAN DATA INOVASI DOSEN FSTI ITK" :background-image="bannerImage" />
 
-        <div class="bg-gray-50/50 py-16 md:py-24 font-public-sans min-h-screen overflow-x-hidden">
+        <div class="bg-white -16 md:py-24 font-public-sans min-h-screen overflow-x-hidden">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
                 <div class="relative w-full bg-gradient-to-br from-primary to-primary-hover rounded-[2rem] p-8 md:p-12 mb-8 overflow-hidden shadow-xl flex items-center justify-between border border-primary-hover/50">
@@ -134,7 +133,7 @@ const nextPage = () => changePage(currentPage.value + 1);
 
                    <div class="relative z-10 text-white w-full max-w-3xl">
                         <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-sm font-bold mb-6 shadow-sm uppercase tracking-wider">
-                            <FlaskConical class="w-4 h-4" /> Riset & Inovasi
+                            <FlaskConical class="w-4 h-4" /> Riset
                         </div>
                         <h2 class="text-3xl md:text-5xl font-optimus font-bold mb-4 leading-tight drop-shadow-sm">Direktori Penelitian<br/>Dosen FSTI</h2>
                         <p class="text-blue-50 md:text-lg font-light leading-relaxed max-w-xl opacity-90">
@@ -187,41 +186,45 @@ const nextPage = () => changePage(currentPage.value + 1);
 
                 </div>
 
-                <div class="bg-white rounded-[2rem] shadow-[0_8px_30px_rgba(47,77,211,0.04)] border border-slate-100 overflow-hidden mb-16" data-aos="fade-up">
+                <div class="bg-white rounded-3xl shadow-[0_8px_30px_rgba(0,53,102,0.04)] border border-slate-100 overflow-hidden mx-2 md:mx-8 mb-16" data-aos="fade-up">
                     <div class="overflow-x-auto">
                         <table class="w-full min-w-[900px] text-left border-collapse">
                             <thead>
-                                <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 text-[11px] font-black tracking-wider uppercase">
-                                    <th class="py-5 px-6 text-center w-16">No</th>
-                                    <th class="py-5 px-6 w-[20%]">Nama Peneliti</th>
-                                    <th class="py-5 px-6 w-[45%]">Judul Penelitian</th>
-                                    <th class="py-5 px-6 w-[20%]">Program Studi</th>
-                                    <th class="py-5 px-6 text-center w-24">Tahun</th>
+                                <tr class="bg-gradient-to-r from-primary to-primary-hover border-b border-primary/20">
+                                    <th class="px-6 py-5 font-bold text-sm text-white tracking-wider text-center w-16">No</th>
+                                    <th class="px-6 py-5 font-bold text-sm text-white tracking-wider w-[20%]">Nama Peneliti</th>
+                                    <th class="px-6 py-5 font-bold text-sm text-white tracking-wider w-[45%]">Judul Penelitian</th>
+                                    <th class="px-6 py-5 font-bold text-sm text-white tracking-wider w-[20%]">Program Studi</th>
+                                    <th class="px-6 py-5 font-bold text-sm text-white tracking-wider text-center w-24">Tahun</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
-                                <tr v-for="(item, index) in penelitians.data" :key="item.id" class="hover:bg-blue-50/50 transition-colors group">
-                                    <td class="py-5 px-6 text-center text-slate-400 font-medium">{{ Number(showingFrom) + Number(index) }}</td>
-                                    <td class="py-5 px-6">
+                                <tr v-for="(item, index) in penelitians.data" :key="item.id" class="hover:bg-slate-50/80 transition-colors duration-200 group">
+                                    <td class="px-6 py-4 text-center text-slate-600 font-bold text-sm">{{ Number(showingFrom) + Number(index) }}</td>
+                                    <td class="px-6 py-4">
                                         <div class="font-bold text-slate-800 group-hover:text-primary transition-colors">{{ item.nama_dosen }}</div>
                                     </td>
-                                    <td class="py-5 px-6 text-sm text-slate-600 leading-relaxed font-medium">
+                                    <td class="px-6 py-4 text-sm text-slate-600 leading-relaxed font-medium">
                                         {{ item.judul }}
                                     </td>
-                                    <td class="py-5 px-6">
-                                        <span class="inline-flex items-center px-3 py-1 bg-slate-50 text-primary font-bold rounded-lg text-[10px] uppercase tracking-wider border border-slate-200">
+                                    <td class="px-6 py-4 text-sm">
+                                        <span class="px-3 py-1.5 bg-slate-50 border border-slate-100 text-slate-600 rounded-lg font-semibold group-hover:bg-blue-50 group-hover:text-primary group-hover:border-blue-100 transition-colors">
                                             {{ item.study_program?.name || 'FSTI' }}
                                         </span>
                                     </td>
-                                    <td class="py-5 px-6 text-center font-black text-slate-700">{{ item.tahun }}</td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span class="inline-flex items-center justify-center w-14 h-8 rounded-lg bg-slate-100 text-slate-600 font-bold text-sm group-hover:bg-[#D9FFFE]/80 group-hover:text-[#00509D] transition-colors">
+                                            {{ item.tahun }}
+                                        </span>
+                                    </td>
                                 </tr>
                                 
                                 <tr v-if="penelitians.data.length === 0">
-                                    <td colspan="5" class="py-20 text-center">
-                                        <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
-                                            <FileWarning class="w-8 h-8 text-slate-400" />
+                                    <td colspan="5" class="py-20 text-center bg-white hover:bg-white cursor-default">
+                                        <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100 shadow-sm">
+                                            <FileWarning class="w-8 h-8 text-slate-300" />
                                         </div>
-                                        <h3 class="text-xl font-bold text-slate-800 mb-2">Penelitian Tidak Ditemukan</h3>
+                                        <h3 class="text-xl font-bold text-slate-800 mb-2 font-optimus">Penelitian Tidak Ditemukan</h3>
                                         <p class="text-sm text-slate-500">Silakan sesuaikan kembali kata kunci pencarian atau filter yang Anda gunakan.</p>
                                     </td>
                                 </tr>

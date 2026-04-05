@@ -75,10 +75,10 @@ watch(flashSuccess, (message) => {
         <p class="mt-1 text-black">Manajemen daftar penelitian dosen untuk website Fakultas Sains dan Teknologi <br> Institut Teknologi Kalimantan</p>
       </div>
       <div class="flex items-center gap-3 flex-shrink-0">
-        <button class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90 transition-opacity">
+      <Link :href="route('admin.penelitian.create')" class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90 transition-opacity">
           <PlusIcon class="h-5 w-5" />
           Tambah Penelitian
-        </button>
+        </Link>
       </div>
     </div>
 
@@ -129,9 +129,9 @@ watch(flashSuccess, (message) => {
               <td class="whitespace-nowrap px-6 py-4 text-sm text-black text-center">{{ item.tahun }}</td>
               <td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
                 <div class="flex items-center gap-2">
-                  <button class="flex items-center gap-1 text-[#4682A9] hover:opacity-80 transition-opacity">
+                 <Link :href="route('admin.penelitian.edit', item.id)" class="flex items-center gap-1 text-[#4682A9] hover:opacity-80 transition-opacity">
                     <PencilSquareIcon class="h-4 w-4" /> Edit
-                  </button>
+                  </Link>
                   <span class="text-gray-300">|</span>
                   <button @click="openDeleteModal(item)" type="button" class="flex items-center gap-1 text-[#DC645E] hover:opacity-80 transition-opacity">
                     <TrashIcon class="h-4 w-4" /> Hapus
