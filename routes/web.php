@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\BeasiswaController as AdminBeasiswaController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\PenelitianController as AdminPenelitian;
+use App\Http\Controllers\Admin\PengabdianController as AdminPengabdianController;
 
 
 use App\Http\Controllers\Public\PublicPostController;
@@ -31,6 +32,8 @@ use App\Http\Controllers\Public\PublicAlumniController;
 use App\Http\Controllers\Public\PublicPartnerController;
 use App\Http\Controllers\Public\PublicAnnouncementController;
 use App\Http\Controllers\Public\PublicPenelitianController;
+use App\Http\Controllers\Public\PublicPengabdianController;
+
 
 use App\Models\Post;
 use App\Models\Achievement;
@@ -57,6 +60,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     Route::resource('partners', PartnerController::class);
     Route::resource('announcements', AnnouncementController::class);
+
+    Route::resource('pengabdian', AdminPengabdianController::class)->except(['show']);
 
     Route::prefix('zona-integritas')->name('zi.')->group(function () {
         Route::get('/profil', [\App\Http\Controllers\Admin\IntegrityZoneController::class, 'profileEdit'])->name('profile.edit');
@@ -220,6 +225,8 @@ Route::get('/kerjasama', [PublicPartnerController::class, 'index'])->name('kerja
 Route::get('/pengumuman', [PublicAnnouncementController::class, 'index'])->name('pengumuman.index');
 
 Route::get('/penelitian', [PublicPenelitianController::class, 'index'])->name('penelitian.index');
+
+Route::get('/pengabdian', [PublicPengabdianController::class, 'index'])->name('pengabdian.index');
 // ==============================================================================
 // 3. KELOMPOK ROUTE AUTHENTICATION
 // ==============================================================================

@@ -126,7 +126,7 @@ const navigationMenu = computed<NavLink[]>(() => [
         href: '#',
         sublinks: [
             { name: trans('Penelitian'), href: route('penelitian.index') },
-            { name: trans('Pengabdian kepada Masyarakat'), href: route('survei.index') },
+            { name: trans('Pengabdian kepada Masyarakat'), href: route('pengabdian.index') },
         ],
     },    
 ]);
