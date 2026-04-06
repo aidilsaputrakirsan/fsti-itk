@@ -120,7 +120,7 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <div class="py-8 flex flex-col md:flex-row justify-between items-center gap-6 text-white/80">
+            <div class="max-w-7xl mx-auto w-full py-8 flex flex-col md:flex-row justify-between items-center gap-6 text-white/80">
                 <div class="text-xs tracking-wider">
                     &copy; {{ new Date().getFullYear() }} FSTI ITK • Institut Teknologi Kalimantan
                 </div>

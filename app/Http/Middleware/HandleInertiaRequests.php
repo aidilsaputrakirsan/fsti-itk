@@ -5,8 +5,8 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Models\Visitor;
+use App\Models\Contact;
 use Carbon\Carbon;
-// ------------------------------
 
 class HandleInertiaRequests extends Middleware
 {
@@ -46,12 +46,13 @@ class HandleInertiaRequests extends Middleware
                 ->orderBy('name')
                 ->get(),
 
+            'contact_global' => fn() => $request->is('admin*') ? null : Contact::first(),
+
             'visitorStats' => fn() => $request->is('admin*') ? null : [
                 'today' => Visitor::where('visit_date', Carbon::today()->toDateString())->count(),
                 'month' => Visitor::where('visit_date', '>=', Carbon::now()->startOfMonth()->toDateString())->count(),
                 'total' => Visitor::count(),
             ],
-            // --------------------------
         ];
     }
 }

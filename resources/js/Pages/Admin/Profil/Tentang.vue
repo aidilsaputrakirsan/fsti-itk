@@ -6,6 +6,7 @@ import {
     ChartBarIcon, DocumentTextIcon, FlagIcon, 
     PaperAirplaneIcon, CheckCircleIcon, PhotoIcon, PaperClipIcon, XMarkIcon
 } from '@heroicons/vue/24/outline';
+import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
 const props = defineProps({ tentang: Object });
@@ -25,10 +26,10 @@ watch(flashSuccess, (message) => {
 
 const activeTab = ref('statistik');
 const tabs = [
-    { id: 'statistik', name: 'Statistik Data', icon: ChartBarIcon, desc: 'Ubah angka mahasiswa, dosen, dll.' },
-    { id: 'tugas', name: 'Tugas & Fungsi', icon: DocumentTextIcon, desc: 'Edit uraian tugas pokok dan fungsi.' },
-    { id: 'visi', name: 'Visi & Misi', icon: FlagIcon, desc: 'Ubah redaksi visi dan 8 misi utama.' },
-    { id: 'bagan', name: 'Bagan Organisasi', icon: PhotoIcon, desc: 'Ubah gambar bagan organisasi.' },
+    { id: 'statistik', name: 'Statistik Data', icon: ChartBarIcon },
+    { id: 'tugas', name: 'Tugas & Fungsi', icon: DocumentTextIcon },
+    { id: 'visi', name: 'Visi & Misi', icon: FlagIcon },
+    { id: 'bagan', name: 'Bagan Organisasi', icon: PhotoIcon },
 ];
 
 const fileInput = ref(null);
@@ -66,14 +67,91 @@ const getImageUrl = (path) => {
     return `/storage/${path}`; 
 };
 
+// LOGIKA VALIDASI BARU: Mandiri dan mendeteksi tab pertama yang error
 const submit = () => {
+    form.clearErrors();
+    let firstErrorTab = null;
+
+    // --- 1. Validasi Tab Statistik ---
+    if (!form.content.statistik.deskripsi) {
+        form.setError('content.statistik.deskripsi', 'Deskripsi halaman statistik wajib diisi.');
+        if (!firstErrorTab) firstErrorTab = 'statistik';
+    }
+    form.content.statistik.data.forEach((stat, index) => {
+        if (!stat.angka) {
+            form.setError(`content.statistik.data.${index}.angka`, 'Angka wajib diisi.');
+            if (!firstErrorTab) firstErrorTab = 'statistik';
+        } else if (isNaN(stat.angka)) {
+            form.setError(`content.statistik.data.${index}.angka`, 'Harus berupa angka.');
+            if (!firstErrorTab) firstErrorTab = 'statistik';
+        }
+        if (!stat.label) {
+            form.setError(`content.statistik.data.${index}.label`, 'Label wajib diisi.');
+            if (!firstErrorTab) firstErrorTab = 'statistik';
+        }
+    });
+
+    // --- 2. Validasi Tab Tugas & Fungsi ---
+    if (!form.content.tugas_fungsi.tugas) {
+        form.setError('content.tugas_fungsi.tugas', 'Tugas fakultas wajib diisi.');
+        if (!firstErrorTab) firstErrorTab = 'tugas';
+    }
+    form.content.tugas_fungsi.fungsi.forEach((func, index) => {
+        if (!func.judul) {
+            form.setError(`content.tugas_fungsi.fungsi.${index}.judul`, 'Judul fungsi wajib diisi.');
+            if (!firstErrorTab) firstErrorTab = 'tugas';
+        }
+        if (!func.deskripsi) {
+            form.setError(`content.tugas_fungsi.fungsi.${index}.deskripsi`, 'Deskripsi fungsi wajib diisi.');
+            if (!firstErrorTab) firstErrorTab = 'tugas';
+        }
+    });
+
+    // --- 3. Validasi Tab Visi & Misi ---
+    if (!form.content.visi_misi.visi) {
+        form.setError('content.visi_misi.visi', 'Visi fakultas wajib diisi.');
+        if (!firstErrorTab) firstErrorTab = 'visi';
+    }
+    if (!form.content.visi_misi.misi_tagline) {
+        form.setError('content.visi_misi.misi_tagline', 'Tagline misi wajib diisi.');
+        if (!firstErrorTab) firstErrorTab = 'visi';
+    }
+    form.content.visi_misi.misi.forEach((m, index) => {
+        if (!m.huruf) {
+            form.setError(`content.visi_misi.misi.${index}.huruf`, 'Wajib.');
+            if (!firstErrorTab) firstErrorTab = 'visi';
+        }
+        if (!m.teks) {
+            form.setError(`content.visi_misi.misi.${index}.teks`, 'Misi wajib diisi.');
+            if (!firstErrorTab) firstErrorTab = 'visi';
+        }
+    });
+
+    // --- 4. Validasi Tab Bagan Organisasi ---
+    if (form.bagan_image) {
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!allowedTypes.includes(form.bagan_image.type)) {
+            form.setError('bagan_image', 'Format file harus JPG, PNG, atau WEBP.');
+            if (!firstErrorTab) firstErrorTab = 'bagan';
+        } else if (form.bagan_image.size > 2 * 1024 * 1024) {
+            form.setError('bagan_image', 'Ukuran file maksimal 2MB.');
+            if (!firstErrorTab) firstErrorTab = 'bagan';
+        }
+    }
+
+    // Jika ada error, hentikan submit dan langsung buka tab yang error
+    if (firstErrorTab) {
+        activeTab.value = firstErrorTab;
+        return;
+    }
+
     form.transform((data) => ({
         ...data,
         _method: 'put',
-        active_tab: activeTab.value // Mengirim status tab yang sedang dibuka ke Backend
+        active_tab: activeTab.value 
     })).post(route('admin.tentang.update'), {
         preserveScroll: true, 
-        preserveState: false,
+        preserveState: true, // Ubah ke true agar state form tidak kereset
         onSuccess: () => {
             notificationMessage.value = page.props.flash?.success || 'Berhasil disimpan!';
             showNotification.value = true;
@@ -92,135 +170,217 @@ const submit = () => {
       <p class="mt-2 text-gray-600">Perbarui redaksi data statistik, fungsi, visi misi, dan bagan yang tampil pada halaman publik.</p>
     </div>
 
-    <div class="flex flex-col lg:flex-row gap-8 items-start">
-        <div class="w-full lg:w-1/4 shrink-0">
-            <nav class="flex flex-col space-y-2">
-                <button v-for="tab in tabs" :key="tab.id" @click="activeTab = tab.id" type="button"
-                    :class="[activeTab === tab.id ? 'bg-white border-primary shadow-sm ring-1 ring-gray-100' : 'border-transparent hover:bg-gray-50', 'border-l-4 flex items-start gap-4 text-left p-4 rounded-r-xl transition-all w-full']">
-                    <div :class="[activeTab === tab.id ? 'bg-blue-50 text-primary' : 'bg-gray-100 text-gray-500', 'p-2 rounded-lg']">
-                        <component :is="tab.icon" class="w-6 h-6" />
-                    </div>
-                    <div>
-                        <h3 :class="[activeTab === tab.id ? 'text-primary' : 'text-gray-800', 'font-bold text-base']">{{ tab.name }}</h3>
-                        <p class="text-xs text-gray-500 mt-0.5">{{ tab.desc }}</p>
-                    </div>
-                </button>
-            </nav>
-        </div>
+    <div class="mb-6 border-b border-gray-200 bg-white px-4 pt-2 rounded-t-2xl shadow-sm">
+        <nav class="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
+            <button 
+                v-for="tab in tabs" 
+                :key="tab.id" 
+                @click="activeTab = tab.id" 
+                type="button"
+                :class="[
+                    activeTab === tab.id
+                        ? 'border-primary text-primary'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                    'group inline-flex items-center gap-2 py-4 px-1 border-b-2 font-bold text-sm whitespace-nowrap transition-colors'
+                ]"
+            >
+                <component 
+                    :is="tab.icon" 
+                    :class="[
+                        activeTab === tab.id ? 'text-primary' : 'text-gray-400 group-hover:text-gray-500',
+                        'h-5 w-5 transition-colors'
+                    ]" 
+                />
+                {{ tab.name }}
+            </button>
+        </nav>
+    </div>
 
-        <div class="w-full lg:w-3/4">
-            <form @submit.prevent="submit" class="bg-white shadow-sm border border-gray-100 rounded-2xl flex flex-col min-h-[500px]">
-                <div class="p-8 flex-grow">
+    <div class="w-full">
+        <form @submit.prevent="submit" class="bg-white shadow-sm border border-gray-100 rounded-b-2xl rounded-tr-2xl flex flex-col min-h-[500px]">
+            <div class="p-8 flex-grow">
+                
+                <div v-show="activeTab === 'statistik'">
+                    <h2 class="text-2xl font-bold mb-6">Statistik Fakultas</h2>
+                    <div class="mb-6 bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                        <label class="block text-sm font-bold mb-2">Deskripsi Singkat Halaman <span class="text-red-500">*</span></label>
+                        <input 
+                            type="text" 
+                            v-model="form.content.statistik.deskripsi" 
+                            class="w-full rounded-xl py-3 transition-all duration-200"
+                            :class="form.errors['content.statistik.deskripsi'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white shadow-sm'"
+                        >
+                        <InputError :message="form.errors['content.statistik.deskripsi']" />
+                    </div>
                     
-                    <div v-show="activeTab === 'statistik'">
-                        <h2 class="text-2xl font-bold mb-6">Statistik Fakultas</h2>
-                        <div class="mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
-                            <label class="block text-sm font-bold mb-2">Deskripsi Singkat Halaman</label>
-                            <input type="text" v-model="form.content.statistik.deskripsi" class="w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary shadow-sm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div v-for="(stat, index) in form.content.statistik.data" :key="index" class="bg-white p-5 border border-gray-200 rounded-2xl shadow-sm">
+                            <label class="text-xs font-bold text-primary mb-3 block uppercase tracking-wider">Kotak Data {{ index + 1 }}</label>
+                            <div class="flex gap-4 items-start">
+                                <div class="w-1/3">
+                                    <input 
+                                        type="text" 
+                                        v-model="stat.angka" 
+                                        class="w-full text-lg font-bold rounded-xl py-3 transition-all duration-200 text-center"
+                                        :class="form.errors[`content.statistik.data.${index}.angka`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                        placeholder="Angka"
+                                    >
+                                    <InputError :message="form.errors[`content.statistik.data.${index}.angka`]" />
+                                </div>
+                                <div class="w-full">
+                                    <input 
+                                        type="text" 
+                                        v-model="stat.label" 
+                                        class="w-full rounded-xl py-3 transition-all duration-200"
+                                        :class="form.errors[`content.statistik.data.${index}.label`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                        placeholder="Label (Mhs / Dosen / Dll)"
+                                    >
+                                    <InputError :message="form.errors[`content.statistik.data.${index}.label`]" />
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div v-for="(stat, index) in form.content.statistik.data" :key="index" class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm">
-                                <label class="text-xs font-bold text-primary mb-2 block uppercase tracking-wider">Kotak Data {{ index + 1 }}</label>
-                                <div class="flex gap-3">
-                                    <div class="w-1/3">
-                                        <input type="text" v-model="stat.angka" class="w-full text-lg font-bold rounded-lg border-gray-300" placeholder="Angka">
+                    </div>
+                </div>
+
+                <div v-show="activeTab === 'tugas'">
+                    <h2 class="text-2xl font-bold mb-6">Tugas & Fungsi</h2>
+                    <div class="space-y-8">
+                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                            <label class="block text-sm font-bold mb-2">Tugas Fakultas (Paragraf) <span class="text-red-500">*</span></label>
+                            <textarea 
+                                v-model="form.content.tugas_fungsi.tugas" 
+                                rows="4" 
+                                class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
+                                :class="form.errors['content.tugas_fungsi.tugas'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                            ></textarea>
+                            <InputError :message="form.errors['content.tugas_fungsi.tugas']" />
+                        </div>
+
+                        <hr class="border-gray-200">
+
+                        <div class="space-y-5">
+                            <h3 class="font-bold text-gray-700 bg-gray-50 p-4 rounded-xl border border-gray-200">Daftar Fungsi Fakultas</h3>
+                            <div v-for="(func, index) in form.content.tugas_fungsi.fungsi" :key="index" class="bg-white p-5 border border-gray-200 rounded-2xl shadow-sm flex gap-5 items-start">
+                                <div class="shrink-0 w-10 h-10 flex items-center justify-center bg-blue-50 text-primary font-bold rounded-xl text-lg">{{ index + 1 }}</div>
+                                <div class="w-full space-y-4">
+                                    <div>
+                                        <input 
+                                            type="text" 
+                                            v-model="func.judul" 
+                                            placeholder="Judul Fungsi" 
+                                            class="w-full font-bold rounded-xl py-3 transition-all duration-200"
+                                            :class="form.errors[`content.tugas_fungsi.fungsi.${index}.judul`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                        >
+                                        <InputError :message="form.errors[`content.tugas_fungsi.fungsi.${index}.judul`]" />
+                                    </div>
+                                    <div>
+                                        <textarea 
+                                            v-model="func.deskripsi" 
+                                            rows="2" 
+                                            placeholder="Deskripsi lengkap..." 
+                                            class="w-full text-sm rounded-xl py-3 transition-all duration-200"
+                                            :class="form.errors[`content.tugas_fungsi.fungsi.${index}.deskripsi`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                        ></textarea>
+                                        <InputError :message="form.errors[`content.tugas_fungsi.fungsi.${index}.deskripsi`]" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-show="activeTab === 'visi'">
+                    <h2 class="text-2xl font-bold mb-6">Visi & Misi</h2>
+                    <div class="space-y-8">
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Teks Visi Fakultas <span class="text-red-500">*</span></label>
+                            <textarea 
+                                v-model="form.content.visi_misi.visi" 
+                                rows="4" 
+                                class="w-full rounded-xl py-4 font-medium text-lg leading-relaxed shadow-sm transition-all duration-200"
+                                :class="form.errors['content.visi_misi.visi'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                            ></textarea>
+                            <InputError :message="form.errors['content.visi_misi.visi']" />
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                            <div class="mb-6">
+                                <label class="block text-sm font-bold mb-1">Misi Tagline / Akronim <span class="text-red-500">*</span></label>
+                                <input 
+                                    type="text" 
+                                    v-model="form.content.visi_misi.misi_tagline" 
+                                    class="mt-1 py-3 text-sm rounded-xl w-72 transition-all duration-200 shadow-sm"
+                                    :class="form.errors['content.visi_misi.misi_tagline'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                >
+                                <InputError :message="form.errors['content.visi_misi.misi_tagline']" />
+                            </div>
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                                <div v-for="(m, index) in form.content.visi_misi.misi" :key="index" class="flex gap-4 items-start bg-white p-4 border border-gray-200 rounded-2xl shadow-sm">
+                                    <div class="flex-shrink-0">
+                                        <input 
+                                            type="text" 
+                                            v-model="m.huruf" 
+                                            class="w-16 font-bold text-center rounded-xl py-3 uppercase transition-all duration-200"
+                                            :class="form.errors[`content.visi_misi.misi.${index}.huruf`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-blue-50 text-primary'"
+                                        >
+                                        <InputError :message="form.errors[`content.visi_misi.misi.${index}.huruf`]" />
                                     </div>
                                     <div class="w-full">
-                                        <input type="text" v-model="stat.label" class="w-full rounded-lg border-gray-300" placeholder="Label">
+                                        <input 
+                                            type="text" 
+                                            v-model="m.teks" 
+                                            class="w-full rounded-xl py-3 text-sm transition-all duration-200"
+                                            :class="form.errors[`content.visi_misi.misi.${index}.teks`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                        >
+                                        <InputError :message="form.errors[`content.visi_misi.misi.${index}.teks`]" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div v-show="activeTab === 'tugas'">
-                        <h2 class="text-2xl font-bold mb-6">Tugas & Fungsi</h2>
-                        <div class="space-y-6">
-                            <div class="bg-gray-50 p-5 rounded-xl border border-gray-100">
-                                <label class="block text-sm font-bold mb-2">Tugas Fakultas (Paragraf)</label>
-                                <textarea v-model="form.content.tugas_fungsi.tugas" rows="4" class="w-full rounded-xl border-gray-300 focus:ring-primary shadow-sm"></textarea>
-                            </div>
-
-                            <hr class="border-gray-100">
-
-                            <div class="space-y-4">
-                                <h3 class="font-bold text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-200">Daftar Fungsi Fakultas</h3>
-                                <div v-for="(func, index) in form.content.tugas_fungsi.fungsi" :key="index" class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm flex gap-4 items-start">
-                                    <div class="shrink-0 w-8 h-8 flex items-center justify-center bg-blue-50 text-primary font-bold rounded-lg">{{ index + 1 }}</div>
-                                    <div class="w-full space-y-3">
-                                        <input type="text" v-model="func.judul" placeholder="Judul Fungsi" class="w-full font-bold rounded-lg border-gray-300">
-                                        <textarea v-model="func.deskripsi" rows="2" placeholder="Deskripsi lengkap..." class="w-full text-sm rounded-lg border-gray-300"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div v-show="activeTab === 'visi'">
-                        <h2 class="text-2xl font-bold mb-6">Visi & Misi</h2>
-                        <div class="space-y-6">
-                            <div>
-                                <label class="block text-sm font-bold mb-2">Teks Visi Fakultas</label>
-                                <textarea v-model="form.content.visi_misi.visi" rows="4" class="w-full rounded-xl border-gray-300 font-medium text-lg leading-relaxed shadow-sm"></textarea>
-                            </div>
-
-                            <div class="bg-gray-50 p-5 rounded-xl border border-gray-100">
-                                <div class="mb-4">
-                                    <label class="block text-sm font-bold">Misi Tagline / Akronim</label>
-                                    <input type="text" v-model="form.content.visi_misi.misi_tagline" class="mt-1 text-sm rounded-lg border-gray-300 w-64">
-                                </div>
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div v-for="(m, index) in form.content.visi_misi.misi" :key="index" class="flex gap-3 bg-white p-3 border border-gray-200 rounded-xl shadow-sm">
-                                        <input type="text" v-model="m.huruf" class="w-16 font-bold text-center rounded-lg border-gray-300 uppercase bg-blue-50 text-primary">
-                                        <input type="text" v-model="m.teks" class="w-full rounded-lg border-gray-300 text-sm">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div v-show="activeTab === 'bagan'">
-                        <h2 class="text-2xl font-bold mb-6">Bagan Organisasi</h2>
-                        <div class="space-y-6">
-                             <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
-                                
-                                <div class="mb-5 flex flex-col md:flex-row gap-4 items-start" v-if="form.content.bagan_organisasi">
-                                    <div>
-                                        <p class="text-sm text-gray-600 font-medium mb-2">Bagan Saat Ini:</p>
-                                        <img :src="getImageUrl(form.content.bagan_organisasi)" alt="Bagan Organisasi" class="h-auto w-full max-w-sm object-contain rounded-lg border border-gray-300 shadow-sm bg-white p-2">
-                                    </div>
-                                </div>
-
-                                <label class="block text-sm text-gray-700 mb-1 font-medium">Upload Gambar Bagan Baru</label>
-                                <div class="relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2 mb-4 hover:bg-gray-50 transition">
-                                    <PaperClipIcon class="h-5 w-5 text-gray-400" />
-                                    <span class="ml-3 text-sm text-gray-500 truncate flex-1">
-                                        {{ form.bagan_image ? form.bagan_image.name : 'Pilih file gambar baru...' }}
-                                    </span>
-                                    <button v-if="form.bagan_image" type="button" @click.prevent="clearImage" class="ml-2 p-1 text-red-500 hover:bg-red-50 rounded-md relative z-10"><XMarkIcon class="w-5 h-5"/></button>
-                                    <input ref="fileInput" type="file" accept="image/*" @change="handleImageChange" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" :class="{'hidden': form.bagan_image}" />
-                                </div>
-                                <p v-if="form.errors.bagan_image" class="mt-2 text-sm text-red-600">{{ form.errors.bagan_image }}</p>
-                                <p class="text-xs text-gray-500 italic mt-2">Pastikan gambar memiliki background putih atau transparan untuk hasil terbaik. Format yang didukung: JPG, PNG, WEBP. Maksimal 2MB.</p>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
 
-                <div class="bg-gray-50 px-8 py-5 border-t border-gray-100 flex items-center justify-end shrink-0">
-                    <button type="submit" :disabled="form.processing" class="flex items-center gap-2 px-8 py-3 rounded-xl bg-primary text-white font-bold hover:bg-opacity-90 transition shadow-sm w-full sm:w-auto">
-                        <PaperAirplaneIcon class="w-5 h-5" /> <span>{{ form.processing ? 'Menyimpan...' : 'Simpan Perubahan' }}</span>
-                    </button>
+                <div v-show="activeTab === 'bagan'">
+                    <h2 class="text-2xl font-bold mb-6">Bagan Organisasi</h2>
+                    <div class="space-y-6">
+                         <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
+                            
+                            <div class="mb-6 flex flex-col md:flex-row gap-4 items-start" v-if="form.content.bagan_organisasi">
+                                <div>
+                                    <p class="text-sm text-gray-600 font-bold mb-3">Bagan Saat Ini:</p>
+                                    <img :src="getImageUrl(form.content.bagan_organisasi)" alt="Bagan Organisasi" class="h-auto w-full max-w-lg object-contain rounded-xl border border-gray-300 shadow-sm bg-white p-3">
+                                </div>
+                            </div>
+
+                            <label class="block text-sm text-gray-700 mb-2 font-bold">Upload Gambar Bagan Baru</label>
+                            <div class="relative flex items-center w-full rounded-xl border shadow-sm px-4 py-3 hover:bg-gray-50 transition"
+                                 :class="form.errors.bagan_image ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'">
+                                <PaperClipIcon :class="form.errors.bagan_image ? 'text-red-400' : 'text-gray-400'" class="h-6 w-6" />
+                                <span class="ml-3 text-sm truncate flex-1 font-medium" :class="form.errors.bagan_image ? 'text-red-700' : 'text-gray-500'">
+                                    {{ form.bagan_image ? form.bagan_image.name : 'Pilih file gambar baru...' }}
+                                </span>
+                                <button v-if="form.bagan_image" type="button" @click.prevent="clearImage" class="ml-2 p-1.5 text-red-500 hover:bg-red-100 rounded-lg relative z-10"><XMarkIcon class="w-5 h-5"/></button>
+                                <input ref="fileInput" type="file" accept="image/*" @change="handleImageChange" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" :class="{'hidden': form.bagan_image}" />
+                            </div>
+                            <InputError :message="form.errors.bagan_image" />
+                            <p class="text-xs text-gray-500 italic mt-3">Pastikan gambar memiliki background putih atau transparan untuk hasil terbaik. Format yang didukung: JPG, PNG, WEBP. Maksimal 2MB.</p>
+                        </div>
+                    </div>
                 </div>
-            </form>
-        </div>
+
+            </div>
+
+            <div class="bg-gray-50 px-8 py-5 border-t border-gray-100 rounded-b-2xl flex items-center justify-end shrink-0">
+                <button type="submit" :disabled="form.processing" class="flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-white font-bold hover:bg-opacity-90 transition shadow-sm w-full sm:w-auto disabled:opacity-50">
+                    <PaperAirplaneIcon class="w-5 h-5" /> <span>{{ form.processing ? 'Menyimpan...' : 'Simpan Perubahan' }}</span>
+                </button>
+            </div>
+        </form>
     </div>
 
     <div v-if="showNotification" class="fixed top-5 right-5 z-50 transition-transform duration-300 ease-in-out">
-        <div class="flex items-center gap-4 rounded-lg bg-green-600 p-4 text-white shadow-lg">
+        <div class="flex items-center gap-4 rounded-xl bg-green-600 p-4 text-white shadow-xl">
             <CheckCircleIcon class="h-8 w-8" />
             <p class="font-semibold">{{ notificationMessage }}</p>
         </div>

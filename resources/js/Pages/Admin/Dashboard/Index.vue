@@ -16,8 +16,7 @@ import {
     Award,
     BarChart3,
     Calendar,
-    Activity,
-    MousePointer2
+    Activity
 } from 'lucide-vue-next';
 
 defineOptions({ layout: AdminLayout });
@@ -27,75 +26,38 @@ interface Props {
         totalPosts: number;
         publishedPosts: number;
         totalAchievements: number;
-        totalStaff: number;
-        totalDosen: number;
-        totalTendik: number;
-        totalUsers: number;
-        totalSurveys: number;
         avgRating: number;
-        totalPpid: number; 
-        totalKategoriPpid: number; 
-        totalAlumni: number;
-        totalZonaIntegritas: number;
-        totalLayanan: number;
-        // Data Kunjungan dari Controller
         totalVisitors: number;
         visitorsToday: number;
-        totalHits: number;
-    };
-    // Props tambahan dari HandleInertiaRequests (visitorStats)
-    visitorStats?: {
-        today: number;
-        month: number;
-        total: number;
+        visitorsMonth: number;
     };
     charts: {
-        achievementsByProdi: Array<{ name: string; total: number }>;
-        achievementsByLevel: Array<{ name: string; total: number }>;
-        achievementsByCategory: Array<{ name: string; total: number }>;
         achievementsTrend: Array<{ year: string; total: number }>;
         postsByCategory: Array<{ name: string; total: number }>;
-        postsByStatus: Array<{ name: string; total: number }>;
-        ratingDistribution: Array<{ rating: number; total: number }>;
-        satisfactionByType: Array<{ name: string; avgRating: number; total: number }>;
-        staffByCategory: Array<{ name: string; total: number }>;
     };
     recent: {
-        posts: Array<{
-            id: number;
-            title: string;
-            slug: string;
-            category: string;
-            status: string;
-            views: number;
-            published_at: string;
-            created_at: string;
-        }>;
-        achievements: Array<{
-            id: number;
-            student_name: string;
-            achievement_name: string;
-            study_program: string;
-            level: string;
-            category: string;
-            year: number;
-            created_at: string;
-        }>;
-        surveys: Array<{
-            id: number;
-            respondent_name: string;
-            respondent_type: string;
-            service_category: string;
-            rating: number;
-            feedback: string;
-            created_at: string;
-        }>;
         topViewedPosts: Array<{
             id: number;
             title: string;
             slug: string;
             views: number;
             category: string;
+        }>;
+        surveys: Array<{
+            id: number;
+            respondent_name: string;
+            rating: number;
+            feedback: string;
+            service_category: string;
+            created_at: string;
+        }>;
+        achievements: Array<{
+            id: number;
+            student_name: string;
+            title: string;
+            level: string;
+            year: number;
+            created_at: string;
         }>;
     };
 }
@@ -110,7 +72,7 @@ const colors = {
     teal: '#14B8A6',
 };
 
-// Grafik Tren
+// Grafik Tren Prestasi
 const achievementsTrendOptions = computed((): ApexOptions => ({
     chart: { type: 'area', toolbar: { show: false }, fontFamily: 'inherit' },
     stroke: { curve: 'smooth', width: 3 }, 
@@ -128,12 +90,12 @@ const achievementsTrendSeries = computed(() => [{
     data: props.charts.achievementsTrend.map(i => i.total),
 }]);
 
-// Grafik Donut
+// Grafik Donut Berita
 const postsByCategoryOptions = computed((): ApexOptions => ({
     chart: { type: 'donut', fontFamily: 'inherit' },
     labels: props.charts.postsByCategory.map(i => i.name),
     colors: [colors.primary, colors.success, colors.warning, colors.purple, colors.teal],
-    legend: { position: 'bottom', fontSize: '13px' },
+    legend: { position: 'bottom', fontSize: '12px' },
     plotOptions: {
         pie: {
             donut: {
@@ -177,20 +139,20 @@ const getLevelBadgeClass = (level: string) => {
 
 <template>
     <div class="space-y-6 max-w-7xl mx-auto pb-10">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 px-1">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Dashboard Overview</h1>
-                <p class="mt-1 text-sm text-gray-500 font-medium">Ringkasan performa sistem dan statistik pengunjung.</p>
+                <p class="mt-1 text-sm text-gray-500 font-medium">Ringkasan performa sistem FSTI ITK.</p>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md">
                 <div class="space-y-1">
-                    <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Berita Terbit</p>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Berita Terbit</p>
                     <div class="flex items-baseline gap-2">
                         <span class="text-3xl font-extrabold text-gray-900">{{ stats.publishedPosts }}</span>
-                        <span class="text-sm text-gray-400 font-medium">/ {{ stats.totalPosts }} total</span>
+                        <span class="text-sm text-gray-400 font-medium">/ {{ stats.totalPosts }}</span>
                     </div>
                 </div>
                 <div class="p-4 bg-blue-50 rounded-2xl text-blue-600"><Newspaper class="w-8 h-8" /></div>
@@ -198,7 +160,7 @@ const getLevelBadgeClass = (level: string) => {
 
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md">
                 <div class="space-y-1">
-                    <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Total Prestasi</p>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Total Prestasi</p>
                     <span class="text-3xl font-extrabold text-gray-900">{{ stats.totalAchievements }}</span>
                 </div>
                 <div class="p-4 bg-emerald-50 rounded-2xl text-emerald-600"><Trophy class="w-8 h-8" /></div>
@@ -206,7 +168,7 @@ const getLevelBadgeClass = (level: string) => {
 
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md">
                 <div class="space-y-1">
-                    <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Rating Layanan</p>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Indeks Kepuasan</p>
                     <div class="flex items-center gap-2">
                         <span class="text-3xl font-extrabold text-gray-900">{{ stats.avgRating || '0.0' }}</span>
                         <Star class="w-6 h-6 text-amber-400 fill-current" />
@@ -220,33 +182,30 @@ const getLevelBadgeClass = (level: string) => {
             <div class="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <div class="p-2 bg-indigo-100 rounded-lg text-indigo-600"><BarChart3 class="w-5 h-5" /></div>
-                    <h2 class="font-bold text-gray-800 uppercase tracking-wide text-sm">Laporan Statistik Pengunjung</h2>
+                    <h2 class="font-bold text-gray-800 uppercase tracking-wide text-sm">Statistik Pengunjung</h2>
                 </div>
-                <div class="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    Update Otomatis
-                </div>
+                
             </div>
             <div class="p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="flex items-center gap-4 border-r border-gray-100 last:border-0">
+                <div class="flex items-center gap-5 border-r border-gray-100 last:border-0">
                     <div class="p-4 bg-blue-50 rounded-xl text-blue-600"><Users class="w-7 h-7" /></div>
                     <div>
-                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Hari Ini</p>
-                        <p class="text-3xl font-black text-gray-900 mt-0.5">{{ stats.visitorsToday.toLocaleString() }}</p>
+                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Hari Ini</p>
+                        <p class="text-3xl font-black text-gray-900 mt-1.5">{{ stats.visitorsToday.toLocaleString() }}</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-4 border-r border-gray-100 last:border-0">
+                <div class="flex items-center gap-5 border-r border-gray-100 last:border-0">
                     <div class="p-4 bg-emerald-50 rounded-xl text-emerald-600"><Calendar class="w-7 h-7" /></div>
                     <div>
-                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Bulan Ini</p>
-                        <p class="text-3xl font-black text-emerald-600 mt-0.5">{{ (stats.totalHits || 0).toLocaleString() }}</p>
+                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Bulan Ini</p>
+                        <p class="text-3xl font-black text-emerald-600 mt-1.5">{{ stats.visitorsMonth.toLocaleString() }}</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-5">
                     <div class="p-4 bg-purple-50 rounded-xl text-purple-600"><Activity class="w-7 h-7" /></div>
                     <div>
-                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Total Pengunjung</p>
-                        <p class="text-3xl font-black text-purple-600 mt-0.5">{{ stats.totalVisitors.toLocaleString() }}</p>
+                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Total Pengunjung</p>
+                        <p class="text-3xl font-black text-purple-600 mt-1.5">{{ stats.totalVisitors.toLocaleString() }}</p>
                     </div>
                 </div>
             </div>
@@ -270,33 +229,34 @@ const getLevelBadgeClass = (level: string) => {
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 px-0.5">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="font-bold text-gray-800">Berita Populer</h3>
                     <Link href="/admin/posts" class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-tighter">Semua</Link>
                 </div>
-                <div class="space-y-4">
-                    <div v-for="(post, index) in recent.topViewedPosts.slice(0, 5)" :key="post.id" class="flex items-start gap-3 group">
+                <div class="space-y-4 flex-1">
+                    <div v-for="(post, index) in recent.topViewedPosts" :key="post.id" class="flex items-start gap-3 group">
                         <span class="text-sm font-bold text-gray-300 mt-0.5">{{ index + 1 }}</span>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">{{ post.title }}</p>
+                            <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors cursor-pointer" :title="post.title">{{ post.title }}</p>
                             <div class="flex items-center gap-3 mt-1 text-[11px] text-gray-400 font-medium">
                                 <span class="bg-gray-100 px-1.5 py-0.5 rounded">{{ post.category }}</span>
                                 <span class="flex items-center gap-1"><Eye class="w-3 h-3" /> {{ post.views }}</span>
                             </div>
                         </div>
                     </div>
+                    <div v-if="!recent.topViewedPosts.length" class="text-center text-xs text-gray-400 py-4">Belum ada data berita</div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="font-bold text-gray-800">Feedback Terakhir</h3>
                     <Link href="/admin/satisfaction-surveys" class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-tighter">Semua</Link>
                 </div>
-                <div class="space-y-5">
-                    <div v-for="survey in recent.surveys.slice(0, 3)" :key="survey.id" class="border-b border-gray-50 pb-3 last:border-0 last:pb-0">
+                <div class="space-y-5 flex-1">
+                    <div v-for="survey in recent.surveys" :key="survey.id" class="border-b border-gray-50 pb-3 last:border-0 last:pb-0">
                         <div class="flex items-center justify-between mb-1.5">
                             <span class="text-xs font-bold text-gray-900">{{ survey.respondent_name || 'Anonim' }}</span>
                             <span class="text-amber-400 text-[10px] tracking-widest">{{ getRatingStars(survey.rating) }}</span>
@@ -304,19 +264,23 @@ const getLevelBadgeClass = (level: string) => {
                         <p class="text-xs text-gray-600 line-clamp-2 leading-relaxed italic">"{{ survey.feedback || 'Tidak ada pesan.' }}"</p>
                         <p class="text-[10px] text-gray-400 mt-2 font-medium uppercase tracking-tighter">{{ getTimeAgo(survey.created_at) }}</p>
                     </div>
+                    <div v-if="!recent.surveys.length" class="text-center text-xs text-gray-400 py-4">Belum ada data feedback</div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="font-bold text-gray-800">Prestasi Terbaru</h3>
                     <Link href="/admin/achievements" class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-tighter">Semua</Link>
                 </div>
-                <div class="space-y-4">
-                    <div v-for="achievement in recent.achievements.slice(0, 4)" :key="achievement.id" class="flex items-start gap-3">
+                <div class="space-y-4 flex-1">
+                    <div v-for="achievement in recent.achievements" :key="achievement.id" class="flex items-start gap-3">
                         <div class="mt-1 p-1.5 bg-gray-50 rounded-lg"><Award class="w-4 h-4 text-emerald-500" /></div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-gray-900 line-clamp-1">{{ achievement.achievement_name }}</p>
+                            <p class="text-sm font-semibold text-gray-900 line-clamp-1" :title="achievement.title">{{ achievement.title }}</p>
+                            
+                            <p class="text-xs text-gray-500 mt-0.5 truncate">{{ achievement.student_name }}</p>
+                            
                             <div class="flex items-center gap-2 mt-1.5">
                                 <span :class="['text-[9px] px-1.5 py-0.5 rounded-md border font-bold uppercase tracking-tighter', getLevelBadgeClass(achievement.level)]">
                                     {{ achievement.level }}
@@ -324,6 +288,7 @@ const getLevelBadgeClass = (level: string) => {
                             </div>
                         </div>
                     </div>
+                    <div v-if="!recent.achievements.length" class="text-center text-xs text-gray-400 py-4">Belum ada data prestasi</div>
                 </div>
             </div>
         </div>

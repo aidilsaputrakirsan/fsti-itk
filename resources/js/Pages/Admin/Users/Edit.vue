@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
-import { ArrowLeftIcon, PencilSquareIcon, ExclamationCircleIcon } from '@heroicons/vue/24/outline';
+import { ArrowLeftIcon, CheckCircleIcon } from '@heroicons/vue/24/outline';
+// 1. Import komponen InputError
+import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
 
@@ -10,12 +12,10 @@ const props = defineProps<{
         id: number;
         name: string;
         email: string;
-        is_superadmin: boolean;
-    };
+    }
 }>();
 
 const form = useForm({
-    _method: 'PUT',
     name: props.user.name,
     email: props.user.email,
     password: '',
@@ -49,7 +49,7 @@ const submit = () => {
             hasError = true;
         }
         if (!form.password_confirmation) {
-            form.setError('password_confirmation', 'Harap konfirmasi password baru Anda.');
+            form.setError('password_confirmation', 'Harap konfirmasi password Anda.');
             hasError = true;
         } else if (form.password !== form.password_confirmation) {
             form.setError('password_confirmation', 'Sandi tidak cocok dengan yang di atas!');
@@ -59,9 +59,7 @@ const submit = () => {
 
     if (hasError) return;
 
-    form.post(route('admin.users.update', props.user.id), {
-        onSuccess: () => form.reset('password', 'password_confirmation'),
-    });
+    form.put(route('admin.users.update', props.user.id));
 };
 </script>
 
@@ -73,13 +71,13 @@ const submit = () => {
                 Kembali ke Daftar
             </Link>
         </div>
-
+        
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900">Edit Akun Admin</h1>
-            <p class="mt-1 text-gray-600">Perbarui informasi akun atau reset password</p>
+            <p class="mt-1 text-gray-600">Perbarui informasi akun admin untuk {{ user.name }}</p>
         </div>
 
-        <div class="bg-white shadow-lg p-8 rounded-2xl border-t-4 border-primary">
+        <div class="bg-white shadow-sm p-8 rounded-xl border-t-4 border-primary">
             <form @submit.prevent="submit" novalidate class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
@@ -89,12 +87,10 @@ const submit = () => {
                             type="text" 
                             class="w-full rounded-lg py-3 transition-all duration-200"
                             :class="form.errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"
+                            placeholder="Contoh: Budi Santoso"
                         />
-                        <div v-if="form.errors.name" class="mt-2 flex items-center gap-2 text-red-700 bg-red-100 p-2.5 rounded-lg border border-red-200 animate-pulse">
-                            <ExclamationCircleIcon class="h-5 w-5 flex-shrink-0" />
-                            <span class="text-xs font-bold tracking-wide">{{ form.errors.name }}</span>
-                        </div>
-                        <p v-else class="mt-1.5 text-xs text-gray-500">Hanya huruf, titik, dan koma. (Tanpa angka)</p>
+                        <InputError :message="form.errors.name" />
+                        <p v-if="!form.errors.name" class="mt-1.5 text-xs text-gray-500">Hanya huruf, titik, dan koma. (Tanpa angka)</p>
                     </div>
 
                     <div>
@@ -104,49 +100,37 @@ const submit = () => {
                             type="email" 
                             class="w-full rounded-lg py-3 transition-all duration-200"
                             :class="form.errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            placeholder="contoh@fsti.itk.ac.id"
                         />
-                        <div v-if="form.errors.email" class="mt-2 flex items-center gap-2 text-red-700 bg-red-100 p-2.5 rounded-lg border border-red-200 animate-pulse">
-                            <ExclamationCircleIcon class="h-5 w-5 flex-shrink-0" />
-                            <span class="text-xs font-bold tracking-wide">{{ form.errors.email }}</span>
-                        </div>
+                        <InputError :message="form.errors.email" />
+                        <p v-if="!form.errors.email" class="mt-1.5 text-xs text-gray-500">Gunakan email institusi aktif.</p>
                     </div>
                 </div>
 
-                <div class="border-t border-gray-100 pt-8 mt-10">
-                    <h3 class="text-lg font-bold text-gray-900 mb-1">Ubah Password <span class="text-gray-400 font-normal">(Opsional)</span></h3>
-                    <p class="text-sm text-gray-500 mb-6">Isi form di bawah ini HANYA jika ingin mengganti password akun ini.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-800 mb-2">Password Baru</label>
-                            <input 
-                                v-model="form.password" 
-                                type="password" 
-                                class="w-full rounded-lg py-3 transition-all duration-200"
-                                :class="form.errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
-                                placeholder="Biarkan kosong jika tidak diubah"
-                            />
-                            <div v-if="form.errors.password" class="mt-2 flex items-center gap-2 text-red-700 bg-red-100 p-2.5 rounded-lg border border-red-200 animate-pulse">
-                                <ExclamationCircleIcon class="h-5 w-5 flex-shrink-0" />
-                                <span class="text-xs font-bold tracking-wide">{{ form.errors.password }}</span>
-                            </div>
-                            <p v-else class="mt-1.5 text-xs text-gray-500">Jika diisi, minimal 8 karakter.</p>
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800 mb-2">Password Baru <span class="text-gray-400 font-normal">(Opsional)</span></label>
+                        <input 
+                            v-model="form.password" 
+                            type="password" 
+                            class="w-full rounded-lg py-3 transition-all duration-200"
+                            :class="form.errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            placeholder="Kosongkan jika tidak ingin mengubah password"
+                        />
+                        <InputError :message="form.errors.password" />
+                        <p v-if="!form.errors.password" class="mt-1.5 text-xs text-gray-500">Minimal 8 karakter jika ingin diubah.</p>
+                    </div>
 
-                        <div>
-                            <label class="block text-sm font-bold text-gray-800 mb-2">Konfirmasi Password Baru</label>
-                            <input 
-                                v-model="form.password_confirmation" 
-                                type="password" 
-                                class="w-full rounded-lg py-3 transition-all duration-200"
-                                :class="form.errors.password_confirmation ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
-                                placeholder="Ulangi password baru"
-                            />
-                            <div v-if="form.errors.password_confirmation" class="mt-2 flex items-center gap-2 text-red-700 bg-red-100 p-2.5 rounded-lg border border-red-200 animate-pulse">
-                                <ExclamationCircleIcon class="h-5 w-5 flex-shrink-0" />
-                                <span class="text-xs font-bold tracking-wide">{{ form.errors.password_confirmation }}</span>
-                            </div>
-                        </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800 mb-2">Konfirmasi Password Baru</label>
+                        <input 
+                            v-model="form.password_confirmation" 
+                            type="password" 
+                            class="w-full rounded-lg py-3 transition-all duration-200"
+                            :class="form.errors.password_confirmation ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            placeholder="Ulangi password baru"
+                        />
+                        <InputError :message="form.errors.password_confirmation" />
                     </div>
                 </div>
 
@@ -157,10 +141,10 @@ const submit = () => {
                     <button 
                         type="submit" 
                         :disabled="form.processing"
-                        class="flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-white font-bold hover:bg-primary-hover transition-colors shadow-md disabled:opacity-50"
+                        class="flex items-center gap-2 px-6 py-3 rounded-lg bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors shadow-md disabled:opacity-50"
                     >
-                        <PencilSquareIcon class="h-5 w-5" />
-                        {{ form.processing ? 'Menyimpan...' : 'Perbarui Akun' }}
+                        <CheckCircleIcon class="h-5 w-5" />
+                        {{ form.processing ? 'Menyimpan...' : 'Perbarui Admin' }}
                     </button>
                 </div>
             </form>

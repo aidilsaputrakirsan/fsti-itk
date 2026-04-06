@@ -2,9 +2,15 @@
 import { ref, computed, watch } from 'vue';
 import { useForm, Link } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import InputError from '@/Components/InputError.vue';
 import { 
-    ArrowLeftIcon, PaperClipIcon, TrashIcon,
-    PlusIcon, PencilSquareIcon, LinkIcon, XMarkIcon
+    ArrowLeftIcon, 
+    PaperClipIcon, 
+    TrashIcon,
+    PlusIcon, 
+    PencilSquareIcon, 
+    LinkIcon, 
+    XMarkIcon
 } from '@heroicons/vue/24/outline';
 
 defineOptions({ layout: AdminLayout });
@@ -16,7 +22,6 @@ const props = defineProps<{
 
 const fileInput = ref<HTMLInputElement | null>(null);
 
-// Mencegah path file lokal (staff/...) masuk ke dalam kolom input GDrive
 const initialImageUrl = props.staff.image_url && props.staff.image_url.startsWith('http') 
     ? props.staff.image_url 
     : '';
@@ -48,7 +53,7 @@ const form = useForm<StaffFormData>({
     type: props.staff.type || 'Dosen',
     structural_position: props.staff.structural_position || '',
     functional_position: props.staff.functional_position || '',
-    image_url: initialImageUrl, // Gunakan url yang sudah difilter
+    image_url: initialImageUrl, 
     image: null,
     is_active: Boolean(props.staff.is_active ?? true),
     education_history: props.staff.education_history || [],
@@ -98,172 +103,272 @@ const clearImage = () => {
     form.image_url = initialImageUrl;
 };
 
-const submit = () => { form.post(route('admin.staff.update', props.staff.id)); };
+const submit = () => { 
+    form.clearErrors();
+    let hasError = false;
+
+    if (!form.name) {
+        form.setError('name', 'Kolom nama wajib diisi.');
+        hasError = true;
+    }
+
+    if (form.type === 'Dosen' && !form.functional_position) {
+        form.setError('functional_position', 'Program studi wajib dipilih untuk tipe Dosen.');
+        hasError = true;
+    }
+
+    if (form.image) {
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!allowedTypes.includes(form.image.type)) {
+            form.setError('image', 'Format file harus JPG, PNG, atau WEBP.');
+            hasError = true;
+        } else if (form.image.size > 2 * 1024 * 1024) {
+            form.setError('image', 'Ukuran file maksimal 2MB.');
+            hasError = true;
+        }
+    }
+
+    if (hasError) return;
+
+    form.post(route('admin.staff.update', props.staff.id)); 
+};
 </script>
 
 <template>
     <div>
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-black">Edit Civitas</h1>
-            <p class="mt-1 text-black">Perbarui profil {{ staff.name }}</p>
+            <Link :href="route('admin.staff.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
+                <ArrowLeftIcon class="h-4 w-4 stroke-2" /> Kembali ke Daftar
+            </Link>
+            
+            <h1 class="text-3xl font-bold text-gray-900">Edit Civitas</h1>
+            <p class="mt-1 text-gray-600">Perbarui informasi profil dan rekam jejak civitas akademika.</p>
         </div>
 
-        <div class="bg-white shadow-sm p-8 rounded-lg">
-            <form @submit.prevent="submit">
-                <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-x-8 gap-y-8">
+        <div class="bg-white shadow-sm p-5 sm:p-8 rounded-xl border-t-4 border-primary">
+            <form @submit.prevent="submit" novalidate>
+                <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-x-8 gap-y-6 md:gap-y-8">
                     
-                    <label class="pt-2 text-sm font-semibold text-black">Nama Lengkap & Gelar <span class="text-red-600">*</span></label>
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Nama Lengkap & Gelar <span class="text-red-600">*</span></label>
                     <div>
-                        <input v-model="form.name" type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                        <input v-model="form.name" type="text" 
+                            class="block w-full rounded-lg transition-colors"
+                            :class="form.errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            required>
+                        <InputError :message="form.errors.name" />
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Tipe Civitas <span class="text-red-600">*</span></label>
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Tipe Civitas <span class="text-red-600">*</span></label>
                     <div>
-                        <select v-model="form.type" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                        <select v-model="form.type" 
+                            class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white" required>
                             <option value="Dosen">Dosen</option>
                             <option value="Tendik">Tenaga Kependidikan</option>
                         </select>
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">NIP / NIPH / NIDN</label>
-                    <div><input v-model="form.nip" type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></div>
-
-                    <label class="pt-2 text-sm font-semibold text-black">Status Visibilitas</label>
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">NIP / NIPH / NIDN</label>
                     <div>
-                        <select v-model="form.is_active" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <input v-model="form.nip" type="text" 
+                            class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white">
+                    </div>
+
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Status Visibilitas</label>
+                    <div>
+                        <select v-model="form.is_active" class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white">
                             <option :value="true">Aktif (Ditampilkan)</option>
                             <option :value="false">Nonaktif (Disembunyikan)</option>
                         </select>
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Jabatan Fungsional</label>
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Jabatan Fungsional <span v-if="form.type==='Dosen'" class="text-red-500">*</span></label>
                     <div>
-                        <select v-if="form.type === 'Dosen'" v-model="form.functional_position" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <select v-if="form.type === 'Dosen'" v-model="form.functional_position" 
+                            class="block w-full rounded-lg transition-colors"
+                            :class="form.errors.functional_position ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'">
                             <option value="" disabled>-- Pilih Program Studi --</option>
                             <option v-for="prodi in studyPrograms" :key="prodi.id" :value="'Dosen Program Studi ' + prodi.name">
                                 Dosen Program Studi {{ prodi.name }}
                             </option>
                         </select>
 
-                        <input v-else v-model="form.functional_position" type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <input v-else v-model="form.functional_position" type="text" class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white">
+                        <InputError :message="form.errors.functional_position" />
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Jabatan Struktural</label>
-                    <div><input v-model="form.structural_position" type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></div>
-
-                    <label class="pt-2 text-sm font-semibold text-black">Foto Profil</label>
-                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
-                        <div class="mb-4" v-if="staff.display_image">
-                            <img :src="staff.display_image" class="h-32 w-32 object-cover rounded-lg border border-gray-300">
-                        </div>
-                        <label class="block text-sm text-gray-700 mb-1 font-medium">Opsi 1: Upload Gambar Baru</label>
-                        <div class="relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2 mb-4 hover:bg-gray-50 transition">
-                            <PaperClipIcon class="h-5 w-5 text-gray-400" />
-                            <span class="ml-3 text-sm text-gray-500 truncate flex-1">{{ fileNameDisplay }}</span>
-                            <button v-if="form.image" type="button" @click.prevent="clearImage" class="ml-2 p-1 text-red-500"><XMarkIcon class="w-5 h-5"/></button>
-                            <input ref="fileInput" type="file" accept="image/*" @change="handleImageChange" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" :class="{'hidden': form.image}" />
-                        </div>
-                        <label class="block text-sm text-gray-700 mb-1 font-medium" :class="{'opacity-50': form.image}">Opsi 2: Link Google Drive</label>
-                        <input type="url" v-model="form.image_url" :disabled="form.image !== null" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed">
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Jabatan Struktural</label>
+                    <div>
+                        <input v-model="form.structural_position" type="text" class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white">
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Bidang Keahlian</label>
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Foto Profil</label>
+                    <div class="bg-gray-50 p-4 sm:p-5 rounded-lg border border-gray-200 overflow-hidden">
+                        
+                        <div class="flex flex-col lg:flex-row gap-6 items-start">
+                            <div v-if="staff.display_image" class="w-full lg:w-auto shrink-0 flex justify-center lg:block">
+                                <img :src="staff.display_image" class="h-32 w-32 sm:h-40 sm:w-40 object-cover rounded-lg border border-gray-300 bg-gray-200 shadow-sm">
+                            </div>
+                            
+                            <div class="w-full space-y-4 overflow-hidden">
+                                <div>
+                                    <label class="block text-xs font-bold text-primary mb-1 uppercase tracking-wider">Opsi 1: Ganti File Gambar</label>
+                                    <div class="relative flex items-center w-full rounded-md border bg-white shadow-sm px-3 py-2 hover:bg-gray-50 transition" :class="form.errors.image ? 'border-red-500 bg-red-50' : 'border-gray-300'">
+                                        <PaperClipIcon :class="form.errors.image ? 'text-red-400' : 'text-gray-400'" class="h-5 w-5 flex-shrink-0" />
+                                        <span class="ml-2 text-xs sm:text-sm truncate flex-1" :class="form.errors.image ? 'text-red-700' : 'text-gray-500'">{{ fileNameDisplay }}</span>
+                                        <button v-if="form.image" type="button" @click.prevent="clearImage" class="ml-1 p-1 text-red-500 hover:bg-red-50 rounded-md relative z-10 flex-shrink-0"><XMarkIcon class="w-4 h-4 sm:w-5 sm:h-5"/></button>
+                                        <input ref="fileInput" type="file" accept="image/*" @change="handleImageChange" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" :class="{'hidden': form.image}" />
+                                    </div>
+                                    <InputError :message="form.errors.image" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-primary mb-1 uppercase tracking-wider" :class="{'opacity-50': form.image}">Opsi 2: Link Google Drive</label>
+                                    <input type="url" v-model="form.image_url" :disabled="form.image !== null" 
+                                        class="block w-full rounded-md transition-colors text-sm disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                                        :class="form.errors.image_url ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'">
+                                    <InputError :message="form.errors.image_url" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Bidang Keahlian</label>
                     <div>
                         <div class="space-y-3">
-                            <div v-for="(item, index) in form.expertise" :key="index" class="flex gap-2">
-                                <input v-model="form.expertise[index]" type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
-                                <button type="button" @click="removeArrayItem('expertise', index)" class="p-2 bg-red-50 text-red-600 rounded-lg"><TrashIcon class="w-5 h-5"/></button>
+                            <div v-for="(item, index) in form.expertise" :key="index" class="flex gap-2 items-start">
+                                <div class="w-full">
+                                    <input v-model="form.expertise[index]" type="text" 
+                                        class="block w-full rounded-lg transition-colors text-sm"
+                                        :class="form.errors[`expertise.${index}`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'">
+                                    <InputError :message="form.errors[`expertise.${index}`]" />
+                                </div>
+                                <button type="button" @click="removeArrayItem('expertise', index)" class="p-2 sm:p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0 mt-0.5"><TrashIcon class="w-5 h-5"/></button>
                             </div>
-                            <button type="button" @click="addArrayItem('expertise')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah Keahlian</button>
+                            <button type="button" @click="addArrayItem('expertise')" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-primary-hover transition-colors"><PlusIcon class="w-4 h-4 stroke-2"/> Tambah Keahlian</button>
                         </div>
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Riwayat Pendidikan Terakhir</label>
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Riwayat Pendidikan Terakhir</label>
                     <div>
                         <div class="space-y-3">
                             <div v-for="(item, index) in form.education_history" :key="index" class="flex gap-2 items-start">
-                                <textarea v-model="form.education_history[index]" rows="2" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
-                                <button type="button" @click="removeArrayItem('education_history', index)" class="p-2 bg-red-50 text-red-600 rounded-lg"><TrashIcon class="w-5 h-5"/></button>
+                                <div class="w-full">
+                                    <textarea v-model="form.education_history[index]" rows="2" 
+                                        class="block w-full rounded-lg transition-colors text-sm"
+                                        :class="form.errors[`education_history.${index}`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"></textarea>
+                                    <InputError :message="form.errors[`education_history.${index}`]" />
+                                </div>
+                                <button type="button" @click="removeArrayItem('education_history', index)" class="p-2 sm:p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0 mt-0.5"><TrashIcon class="w-5 h-5"/></button>
                             </div>
-                            <button type="button" @click="addArrayItem('education_history')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah Pendidikan</button>
+                            <button type="button" @click="addArrayItem('education_history')" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-primary-hover transition-colors"><PlusIcon class="w-4 h-4 stroke-2"/> Tambah Pendidikan</button>
                         </div>
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Sertifikasi Kompetensi</label>
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Sertifikasi Kompetensi</label>
                     <div>
                         <div class="space-y-3">
                             <div v-for="(item, index) in form.competency_certification" :key="index" class="flex gap-2 items-start">
-                                <textarea v-model="form.competency_certification[index]" rows="2" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
-                                <button type="button" @click="removeArrayItem('competency_certification', index)" class="p-2 bg-red-50 text-red-600 rounded-lg"><TrashIcon class="w-5 h-5"/></button>
+                                <div class="w-full">
+                                    <textarea v-model="form.competency_certification[index]" rows="2" 
+                                        class="block w-full rounded-lg transition-colors text-sm"
+                                        :class="form.errors[`competency_certification.${index}`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"></textarea>
+                                    <InputError :message="form.errors[`competency_certification.${index}`]" />
+                                </div>
+                                <button type="button" @click="removeArrayItem('competency_certification', index)" class="p-2 sm:p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0 mt-0.5"><TrashIcon class="w-5 h-5"/></button>
                             </div>
-                            <button type="button" @click="addArrayItem('competency_certification')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah Sertifikasi</button>
+                            <button type="button" @click="addArrayItem('competency_certification')" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-primary-hover transition-colors"><PlusIcon class="w-4 h-4 stroke-2"/> Tambah Sertifikasi</button>
                         </div>
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Pengalaman Kerja</label>
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Pengalaman Kerja</label>
                     <div>
                         <div class="space-y-3">
                             <div v-for="(item, index) in form.work_experience" :key="index" class="flex gap-2 items-start">
-                                <textarea v-model="form.work_experience[index]" rows="2" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
-                                <button type="button" @click="removeArrayItem('work_experience', index)" class="p-2 bg-red-50 text-red-600 rounded-lg"><TrashIcon class="w-5 h-5"/></button>
+                                <div class="w-full">
+                                    <textarea v-model="form.work_experience[index]" rows="2" 
+                                        class="block w-full rounded-lg transition-colors text-sm"
+                                        :class="form.errors[`work_experience.${index}`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"></textarea>
+                                    <InputError :message="form.errors[`work_experience.${index}`]" />
+                                </div>
+                                <button type="button" @click="removeArrayItem('work_experience', index)" class="p-2 sm:p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0 mt-0.5"><TrashIcon class="w-5 h-5"/></button>
                             </div>
-                            <button type="button" @click="addArrayItem('work_experience')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah Pengalaman</button>
+                            <button type="button" @click="addArrayItem('work_experience')" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-primary-hover transition-colors"><PlusIcon class="w-4 h-4 stroke-2"/> Tambah Pengalaman</button>
                         </div>
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Penghargaan / Awards</label>
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Penghargaan / Awards</label>
                     <div>
                         <div class="space-y-3">
                             <div v-for="(item, index) in form.awards" :key="index" class="flex gap-2 items-start">
-                                <textarea v-model="form.awards[index]" rows="2" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
-                                <button type="button" @click="removeArrayItem('awards', index)" class="p-2 bg-red-50 text-red-600 rounded-lg"><TrashIcon class="w-5 h-5"/></button>
+                                <div class="w-full">
+                                    <textarea v-model="form.awards[index]" rows="2" 
+                                        class="block w-full rounded-lg transition-colors text-sm"
+                                        :class="form.errors[`awards.${index}`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"></textarea>
+                                    <InputError :message="form.errors[`awards.${index}`]" />
+                                </div>
+                                <button type="button" @click="removeArrayItem('awards', index)" class="p-2 sm:p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0 mt-0.5"><TrashIcon class="w-5 h-5"/></button>
                             </div>
-                            <button type="button" @click="addArrayItem('awards')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah Penghargaan</button>
+                            <button type="button" @click="addArrayItem('awards')" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-primary-hover transition-colors"><PlusIcon class="w-4 h-4 stroke-2"/> Tambah Penghargaan</button>
                         </div>
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Riwayat Penelitian</label>
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Riwayat Penelitian</label>
                     <div>
                         <div class="space-y-3">
                             <div v-for="(item, index) in form.research_history" :key="index" class="flex gap-2 items-start">
-                                <textarea v-model="form.research_history[index]" rows="2" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
-                                <button type="button" @click="removeArrayItem('research_history', index)" class="p-2 bg-red-50 text-red-600 rounded-lg"><TrashIcon class="w-5 h-5"/></button>
+                                <div class="w-full">
+                                    <textarea v-model="form.research_history[index]" rows="2" 
+                                        class="block w-full rounded-lg transition-colors text-sm"
+                                        :class="form.errors[`research_history.${index}`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"></textarea>
+                                    <InputError :message="form.errors[`research_history.${index}`]" />
+                                </div>
+                                <button type="button" @click="removeArrayItem('research_history', index)" class="p-2 sm:p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0 mt-0.5"><TrashIcon class="w-5 h-5"/></button>
                             </div>
-                            <button type="button" @click="addArrayItem('research_history')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah Penelitian</button>
+                            <button type="button" @click="addArrayItem('research_history')" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-primary-hover transition-colors"><PlusIcon class="w-4 h-4 stroke-2"/> Tambah Penelitian</button>
                         </div>
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Riwayat Pengabdian Masyarakat</label>
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Riwayat Pengabdian Masyarakat</label>
                     <div>
                         <div class="space-y-3">
                             <div v-for="(item, index) in form.community_service_history" :key="index" class="flex gap-2 items-start">
-                                <textarea v-model="form.community_service_history[index]" rows="2" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
-                                <button type="button" @click="removeArrayItem('community_service_history', index)" class="p-2 bg-red-50 text-red-600 rounded-lg"><TrashIcon class="w-5 h-5"/></button>
+                                <div class="w-full">
+                                    <textarea v-model="form.community_service_history[index]" rows="2" 
+                                        class="block w-full rounded-lg transition-colors text-sm"
+                                        :class="form.errors[`community_service_history.${index}`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"></textarea>
+                                    <InputError :message="form.errors[`community_service_history.${index}`]" />
+                                </div>
+                                <button type="button" @click="removeArrayItem('community_service_history', index)" class="p-2 sm:p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0 mt-0.5"><TrashIcon class="w-5 h-5"/></button>
                             </div>
-                            <button type="button" @click="addArrayItem('community_service_history')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah PKM</button>
+                            <button type="button" @click="addArrayItem('community_service_history')" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-primary-hover transition-colors"><PlusIcon class="w-4 h-4 stroke-2"/> Tambah PKM</button>
                         </div>
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Profil Akademik</label>
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Profil Akademik</label>
                     <div>
                         <div class="space-y-3">
-                            <div v-for="(item, index) in form.academic_profiles" :key="index" class="flex gap-2 items-center relative">
-                                <LinkIcon class="w-5 h-5 text-gray-400 absolute left-3" />
-                                <input v-model="form.academic_profiles[index]" type="url" class="block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
-                                <button type="button" @click="removeArrayItem('academic_profiles', index)" class="p-2 bg-red-50 text-red-600 rounded-lg"><TrashIcon class="w-5 h-5"/></button>
+                            <div v-for="(item, index) in form.academic_profiles" :key="index" class="flex gap-2 items-start relative">
+                                <div class="relative w-full">
+                                    <LinkIcon class="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
+                                    <input v-model="form.academic_profiles[index]" type="url" 
+                                        class="block w-full pl-10 rounded-lg transition-colors text-sm"
+                                        :class="form.errors[`academic_profiles.${index}`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'">
+                                    <InputError :message="form.errors[`academic_profiles.${index}`]" />
+                                </div>
+                                <button type="button" @click="removeArrayItem('academic_profiles', index)" class="p-2 sm:p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0 mt-0.5"><TrashIcon class="w-5 h-5"/></button>
                             </div>
-                            <button type="button" @click="addArrayItem('academic_profiles')" class="flex items-center gap-1 text-sm font-medium text-[#4682A9] hover:underline"><PlusIcon class="w-4 h-4"/> Tambah Link Profil</button>
+                            <button type="button" @click="addArrayItem('academic_profiles')" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-primary-hover transition-colors"><PlusIcon class="w-4 h-4 stroke-2"/> Tambah Link Profil</button>
                         </div>
                     </div>
 
                 </div>
 
-                <div class="mt-12 flex items-center justify-between border-t border-gray-100 pt-6">
-                    <Link :href="route('admin.staff.index')" class="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">
-                        <ArrowLeftIcon class="h-5 w-5" /> Kembali
+                <div class="mt-12 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 border-t border-gray-100 pt-6">
+                    <Link :href="route('admin.staff.index')" class="w-full sm:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                        Batal
                     </Link>
-                    <button type="submit" :disabled="form.processing" class="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50">
-                        <PencilSquareIcon class="h-5 w-5" /> {{ form.processing ? 'Menyimpan...' : 'Perbarui' }}
+                    <button type="submit" :disabled="form.processing" class="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-8 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors disabled:opacity-50">
+                        <PencilSquareIcon class="h-5 w-5 stroke-2" /> {{ form.processing ? 'Menyimpan...' : 'Perbarui' }}
                     </button>
                 </div>
             </form>

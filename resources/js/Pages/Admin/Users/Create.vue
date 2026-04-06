@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
-import { ArrowLeftIcon, UserPlusIcon, ExclamationCircleIcon } from '@heroicons/vue/24/outline';
+import { ArrowLeftIcon, UserPlusIcon } from '@heroicons/vue/24/outline';
+// 1. Import komponen InputError
+import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
 
@@ -32,7 +34,6 @@ const submit = () => {
         hasError = true;
     }
 
-    // 4. Cek Password
     if (!form.password) {
         form.setError('password', 'Kolom password wajib diisi.');
         hasError = true;
@@ -81,12 +82,8 @@ const submit = () => {
                             :class="form.errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"
                             placeholder="Contoh: Budi Santoso"
                         />
-                        
-                        <div v-if="form.errors.name" class="mt-2 flex items-center gap-2 text-red-700 bg-red-100 p-2.5 rounded-lg border border-red-200 animate-pulse">
-                            <ExclamationCircleIcon class="h-5 w-5 flex-shrink-0" />
-                            <span class="text-xs font-bold tracking-wide">{{ form.errors.name }}</span>
-                        </div>
-                        <p v-else class="mt-1.5 text-xs text-gray-500">Hanya huruf, titik, dan koma. (Tanpa angka)</p>
+                        <InputError :message="form.errors.name" />
+                        <p v-if="!form.errors.name" class="mt-1.5 text-xs text-gray-500">Hanya huruf, titik, dan koma. (Tanpa angka)</p>
                     </div>
 
                     <div>
@@ -98,11 +95,8 @@ const submit = () => {
                             :class="form.errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
                             placeholder="contoh@fsti.itk.ac.id"
                         />
-                        <div v-if="form.errors.email" class="mt-2 flex items-center gap-2 text-red-700 bg-red-100 p-2.5 rounded-lg border border-red-200 animate-pulse">
-                            <ExclamationCircleIcon class="h-5 w-5 flex-shrink-0" />
-                            <span class="text-xs font-bold tracking-wide">{{ form.errors.email }}</span>
-                        </div>
-                        <p v-else class="mt-1.5 text-xs text-gray-500">Gunakan email institusi aktif.</p>
+                        <InputError :message="form.errors.email" />
+                        <p v-if="!form.errors.email" class="mt-1.5 text-xs text-gray-500">Gunakan email institusi aktif.</p>
                     </div>
                 </div>
 
@@ -116,11 +110,8 @@ const submit = () => {
                             :class="form.errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
                             placeholder="Minimal 8 karakter"
                         />
-                        <div v-if="form.errors.password" class="mt-2 flex items-center gap-2 text-red-700 bg-red-100 p-2.5 rounded-lg border border-red-200 animate-pulse">
-                            <ExclamationCircleIcon class="h-5 w-5 flex-shrink-0" />
-                            <span class="text-xs font-bold tracking-wide">{{ form.errors.password }}</span>
-                        </div>
-                        <p v-else class="mt-1.5 text-xs text-gray-500">Minimal 8 karakter untuk keamanan akun.</p>
+                        <InputError :message="form.errors.password" />
+                        <p v-if="!form.errors.password" class="mt-1.5 text-xs text-gray-500">Minimal 8 karakter untuk keamanan akun.</p>
                     </div>
 
                     <div>
@@ -132,10 +123,7 @@ const submit = () => {
                             :class="form.errors.password_confirmation ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
                             placeholder="Ulangi password"
                         />
-                        <div v-if="form.errors.password_confirmation" class="mt-2 flex items-center gap-2 text-red-700 bg-red-100 p-2.5 rounded-lg border border-red-200 animate-pulse">
-                            <ExclamationCircleIcon class="h-5 w-5 flex-shrink-0" />
-                            <span class="text-xs font-bold tracking-wide">{{ form.errors.password_confirmation }}</span>
-                        </div>
+                        <InputError :message="form.errors.password_confirmation" />
                     </div>
                 </div>
 
