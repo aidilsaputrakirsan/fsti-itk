@@ -4,6 +4,9 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Models\Visitor;
+use Carbon\Carbon;
+// ------------------------------
 
 class HandleInertiaRequests extends Middleware
 {
@@ -38,10 +41,17 @@ class HandleInertiaRequests extends Middleware
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),
             ],
-            'globalProdi' => \App\Models\StudyProgram::select('name', 'degree', 'slug', 'department') // <-- Tambahkan 'department'
+            'globalProdi' => \App\Models\StudyProgram::select('name', 'degree', 'slug', 'department')
                 ->orderBy('degree')
                 ->orderBy('name')
                 ->get(),
+
+            'visitorStats' => fn() => $request->is('admin*') ? null : [
+                'today' => Visitor::where('visit_date', Carbon::today()->toDateString())->count(),
+                'month' => Visitor::where('visit_date', '>=', Carbon::now()->startOfMonth()->toDateString())->count(),
+                'total' => Visitor::count(),
+            ],
+            // --------------------------
         ];
     }
 }

@@ -21,7 +21,6 @@ class AuthenticatedSessionController extends Controller
         ]);
     }
 
-    // Cari fungsi store dan ganti baris return-nya
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
@@ -38,6 +37,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('login');
     }
 }

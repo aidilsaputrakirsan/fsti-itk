@@ -44,7 +44,7 @@ watch(flashSuccess, (message) => {
         <p class="mt-1 text-black">Manajemen daftar pengabdian masyarakat dosen Fakultas Sains dan Teknologi ITK</p>
       </div>
       <div class="flex items-center gap-3 flex-shrink-0">
-      <Link :href="route('admin.pengabdian.create')" class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90">
+      <Link :href="route('admin.pengabdian.create')" class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90 transition-opacity">
           <PlusIcon class="h-5 w-5" /> Tambah Pengabdian
         </Link>
       </div>
@@ -78,26 +78,30 @@ watch(flashSuccess, (message) => {
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
-            <tr v-if="pengabdians.data.length > 0" v-for="item in pengabdians.data" :key="item.id" class="hover:bg-gray-50 transition-colors">
-              <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-black">{{ item.nama_dosen }}</td>
-              <td class="whitespace-pre-line px-6 py-4 text-sm text-black leading-relaxed">{{ item.judul }}</td>
-              <td class="whitespace-nowrap px-6 py-4 text-sm text-black">
-                <span class="rounded-full px-3 py-1 text-xs font-medium bg-green-100 text-green-800">{{ item.study_program?.name || '-' }}</span>
-              </td>
-              <td class="whitespace-nowrap px-6 py-4 text-sm text-black text-center">{{ item.tahun }}</td>
-              <td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
-                <div class="flex items-center gap-2">
-                 <Link :href="route('admin.pengabdian.edit', item.id)" class="flex items-center gap-1 text-[#4682A9] hover:opacity-80">
-                    <PencilSquareIcon class="h-4 w-4" /> Edit
-                  </Link>
-                  <span class="text-gray-300">|</span>
-                  <button @click="openDeleteModal(item)" class="flex items-center gap-1 text-[#DC645E] hover:opacity-80">
-                    <TrashIcon class="h-4 w-4" /> Hapus
-                  </button>
-                </div>
-              </td>
+            <template v-if="pengabdians.data.length > 0">
+                <tr v-for="item in pengabdians.data" :key="item.id" class="hover:bg-gray-50 transition-colors">
+                  <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-black">{{ item.nama_dosen }}</td>
+                  <td class="whitespace-pre-line px-6 py-4 text-sm text-black leading-relaxed">{{ item.judul }}</td>
+                  <td class="whitespace-nowrap px-6 py-4 text-sm text-black">
+                    <span class="rounded-full px-3 py-1 text-xs font-medium bg-green-100 text-green-800">{{ item.study_program?.name || '-' }}</span>
+                  </td>
+                  <td class="whitespace-nowrap px-6 py-4 text-sm text-black text-center">{{ item.tahun }}</td>
+                  <td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
+                    <div class="flex items-center gap-2">
+                     <Link :href="route('admin.pengabdian.edit', item.id)" class="flex items-center gap-1 text-[#4682A9] hover:opacity-80 transition-opacity">
+                        <PencilSquareIcon class="h-4 w-4" /> Edit
+                      </Link>
+                      <span class="text-gray-300">|</span>
+                      <button @click="openDeleteModal(item)" class="flex items-center gap-1 text-[#DC645E] hover:opacity-80 transition-opacity">
+                        <TrashIcon class="h-4 w-4" /> Hapus
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+            </template>
+            <tr v-else>
+                <td colspan="5" class="text-center py-6 text-gray-500">Belum ada data pengabdian masyarakat.</td>
             </tr>
-            <tr v-else><td colspan="5" class="text-center py-6 text-gray-500">Belum ada data pengabdian masyarakat.</td></tr>
           </tbody>
         </table>
       </div>
@@ -107,26 +111,26 @@ watch(flashSuccess, (message) => {
         </p>
         <div class="flex items-center gap-1">
           <Link v-for="(link, index) in pengabdians.links" :key="index" :href="link.url ?? '#'" v-html="link.label"
-            :class="['px-3 py-1 text-sm rounded border border-gray-300', link.active ? 'bg-[#4682A9] text-white' : 'bg-[#CBDCEB] hover:bg-gray-100', !link.url ? 'text-gray-400 cursor-not-allowed' : '']" />
+            :class="['px-3 py-1 text-sm rounded border border-gray-300 transition-colors', link.active ? 'bg-[#4682A9] text-white' : 'bg-[#CBDCEB] hover:bg-gray-100 text-gray-800', !link.url ? 'text-gray-400 cursor-not-allowed' : '']" />
         </div>
       </div>
     </div>
     
-    <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" @click.self="closeDeleteModal">
-      <div class="w-full max-w-md rounded-lg bg-white p-8 shadow-2xl transform transition-all">
+    <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity" @click.self="closeDeleteModal">
+      <div class="w-full max-w-md rounded-lg bg-white p-8 shadow-2xl transform transition-all scale-95" :class="{'scale-100': isModalOpen}">
         <div class="flex flex-col items-center text-center">
           <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100"><ExclamationTriangleIcon class="h-10 w-10 text-red-500" /></div>
           <h2 class="text-2xl font-bold text-gray-800">Hapus Pengabdian</h2>
           <p class="mt-2 text-gray-600">Apakah Anda yakin ingin menghapus pengabdian oleh <br><span class="font-semibold">"{{ itemToDelete?.nama_dosen }}"</span>?</p>
         </div>
         <div class="mt-8 flex justify-center gap-4">
-          <button @click="closeDeleteModal" class="rounded-lg bg-gray-200 px-6 py-2 font-semibold hover:bg-gray-300">Batal</button>
-          <button @click="confirmDelete" class="rounded-lg bg-[#DC645E] px-6 py-2 font-semibold text-white hover:bg-red-700">Ya, Hapus</button>
+          <button @click="closeDeleteModal" class="rounded-lg bg-gray-200 px-6 py-2 font-semibold text-gray-800 hover:bg-gray-300 transition-colors">Batal</button>
+          <button @click="confirmDelete" class="rounded-lg bg-[#DC645E] px-6 py-2 font-semibold text-white hover:bg-red-700 transition-colors">Ya, Hapus</button>
         </div>
       </div>
     </div>
     
-    <transition enter-active-class="transform ease-out duration-300 transition" enter-from-class="translate-y-2 opacity-0" enter-to-class="translate-y-0 opacity-100" leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100" leave-to-class="opacity-0">
+    <transition enter-active-class="transform ease-out duration-300 transition" enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2" enter-to-class="translate-y-0 opacity-100 sm:translate-x-0" leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100" leave-to-class="opacity-0">
         <div v-if="showNotification" class="fixed top-5 right-5 z-50">
             <div class="flex items-center gap-4 rounded-lg bg-green-600 p-4 text-white shadow-lg"><CheckCircleIcon class="h-8 w-8" /><p class="font-semibold">{{ notificationMessage }}</p></div>
         </div>

@@ -15,3 +15,41 @@ html, body {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .admin-table-container {
+      @apply w-full overflow-x-auto rounded-lg shadow-sm border border-gray-200 bg-white;
+  }
+
+  table {
+      @apply w-full text-left border-collapse font-public-sans text-sm;
+  }
+
+  thead {
+      @apply bg-primary text-white;
+  }
+
+  th {
+      @apply px-4 py-3 font-semibold uppercase tracking-wider text-xs border-b border-primary-hover;
+  }
+
+  tbody {
+      @apply divide-y divide-gray-200;
+  }
+
+  tbody tr {
+      @apply transition-colors duration-150 hover:bg-gray-50;
+  }
+
+  td {
+      @apply px-4 py-3 text-black whitespace-nowrap align-middle;
+  }
+
+  .badge-active {
+      @apply bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full;
+  }
+  
+  .badge-inactive {
+      @apply bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded-full;
+  }
+}

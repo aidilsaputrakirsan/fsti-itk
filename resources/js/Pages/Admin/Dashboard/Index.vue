@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { Link } from '@inertiajs/vue3';
 import VueApexCharts from 'vue3-apexcharts';
 import type { ApexOptions } from 'apexcharts';
 import {
@@ -8,19 +9,19 @@ import {
     Trophy,
     Users,
     Star,
-    FileText,
-    GraduationCap,
-    Building2,
-    Link2,
     TrendingUp,
     Eye,
-    Clock,
-    MessageSquare
+    MessageSquare,
+    PieChart,
+    Award,
+    BarChart3,
+    Calendar,
+    Activity,
+    MousePointer2
 } from 'lucide-vue-next';
 
 defineOptions({ layout: AdminLayout });
 
-// Props dari controller
 interface Props {
     stats: {
         totalPosts: number;
@@ -32,11 +33,21 @@ interface Props {
         totalUsers: number;
         totalSurveys: number;
         avgRating: number;
-    totalPpid: Number, 
-    totalKategoriPpid: Number, 
+        totalPpid: number; 
+        totalKategoriPpid: number; 
         totalAlumni: number;
         totalZonaIntegritas: number;
         totalLayanan: number;
+        // Data Kunjungan dari Controller
+        totalVisitors: number;
+        visitorsToday: number;
+        totalHits: number;
+    };
+    // Props tambahan dari HandleInertiaRequests (visitorStats)
+    visitorStats?: {
+        today: number;
+        month: number;
+        total: number;
     };
     charts: {
         achievementsByProdi: Array<{ name: string; total: number }>;
@@ -91,609 +102,227 @@ interface Props {
 
 const props = defineProps<Props>();
 
-// Chart Colors
 const colors = {
     primary: '#3B82F6',
     success: '#10B981',
     warning: '#F59E0B',
-    danger: '#EF4444',
     purple: '#8B5CF6',
-    pink: '#EC4899',
-    indigo: '#6366F1',
     teal: '#14B8A6',
 };
 
-const chartColors = [colors.primary, colors.success, colors.warning, colors.purple, colors.pink, colors.indigo, colors.teal, colors.danger];
-
-// === CHART OPTIONS ===
-
-// 1. Prestasi per Program Studi (Horizontal Bar)
-const achievementsByProdiOptions = computed((): ApexOptions => ({
-    chart: {
-        type: 'bar' as const,
-        toolbar: { show: false },
-        fontFamily: 'inherit',
-    },
-    plotOptions: {
-        bar: {
-            horizontal: true,
-            borderRadius: 4,
-            dataLabels: { position: 'top' },
-        },
-    },
-    colors: [colors.primary],
-    dataLabels: {
-        enabled: true,
-        offsetX: 20,
-        style: { fontSize: '12px', colors: ['#374151'] },
-    },
-    xaxis: {
-        categories: props.charts.achievementsByProdi.map(i => i.name),
-    },
-    yaxis: {
-        labels: {
-            style: { fontSize: '11px' },
-            maxWidth: 150,
-        },
-    },
-    tooltip: { y: { formatter: (val: number) => `${val} prestasi` } },
-}));
-
-const achievementsByProdiSeries = computed(() => [{
-    name: 'Prestasi',
-    data: props.charts.achievementsByProdi.map(i => i.total),
-}]);
-
-// 2. Prestasi per Tingkat (Donut)
-const achievementsByLevelOptions = computed((): ApexOptions => ({
-    chart: {
-        type: 'donut' as const,
-        fontFamily: 'inherit',
-    },
-    labels: props.charts.achievementsByLevel.map(i => i.name),
-    colors: chartColors,
-    legend: {
-        position: 'bottom' as const,
-        fontSize: '12px',
-    },
-    dataLabels: {
-        enabled: true,
-        formatter: (val: number) => `${val.toFixed(0)}%`,
-    },
-    plotOptions: {
-        pie: {
-            donut: {
-                size: '60%',
-                labels: {
-                    show: true,
-                    total: {
-                        show: true,
-                        label: 'Total',
-                        fontSize: '14px',
-                        fontWeight: 600,
-                    },
-                },
-            },
-        },
-    },
-    tooltip: { y: { formatter: (val: number) => `${val} prestasi` } },
-}));
-
-const achievementsByLevelSeries = computed(() =>
-    props.charts.achievementsByLevel.map(i => i.total)
-);
-
-// 3. Trend Prestasi per Tahun (Line)
+// Grafik Tren
 const achievementsTrendOptions = computed((): ApexOptions => ({
-    chart: {
-        type: 'area' as const,
-        toolbar: { show: false },
-        fontFamily: 'inherit',
-        sparkline: { enabled: false },
-    },
-    stroke: {
-        curve: 'smooth' as const,
-        width: 3,
-    },
-    fill: {
-        type: 'gradient',
-        gradient: {
-            shadeIntensity: 1,
-            opacityFrom: 0.4,
-            opacityTo: 0.1,
-        },
-    },
-    colors: [colors.success],
-    xaxis: {
-        categories: props.charts.achievementsTrend.map(i => i.year),
-    },
-    yaxis: {
-        min: 0,
-    },
+    chart: { type: 'area', toolbar: { show: false }, fontFamily: 'inherit' },
+    stroke: { curve: 'smooth', width: 3 }, 
+    markers: { size: 5, colors: ['#ffffff'], strokeColors: colors.primary, strokeWidth: 2 },
+    fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05 } },
+    colors: [colors.primary],
+    xaxis: { categories: props.charts.achievementsTrend.map(i => i.year) },
+    yaxis: { min: 0, tickAmount: 4 },
     dataLabels: { enabled: false },
-    tooltip: { y: { formatter: (val: number) => `${val} prestasi` } },
+    tooltip: { theme: 'light' },
 }));
 
 const achievementsTrendSeries = computed(() => [{
-    name: 'Prestasi',
+    name: 'Total Prestasi',
     data: props.charts.achievementsTrend.map(i => i.total),
 }]);
 
-// 4. Berita per Kategori (Pie)
+// Grafik Donut
 const postsByCategoryOptions = computed((): ApexOptions => ({
-    chart: {
-        type: 'pie' as const,
-        fontFamily: 'inherit',
-    },
+    chart: { type: 'donut', fontFamily: 'inherit' },
     labels: props.charts.postsByCategory.map(i => i.name),
-    colors: [colors.primary, colors.success, colors.warning, colors.purple],
-    legend: {
-        position: 'bottom' as const,
-        fontSize: '12px',
-    },
-    dataLabels: {
-        enabled: true,
-        formatter: (val: number) => `${val.toFixed(0)}%`,
-    },
-    tooltip: { y: { formatter: (val: number) => `${val} berita` } },
-}));
-
-const postsByCategorySeries = computed(() =>
-    props.charts.postsByCategory.map(i => i.total)
-);
-
-// 5. Distribusi Rating (Bar)
-const ratingDistributionOptions = computed((): ApexOptions => ({
-    chart: {
-        type: 'bar' as const,
-        toolbar: { show: false },
-        fontFamily: 'inherit',
-    },
+    colors: [colors.primary, colors.success, colors.warning, colors.purple, colors.teal],
+    legend: { position: 'bottom', fontSize: '13px' },
     plotOptions: {
-        bar: {
-            borderRadius: 6,
-            columnWidth: '60%',
-            distributed: true,
-        },
+        pie: {
+            donut: {
+                size: '70%',
+                labels: { show: true, total: { show: true, label: 'Berita', fontWeight: 600 } }
+            }
+        }
     },
-    colors: [colors.danger, colors.warning, '#FCD34D', colors.teal, colors.success],
-    dataLabels: {
-        enabled: true,
-        style: { fontSize: '12px', colors: ['#fff'] },
-    },
-    xaxis: {
-        categories: ['1', '2', '3', '4', '5'],
-        title: { text: 'Rating' },
-    },
-    yaxis: {
-        title: { text: 'Jumlah Responden' },
-    },
-    legend: { show: false },
-    tooltip: { y: { formatter: (val: number) => `${val} responden` } },
+    stroke: { width: 0 },
+    dataLabels: { enabled: false },
 }));
 
-const ratingDistributionSeries = computed(() => {
-    // Ensure we have all ratings 1-5
-    const ratings = [1, 2, 3, 4, 5].map(r => {
-        const found = props.charts.ratingDistribution.find(i => i.rating === r);
-        return found ? found.total : 0;
-    });
-    return [{ name: 'Responden', data: ratings }];
-});
-
-// 6. Staff per Kategori (Horizontal Bar)
-const staffByCategoryOptions = computed((): ApexOptions => ({
-    chart: {
-        type: 'bar' as const,
-        toolbar: { show: false },
-        fontFamily: 'inherit',
-    },
-    plotOptions: {
-        bar: {
-            horizontal: true,
-            borderRadius: 4,
-            distributed: true,
-        },
-    },
-    colors: chartColors,
-    dataLabels: {
-        enabled: true,
-        style: { fontSize: '12px' },
-    },
-    xaxis: {
-        categories: props.charts.staffByCategory.map(i => i.name),
-    },
-    legend: { show: false },
-    tooltip: { y: { formatter: (val: number) => `${val} orang` } },
-}));
-
-const staffByCategorySeries = computed(() => [{
-    name: 'Staff',
-    data: props.charts.staffByCategory.map(i => i.total),
-}]);
-
-// Helper functions
-const formatDate = (dateString: string) => {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-    });
-};
+const postsByCategorySeries = computed(() => props.charts.postsByCategory.map(i => i.total));
 
 const getTimeAgo = (dateString: string) => {
     if (!dateString) return '-';
     const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
+    const diffMs = new Date().getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 60) return `${diffMins} menit lalu`;
+    if (diffMins < 60) return `${diffMins} mnt lalu`;
     if (diffHours < 24) return `${diffHours} jam lalu`;
     if (diffDays < 7) return `${diffDays} hari lalu`;
-    return formatDate(dateString);
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
 };
+
+const getRatingStars = (rating: number) => '★'.repeat(rating) + '☆'.repeat(5 - rating);
 
 const getLevelBadgeClass = (level: string) => {
     const classes: Record<string, string> = {
-        'Internasional': 'bg-purple-100 text-purple-800',
-        'Nasional': 'bg-blue-100 text-blue-800',
-        'Provinsi': 'bg-green-100 text-green-800',
-        'Kota/Kabupaten': 'bg-yellow-100 text-yellow-800',
-        'Universitas': 'bg-gray-100 text-gray-800',
+        'Internasional': 'bg-purple-50 text-purple-700 border-purple-200',
+        'Nasional': 'bg-blue-50 text-blue-700 border-blue-200',
+        'Provinsi': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        'Kota/Kabupaten': 'bg-amber-50 text-amber-700 border-amber-200',
+        'Universitas': 'bg-gray-50 text-gray-700 border-gray-200',
     };
-    return classes[level] || 'bg-gray-100 text-gray-800';
-};
-
-const getRatingStars = (rating: number) => {
-    return '★'.repeat(rating) + '☆'.repeat(5 - rating);
+    return classes[level] || 'bg-gray-50 text-gray-700 border-gray-200';
 };
 </script>
 
 <template>
-    <div class="space-y-6">
-        <!-- Header -->
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <p class="mt-1 text-sm text-gray-500">Selamat datang di panel admin FSTI ITK</p>
-        </div>
-
-        <!-- Stats Cards - Row 1 -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Total Berita -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Total Berita</p>
-                        <p class="text-2xl font-bold text-gray-900 mt-1">{{ stats.totalPosts }}</p>
-                        <p class="text-xs text-green-600 mt-1">
-                            {{ stats.publishedPosts }} terbit
-                        </p>
-                    </div>
-                    <div class="p-3 bg-blue-50 rounded-xl">
-                        <Newspaper class="w-6 h-6 text-blue-600" />
-                    </div>
-                </div>
-            </div>
-
-            <!-- Total Prestasi -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Total Prestasi</p>
-                        <p class="text-2xl font-bold text-gray-900 mt-1">{{ stats.totalAchievements }}</p>
-                        <p class="text-xs text-gray-500 mt-1">Mahasiswa berprestasi</p>
-                    </div>
-                    <div class="p-3 bg-yellow-50 rounded-xl">
-                        <Trophy class="w-6 h-6 text-yellow-600" />
-                    </div>
-                </div>
-            </div>
-
-            <!-- Total Dosen -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Total Dosen</p>
-                        <p class="text-2xl font-bold text-gray-900 mt-1">{{ stats.totalDosen }}</p>
-                        <p class="text-xs text-gray-500 mt-1">+ {{ stats.totalTendik }} tendik</p>
-                    </div>
-                    <div class="p-3 bg-green-50 rounded-xl">
-                        <GraduationCap class="w-6 h-6 text-green-600" />
-                    </div>
-                </div>
-            </div>
-
-            <!-- Rating Kepuasan -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Rating Kepuasan</p>
-                        <p class="text-2xl font-bold text-gray-900 mt-1">
-                            {{ stats.avgRating || '-' }}
-                            <span class="text-yellow-500 text-lg">★</span>
-                        </p>
-                        <p class="text-xs text-gray-500 mt-1">{{ stats.totalSurveys }} responden</p>
-                    </div>
-                    <div class="p-3 bg-yellow-50 rounded-xl">
-                        <Star class="w-6 h-6 text-yellow-500" />
-                    </div>
-                </div>
+    <div class="space-y-6 max-w-7xl mx-auto pb-10">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Dashboard Overview</h1>
+                <p class="mt-1 text-sm text-gray-500 font-medium">Ringkasan performa sistem dan statistik pengunjung.</p>
             </div>
         </div>
 
-        <!-- Stats Cards - Row 2 (Quick Stats) -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 text-center hover:shadow-md transition-shadow">
-                <FileText class="w-5 h-5 text-indigo-500 mx-auto" />
-                <p class="text-xl font-bold text-gray-900 mt-2">{{ stats.totalPpid }}</p>
-                <p class="text-xs text-gray-500">Dokumen PPID</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md">
+                <div class="space-y-1">
+                    <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Berita Terbit</p>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-3xl font-extrabold text-gray-900">{{ stats.publishedPosts }}</span>
+                        <span class="text-sm text-gray-400 font-medium">/ {{ stats.totalPosts }} total</span>
+                    </div>
+                </div>
+                <div class="p-4 bg-blue-50 rounded-2xl text-blue-600"><Newspaper class="w-8 h-8" /></div>
             </div>
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 text-center hover:shadow-md transition-shadow">
-                <Users class="w-5 h-5 text-teal-500 mx-auto" />
-                <p class="text-xl font-bold text-gray-900 mt-2">{{ stats.totalAlumni }}</p>
-                <p class="text-xs text-gray-500">Alumni Tracer</p>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md">
+                <div class="space-y-1">
+                    <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Total Prestasi</p>
+                    <span class="text-3xl font-extrabold text-gray-900">{{ stats.totalAchievements }}</span>
+                </div>
+                <div class="p-4 bg-emerald-50 rounded-2xl text-emerald-600"><Trophy class="w-8 h-8" /></div>
             </div>
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 text-center hover:shadow-md transition-shadow">
-                <Building2 class="w-5 h-5 text-purple-500 mx-auto" />
-                <p class="text-xl font-bold text-gray-900 mt-2">{{ stats.totalZonaIntegritas }}</p>
-                <p class="text-xs text-gray-500">Zona Integritas</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 text-center hover:shadow-md transition-shadow">
-                <Link2 class="w-5 h-5 text-pink-500 mx-auto" />
-                <p class="text-xl font-bold text-gray-900 mt-2">{{ stats.totalLayanan }}</p>
-                <p class="text-xs text-gray-500">Layanan Internal</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 text-center hover:shadow-md transition-shadow">
-                <Users class="w-5 h-5 text-blue-500 mx-auto" />
-                <p class="text-xl font-bold text-gray-900 mt-2">{{ stats.totalUsers }}</p>
-                <p class="text-xs text-gray-500">Admin Users</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 text-center hover:shadow-md transition-shadow">
-                <Users class="w-5 h-5 text-green-500 mx-auto" />
-                <p class="text-xl font-bold text-gray-900 mt-2">{{ stats.totalStaff }}</p>
-                <p class="text-xs text-gray-500">Total Staff</p>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md">
+                <div class="space-y-1">
+                    <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Rating Layanan</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-3xl font-extrabold text-gray-900">{{ stats.avgRating || '0.0' }}</span>
+                        <Star class="w-6 h-6 text-amber-400 fill-current" />
+                    </div>
+                </div>
+                <div class="p-4 bg-amber-50 rounded-2xl text-amber-600"><MessageSquare class="w-8 h-8" /></div>
             </div>
         </div>
 
-        <!-- Charts Row 1 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all hover:shadow-md">
+            <div class="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="p-2 bg-indigo-100 rounded-lg text-indigo-600"><BarChart3 class="w-5 h-5" /></div>
+                    <h2 class="font-bold text-gray-800 uppercase tracking-wide text-sm">Laporan Statistik Pengunjung</h2>
+                </div>
+                <div class="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Update Otomatis
+                </div>
+            </div>
+            <div class="p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="flex items-center gap-4 border-r border-gray-100 last:border-0">
+                    <div class="p-4 bg-blue-50 rounded-xl text-blue-600"><Users class="w-7 h-7" /></div>
+                    <div>
+                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Hari Ini</p>
+                        <p class="text-3xl font-black text-gray-900 mt-0.5">{{ stats.visitorsToday.toLocaleString() }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 border-r border-gray-100 last:border-0">
+                    <div class="p-4 bg-emerald-50 rounded-xl text-emerald-600"><Calendar class="w-7 h-7" /></div>
+                    <div>
+                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Bulan Ini</p>
+                        <p class="text-3xl font-black text-emerald-600 mt-0.5">{{ (stats.totalHits || 0).toLocaleString() }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="p-4 bg-purple-50 rounded-xl text-purple-600"><Activity class="w-7 h-7" /></div>
+                    <div>
+                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Total Pengunjung</p>
+                        <p class="text-3xl font-black text-purple-600 mt-0.5">{{ stats.totalVisitors.toLocaleString() }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Prestasi per Program Studi -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <h3 class="text-base font-semibold text-gray-900 mb-4">Prestasi per Program Studi</h3>
-                <VueApexCharts
-                    v-if="charts.achievementsByProdi.length > 0"
-                    type="bar"
-                    height="300"
-                    :options="achievementsByProdiOptions"
-                    :series="achievementsByProdiSeries"
-                />
-                <div v-else class="h-[300px] flex items-center justify-center text-gray-400">
-                    Belum ada data prestasi
-                </div>
-            </div>
-
-            <!-- Prestasi per Tingkat -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <h3 class="text-base font-semibold text-gray-900 mb-4">Prestasi per Tingkat</h3>
-                <VueApexCharts
-                    v-if="charts.achievementsByLevel.length > 0"
-                    type="donut"
-                    height="300"
-                    :options="achievementsByLevelOptions"
-                    :series="achievementsByLevelSeries"
-                />
-                <div v-else class="h-[300px] flex items-center justify-center text-gray-400">
-                    Belum ada data prestasi
-                </div>
-            </div>
-        </div>
-
-        <!-- Charts Row 2 -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Trend Prestasi -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <h3 class="text-base font-semibold text-gray-900 mb-4">
-                    <TrendingUp class="w-4 h-4 inline mr-1" />
-                    Trend Prestasi per Tahun
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <h3 class="text-base font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <TrendingUp class="w-5 h-5 text-blue-500" /> Tren Prestasi Mahasiswa
                 </h3>
-                <VueApexCharts
-                    v-if="charts.achievementsTrend.length > 0"
-                    type="area"
-                    height="250"
-                    :options="achievementsTrendOptions"
-                    :series="achievementsTrendSeries"
-                />
-                <div v-else class="h-[250px] flex items-center justify-center text-gray-400">
-                    Belum ada data trend
-                </div>
+                <VueApexCharts v-if="charts.achievementsTrend.length > 0" type="area" height="300" :options="achievementsTrendOptions" :series="achievementsTrendSeries" />
+                <div v-else class="h-[300px] flex items-center justify-center text-sm text-gray-400">Data belum tersedia</div>
             </div>
 
-            <!-- Berita per Kategori -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <h3 class="text-base font-semibold text-gray-900 mb-4">Berita per Kategori</h3>
-                <VueApexCharts
-                    v-if="charts.postsByCategory.length > 0"
-                    type="pie"
-                    height="250"
-                    :options="postsByCategoryOptions"
-                    :series="postsByCategorySeries"
-                />
-                <div v-else class="h-[250px] flex items-center justify-center text-gray-400">
-                    Belum ada data berita
-                </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <h3 class="text-base font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <PieChart class="w-5 h-5 text-purple-500" /> Sebaran Informasi Berita
+                </h3>
+                <VueApexCharts v-if="charts.postsByCategory.length > 0" type="donut" height="300" :options="postsByCategoryOptions" :series="postsByCategorySeries" />
+                <div v-else class="h-[300px] flex items-center justify-center text-sm text-gray-400">Data belum tersedia</div>
             </div>
         </div>
 
-        <!-- Charts Row 3 -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Distribusi Rating -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <h3 class="text-base font-semibold text-gray-900 mb-4">Distribusi Rating Kepuasan</h3>
-                <VueApexCharts
-                    v-if="charts.ratingDistribution.length > 0"
-                    type="bar"
-                    height="250"
-                    :options="ratingDistributionOptions"
-                    :series="ratingDistributionSeries"
-                />
-                <div v-else class="h-[250px] flex items-center justify-center text-gray-400">
-                    Belum ada data survey
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-bold text-gray-800">Berita Populer</h3>
+                    <Link href="/admin/posts" class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-tighter">Semua</Link>
                 </div>
-            </div>
-
-            <!-- Staff per Kategori -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <h3 class="text-base font-semibold text-gray-900 mb-4">Staff per Kategori</h3>
-                <VueApexCharts
-                    v-if="charts.staffByCategory.length > 0"
-                    type="bar"
-                    height="250"
-                    :options="staffByCategoryOptions"
-                    :series="staffByCategorySeries"
-                />
-                <div v-else class="h-[250px] flex items-center justify-center text-gray-400">
-                    Belum ada data staff
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Activity Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Berita Terbaru -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-base font-semibold text-gray-900">
-                        <Newspaper class="w-4 h-4 inline mr-1" />
-                        Berita Terbaru
-                    </h3>
-                    <a href="/admin/posts" class="text-sm text-blue-600 hover:text-blue-800">Lihat semua</a>
-                </div>
-                <div class="space-y-3">
-                    <div
-                        v-for="post in recent.posts"
-                        :key="post.id"
-                        class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
+                <div class="space-y-4">
+                    <div v-for="(post, index) in recent.topViewedPosts.slice(0, 5)" :key="post.id" class="flex items-start gap-3 group">
+                        <span class="text-sm font-bold text-gray-300 mt-0.5">{{ index + 1 }}</span>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate">{{ post.title }}</p>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
-                                    {{ post.category }}
-                                </span>
-                                <span class="text-xs text-gray-400 flex items-center gap-1">
-                                    <Eye class="w-3 h-3" /> {{ post.views }}
-                                </span>
+                            <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">{{ post.title }}</p>
+                            <div class="flex items-center gap-3 mt-1 text-[11px] text-gray-400 font-medium">
+                                <span class="bg-gray-100 px-1.5 py-0.5 rounded">{{ post.category }}</span>
+                                <span class="flex items-center gap-1"><Eye class="w-3 h-3" /> {{ post.views }}</span>
                             </div>
                         </div>
-                        <span class="text-xs text-gray-400 whitespace-nowrap">
-                            {{ getTimeAgo(post.created_at) }}
-                        </span>
-                    </div>
-                    <div v-if="recent.posts.length === 0" class="text-center text-gray-400 py-4">
-                        Belum ada berita
                     </div>
                 </div>
             </div>
 
-            <!-- Prestasi Terbaru -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-base font-semibold text-gray-900">
-                        <Trophy class="w-4 h-4 inline mr-1" />
-                        Prestasi Terbaru
-                    </h3>
-                    <a href="/admin/achievements" class="text-sm text-blue-600 hover:text-blue-800">Lihat semua</a>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-bold text-gray-800">Feedback Terakhir</h3>
+                    <Link href="/admin/satisfaction-surveys" class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-tighter">Semua</Link>
                 </div>
-                <div class="space-y-3">
-                    <div
-                        v-for="achievement in recent.achievements"
-                        :key="achievement.id"
-                        class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
+                <div class="space-y-5">
+                    <div v-for="survey in recent.surveys.slice(0, 3)" :key="survey.id" class="border-b border-gray-50 pb-3 last:border-0 last:pb-0">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-xs font-bold text-gray-900">{{ survey.respondent_name || 'Anonim' }}</span>
+                            <span class="text-amber-400 text-[10px] tracking-widest">{{ getRatingStars(survey.rating) }}</span>
+                        </div>
+                        <p class="text-xs text-gray-600 line-clamp-2 leading-relaxed italic">"{{ survey.feedback || 'Tidak ada pesan.' }}"</p>
+                        <p class="text-[10px] text-gray-400 mt-2 font-medium uppercase tracking-tighter">{{ getTimeAgo(survey.created_at) }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-bold text-gray-800">Prestasi Terbaru</h3>
+                    <Link href="/admin/achievements" class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-tighter">Semua</Link>
+                </div>
+                <div class="space-y-4">
+                    <div v-for="achievement in recent.achievements.slice(0, 4)" :key="achievement.id" class="flex items-start gap-3">
+                        <div class="mt-1 p-1.5 bg-gray-50 rounded-lg"><Award class="w-4 h-4 text-emerald-500" /></div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate">{{ achievement.achievement_name }}</p>
-                            <p class="text-xs text-gray-500 mt-0.5">{{ achievement.student_name }}</p>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span :class="['text-xs px-2 py-0.5 rounded-full', getLevelBadgeClass(achievement.level)]">
+                            <p class="text-sm font-semibold text-gray-900 line-clamp-1">{{ achievement.achievement_name }}</p>
+                            <div class="flex items-center gap-2 mt-1.5">
+                                <span :class="['text-[9px] px-1.5 py-0.5 rounded-md border font-bold uppercase tracking-tighter', getLevelBadgeClass(achievement.level)]">
                                     {{ achievement.level }}
                                 </span>
-                                <span class="text-xs text-gray-400">{{ achievement.year }}</span>
                             </div>
                         </div>
-                    </div>
-                    <div v-if="recent.achievements.length === 0" class="text-center text-gray-400 py-4">
-                        Belum ada prestasi
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bottom Row -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Top Viewed Posts -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-base font-semibold text-gray-900">
-                        <Eye class="w-4 h-4 inline mr-1" />
-                        Berita Paling Banyak Dilihat
-                    </h3>
-                </div>
-                <div class="space-y-2">
-                    <div
-                        v-for="(post, index) in recent.topViewedPosts"
-                        :key="post.id"
-                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                        <span class="text-lg font-bold text-gray-300 w-6">{{ index + 1 }}</span>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate">{{ post.title }}</p>
-                            <span class="text-xs text-gray-400">{{ post.category }}</span>
-                        </div>
-                        <div class="flex items-center gap-1 text-sm text-gray-600">
-                            <Eye class="w-4 h-4" />
-                            <span class="font-medium">{{ post.views.toLocaleString() }}</span>
-                        </div>
-                    </div>
-                    <div v-if="recent.topViewedPosts.length === 0" class="text-center text-gray-400 py-4">
-                        Belum ada data
-                    </div>
-                </div>
-            </div>
-
-            <!-- Survey Terbaru -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-base font-semibold text-gray-900">
-                        <MessageSquare class="w-4 h-4 inline mr-1" />
-                        Feedback Terbaru
-                    </h3>
-                    <a href="/admin/satisfaction-surveys" class="text-sm text-blue-600 hover:text-blue-800">Lihat semua</a>
-                </div>
-                <div class="space-y-3">
-                    <div
-                        v-for="survey in recent.surveys"
-                        :key="survey.id"
-                        class="p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-sm font-medium text-gray-900">
-                                {{ survey.respondent_name || 'Anonim' }}
-                            </span>
-                            <span class="text-yellow-500 text-sm">{{ getRatingStars(survey.rating) }}</span>
-                        </div>
-                        <p class="text-xs text-gray-500 mb-1">{{ survey.respondent_type }} - {{ survey.service_category }}</p>
-                        <p v-if="survey.feedback" class="text-sm text-gray-600 line-clamp-2">
-                            "{{ survey.feedback }}"
-                        </p>
-                        <p class="text-xs text-gray-400 mt-1">{{ getTimeAgo(survey.created_at) }}</p>
-                    </div>
-                    <div v-if="recent.surveys.length === 0" class="text-center text-gray-400 py-4">
-                        Belum ada feedback
                     </div>
                 </div>
             </div>

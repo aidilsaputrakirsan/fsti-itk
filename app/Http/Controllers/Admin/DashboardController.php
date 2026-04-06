@@ -35,6 +35,8 @@ class DashboardController extends Controller
             'totalKategoriPpid' => $totalKategoriPpid,
             'totalZonaIntegritas' => ZiDocument::count(),
             'totalLayanan' => InternalService::where('is_active', true)->count(),
+            'totalVisitors' => \App\Models\Visitor::count(),
+            'visitorsToday' => \App\Models\Visitor::where('visit_date', today()->toDateString())->count(),
         ];
 
         // === DATA UNTUK CHARTS ===

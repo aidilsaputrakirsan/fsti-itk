@@ -1,31 +1,45 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
 import { ref, onMounted, onUnmounted, computed } from 'vue';
+// Import icon yang dibutuhkan
+import { Users, Calendar, Activity } from 'lucide-vue-next';
+
+// Definisi interface untuk TypeScript
+interface VisitorStats {
+    today: number;
+    month: number;
+    total: number;
+}
 
 const page = usePage();
 const contact = computed(() => (page.props.contact_global as Record<string, any>) || {});
+
+// Ambil data visitor dari shared props (HandleInertiaRequests)
+const visitors = computed<VisitorStats>(() => {
+    return (page.props.visitorStats as VisitorStats) || { today: 0, month: 0, total: 0 };
+});
 
 // State untuk tombol "Back to Top"
 const showScrollTop = ref(false);
 
 const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 const handleScroll = () => {
-  if (window.scrollY > 400) {
-    showScrollTop.value = true;
-  } else {
-    showScrollTop.value = false;
-  }
+    if (window.scrollY > 400) {
+        showScrollTop.value = true;
+    } else {
+        showScrollTop.value = false;
+    }
 };
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll);
 });
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
+    window.removeEventListener('scroll', handleScroll);
 });
 </script>
 
@@ -56,7 +70,7 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ml-20 py-1 pb-12 text-white">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ml-20 py-1 pb-12 text-white border-b border-white/20">
                 <div class="space-y-4 lg:col-span-1">
                     <div class="flex items-center space-x-3">
                          <div class="bg-white p-1 rounded shadow-sm">
@@ -103,6 +117,41 @@ onUnmounted(() => {
                         <li><a href="https://itk.ac.id/" target="_blank" rel="noopener noreferrer" class="hover:text-gray-200">Website Utama ITK</a></li>
                         <li><a href="https://pmb.itk.ac.id/" target="_blank" rel="noopener noreferrer" class="hover:text-gray-200">Penerimaan Mahasiswa Baru ITK</a></li>
                     </ul>
+                </div>
+            </div>
+
+            <div class="py-8 flex flex-col md:flex-row justify-between items-center gap-6 text-white/80">
+                <div class="text-xs tracking-wider">
+                    &copy; {{ new Date().getFullYear() }} FSTI ITK • Institut Teknologi Kalimantan
+                </div>
+
+                <div class="flex flex-col items-center gap-2">
+                    <p class="text-[10px] font-bold uppercase tracking-widest opacity-60">Statistik Kunjungan</p>
+                    <div class="flex items-center gap-6 bg-white/10 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/20 shadow-xl">
+                        <div class="flex flex-col items-center justify-center gap-1">
+                            <Users class="w-4 h-4 text-blue-300" />
+                            <div class="text-center leading-tight">
+                                <p class="opacity-70 uppercase font-bold tracking-tighter text-[8px]">Hari Ini</p>
+                                <p class="font-bold text-white text-sm leading-none mt-0.5">{{ visitors.today.toLocaleString() }}</p>
+                            </div>
+                        </div>
+                        <div class="w-px h-6 bg-white/20"></div>
+                        <div class="flex flex-col items-center justify-center gap-1">
+                            <Calendar class="w-4 h-4 text-emerald-300" />
+                            <div class="text-center leading-tight">
+                                <p class="opacity-70 uppercase font-bold tracking-tighter text-[8px]">Bulan Ini</p>
+                                <p class="font-bold text-white text-sm leading-none mt-0.5">{{ visitors.month.toLocaleString() }}</p>
+                            </div>
+                        </div>
+                        <div class="w-px h-6 bg-white/20"></div>
+                        <div class="flex flex-col items-center justify-center gap-1">
+                            <Activity class="w-4 h-4 text-amber-300" />
+                            <div class="text-center leading-tight">
+                                <p class="opacity-70 uppercase font-bold tracking-tighter text-[8px]">Total</p>
+                                <p class="font-bold text-white text-sm leading-none mt-0.5">{{ visitors.total.toLocaleString() }}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
