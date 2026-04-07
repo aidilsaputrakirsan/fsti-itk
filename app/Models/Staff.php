@@ -16,7 +16,7 @@ class Staff extends Model
         'structural_position',
         'functional_position',
         'image_url',
-        'is_active', // WAJIB ADA AGAR STATUS NONAKTIF BISA DISIMPAN
+        'is_active',
         'education_history',
         'expertise',
         'competency_certification',
@@ -54,7 +54,6 @@ class Staff extends Model
         if (str_contains($url, 'drive.google.com')) {
             preg_match('/\/d\/([a-zA-Z0-9_-]+)/', $url, $matches);
             if (isset($matches[1])) {
-                // Menggunakan lh3.googleusercontent agar terhindar dari error 403 Forbidden di tag <img>
                 return "https://lh3.googleusercontent.com/d/{$matches[1]}";
             }
         }

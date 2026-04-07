@@ -140,7 +140,7 @@ defineProps({
             </div>
         </section>
 
-        <div class="bg-gray-50 py-16 md:py-24 font-public-sans border-t border-gray-200">
+        <div class="bg-white py-16 md:py-24 font-public-sans border-t border-gray-200">
             <div class="container mx-auto px-6 lg:px-8 max-w-4xl">
                 <div class="text-center mb-12" data-aos="fade-up">
                     <h2 class="text-3xl md:text-4xl font-bold font-optimus text-primary mb-3 tracking-tight">

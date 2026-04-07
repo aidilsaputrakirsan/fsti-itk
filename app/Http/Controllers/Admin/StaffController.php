@@ -17,17 +17,16 @@ class StaffController extends Controller
 
         // Diperbarui: Bisa mencari berdasarkan Nama atau NIP
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('nip', 'like', '%' . $request->search . '%');
+                    ->orWhere('nip', 'like', '%' . $request->search . '%');
             });
         }
-        
+
         if ($request->filled('type') && $request->type !== 'Semua') {
             $query->where('type', $request->type);
         }
 
-        // BARU: Filter berdasarkan Status Aktif/Nonaktif
         if ($request->filled('status') && $request->status !== 'Semua') {
             $isActive = $request->status === 'Aktif' ? true : false;
             $query->where('is_active', $isActive);
@@ -37,7 +36,7 @@ class StaffController extends Controller
 
         return Inertia::render('Admin/Staff/Index', [
             'staff' => $staff,
-            'filters' => $request->only(['search', 'type', 'status']), // Status ditambahkan
+            'filters' => $request->only(['search', 'type', 'status']),
         ]);
     }
 
@@ -58,7 +57,7 @@ class StaffController extends Controller
             'structural_position' => 'nullable|string|max:255',
             'functional_position' => 'nullable|string|max:255',
             'image_url' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', 
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'is_active' => 'required|boolean',
             'education_history' => 'nullable|array',
             'expertise' => 'nullable|array',
@@ -116,13 +115,11 @@ class StaffController extends Controller
                 Storage::disk('public')->delete($staff->image_url);
             }
             $validated['image_url'] = $request->file('image')->store('staff', 'public');
-
         } elseif ($request->filled('image_url')) {
             if ($staff->image_url && !str_starts_with($staff->image_url, 'http') && $staff->image_url !== $request->image_url) {
                 Storage::disk('public')->delete($staff->image_url);
             }
             $validated['image_url'] = $request->image_url;
-
         } else {
             if ($staff->image_url && str_starts_with($staff->image_url, 'http')) {
                 $validated['image_url'] = null;

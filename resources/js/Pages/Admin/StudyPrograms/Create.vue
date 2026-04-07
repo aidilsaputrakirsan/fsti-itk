@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useForm, Link, Head } from '@inertiajs/vue3';
-import { ArrowLeftIcon, PaperAirplaneIcon, PaperClipIcon } from '@heroicons/vue/24/outline';
+import InputError from '@/Components/InputError.vue';
+import { ArrowLeftIcon, PaperAirplaneIcon, PaperClipIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { ref } from 'vue';
 
 defineOptions({ layout: AdminLayout });
 
-// FIX TYPESCRIPT: Kita buat Interface yang jelas agar TS tidak terjebak "infinite loop"
+const fileInput = ref<HTMLInputElement | null>(null);
+
 interface StudyProgramForm {
     name: string;
     department: string;
@@ -36,7 +39,63 @@ const form = useForm<StudyProgramForm>({
     accreditation_certificate_image: null,
 });
 
+const handleImageChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files[0]) {
+        form.accreditation_certificate_image = target.files[0];
+    } else {
+        form.accreditation_certificate_image = null;
+    }
+};
+
+const clearImage = () => {
+    form.accreditation_certificate_image = null;
+    if (fileInput.value) fileInput.value.value = '';
+};
+
 const submit = () => {
+    form.clearErrors();
+    let hasError = false;
+
+    // Validasi Teks
+    if (!form.name) { form.setError('name', 'Nama Program Studi wajib diisi.'); hasError = true; }
+    if (!form.degree) { form.setError('degree', 'Jenjang wajib dipilih.'); hasError = true; }
+    if (!form.department) { form.setError('department', 'Jurusan wajib dipilih.'); hasError = true; }
+    if (!form.description) { form.setError('description', 'Profil ringkas wajib diisi.'); hasError = true; }
+    if (!form.vision) { form.setError('vision', 'Visi prodi wajib diisi.'); hasError = true; }
+    if (!form.goals) { form.setError('goals', 'Tujuan prodi wajib diisi.'); hasError = true; }
+    if (!form.mission) { form.setError('mission', 'Misi prodi wajib diisi.'); hasError = true; }
+    if (!form.graduate_profiles) { form.setError('graduate_profiles', 'Profil lulusan wajib diisi.'); hasError = true; }
+    if (!form.accreditation_text) { form.setError('accreditation_text', 'Teks akreditasi wajib diisi.'); hasError = true; }
+
+    const urlPattern = /^https?:\/\/.+/;
+    if (!form.website_link) {
+        form.setError('website_link', 'Tautan website resmi prodi wajib diisi.'); hasError = true;
+    } else if (!urlPattern.test(form.website_link)) {
+        form.setError('website_link', 'Tautan harus diawali dengan http:// atau https://'); hasError = true;
+    }
+
+    if (!form.accreditation_pdf_link) {
+        form.setError('accreditation_pdf_link', 'Tautan PDF sertifikat akreditasi wajib diisi.'); hasError = true;
+    } else if (!urlPattern.test(form.accreditation_pdf_link)) {
+        form.setError('accreditation_pdf_link', 'Tautan harus diawali dengan http:// atau https://'); hasError = true;
+    }
+
+    if (!form.accreditation_certificate_image) {
+        form.setError('accreditation_certificate_image', 'Gambar sertifikat akreditasi wajib diunggah.');
+        hasError = true;
+    } else {
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!allowedTypes.includes(form.accreditation_certificate_image.type)) {
+            form.setError('accreditation_certificate_image', 'Format file harus JPG, PNG, atau WEBP.');
+            hasError = true;
+        } else if (form.accreditation_certificate_image.size > 2 * 1024 * 1024) {
+            form.setError('accreditation_certificate_image', 'Ukuran file gambar maksimal 2MB.');
+            hasError = true;
+        }
+    }
+
+    if (hasError) return;
     form.post(route('admin.study-programs.store'));
 };
 </script>
@@ -44,112 +103,148 @@ const submit = () => {
 <template>
   <div>
     <Head title="Tambah Program Studi" />
-    <div class="mb-8 flex items-center gap-4">
-      <Link :href="route('admin.study-programs.index')" class="text-gray-500 hover:text-[#4682A9] transition bg-white p-2 rounded-full shadow-sm">
-          <ArrowLeftIcon class="w-5 h-5" />
-      </Link>
-      <div>
-        <h1 class="text-3xl font-bold text-black">Tambah Program Studi</h1>
-        <p class="mt-1 text-black">Tambah data program studi baru di Fakultas Sains dan Teknologi Informasi</p>
-      </div>
+    <div class="mb-8">
+        <Link :href="route('admin.study-programs.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
+            <ArrowLeftIcon class="h-4 w-4 stroke-2" /> Kembali ke Daftar
+        </Link>
+        <h1 class="text-3xl font-bold text-gray-900">Tambah Program Studi</h1>
+        <p class="mt-1 text-gray-600">Tambah data program studi baru di Fakultas Sains dan Teknologi Informasi.</p>
     </div>
 
-    <div class="bg-white shadow-sm p-8 rounded-lg">
-      <form @submit.prevent="submit">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+    <div class="bg-white shadow-sm p-5 sm:p-8 rounded-xl border-t-4 border-primary">
+      <form @submit.prevent="submit" novalidate>
+        <div class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-x-8 gap-y-6 md:gap-y-8">
           
-          <div class="space-y-6">
+            <label class="md:pt-3 text-sm font-bold text-gray-800">Nama Program Studi <span class="text-red-600">*</span></label>
             <div>
-              <label for="name" class="block text-sm font-semibold text-black">Nama Program Studi *</label>
-              <input type="text" id="name" v-model="form.name" placeholder="Contoh: Matematika" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
-              <p v-if="form.errors.name" class="mt-2 text-sm text-red-600">{{ form.errors.name }}</p>
+                <input v-model="form.name" type="text" placeholder="Contoh: Matematika" 
+                    class="block w-full rounded-lg transition-colors py-3"
+                    :class="form.errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                    required>
+                <InputError :message="form.errors.name" />
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <label class="md:pt-3 text-sm font-bold text-gray-800">Jenjang & Jurusan <span class="text-red-600">*</span></label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label for="degree" class="block text-sm font-semibold text-black">Jenjang *</label>
-                  <select id="degree" v-model="form.degree" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required>
-                    <option value="S1">S1 (Sarjana)</option>
-                    <option value="S2">S2 (Magister)</option>
-                  </select>
-                  <p v-if="form.errors.degree" class="mt-2 text-sm text-red-600">{{ form.errors.degree }}</p>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Jenjang</label>
+                    <select v-model="form.degree" class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white py-3" required>
+                        <option value="S1">S1 (Sarjana)</option>
+                        <option value="S2">S2 (Magister)</option>
+                    </select>
+                    <InputError :message="form.errors.degree" />
                 </div>
                 <div>
-                  <label for="department" class="block text-sm font-semibold text-black">Jurusan *</label>
-                  <select id="department" v-model="form.department" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required>
-                    <option value="Sains dan Analitika Data">Sains dan Analitika Data</option>
-                    <option value="Teknik Elektro, Informatika, dan Bisnis">Teknik Elektro, Informatika, dan Bisnis</option>
-                  </select>
-                  <p v-if="form.errors.department" class="mt-2 text-sm text-red-600">{{ form.errors.department }}</p>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Jurusan Induk</label>
+                    <select v-model="form.department" class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white py-3" required>
+                        <option value="Sains dan Analitika Data">Sains dan Analitika Data</option>
+                        <option value="Teknik Elektro, Informatika, dan Bisnis">Teknik Elektro, Informatika, dan Bisnis</option>
+                    </select>
+                    <InputError :message="form.errors.department" />
                 </div>
             </div>
 
+            <label class="md:pt-3 text-sm font-bold text-gray-800">Profil Ringkas <span class="text-red-600">*</span></label>
             <div>
-              <label for="description" class="block text-sm font-semibold text-black">Profil Ringkas (Deskripsi) *</label>
-              <textarea id="description" v-model="form.description" rows="4" placeholder="Masukkan deskripsi singkat tentang prodi..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
+                <textarea v-model="form.description" rows="4" placeholder="Masukkan deskripsi singkat tentang prodi..." 
+                    class="block w-full rounded-lg transition-colors py-3"
+                    :class="form.errors.description ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"
+                    required></textarea>
+                <InputError :message="form.errors.description" />
             </div>
 
+            <label class="md:pt-3 text-sm font-bold text-gray-800">Visi <span class="text-red-600">*</span></label>
             <div>
-              <label for="vision" class="block text-sm font-semibold text-black">Visi *</label>
-              <textarea id="vision" v-model="form.vision" rows="3" placeholder="Masukkan teks visi prodi..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
+                <textarea v-model="form.vision" rows="3" placeholder="Masukkan teks visi prodi..." 
+                    class="block w-full rounded-lg transition-colors py-3"
+                    :class="form.errors.vision ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"
+                    required></textarea>
+                <InputError :message="form.errors.vision" />
             </div>
 
+            <label class="md:pt-3 text-sm font-bold text-gray-800">Misi <span class="text-red-600">*</span></label>
             <div>
-              <label for="goals" class="block text-sm font-semibold text-black">Tujuan * <span class="font-normal text-gray-500">(Pisahkan dengan 'Enter')</span></label>
-              <textarea id="goals" v-model="form.goals" rows="5" placeholder="1. Tujuan pertama...&#10;2. Tujuan kedua..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
-            </div>
-          </div>
-
-          <div class="space-y-6">
-            <div>
-              <label for="mission" class="block text-sm font-semibold text-black">Misi * <span class="font-normal text-gray-500">(Pisahkan dengan 'Enter')</span></label>
-              <textarea id="mission" v-model="form.mission" rows="6" placeholder="1. Misi pertama...&#10;2. Misi kedua..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
+                <p class="text-xs text-gray-500 mb-2 font-medium">Pisahkan setiap poin dengan menekan tombol <strong>Enter</strong>.</p>
+                <textarea v-model="form.mission" rows="6" placeholder="1. Misi pertama...&#10;2. Misi kedua..." 
+                    class="block w-full rounded-lg transition-colors py-3"
+                    :class="form.errors.mission ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"
+                    required></textarea>
+                <InputError :message="form.errors.mission" />
             </div>
 
+            <label class="md:pt-3 text-sm font-bold text-gray-800">Tujuan <span class="text-red-600">*</span></label>
             <div>
-              <label for="graduate_profiles" class="block text-sm font-semibold text-black">Profil Lulusan / Karier * <span class="font-normal text-gray-500">(Pisahkan dengan 'Enter')</span></label>
-              <textarea id="graduate_profiles" v-model="form.graduate_profiles" rows="4" placeholder="Data Analyst&#10;Aktuaris&#10;Konsultan" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
+                <p class="text-xs text-gray-500 mb-2 font-medium">Pisahkan setiap poin dengan menekan tombol <strong>Enter</strong>.</p>
+                <textarea v-model="form.goals" rows="5" placeholder="1. Tujuan pertama...&#10;2. Tujuan kedua..." 
+                    class="block w-full rounded-lg transition-colors py-3"
+                    :class="form.errors.goals ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"
+                    required></textarea>
+                <InputError :message="form.errors.goals" />
+            </div>
+
+            <label class="md:pt-3 text-sm font-bold text-gray-800">Profil Lulusan / Karier <span class="text-red-600">*</span></label>
+            <div>
+                <p class="text-xs text-gray-500 mb-2 font-medium">Pisahkan setiap profesi dengan menekan tombol <strong>Enter</strong>.</p>
+                <textarea v-model="form.graduate_profiles" rows="4" placeholder="Data Analyst&#10;Aktuaris&#10;Konsultan" 
+                    class="block w-full rounded-lg transition-colors py-3"
+                    :class="form.errors.graduate_profiles ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"
+                    required></textarea>
+                <InputError :message="form.errors.graduate_profiles" />
             </div>
             
+            <label class="md:pt-3 text-sm font-bold text-gray-800">Teks Akreditasi <span class="text-red-600">*</span></label>
             <div>
-              <label for="accreditation_text" class="block text-sm font-semibold text-black">Teks Penjelasan Akreditasi *</label>
-              <textarea id="accreditation_text" v-model="form.accreditation_text" rows="2" placeholder="Contoh: Terakreditasi Baik oleh LAMSAMA." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
+                <textarea v-model="form.accreditation_text" rows="2" placeholder="Contoh: Terakreditasi Baik oleh LAMSAMA." 
+                    class="block w-full rounded-lg transition-colors py-3"
+                    :class="form.errors.accreditation_text ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"
+                    required></textarea>
+                <InputError :message="form.errors.accreditation_text" />
             </div>
 
-            <div class="p-4 bg-gray-50 border border-gray-200 rounded-xl space-y-4">
-                <h4 class="text-sm font-bold text-gray-700">Tautan & Media (Opsional)</h4>
-                
+            <label class="md:pt-3 text-sm font-bold text-gray-800">Tautan & Media Tambahan</label>
+            <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 space-y-5">
                 <div>
-                  <label for="website_link" class="block text-sm font-semibold text-gray-600">Link Website Resmi Prodi</label>
-                  <input type="url" id="website_link" v-model="form.website_link" placeholder="https://math.itk.ac.id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Link Website Resmi Prodi <span class="text-red-500">*</span></label>
+                    <input type="url" v-model="form.website_link" placeholder="Cth: https://math.itk.ac.id" 
+                        class="block w-full rounded-lg transition-colors py-2.5 shadow-sm"
+                        :class="form.errors.website_link ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'">
+                    <InputError :message="form.errors.website_link" />
                 </div>
 
                 <div>
-                  <label for="accreditation_pdf_link" class="block text-sm font-semibold text-gray-600">Link File PDF Akreditasi</label>
-                  <input type="url" id="accreditation_pdf_link" v-model="form.accreditation_pdf_link" placeholder="https://ult.itk.ac.id/.../sertifikat.pdf" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Link File PDF Akreditasi <span class="text-red-500">*</span></label>
+                    <input type="url" v-model="form.accreditation_pdf_link" placeholder="Cth: https://ult.itk.ac.id/.../sertifikat.pdf" 
+                        class="block w-full rounded-lg transition-colors py-2.5 shadow-sm"
+                        :class="form.errors.accreditation_pdf_link ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'">
+                    <InputError :message="form.errors.accreditation_pdf_link" />
                 </div>
                 
                 <div>
-                  <label for="image" class="block text-sm font-semibold text-gray-600">Gambar Sertifikat Akreditasi</label>
-                  <div class="mt-1 relative flex items-center w-full rounded-md border border-gray-300 bg-white shadow-sm px-4 py-2 hover:bg-gray-100 transition">
-                    <PaperClipIcon class="h-5 w-5 text-gray-400" />
-                    <span class="ml-3 text-sm" :class="{'text-gray-400': !form.accreditation_certificate_image, 'text-black': form.accreditation_certificate_image}">
-                      {{ form.accreditation_certificate_image ? form.accreditation_certificate_image.name : 'Upload gambar (JPG/PNG)' }}
-                    </span>
-                    <input type="file" id="image" @input="form.accreditation_certificate_image = ($event.target as HTMLInputElement).files?.[0] || null" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                  </div>
-                  <p v-if="form.errors.accreditation_certificate_image" class="mt-2 text-sm text-red-600">{{ form.errors.accreditation_certificate_image }}</p>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Gambar Sertifikat Akreditasi <span class="text-red-500">*</span></label>
+                    <p class="text-[10px] text-gray-500 mb-2 font-medium uppercase tracking-wider">Maksimal 2MB. Format JPG/PNG/WEBP.</p>
+                    <div class="relative flex items-center w-full rounded-lg border bg-white shadow-sm px-4 py-2 hover:bg-gray-50 transition" :class="form.errors.accreditation_certificate_image ? 'border-red-500 bg-red-50' : 'border-gray-300'">
+                        <PaperClipIcon :class="form.errors.accreditation_certificate_image ? 'text-red-400' : 'text-gray-400'" class="h-5 w-5 flex-shrink-0" />
+                        <span class="ml-3 text-sm truncate flex-1 font-medium" :class="form.errors.accreditation_certificate_image ? 'text-red-700' : 'text-gray-500'">
+                            {{ form.accreditation_certificate_image ? form.accreditation_certificate_image.name : 'Pilih file gambar...' }}
+                        </span>
+                        <button v-if="form.accreditation_certificate_image" type="button" @click.prevent="clearImage" class="ml-2 p-1 text-red-500 hover:bg-red-50 rounded-md relative z-10 flex-shrink-0" title="Batal Pilih File">
+                            <XMarkIcon class="w-5 h-5"/>
+                        </button>
+                        <input ref="fileInput" type="file" @change="handleImageChange" accept="image/jpeg, image/png, image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" :class="{'hidden': form.accreditation_certificate_image}" />
+                    </div>
+                    <InputError :message="form.errors.accreditation_certificate_image" />
                 </div>
             </div>
-          </div>
+
         </div>
 
-        <div class="mt-10 flex items-center justify-end gap-4 border-t border-gray-100 pt-6">
-            <Link :href="route('admin.study-programs.index')" class="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition">
+        <div class="mt-12 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 border-t border-gray-100 pt-6">
+            <Link :href="route('admin.study-programs.index')" class="w-full sm:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
                 Batal
             </Link>
-            <button type="submit" :disabled="form.processing" class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-opacity-90 disabled:opacity-50 transition">
-                <PaperAirplaneIcon class="h-5 w-5" /> Simpan
+            <button type="submit" :disabled="form.processing" class="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-8 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors disabled:opacity-50">
+                <PaperAirplaneIcon class="h-5 w-5 stroke-2" />
+                {{ form.processing ? 'Menyimpan...' : 'Simpan Data' }}
             </button>
         </div>
       </form>

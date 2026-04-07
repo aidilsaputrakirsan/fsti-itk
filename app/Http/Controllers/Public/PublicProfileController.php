@@ -17,12 +17,13 @@ class PublicProfileController extends Controller
         $tentang = TentangFakultas::first();
 
         $allProdi = StudyProgram::all();
-        $s1 = 0; $s2 = 0;
-        
-        foreach($allProdi as $p) {
+        $s1 = 0;
+        $s2 = 0;
+
+        foreach ($allProdi as $p) {
             $level = $p->level ?? '';
             $name = strtolower($p->name);
-            
+
             if (strtoupper($level) === 'S1' || (!str_contains($name, 's2') && !str_contains($name, 'magister') && strtoupper($level) !== 'S2')) {
                 $s1++;
             } else {
@@ -40,29 +41,25 @@ class PublicProfileController extends Controller
 
         return Inertia::render('Public/Profil/Tentang', [
             'tentang' => $tentang ? $tentang->content : null,
-            'statistik' => $statistik 
+            'statistik' => $statistik
         ]);
     }
 
     public function baganOrganisasi()
     {
         $tentang = TentangFakultas::first();
-        
+
         $baganImage = null;
 
-        // CEK APAKAH GAMBAR BAGAN ADA DI DATABASE
         if ($tentang && isset($tentang->content['bagan_organisasi']) && $tentang->content['bagan_organisasi']) {
-             $path = $tentang->content['bagan_organisasi'];
-             
-             // Jika berawalan 'images/', berarti itu gambar bawaan seeder
-             if (str_starts_with($path, 'images/')) {
-                 $baganImage = asset($path);
-             } else {
-                 // Jika tidak, berarti gambar baru yang di-upload admin
-                 $baganImage = asset('storage/' . $path);
-             }
+            $path = $tentang->content['bagan_organisasi'];
+
+            if (str_starts_with($path, 'images/')) {
+                $baganImage = asset($path);
+            } else {
+                $baganImage = asset('storage/' . $path);
+            }
         } else {
-            // Gambar fallback darurat
             $baganImage = asset('images/bagan-organisasi.webp');
         }
 

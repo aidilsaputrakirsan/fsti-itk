@@ -5,7 +5,7 @@ import { Head } from '@inertiajs/vue3';
 import { onMounted, computed } from 'vue';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { Target, Flag, Briefcase, Award, ExternalLink, FileDown, CheckCircle, GraduationCap, Compass, ArrowRight } from 'lucide-vue-next';
+import { Target, Flag, Briefcase, Award, ExternalLink, FileDown, CheckCircle, GraduationCap, ArrowRight } from 'lucide-vue-next';
 
 const props = defineProps({
     prodi: Object

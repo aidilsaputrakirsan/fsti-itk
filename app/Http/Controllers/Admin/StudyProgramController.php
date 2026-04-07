@@ -30,15 +30,15 @@ class StudyProgramController extends Controller
             'name' => 'required|string|max:255',
             'department' => 'required|string|max:255',
             'degree' => 'required|string|max:10',
-            'description' => 'nullable|string',
-            'vision' => 'nullable|string',
-            'mission' => 'nullable|string',
-            'goals' => 'nullable|string',
-            'graduate_profiles' => 'nullable|string',
-            'accreditation_certificate_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'accreditation_pdf_link' => 'nullable|url',
-            'accreditation_text' => 'nullable|string',
-            'website_link' => 'nullable|url',
+            'description' => 'required|string',
+            'vision' => 'required|string',
+            'mission' => 'required|string',
+            'goals' => 'required|string',
+            'graduate_profiles' => 'required|string',
+            'accreditation_text' => 'required|string',
+            'accreditation_pdf_link' => 'required|url',
+            'website_link' => 'required|url',
+            'accreditation_certificate_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $data = $request->except(['accreditation_certificate_image', 'mission', 'graduate_profiles']);
@@ -70,19 +70,21 @@ class StudyProgramController extends Controller
 
     public function update(Request $request, StudyProgram $studyProgram)
     {
+        // PERBAIKAN: Semua kolom text & link WAJIB (required)
         $request->validate([
             'name' => 'required|string|max:255',
             'department' => 'required|string|max:255',
             'degree' => 'required|string|max:10',
-            'description' => 'nullable|string',
-            'vision' => 'nullable|string',
-            'mission' => 'nullable|string',
-            'goals' => 'nullable|string',
-            'graduate_profiles' => 'nullable|string',
-            'accreditation_certificate_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'accreditation_pdf_link' => 'nullable|url',
-            'accreditation_text' => 'nullable|string',
-            'website_link' => 'nullable|url',
+            'description' => 'required|string',
+            'vision' => 'required|string',
+            'mission' => 'required|string',
+            'goals' => 'required|string',
+            'graduate_profiles' => 'required|string',
+            'accreditation_text' => 'required|string',
+            'accreditation_pdf_link' => 'required|url',
+            'website_link' => 'required|url',
+            // Gambar nullable saat update agar admin tidak harus upload ulang gambar lama
+            'accreditation_certificate_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $data = $request->except(['accreditation_certificate_image', 'mission', 'graduate_profiles']);
