@@ -11,29 +11,75 @@ import { debounce } from 'lodash';
 defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
-  documents: any;
-  filters: any;
+    documents: any;
+    filters: any;
+    listJenis: string[];
 }>();
 
-// --- Logika Filter & Pencarian ---
-const search = ref(props.filters.search || '');
-const jenis = ref(props.filters.jenis || '');
+const search = ref(props.filters?.search || '');
+const jenis = ref(props.filters?.jenis || '');
 
 watch([search, jenis], debounce(() => {
-    router.get(route('admin.ppid.index'), {
+    router.get((route as Function)('admin.ppid.index'), {
         search: search.value,
-        jenis: jenis.value,
+        jenis: jenis.value === '' ? null : jenis.value,
     }, { preserveState: true, replace: true });
 }, 300));
 
-// --- Logika Modal & Notifikasi Hapus ---
+const formattedLinks = computed(() => {
+    if (!props.documents?.links) return [];
+    
+    const links = props.documents.links.map((link: any) => {
+        let label = link.label;
+        if (label.includes('Previous') || label.includes('&laquo;')) label = 'Sebelumnya';
+        if (label.includes('Next') || label.includes('&raquo;')) label = 'Selanjutnya';
+        return { ...link, label };
+    });
+
+    if (links.length <= 7) return links;
+
+    const activeIndex = links.findIndex((l: any) => l.active);
+    const result = [];
+    
+    result.push(links[0]);
+
+    links.forEach((link: any, index: number) => {
+        if (index === 0 || index === links.length - 1) return;
+
+        if (
+            index === 1 || 
+            index === links.length - 2 ||
+            (index >= activeIndex - 1 && index <= activeIndex + 1)
+        ) {
+            result.push(link);
+        } else if (
+            index === activeIndex - 2 || 
+            index === activeIndex + 2
+        ) {
+            result.push({ url: null, label: '...', active: false });
+        }
+    });
+
+    result.push(links[links.length - 1]);
+    return result;
+});
+
 const isModalOpen = ref(false);
-const itemToDelete = ref<any>(null);
-const openDeleteModal = (item: any) => { itemToDelete.value = item; isModalOpen.value = true; };
-const closeDeleteModal = () => { isModalOpen.value = false; itemToDelete.value = null; };
+const itemToDelete = ref<any | null>(null);
+
+const openDeleteModal = (item: any) => { 
+    itemToDelete.value = item; 
+    isModalOpen.value = true; 
+};
+
+const closeDeleteModal = () => { 
+    isModalOpen.value = false; 
+    itemToDelete.value = null; 
+};
+
 const confirmDelete = () => {
     if (itemToDelete.value) {
-        router.delete(route('admin.ppid.destroy', itemToDelete.value.id), {
+        router.delete((route as Function)('admin.ppid.destroy', itemToDelete.value.id), {
             onSuccess: () => closeDeleteModal(),
         });
     }
@@ -54,146 +100,148 @@ watch(flashSuccess, (message) => {
 </script>
 
 <template>
-  <div>
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h1 class="text-3xl font-bold text-black">Kelola Dokumen PPID</h1>
-        <p class="mt-1 text-black">Manajemen daftar informasi publik dan dokumen PPID Fakultas Sains dan Teknologi <br> Institut Teknologi Kalimantan</p>
-      </div>
-      <div class="flex items-center gap-3 flex-shrink-0">
-        <Link :href="route('admin.ppid.create')" class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90 transition">
-          <PlusIcon class="h-5 w-5" />
-          Tambah Dokumen
-        </Link>
-      </div>
-    </div>
+    <div>
+        <Head title="Kelola Dokumen PPID" />
 
-    <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
-        <div class="relative flex-grow w-full md:w-auto">
-            <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
-            <input 
-                v-model="search"
-                type="text" 
-                placeholder="Cari judul dokumen..." 
-                class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 transition" 
-            />
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Kelola Dokumen PPID</h1>
+                <p class="mt-1 text-gray-600">Manajemen daftar informasi publik dan dokumen PPID FSTI ITK.</p>
+            </div>
+            <Link :href="(route as Function)('admin.ppid.create')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
+                <PlusIcon class="h-5 w-5 stroke-2" />
+                Tambah Dokumen
+            </Link>
         </div>
-        <div class="relative flex-shrink-0 w-full md:w-64">
-            <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
-            <select v-model="jenis" class="w-full rounded-lg border border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition cursor-pointer">
-                <option value="">Semua Jenis Informasi</option>
-                <option value="Berkala">Informasi Berkala</option>
-                <option value="Setiap Saat">Informasi Setiap Saat</option>
-            </select>
-        </div>
-    </div>
 
-    <div class="bg-white shadow-sm p-6 rounded-xl border border-gray-100">
-      <h3 class="text-lg font-semibold text-black mb-4">Daftar Dokumen</h3>
-      <div class="border rounded-lg overflow-x-auto">
-        <table class="w-full min-w-full text-left">
-          <thead class="bg-[#CBDCEB]">
-            <tr>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-black w-2/5">Judul Dokumen</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-black w-1/4">Kategori Induk</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-black text-center">Jenis</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-black text-center">Tautan</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-black text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200">
-            <tr v-if="documents.data.length > 0" v-for="item in documents.data" :key="item.id" class="hover:bg-blue-50/50 transition-colors group">
-              <td class="px-6 py-4 text-sm font-semibold text-gray-800 leading-snug">
-                {{ item.judul_dokumen }}
-              </td>
-              <td class="px-6 py-4 text-sm text-gray-600 leading-snug">
-                {{ item.kategori?.nama_kategori || '-' }}
-              </td>
-              <td class="px-6 py-4 text-center">
-                <span 
-                    class="rounded-full px-3 py-1 text-xs font-semibold" 
-                    :class="item.kategori?.jenis_informasi === 'Berkala' ? 'bg-indigo-100 text-indigo-700' : 'bg-teal-100 text-teal-700'"
-                >
-                    {{ item.kategori?.jenis_informasi || '-' }}
-                </span>
-              </td>
-              <td class="px-6 py-4 text-center">
-                <a v-if="item.file_url" :href="item.file_url" target="_blank" class="inline-flex items-center text-[#4682A9] hover:text-[#133E87] bg-gray-50 hover:bg-white px-3 py-1.5 rounded-md border border-gray-200 transition" title="Lihat Tautan">
-                    <DocumentTextIcon v-if="item.file_url.includes('.pdf')" class="w-4 h-4 mr-1.5" />
-                    <LinkIcon v-else class="w-4 h-4 mr-1.5" />
-                    <span class="text-xs font-bold">Akses</span>
-                </a>
-                <span v-else class="text-xs text-gray-400 italic">Belum ada file</span>
-              </td>
-              <td class="px-6 py-4 text-sm font-medium text-center">
-                <div class="flex items-center justify-center gap-3">
-                  <Link :href="route('admin.ppid.edit', item.id)" class="flex items-center gap-1 text-[#4682A9] hover:text-[#133E87] transition">
-                    <PencilSquareIcon class="h-5 w-5" />
-                  </Link>
-                  <button @click="openDeleteModal(item)" type="button" class="flex items-center gap-1 text-[#DC645E] hover:text-red-700 transition">
-                    <TrashIcon class="h-5 w-5" />
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr v-else>
-              <td colspan="5" class="text-center py-8 text-gray-500">Belum ada dokumen yang ditambahkan.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="flex flex-col md:flex-row items-center justify-between mt-6 gap-4">
-        <p v-if="documents.total > 0" class="text-sm text-gray-600">
-          Menampilkan <span class="font-bold text-gray-900">{{ documents.from }}</span> sampai <span class="font-bold text-gray-900">{{ documents.to }}</span> dari <span class="font-bold text-gray-900">{{ documents.total }}</span> dokumen
-        </p>
-        <div class="flex items-center gap-1 overflow-x-auto">
-          <Link v-for="(link, index) in documents.links" :key="index" :href="link.url ?? '#'" v-html="link.label"
-            class="px-3 py-1.5 text-sm font-medium rounded-md border transition-colors"
-            :class="[link.active ? 'bg-[#133E87] text-white border-[#133E87]' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50', !link.url ? 'text-gray-400 cursor-not-allowed bg-gray-50' : '']"
-          />
-        </div>
-      </div>
-    </div>
-    
-    <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity backdrop-blur-sm" @click.self="closeDeleteModal">
-      <div class="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl transition-transform transform scale-95" :class="{'scale-100': isModalOpen}">
-        <div class="flex flex-col items-center text-center">
-          <div class="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 border-4 border-red-100">
-            <ExclamationTriangleIcon class="h-8 w-8 text-red-500" />
-          </div>
-          <h2 class="text-2xl font-bold text-gray-900">Hapus Dokumen</h2>
-          <p class="mt-2 text-gray-600 text-sm leading-relaxed">
-            Apakah Anda yakin ingin menghapus dokumen <br>
-            <span class="font-bold text-gray-900">"{{ itemToDelete?.judul_dokumen }}"</span>? Aksi ini akan menghapus file secara permanen.
-          </p>
-        </div>
-        <div class="mt-8 flex justify-center gap-3">
-          <button @click="closeDeleteModal" class="rounded-lg bg-white border border-gray-300 px-5 py-2.5 font-semibold text-gray-700 hover:bg-gray-50 transition">
-            Batal
-          </button>
-          <button @click="confirmDelete" class="rounded-lg bg-[#DC645E] px-5 py-2.5 font-semibold text-white hover:bg-red-700 transition shadow-sm">
-            Ya, Hapus
-          </button>
-        </div>
-      </div>
-    </div>
-    
-    <transition
-        enter-active-class="transform ease-out duration-300 transition"
-        enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-        enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
-        leave-active-class="transition ease-in duration-100"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
-    >
-        <div v-if="showNotification" class="fixed bottom-10 right-10 z-50">
-            <div class="flex items-center gap-3 rounded-xl bg-green-500 px-6 py-4 text-white shadow-xl">
-                <CheckCircleIcon class="h-6 w-6" />
-                <p class="font-semibold">{{ notificationMessage }}</p>
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div class="relative w-full sm:flex-grow">
+                <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                <input 
+                    v-model="search"
+                    type="text" 
+                    placeholder="Cari judul dokumen..." 
+                    class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-primary focus:ring-primary transition-colors" 
+                />
+            </div>
+            
+            <div class="relative w-full sm:w-64 flex-shrink-0">
+                <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
+                <select v-model="jenis" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors cursor-pointer">
+                    <option value="">Semua Jenis Informasi</option>
+                    <option v-for="j in listJenis" :key="j" :value="j">{{ j }}</option>
+                </select>
             </div>
         </div>
-    </transition>
 
-  </div>
+        <div class="bg-white shadow-sm p-4 sm:p-6 rounded-xl border border-gray-100 overflow-hidden">
+            <h3 class="text-lg font-bold text-gray-900 mb-4 hidden sm:block">Daftar Dokumen</h3>
+            
+            <div class="admin-table-container overflow-x-auto w-full">
+                <table class="w-full min-w-[800px]">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="w-16 text-center">No</th>
+                            <th scope="col" class="w-2/5">Judul Dokumen</th>
+                            <th scope="col">Kategori Induk</th>
+                            <th scope="col" class="text-center w-32">Jenis</th>
+                            <th scope="col" class="text-center w-28">Tautan</th>
+                            <th scope="col" class="text-center w-32">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-if="documents.data && documents.data.length > 0" v-for="(item, index) in documents.data" :key="item.id">
+                            <td class="text-center font-medium text-gray-500">
+                                {{ (Number(documents.current_page) - 1) * Number(documents.per_page) + Number(index) + 1 }}
+                            </td>
+                            <td>
+                                <div class="font-bold text-gray-900 leading-snug">{{ item.judul_dokumen }}</div>
+                            </td>
+                            <td>
+                                <div class="text-sm font-medium text-gray-700 leading-snug">{{ item.kategori?.nama_kategori || '-' }}</div>
+                            </td>
+                            <td class="text-center">
+                                <span class="inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800">
+                                    {{ item.kategori?.jenis_informasi || '-' }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <a v-if="item.file_url" :href="item.file_url" target="_blank" class="inline-flex items-center justify-center text-primary hover:text-primary-hover bg-gray-50 hover:bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200 transition-colors" title="Lihat Dokumen">
+                                    <DocumentTextIcon v-if="item.file_url.includes('.pdf')" class="w-4 h-4 mr-1.5 stroke-2" />
+                                    <LinkIcon v-else class="w-4 h-4 mr-1.5 stroke-2" />
+                                    <span class="text-xs font-bold">Akses</span>
+                                </a>
+                                <span v-else class="text-xs font-medium text-gray-400 italic">Kosong</span>
+                            </td>
+                            <td>
+                                <div class="flex items-center justify-center gap-3">
+                                    <Link :href="(route as Function)('admin.ppid.edit', item.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
+                                        <PencilSquareIcon class="h-4 w-4" /> Edit
+                                    </Link>
+                                    <span class="text-gray-300">|</span>
+                                    <button @click="openDeleteModal(item)" type="button" class="flex items-center gap-1 text-red-600 hover:text-red-800 font-semibold transition-colors">
+                                        <TrashIcon class="h-4 w-4" /> Hapus
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr v-else>
+                            <td colspan="6" class="py-8 text-center text-gray-500 font-medium">Belum ada dokumen yang ditambahkan.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+                <p v-if="documents.total > 0" class="text-sm text-gray-600 text-center sm:text-left">
+                    Menampilkan <span class="font-bold text-gray-900">{{ documents.from }}</span> sampai <span class="font-bold text-gray-900">{{ documents.to }}</span> dari <span class="font-bold text-gray-900">{{ documents.total }}</span> dokumen
+                </p>
+                <p v-else></p>
+
+                <div v-if="formattedLinks.length > 0" class="flex flex-wrap justify-center items-center gap-1.5">
+                    <Link 
+                        v-for="(link, index) in formattedLinks" 
+                        :key="index"
+                        :href="link.url ?? '#'"
+                        v-html="link.label"
+                        :class="[
+                            'px-3.5 py-1.5 rounded-lg border text-sm font-medium transition-colors',
+                            link.active ? 'bg-primary text-white border-primary shadow-sm' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-primary',
+                            !link.url && 'opacity-50 bg-gray-50 cursor-not-allowed hover:bg-gray-50 hover:text-gray-700'
+                        ]"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click.self="closeDeleteModal">
+        <div class="w-full max-w-md rounded-2xl bg-white p-6 sm:p-8 shadow-2xl transform transition-all scale-100">
+            <div class="flex flex-col items-center text-center">
+                <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                    <ExclamationTriangleIcon class="h-10 w-10 text-red-600" />
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900">Hapus Dokumen?</h2>
+                <p class="mt-2 text-gray-600 text-center">
+                    Apakah Anda yakin ingin menghapus dokumen <br>
+                    <span class="font-bold text-gray-900 mt-1 line-clamp-2">"{{ itemToDelete?.judul_dokumen }}"</span>
+                </p>
+            </div>
+            <div class="mt-8 flex flex-col-reverse sm:flex-row justify-center gap-3">
+                <button @click="closeDeleteModal" class="rounded-lg border border-gray-300 bg-white px-6 py-2.5 font-bold text-gray-700 hover:bg-gray-50 transition-colors w-full sm:w-auto">
+                    Batal
+                </button>
+                <button @click="confirmDelete" class="rounded-lg bg-red-600 px-6 py-2.5 font-bold text-white hover:bg-red-700 transition-colors shadow-sm w-full sm:w-auto">
+                    Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div v-if="showNotification" class="fixed top-5 right-5 sm:top-8 sm:right-8 z-50">
+        <div class="flex items-center gap-3 rounded-xl bg-green-600 px-5 py-4 text-white shadow-xl">
+            <CheckCircleIcon class="h-6 w-6" />
+            <p class="font-bold text-sm tracking-wide">{{ notificationMessage }}</p>
+        </div>
+    </div>
 </template>

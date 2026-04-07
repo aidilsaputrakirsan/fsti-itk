@@ -1,92 +1,131 @@
 <script setup lang="ts">
+import { Link, useForm, Head } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useForm, Link } from '@inertiajs/vue3';
-import { ArrowLeftIcon, PaperAirplaneIcon } from '@heroicons/vue/24/outline';
+import { ArrowLeftIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
 
-// 1. Definisikan tipe data yang jelas agar TypeScript tidak infinite loop
-interface Penelitian {
-  id: number;
-  nama_dosen: string;
-  judul: string;
-  study_program_id: number | string | null;
-  tahun: number;
-}
-
 const props = defineProps<{
-  penelitian: Penelitian;
-  prodis: Array<{ id: number; name: string }>;
+    penelitian?: any;
+    data?: any;
+    prodis: Array<{ id: number; name: string }>;
 }>();
 
-// 2. Sekarang form akan membaca tipe dari interface di atas, bukan any
-const form = useForm({
-  nama_dosen: props.penelitian.nama_dosen,
-  judul: props.penelitian.judul,
-  study_program_id: props.penelitian.study_program_id || '', 
-  tahun: props.penelitian.tahun,
+const dataPenelitian = props.penelitian || props.data || {};
+
+interface PenelitianFormData {
+    _method: string;
+    nama_dosen: string;
+    judul: string;
+    study_program_id: string | number;
+    tahun: number;
+}
+
+const form = useForm<PenelitianFormData>({
+    _method: 'PUT',
+    nama_dosen: dataPenelitian.nama_dosen || '',
+    judul: dataPenelitian.judul || '',
+    study_program_id: dataPenelitian.study_program_id || '',
+    tahun: dataPenelitian.tahun || new Date().getFullYear(),
 });
 
+const validateForm = () => {
+    form.clearErrors();
+    let hasError = false;
+
+    if (!form.nama_dosen) {
+        form.setError('nama_dosen', 'Nama peneliti/dosen wajib diisi.');
+        hasError = true;
+    }
+
+    if (!form.judul) {
+        form.setError('judul', 'Judul penelitian wajib diisi.');
+        hasError = true;
+    }
+
+    if (!form.tahun) {
+        form.setError('tahun', 'Tahun wajib diisi.');
+        hasError = true;
+    }
+
+    return !hasError;
+};
+
 const submit = () => {
-  form.put(route('admin.penelitian.update', props.penelitian.id));
+    if (!validateForm()) return;
+    const targetUrl: string = (route as Function)('admin.penelitian.update', dataPenelitian.id);
+    form.post(targetUrl);
 };
 </script>
 
 <template>
-  <div>
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-black">Edit Penelitian</h1>
-      <p class="mt-1 text-black">Edit data penelitian dosen Fakultas Sains dan Teknologi Institut Teknologi Kalimantan</p>
-    </div>
+    <div>
+        <Head :title="'Edit Penelitian: ' + (dataPenelitian.nama_dosen || '')" />
 
-   <div class="bg-white shadow-sm p-8 rounded-lg">
-    <form @submit.prevent="submit">
-      <div class="space-y-6">
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-            <div class="md:col-span-2">
-              <label for="nama_dosen" class="block text-sm font-semibold text-black">Nama Peneliti / Dosen *</label>
-              <input type="text" id="nama_dosen" v-model="form.nama_dosen" placeholder="Masukkan Nama Dosen (Gunakan koma untuk lebih dari 1 orang)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
-              <p v-if="form.errors.nama_dosen" class="mt-2 text-sm text-red-600">{{ form.errors.nama_dosen }}</p>
-            </div>
-
-            <div class="md:col-span-2">
-              <label for="judul" class="block text-sm font-semibold text-black">Judul Penelitian *</label>
-              <textarea id="judul" v-model="form.judul" rows="3" placeholder="Masukkan Judul Penelitian" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm"></textarea>
-              <p v-if="form.errors.judul" class="mt-2 text-sm text-red-600">{{ form.errors.judul }}</p>
-            </div>
-
-            <div>
-              <label for="study_program_id" class="block text-sm font-semibold text-black">Program Studi (Opsional)</label>
-              <select id="study_program_id" v-model="form.study_program_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm">
-                <option value="">-- Semua / Fakultas --</option>
-                <option v-for="prodi in prodis" :key="prodi.id" :value="prodi.id">
-                  {{ prodi.name }}
-                </option>
-              </select>
-              <p v-if="form.errors.study_program_id" class="mt-2 text-sm text-red-600">{{ form.errors.study_program_id }}</p>
-            </div>
-
-            <div>
-              <label for="tahun" class="block text-sm font-semibold text-black">Tahun *</label>
-              <input type="number" id="tahun" v-model="form.tahun" placeholder="Masukkan tahun penelitian" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" />
-              <p v-if="form.errors.tahun" class="mt-2 text-sm text-red-600">{{ form.errors.tahun }}</p>
-            </div>
+        <div class="mb-8">
+            <Link :href="(route as Function)('admin.penelitian.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
+                <ArrowLeftIcon class="h-4 w-4 stroke-2" /> Kembali ke Daftar
+            </Link>
+            <h1 class="text-3xl font-bold text-gray-900">Edit Data Penelitian</h1>
+            <p class="mt-1 text-gray-600">Perbarui rekam jejak riset dosen Fakultas Sains dan Teknologi ITK.</p>
         </div>
 
-      </div>
+        <div v-if="dataPenelitian.id" class="bg-white shadow-sm p-5 sm:p-8 rounded-xl border-t-4 border-primary">
+            <form @submit.prevent="submit" novalidate>
+                <div class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-x-8 gap-y-6 md:gap-y-8">
+                    
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Nama Peneliti / Dosen <span class="text-red-600">*</span></label>
+                    <div>
+                        <input v-model="form.nama_dosen" type="text" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.nama_dosen ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            required>
+                        <InputError :message="form.errors.nama_dosen" />
+                    </div>
 
-      <div class="mt-12 flex items-center justify-end gap-4">
-          <Link :href="route('admin.penelitian.index')" class="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-6 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">
-              <ArrowLeftIcon class="h-5 w-5" />
-              Batal
-          </Link>
-          <button type="submit" :disabled="form.processing" class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90 disabled:opacity-50">
-              <PaperAirplaneIcon class="h-5 w-5" />
-              Simpan Perubahan
-          </button>
-      </div>
-    </form>
-   </div>
-  </div>
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Judul Penelitian <span class="text-red-600">*</span></label>
+                    <div>
+                        <textarea v-model="form.judul" rows="4" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.judul ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            required></textarea>
+                        <InputError :message="form.errors.judul" />
+                    </div>
+
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Program Studi</label>
+                    <div>
+                        <select v-model="form.study_program_id" 
+                            class="block w-full rounded-lg transition-colors py-3 border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white">
+                            <option value="">-- Semua / Level Fakultas --</option>
+                            <option v-for="prodi in prodis" :key="prodi.id" :value="prodi.id">
+                                {{ prodi.name }}
+                            </option>
+                        </select>
+                        <InputError :message="form.errors.study_program_id" />
+                    </div>
+
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Tahun Pelaksanaan <span class="text-red-600">*</span></label>
+                    <div>
+                        <input v-model="form.tahun" type="number" min="2000" :max="new Date().getFullYear() + 5" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.tahun ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            required>
+                        <InputError :message="form.errors.tahun" />
+                    </div>
+
+                </div>
+
+                <div class="mt-12 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 border-t border-gray-100 pt-6">
+                    <Link :href="(route as Function)('admin.penelitian.index')" class="w-full sm:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                        Batal
+                    </Link>
+                    <button type="submit" :disabled="form.processing" class="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-8 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors disabled:opacity-50">
+                        <PencilSquareIcon class="h-5 w-5 stroke-2" />
+                        {{ form.processing ? 'Menyimpan...' : 'Perbarui Data' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </template>

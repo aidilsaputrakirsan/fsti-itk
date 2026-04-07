@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { Link, useForm } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { Link, useForm, Head } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { ArrowLeftIcon, CheckIcon, XMarkIcon, DocumentIcon } from '@heroicons/vue/24/outline';
+import { ArrowLeftIcon, PaperAirplaneIcon, DocumentIcon, LinkIcon } from '@heroicons/vue/24/outline';
+import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
 
@@ -9,106 +11,148 @@ const props = defineProps<{
     kategoris: any[];
 }>();
 
-const form = useForm({
+interface PpidFormData {
+    kategori_ppid_id: string | number;
+    judul_dokumen: string;
+    file: File | null;
+    file_url: string;
+}
+
+const form = useForm<PpidFormData>({
     kategori_ppid_id: '',
     judul_dokumen: '',
-    file: null as File | null,
-    file_url: '', // Untuk tautan manual jika tidak upload file
+    file: null,
+    file_url: '',
 });
 
+const fileNameDisplay = computed(() => {
+    if (form.file instanceof File) {
+        return form.file.name;
+    }
+    return 'Pilih file PDF (Opsional, Maks. 10 MB)';
+});
+
+const validateForm = () => {
+    form.clearErrors();
+    let hasError = false;
+
+    if (!form.kategori_ppid_id) {
+        form.setError('kategori_ppid_id', 'Kategori dokumen wajib dipilih.');
+        hasError = true;
+    }
+
+    if (!form.judul_dokumen) {
+        form.setError('judul_dokumen', 'Judul dokumen wajib diisi.');
+        hasError = true;
+    }
+
+    if (form.file) {
+        if (form.file.type !== 'application/pdf') {
+            form.setError('file', 'Format file dokumen harus PDF.');
+            hasError = true;
+        } else if (form.file.size > 10 * 1024 * 1024) {
+            form.setError('file', 'Ukuran file dokumen maksimal 10 MB.');
+            hasError = true;
+        }
+    }
+
+    return !hasError;
+};
+
 const submit = () => {
-    form.post(route('admin.ppid.store'));
+    if (!validateForm()) return;
+    form.post((route as Function)('admin.ppid.store'));
 };
 </script>
 
 <template>
     <div>
-        <div class="mb-8 flex items-center gap-4">
-            <Link :href="route('admin.ppid.index')" class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm border border-gray-200 hover:bg-gray-50 transition-colors">
-                <ArrowLeftIcon class="h-5 w-5 text-gray-600" />
+        <Head title="Tambah Dokumen PPID" />
+
+        <div class="mb-8">
+            <Link :href="(route as Function)('admin.ppid.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
+                <ArrowLeftIcon class="h-4 w-4 stroke-2" /> Kembali ke Daftar
             </Link>
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Tambah Dokumen PPID</h1>
-                <p class="mt-1 text-sm text-gray-600">Unggah file atau masukkan tautan dokumen informasi publik.</p>
-            </div>
+            <h1 class="text-3xl font-bold text-gray-900">Tambah Dokumen PPID</h1>
+            <p class="mt-1 text-gray-600">Unggah file PDF atau masukkan tautan dokumen informasi publik.</p>
         </div>
 
-        <div class="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden w-full">
-            <div class="bg-gray-50/50 px-8 py-5 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-800">Detail Dokumen</h3>
-            </div>
-            
-            <form @submit.prevent="submit" class="p-8 space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white shadow-sm p-5 sm:p-8 rounded-xl border-t-4 border-primary">
+            <form @submit.prevent="submit" novalidate>
+                <div class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-x-8 gap-y-6 md:gap-y-8">
+                    
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Kategori Dokumen <span class="text-red-600">*</span></label>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Pilih Kategori <span class="text-red-500">*</span></label>
-                        <select v-model="form.kategori_ppid_id" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] text-sm" required>
+                        <select v-model="form.kategori_ppid_id" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.kategori_ppid_id ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            required>
                             <option value="" disabled>-- Pilih Kategori --</option>
                             <option v-for="kat in kategoris" :key="kat.id" :value="kat.id">
                                 [{{ kat.jenis_informasi }}] {{ kat.nama_kategori }}
                             </option>
                         </select>
-                        <p v-if="form.errors.kategori_ppid_id" class="text-xs text-red-500 mt-1">{{ form.errors.kategori_ppid_id }}</p>
+                        <InputError :message="form.errors.kategori_ppid_id" />
                     </div>
 
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Judul Dokumen <span class="text-red-600">*</span></label>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Dokumen <span class="text-red-500">*</span></label>
-                        <input v-model="form.judul_dokumen" type="text" placeholder="Contoh: Laporan Keuangan FSTI 2025" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] text-sm" required>
-                        <p v-if="form.errors.judul_dokumen" class="text-xs text-red-500 mt-1">{{ form.errors.judul_dokumen }}</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-                    <div class="p-6 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/30">
-                        <label class="block text-sm font-bold text-[#4682A9] mb-3 flex items-center">
-                            <DocumentIcon class="w-5 h-5 mr-2" />
-                            Opsi 1: Unggah File PDF
-                        </label>
-                        <input 
-                            type="file" 
-                            @input="form.file = ($event.target as HTMLInputElement).files?.[0] || null" 
-                            accept=".pdf" 
-                            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition" 
-                            :disabled="form.file_url !== ''"
-                        />
-                        <p class="text-[11px] text-gray-500 mt-2 italic">* Format: PDF (Maks. 10MB)</p>
-                        <p v-if="form.errors.file" class="text-xs text-red-500 mt-1">{{ form.errors.file }}</p>
+                        <input v-model="form.judul_dokumen" type="text" placeholder="Contoh: Laporan Keuangan FSTI 2025" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.judul_dokumen ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            required>
+                        <InputError :message="form.errors.judul_dokumen" />
                     </div>
 
-                    <div class="p-6 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/30">
-                        <label class="block text-sm font-bold text-[#4682A9] mb-3 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                            </svg>
-                            Opsi 2: Tautan Halaman Web FSTI atau Google Drive
-                        </label>
-                        <input 
-                            v-model="form.file_url" 
-                            type="text" 
-                            placeholder="Contoh: https://fsti.itk.ac.id/profil/dosen" 
-                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] text-sm"
-                            :disabled="form.file !== null"
-                        >
-                        
-                        <div class="mt-3 text-[11px] sm:text-xs text-gray-600 bg-blue-50 p-3 rounded-lg border border-blue-100 leading-relaxed">
-                            <p class="font-bold text-blue-800 mb-1">Cara menggunakan opsi ini:</p>
-                            <ul class="list-decimal pl-4 space-y-1">
-                                <li><b>Halaman Web FSTI:</b> Buka halaman web FSTI yang ingin ditautkan, <i>copy</i> seluruh link di atas browser, lalu <i>paste</i> ke sini.</li>
-                                <li><b>Google Drive:</b> Jika file sangat besar, upload ke Google Drive, atur akses ke "Siapa saja yang memiliki link", lalu <i>paste</i> link ke sini.</li>
-                            </ul>
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Unggah File PDF</label>
+                    <div>
+                        <div class="relative flex items-center w-full rounded-lg border border-gray-300 bg-gray-50 hover:bg-white focus-within:bg-white focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors shadow-sm px-4 py-3 cursor-pointer" :class="{'opacity-50 cursor-not-allowed': form.file_url !== ''}">
+                            <DocumentIcon class="h-5 w-5 text-gray-400 flex-shrink-0" />
+                            <span class="ml-3 text-sm truncate" :class="{'text-gray-400': !form.file, 'text-gray-900 font-medium': form.file}">
+                                {{ fileNameDisplay }}
+                            </span>
+                            <input
+                                type="file"
+                                accept=".pdf"
+                                @input="form.file = ($event.target as HTMLInputElement).files?.[0] || null"
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                :disabled="form.file_url !== ''"
+                            />
                         </div>
-                        <p v-if="form.errors.file_url" class="text-xs text-red-500 mt-1">{{ form.errors.file_url }}</p>
+                        <p class="mt-2 text-[11px] text-gray-500 font-medium">Hanya bisa diisi jika opsi Tautan Eksternal kosong.</p>
+                        <InputError :message="form.errors.file" />
                     </div>
+
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Tautan Eksternal</label>
+                    <div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <LinkIcon class="h-5 w-5 text-gray-400" />
+                            </div>
+                            <input v-model="form.file_url" type="text" placeholder="https://..." 
+                                class="block w-full pl-10 rounded-lg transition-colors py-3"
+                                :class="[
+                                    form.errors.file_url ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white',
+                                    form.file !== null ? 'opacity-50 cursor-not-allowed bg-gray-100' : ''
+                                ]" 
+                                :disabled="form.file !== null"
+                            >
+                        </div>
+                        <div class="mt-3 bg-blue-50 border border-blue-100 rounded-lg p-3 text-xs text-gray-700 leading-relaxed">
+                            Gunakan opsi ini jika dokumen terlalu besar untuk diunggah langsung (Maks 10 MB). Unggah file ke Google Drive (pastikan akses terbuka untuk publik), lalu masukkan link-nya ke kolom ini.
+                        </div>
+                        <InputError :message="form.errors.file_url" />
+                    </div>
+
                 </div>
 
-                <div class="pt-8 border-t border-gray-200 flex items-center justify-end gap-3">
-                    <Link :href="route('admin.ppid.index')" class="inline-flex items-center gap-2 rounded-lg bg-white border border-gray-300 px-6 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
-                        <XMarkIcon class="w-4 h-4" />
+                <div class="mt-12 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 border-t border-gray-100 pt-6">
+                    <Link :href="(route as Function)('admin.ppid.index')" class="w-full sm:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
                         Batal
                     </Link>
-                    <button type="submit" :disabled="form.processing" class="inline-flex items-center gap-2 rounded-lg bg-[#4682A9] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#133E87] shadow-sm transition-colors">
-                        <CheckIcon class="w-4 h-4" v-if="!form.processing" />
-                        {{ form.processing ? 'Menyimpan...' : 'Simpan Dokumen' }}
+                    <button type="submit" :disabled="form.processing" class="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-8 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors disabled:opacity-50">
+                        <PaperAirplaneIcon class="h-5 w-5 stroke-2" />
+                        {{ form.processing ? 'Menyimpan...' : 'Simpan Data' }}
                     </button>
                 </div>
             </form>

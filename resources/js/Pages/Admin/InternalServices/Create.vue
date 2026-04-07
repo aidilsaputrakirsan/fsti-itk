@@ -6,7 +6,15 @@ import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
 
-const form = useForm({
+interface ServiceFormData {
+    name: string;
+    description: string;
+    link_url: string;
+    sort_order: number;
+    is_active: boolean;
+}
+
+const form = useForm<ServiceFormData>({
     name: '',
     description: '',
     link_url: '',
@@ -18,8 +26,15 @@ const submit = () => {
     form.clearErrors();
     let hasError = false;
 
-    if (!form.name) { form.setError('name', 'Nama layanan wajib diisi.'); hasError = true; }
-    if (!form.description) { form.setError('description', 'Deskripsi layanan wajib diisi.'); hasError = true; }
+    if (!form.name) { 
+        form.setError('name', 'Nama layanan wajib diisi.'); 
+        hasError = true; 
+    }
+    
+    if (!form.description) { 
+        form.setError('description', 'Deskripsi layanan wajib diisi.'); 
+        hasError = true; 
+    }
     
     if (!form.link_url) { 
         form.setError('link_url', 'Tautan URL wajib diisi.'); 

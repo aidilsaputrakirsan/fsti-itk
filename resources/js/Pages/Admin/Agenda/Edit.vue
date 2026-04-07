@@ -1,93 +1,148 @@
-<script setup>
+<script setup lang="ts">
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ArrowLeftIcon, CheckIcon } from '@heroicons/vue/24/outline';
+import { ArrowLeftIcon, PaperAirplaneIcon } from '@heroicons/vue/24/outline';
+import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
 
-const props = defineProps({
-    agenda: Object,
-});
+const props = defineProps<{
+    agenda?: any;
+    data?: any;
+}>();
 
-const formatDateForInput = (dateString) => {
+const dataAgenda = props.agenda || props.data || {};
+
+const formatDateForInput = (dateString: string) => {
     if (!dateString) return '';
     return dateString.substring(0, 10); 
 };
 
-const form = useForm({
-    title: props.agenda.title,
-    organizer: props.agenda.organizer || '',
-    
-    start_date: formatDateForInput(props.agenda.start_date),
-    end_date: formatDateForInput(props.agenda.end_date),
-    
-    location: props.agenda.location || '',
-    description: props.agenda.description || '',
+interface AgendaFormData {
+    _method: string;
+    title: string;
+    organizer: string;
+    start_date: string;
+    end_date: string;
+    location: string;
+    description: string;
+}
+
+const form = useForm<AgendaFormData>({
+    _method: 'PUT',
+    title: dataAgenda.title || '',
+    organizer: dataAgenda.organizer || '',
+    start_date: formatDateForInput(dataAgenda.start_date),
+    end_date: formatDateForInput(dataAgenda.end_date),
+    location: dataAgenda.location || '',
+    description: dataAgenda.description || '',
 });
 
 const submit = () => {
-    form.put(route('admin.agenda-fakultas.update', props.agenda.id));
+    form.clearErrors();
+    let hasError = false;
+
+    if (!form.title) {
+        form.setError('title', 'Judul agenda wajib diisi.');
+        hasError = true;
+    }
+
+    if (!form.start_date) {
+        form.setError('start_date', 'Tanggal mulai wajib diisi.');
+        hasError = true;
+    }
+
+    if (form.start_date && form.end_date) {
+        if (new Date(form.end_date) < new Date(form.start_date)) {
+            form.setError('end_date', 'Tanggal selesai tidak boleh sebelum tanggal mulai.');
+            hasError = true;
+        }
+    }
+
+    if (hasError) return;
+
+    const targetUrl: string = (route as Function)('admin.agenda-fakultas.update', dataAgenda.id);
+    form.post(targetUrl);
 };
 </script>
 
 <template>
-    <Head title="Edit Agenda Fakultas" />
-
     <div>
+        <Head :title="'Edit Agenda: ' + (dataAgenda.title || '')" />
+
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-black">Edit Agenda</h1>
-            <p class="mt-1 text-black">Perbarui data agenda fakultas yang sudah ada</p>
+            <Link :href="(route as Function)('admin.agenda-fakultas.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
+                <ArrowLeftIcon class="h-4 w-4 stroke-2" /> Kembali ke Daftar
+            </Link>
+            <h1 class="text-3xl font-bold text-gray-900">Edit Agenda</h1>
+            <p class="mt-1 text-gray-600">Perbarui data jadwal resmi, akademik, dan institusi FSTI ITK.</p>
         </div>
 
-        <div class="bg-white shadow-sm p-8 rounded-lg">
-            <form @submit.prevent="submit">
-                <div class="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-x-8 gap-y-8">
+        <div v-if="dataAgenda.id" class="bg-white shadow-sm p-5 sm:p-8 rounded-xl border-t-4 border-primary">
+            <form @submit.prevent="submit" novalidate>
+                <div class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-x-8 gap-y-6 md:gap-y-8">
                     
-                    <label class="pt-2 text-sm font-semibold text-black">Judul Agenda *</label>
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Judul Agenda <span class="text-red-600">*</span></label>
                     <div>
-                        <input v-model="form.title" type="text" required class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
-                        <p v-if="form.errors.title" class="mt-2 text-sm text-red-600">{{ form.errors.title }}</p>
+                        <input v-model="form.title" type="text" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.title ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            required>
+                        <InputError :message="form.errors.title" />
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Penyelenggara</label>
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Penyelenggara</label>
                     <div>
-                        <input v-model="form.organizer" type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
-                        <p v-if="form.errors.organizer" class="mt-2 text-sm text-red-600">{{ form.errors.organizer }}</p>
+                        <input v-model="form.organizer" type="text" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.organizer ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'">
+                        <InputError :message="form.errors.organizer" />
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Lokasi / Tempat</label>
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Lokasi / Tempat</label>
                     <div>
-                        <input v-model="form.location" type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
-                        <p v-if="form.errors.location" class="mt-2 text-sm text-red-600">{{ form.errors.location }}</p>
+                        <input v-model="form.location" type="text" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.location ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'">
+                        <InputError :message="form.errors.location" />
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Tanggal Mulai *</label>
-                    <div>
-                        <input v-model="form.start_date" type="date" required class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
-                        <p v-if="form.errors.start_date" class="mt-2 text-sm text-red-600">{{ form.errors.start_date }}</p>
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Tanggal Pelaksanaan <span class="text-red-600">*</span></label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Tanggal Mulai</label>
+                            <input v-model="form.start_date" type="date" 
+                                class="block w-full rounded-lg transition-colors py-3"
+                                :class="form.errors.start_date ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                                required>
+                            <InputError :message="form.errors.start_date" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Tanggal Selesai (Opsional)</label>
+                            <input v-model="form.end_date" type="date" 
+                                class="block w-full rounded-lg transition-colors py-3"
+                                :class="form.errors.end_date ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'">
+                            <InputError :message="form.errors.end_date" />
+                        </div>
                     </div>
 
-                    <label class="pt-2 text-sm font-semibold text-black">Tanggal Selesai</label>
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Deskripsi Singkat</label>
                     <div>
-                        <input v-model="form.end_date" type="date" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
-                        <p class="mt-1 text-xs text-gray-500">Opsional. Isi jika agenda berlangsung lebih dari satu hari.</p>
-                        <p v-if="form.errors.end_date" class="mt-2 text-sm text-red-600">{{ form.errors.end_date }}</p>
-                    </div>
-
-                    <label class="pt-2 text-sm font-semibold text-black">Deskripsi Singkat</label>
-                    <div>
-                        <textarea v-model="form.description" rows="4" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"></textarea>
-                        <p v-if="form.errors.description" class="mt-2 text-sm text-red-600">{{ form.errors.description }}</p>
+                        <textarea v-model="form.description" rows="4" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.description ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"></textarea>
+                        <InputError :message="form.errors.description" />
                     </div>
 
                 </div>
 
-                <div class="mt-12 flex items-center justify-between">
-                    <Link :href="route('admin.agenda-fakultas.index')" class="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">
-                        <ArrowLeftIcon class="h-5 w-5" /> Kembali
+                <div class="mt-12 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 border-t border-gray-100 pt-6">
+                    <Link :href="(route as Function)('admin.agenda-fakultas.index')" class="w-full sm:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                        Batal
                     </Link>
-                    <button type="submit" :disabled="form.processing" class="flex items-center gap-2 rounded-lg bg-primary px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-hover disabled:opacity-50">
-                        <CheckIcon class="h-5 w-5" /> Perbarui Agenda
+                    <button type="submit" :disabled="form.processing" class="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-8 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors disabled:opacity-50">
+                        <PaperAirplaneIcon class="h-5 w-5 stroke-2" />
+                        {{ form.processing ? 'Menyimpan...' : 'Perbarui Data' }}
                     </button>
                 </div>
             </form>

@@ -9,17 +9,32 @@ use Inertia\Inertia;
 
 class InternalServiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Menampilkan data diurutkan berdasarkan sort_order dari terkecil ke terbesar
-        $services = InternalService::orderBy('sort_order', 'asc')->paginate(10)->through(fn($item) => [
+        $query = InternalService::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->status);
+        }
+
+        $services = $query->orderBy('sort_order', 'asc')->paginate(10)->through(fn($item) => [
             'id' => $item->id,
             'name' => $item->name,
             'link_url' => $item->link_url,
             'description' => $item->description,
             'sort_order' => $item->sort_order,
+            'is_active' => $item->is_active,
+        ])->withQueryString();
+
+        return Inertia::render('Admin/InternalServices/Index', [
+            'services' => $services,
+            'filters' => $request->only(['search', 'status'])
         ]);
-        return Inertia::render('Admin/InternalServices/Index', ['services' => $services]);
     }
 
     public function create()
@@ -32,8 +47,9 @@ class InternalServiceController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'link_url' => 'required|url',
-            'description' => 'required|string', // FIX: Deskripsi sekarang WAJIB
+            'description' => 'required|string',
             'sort_order' => 'required|integer|min:1',
+            'is_active' => 'required|boolean',
         ]);
         
         InternalService::create($validated);
@@ -49,6 +65,7 @@ class InternalServiceController extends Controller
                 'link_url' => $internalService->link_url,
                 'description' => $internalService->description,
                 'sort_order' => $internalService->sort_order,
+                'is_active' => $internalService->is_active,
             ]
         ]);
     }
@@ -58,8 +75,9 @@ class InternalServiceController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'link_url' => 'required|url',
-            'description' => 'required|string', // FIX: Deskripsi sekarang WAJIB
+            'description' => 'required|string',
             'sort_order' => 'required|integer|min:1',
+            'is_active' => 'required|boolean',
         ]);
         
         $internalService->update($validated);

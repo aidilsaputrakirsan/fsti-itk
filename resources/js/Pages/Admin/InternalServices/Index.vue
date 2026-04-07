@@ -12,11 +12,11 @@ defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
     services: any;
-    filters: any;
+    filters: { search?: string; status?: string };
 }>();
 
-const search = ref(props.filters?.search || '');
-const status = ref(props.filters?.status || '');
+const search = ref(props.filters.search || '');
+const status = ref(props.filters.status || '');
 
 watch([search, status], debounce(() => {
     router.get(route('admin.internal-services.index'), {
@@ -26,7 +26,7 @@ watch([search, status], debounce(() => {
 }, 300));
 
 const formattedLinks = computed(() => {
-    if (!props.services?.links) return [];
+    if (!props.services.links) return [];
     
     const links = props.services.links.map((link: any) => {
         let label = link.label;
@@ -111,8 +111,8 @@ watch(flashSuccess, (message) => {
       </Link>
     </div>
 
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-        <div class="relative w-full sm:flex-grow">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+        <div class="relative w-full lg:flex-grow">
             <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
             <input 
                 v-model="search"
@@ -144,7 +144,7 @@ watch(flashSuccess, (message) => {
             </tr>
           </thead>
           <tbody>
-            <tr v-if="services.data && services.data.length > 0" v-for="item in services.data" :key="item.id">
+            <tr v-if="services.data.length > 0" v-for="item in services.data" :key="item.id">
               <td class="text-center">
                 <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-800 font-bold text-sm">
                   {{ item.sort_order }}

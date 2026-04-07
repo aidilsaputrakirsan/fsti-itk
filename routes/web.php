@@ -176,14 +176,17 @@ Route::get('/zona-integritas', [PublicZonaIntegritasController::class, 'index'])
 Route::get('/survei-kepuasan', [PublicSurveiController::class, 'index'])->name('survei.index');
 Route::post('/survei-kepuasan', [PublicSurveiController::class, 'store'])->name('survei.store');
 Route::get('/layanan-internal', function () {
-    $services = \App\Models\InternalService::orderBy('sort_order', 'asc')->get()->map(function ($item) {
-        return [
-            'id' => $item->id,
-            'name' => $item->name,
-            'description' => $item->description,
-            'link_url' => $item->link_url,
-        ];
-    });
+    $services = \App\Models\InternalService::where('is_active', true)
+        ->orderBy('sort_order', 'asc')
+        ->get()
+        ->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'name' => $item->name,
+                'description' => $item->description,
+                'link_url' => $item->link_url,
+            ];
+        });
     return Inertia::render('Public/Layanan/Index', ['services' => $services]);
 })->name('layanan.index');
 

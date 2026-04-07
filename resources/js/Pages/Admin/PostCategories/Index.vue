@@ -1,50 +1,87 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { PlusIcon, PencilSquareIcon, TrashIcon, ExclamationTriangleIcon, CheckCircleIcon } from '@heroicons/vue/24/outline';
+import { 
+    PlusIcon, 
+    PencilSquareIcon, 
+    TrashIcon, 
+    ExclamationTriangleIcon, 
+    CheckCircleIcon 
+} from '@heroicons/vue/24/outline';
 
 defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
-    categories: {
-        data: { id: number; name: string; slug: string }[];
-        current_page: number;
-        per_page: number;
-        links: { url: string | null; label: string; active: boolean }[];
-    };
+    categories: any;
 }>();
 
-// Aksi Modal Hapus
-const isDeleteModalOpen = ref(false);
-const itemToDelete = ref<any>(null);
+const formattedLinks = computed(() => {
+    if (!props.categories?.links) return [];
+    
+    const links = props.categories.links.map((link: any) => {
+        let label = link.label;
+        if (label.includes('Previous') || label.includes('&laquo;')) label = 'Sebelumnya';
+        if (label.includes('Next') || label.includes('&raquo;')) label = 'Selanjutnya';
+        return { ...link, label };
+    });
+
+    if (links.length <= 7) return links;
+
+    const activeIndex = links.findIndex((l: any) => l.active);
+    const result = [];
+    
+    result.push(links[0]);
+
+    links.forEach((link: any, index: number) => {
+        if (index === 0 || index === links.length - 1) return;
+
+        if (
+            index === 1 || 
+            index === links.length - 2 ||
+            (index >= activeIndex - 1 && index <= activeIndex + 1)
+        ) {
+            result.push(link);
+        } else if (
+            index === activeIndex - 2 || 
+            index === activeIndex + 2
+        ) {
+            result.push({ url: null, label: '...', active: false });
+        }
+    });
+
+    result.push(links[links.length - 1]);
+    return result;
+});
+
+const isModalOpen = ref(false);
+const itemToDelete = ref<any | null>(null);
 
 const openDeleteModal = (item: any) => {
     itemToDelete.value = item;
-    isDeleteModalOpen.value = true;
+    isModalOpen.value = true;
 };
 
 const closeDeleteModal = () => {
-    isDeleteModalOpen.value = false;
+    isModalOpen.value = false;
     itemToDelete.value = null;
 };
 
 const confirmDelete = () => {
     if (itemToDelete.value) {
-        router.delete(route('admin.post-categories.destroy', itemToDelete.value.id), {
+        router.delete((route as Function)('admin.post-categories.destroy', itemToDelete.value.id), {
             onSuccess: () => closeDeleteModal(),
         });
     }
 };
 
-// Notifikasi
-const page = usePage<any>();
+const page = usePage();
 const showNotification = ref(false);
 const notificationMessage = ref('');
-const isError = ref(false); // Tambahan untuk melacak status merah/hijau
+const isError = ref(false);
 
-const flashSuccess = computed(() => page.props.flash?.success);
-const flashError = computed(() => page.props.flash?.error);
+const flashSuccess = computed(() => (page.props as any).flash?.success);
+const flashError = computed(() => (page.props as any).flash?.error);
 
 watch([flashSuccess, flashError], ([successMsg, errorMsg]) => {
     if (errorMsg) {
@@ -63,95 +100,113 @@ watch([flashSuccess, flashError], ([successMsg, errorMsg]) => {
 
 <template>
     <div>
-        <Head title="Kategori Berita" />
-        
-        <div class="flex items-center justify-between mb-8">
+        <Head title="Kelola Kategori Berita" />
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-                <h1 class="text-3xl font-bold text-black">Kelola Kategori Berita</h1>
-                <p class="mt-1 text-black">Manajemen kelompok/kategori untuk publikasi berita dan kegiatan.</p>
+                <h1 class="text-3xl font-bold text-gray-900">Kelola Kategori Berita</h1>
+                <p class="mt-1 text-gray-600">Manajemen kelompok dan kategori untuk publikasi berita ITK.</p>
             </div>
-            <Link :href="route('admin.post-categories.create')" class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90 transition">
-                <PlusIcon class="h-5 w-5" />
+            <Link :href="(route as Function)('admin.post-categories.create')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
+                <PlusIcon class="h-5 w-5 stroke-2" />
                 Tambah Kategori
             </Link>
         </div>
 
-        <div class="bg-white shadow-sm p-6 rounded-xl border border-gray-100">
-            <div class="mb-5">
-                <h2 class="text-xl font-bold text-gray-800">Daftar Kategori Berita</h2>
-            </div>
+        <div class="bg-white shadow-sm p-4 sm:p-6 rounded-xl border border-gray-100 overflow-hidden">
+            <h3 class="text-lg font-bold text-gray-900 mb-4 hidden sm:block">Daftar Kategori</h3>
             
-            <div class="border rounded-lg overflow-x-auto">
-                <table class="w-full min-w-full text-left">
-                    <thead class="bg-[#CBDCEB]">
+            <div class="admin-table-container overflow-x-auto w-full">
+                <table class="w-full min-w-[600px]">
+                    <thead>
                         <tr>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-black w-16 text-center">No</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-black">Nama Kategori</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-black">Slug</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-black text-center w-32">Aksi</th>
+                            <th scope="col" class="w-16 text-center">No</th>
+                            <th scope="col">Nama Kategori</th>
+                            <th scope="col">Slug URL</th>
+                            <th scope="col" class="text-center w-32">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        <tr v-if="categories.data.length > 0" v-for="(item, index) in categories.data" :key="item.id" class="hover:bg-blue-50/50 transition-colors group">
-                            <td class="px-6 py-4 text-sm text-gray-600 text-center">
-                                {{ (categories.current_page - 1) * categories.per_page + index + 1 }}
+                    <tbody>
+                        <tr v-if="categories.data && categories.data.length > 0" v-for="(item, index) in categories.data" :key="item.id">
+                            <td class="text-center font-medium text-gray-500">
+                                {{ (Number(categories.current_page) - 1) * Number(categories.per_page) + Number(index) + 1 }}
                             </td>
-                            <td class="px-6 py-4 text-sm font-semibold text-gray-800">{{ item.name }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ item.slug }}</td>
-                            <td class="px-6 py-4 text-sm font-medium text-center">
+                            <td>
+                                <div class="font-bold text-gray-900">{{ item.name }}</div>
+                            </td>
+                            <td>
+                                <div class="text-sm font-medium text-gray-600">{{ item.slug }}</div>
+                            </td>
+                            <td>
                                 <div class="flex items-center justify-center gap-3">
-                                    <Link :href="route('admin.post-categories.edit', item.id)" class="text-[#4682A9] hover:text-[#133E87] transition">
-                                        <PencilSquareIcon class="h-5 w-5" />
+                                    <Link :href="(route as Function)('admin.post-categories.edit', item.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
+                                        <PencilSquareIcon class="h-4 w-4" /> Edit
                                     </Link>
-                                    <button @click="openDeleteModal(item)" class="text-[#DC645E] hover:text-red-700 transition">
-                                        <TrashIcon class="h-5 w-5" />
+                                    <span class="text-gray-300">|</span>
+                                    <button @click="openDeleteModal(item)" type="button" class="flex items-center gap-1 text-red-600 hover:text-red-800 font-semibold transition-colors">
+                                        <TrashIcon class="h-4 w-4" /> Hapus
                                     </button>
                                 </div>
                             </td>
                         </tr>
                         <tr v-else>
-                            <td colspan="4" class="text-center py-8 text-gray-500">Belum ada kategori yang ditambahkan.</td>
+                            <td colspan="4" class="py-8 text-center text-gray-500 font-medium">Tidak ada kategori yang ditemukan.</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <div class="mt-6 flex justify-center" v-if="categories.links && categories.links.length > 3">
-                <template v-for="(link, k) in categories.links" :key="k">
-                    <Link 
-                        v-if="link.url"
-                        :href="link.url" 
-                        class="mx-1 px-3 py-1 border rounded-md text-sm transition-colors"
-                        :class="{'bg-[#4682A9] text-white border-[#4682A9]': link.active, 'bg-white text-gray-700 hover:bg-gray-50': !link.active}"
-                        v-html="link.label"
-                    />
-                    <span v-else class="mx-1 px-3 py-1 border rounded-md text-sm text-gray-400 bg-gray-50" v-html="link.label"></span>
-                </template>
-            </div>
-        </div>
-
-        <div v-if="isDeleteModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity backdrop-blur-sm">
-            <div class="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl text-center">
-                <div class="mb-5 mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50 border-4 border-red-100">
-                    <ExclamationTriangleIcon class="h-8 w-8 text-red-500" />
-                </div>
-                <h2 class="text-2xl font-bold text-gray-900">Hapus Kategori</h2>
-                <p class="mt-2 text-gray-600 text-sm leading-relaxed">
-                    Yakin ingin menghapus kategori <span class="font-bold">"{{ itemToDelete?.name }}"</span>? <br>
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+                <p v-if="categories.total > 0" class="text-sm text-gray-600 text-center sm:text-left">
+                    Menampilkan <span class="font-bold text-gray-900">{{ categories.from }}</span> sampai <span class="font-bold text-gray-900">{{ categories.to }}</span> dari <span class="font-bold text-gray-900">{{ categories.total }}</span> hasil
                 </p>
-                <div class="mt-8 flex justify-center gap-3">
-                    <button @click="closeDeleteModal" class="rounded-lg bg-white border border-gray-300 px-5 py-2.5 font-semibold text-gray-700 hover:bg-gray-50">Batal</button>
-                    <button @click="confirmDelete" class="rounded-lg bg-[#DC645E] px-5 py-2.5 font-semibold text-white hover:bg-red-700">Ya, Hapus</button>
+                <p v-else></p>
+
+                <div v-if="formattedLinks.length > 0" class="flex flex-wrap justify-center items-center gap-1.5">
+                    <Link 
+                        v-for="(link, index) in formattedLinks" 
+                        :key="index"
+                        :href="link.url ?? '#'"
+                        v-html="link.label"
+                        :class="[
+                            'px-3.5 py-1.5 rounded-lg border text-sm font-medium transition-colors',
+                            link.active ? 'bg-primary text-white border-primary shadow-sm' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-primary',
+                            !link.url && 'opacity-50 bg-gray-50 cursor-not-allowed hover:bg-gray-50 hover:text-gray-700'
+                        ]"
+                    />
                 </div>
             </div>
         </div>
+    </div>
 
-    <transition enter-active-class="transform ease-out duration-300 transition" enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2" enter-to-class="translate-y-0 opacity-100 sm:translate-x-0" leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100" leave-to-class="opacity-0">
-            <div v-if="showNotification" :class="isError ? 'bg-[#DC645E]' : 'bg-green-500'" class="fixed bottom-10 right-10 z-50 flex items-center gap-3 rounded-xl px-6 py-4 text-white shadow-xl">
-                <ExclamationTriangleIcon v-if="isError" class="h-6 w-6" />
-                <CheckCircleIcon v-else class="h-6 w-6" />
-                <p class="font-semibold">{{ notificationMessage }}</p>
+    <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click.self="closeDeleteModal">
+        <div class="w-full max-w-md rounded-2xl bg-white p-6 sm:p-8 shadow-2xl transform transition-all scale-100">
+            <div class="flex flex-col items-center text-center">
+                <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                    <ExclamationTriangleIcon class="h-10 w-10 text-red-600" />
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900">Hapus Kategori?</h2>
+                <p class="mt-2 text-gray-600 text-center">
+                    Apakah Anda yakin ingin menghapus kategori <br>
+                    <span class="font-bold text-gray-900 mt-1">"{{ itemToDelete?.name }}"</span>?
+                </p>
             </div>
-        </transition>
+            <div class="mt-8 flex flex-col-reverse sm:flex-row justify-center gap-3">
+                <button @click="closeDeleteModal" class="rounded-lg border border-gray-300 bg-white px-6 py-2.5 font-bold text-gray-700 hover:bg-gray-50 transition-colors w-full sm:w-auto">
+                    Batal
+                </button>
+                <button @click="confirmDelete" class="rounded-lg bg-red-600 px-6 py-2.5 font-bold text-white hover:bg-red-700 transition-colors shadow-sm w-full sm:w-auto">
+                    Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div v-if="showNotification" class="fixed top-5 right-5 sm:top-8 sm:right-8 z-50">
+        <div class="flex items-center gap-3 rounded-xl px-5 py-4 text-white shadow-xl" :class="isError ? 'bg-red-600' : 'bg-green-600'">
+            <ExclamationTriangleIcon v-if="isError" class="h-6 w-6" />
+            <CheckCircleIcon v-else class="h-6 w-6" />
+            <p class="font-bold text-sm tracking-wide">{{ notificationMessage }}</p>
+        </div>
     </div>
 </template>

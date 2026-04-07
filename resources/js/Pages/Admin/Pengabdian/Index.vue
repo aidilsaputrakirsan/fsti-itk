@@ -1,27 +1,92 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
-import { Link, router, usePage } from '@inertiajs/vue3';
+import { Link, router, usePage, Head } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { PlusIcon, PencilSquareIcon, TrashIcon, ExclamationTriangleIcon, CheckCircleIcon, MagnifyingGlassIcon, FunnelIcon } from '@heroicons/vue/24/outline';
+import { 
+    PlusIcon, PencilSquareIcon, TrashIcon, ExclamationTriangleIcon, CheckCircleIcon, 
+    MagnifyingGlassIcon, FunnelIcon 
+} from '@heroicons/vue/24/outline';
 import { debounce } from 'lodash';
 
 defineOptions({ layout: AdminLayout });
 
-const props = defineProps<{ pengabdians: any; filters: any; prodis: { id: number; name: string }[]; }>();
+const props = defineProps<{ 
+    pengabdians: any; 
+    filters: any; 
+    prodis: { id: number; name: string }[];
+}>();
 
-const search = ref(props.filters.search || '');
-const prodi = ref(props.filters.prodi || '');
+const search = ref(props.filters?.search || '');
+const prodi = ref(props.filters?.prodi || '');
 
 watch([search, prodi], debounce(() => {
-    router.get(route('admin.pengabdian.index'), { search: search.value, prodi: prodi.value }, { preserveState: true, replace: true });
+    router.get((route as Function)('admin.pengabdian.index'), { 
+        search: search.value, 
+        prodi: prodi.value === '' ? null : prodi.value 
+    }, { 
+        preserveState: true, 
+        replace: true 
+    });
 }, 300));
+
+const formattedLinks = computed(() => {
+    if (!props.pengabdians?.links) return [];
+    
+    const links = props.pengabdians.links.map((link: any) => {
+        let label = link.label;
+        if (label.includes('Previous') || label.includes('&laquo;')) label = 'Sebelumnya';
+        if (label.includes('Next') || label.includes('&raquo;')) label = 'Selanjutnya';
+        return { ...link, label };
+    });
+
+    if (links.length <= 7) return links;
+
+    const activeIndex = links.findIndex((l: any) => l.active);
+    const result = [];
+    
+    result.push(links[0]);
+
+    links.forEach((link: any, index: number) => {
+        if (index === 0 || index === links.length - 1) return;
+
+        if (
+            index === 1 || 
+            index === links.length - 2 ||
+            (index >= activeIndex - 1 && index <= activeIndex + 1)
+        ) {
+            result.push(link);
+        } else if (
+            index === activeIndex - 2 || 
+            index === activeIndex + 2
+        ) {
+            result.push({ url: null, label: '...', active: false });
+        }
+    });
+
+    result.push(links[links.length - 1]);
+    return result;
+});
 
 const isModalOpen = ref(false);
 const itemToDelete = ref<any | null>(null);
 
-const openDeleteModal = (item: any) => { itemToDelete.value = item; isModalOpen.value = true; };
-const closeDeleteModal = () => { isModalOpen.value = false; itemToDelete.value = null; };
-const confirmDelete = () => { if (itemToDelete.value) { router.delete(route('admin.pengabdian.destroy', itemToDelete.value.id), { onSuccess: () => closeDeleteModal() }); }};
+const openDeleteModal = (item: any) => { 
+    itemToDelete.value = item; 
+    isModalOpen.value = true; 
+};
+
+const closeDeleteModal = () => { 
+    isModalOpen.value = false; 
+    itemToDelete.value = null; 
+};
+
+const confirmDelete = () => {
+    if (itemToDelete.value) {
+        router.delete((route as Function)('admin.pengabdian.destroy', itemToDelete.value.id), { 
+            onSuccess: () => closeDeleteModal() 
+        });
+    }
+};
 
 const page = usePage();
 const showNotification = ref(false);
@@ -30,110 +95,153 @@ const flashSuccess = computed(() => (page.props as any).flash?.success);
 
 watch(flashSuccess, (message) => {
     if (message) {
-        notificationMessage.value = message as string; showNotification.value = true;
+        notificationMessage.value = message as string;
+        showNotification.value = true;
         setTimeout(() => { showNotification.value = false; }, 3000);
     }
 }, { immediate: true });
 </script>
 
 <template>
-  <div>
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h1 class="text-3xl font-bold text-black">Kelola Daftar Pengabdian Masyarakat</h1>
-        <p class="mt-1 text-black">Manajemen daftar pengabdian masyarakat dosen Fakultas Sains dan Teknologi ITK</p>
-      </div>
-      <div class="flex items-center gap-3 flex-shrink-0">
-      <Link :href="route('admin.pengabdian.create')" class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90 transition-opacity">
-          <PlusIcon class="h-5 w-5" /> Tambah Pengabdian
-        </Link>
-      </div>
-    </div>
+    <div>
+        <Head title="Kelola Data Pengabdian" />
 
-    <div class="flex items-center justify-between gap-4 mb-6">
-        <div class="relative flex-grow">
-            <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
-            <input v-model="search" type="text" placeholder="Cari judul pengabdian atau nama dosen..." class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Kelola Data Pengabdian</h1>
+                <p class="mt-1 text-gray-600">Manajemen daftar Pengabdian Masyarakat dosen FSTI ITK.</p>
+            </div>
+            <Link :href="(route as Function)('admin.pengabdian.create')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
+                <PlusIcon class="h-5 w-5 stroke-2" />
+                Tambah Pengabdian
+            </Link>
         </div>
-        <div class="relative flex-shrink-0 w-64">
-            <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
-            <select v-model="prodi" class="w-full rounded-lg border border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                <option value="">Semua Program Studi</option>
-                <option v-for="p in prodis" :key="p.id" :value="p.id">{{ p.name }}</option>
-            </select>
-        </div>
-    </div>
 
-    <div class="bg-white shadow-sm p-6 rounded-lg">
-      <h3 class="text-lg font-semibold text-black mb-4">Daftar Pengabdian Masyarakat</h3>
-      <div class="border rounded-lg overflow-x-auto">
-        <table class="w-full min-w-full">
-          <thead class="bg-[#CBDCEB]">
-            <tr>
-              <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-black w-48">Nama Dosen</th>
-              <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-black">Judul Pengabdian</th>
-              <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-black w-40">Program Studi</th>
-              <th class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-black w-24">Tahun</th>
-              <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-black w-32">Aksi</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200">
-            <template v-if="pengabdians.data.length > 0">
-                <tr v-for="item in pengabdians.data" :key="item.id" class="hover:bg-gray-50 transition-colors">
-                  <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-black">{{ item.nama_dosen }}</td>
-                  <td class="whitespace-pre-line px-6 py-4 text-sm text-black leading-relaxed">{{ item.judul }}</td>
-                  <td class="whitespace-nowrap px-6 py-4 text-sm text-black">
-                    <span class="rounded-full px-3 py-1 text-xs font-medium bg-green-100 text-green-800">{{ item.study_program?.name || '-' }}</span>
-                  </td>
-                  <td class="whitespace-nowrap px-6 py-4 text-sm text-black text-center">{{ item.tahun }}</td>
-                  <td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
-                    <div class="flex items-center gap-2">
-                     <Link :href="route('admin.pengabdian.edit', item.id)" class="flex items-center gap-1 text-[#4682A9] hover:opacity-80 transition-opacity">
-                        <PencilSquareIcon class="h-4 w-4" /> Edit
-                      </Link>
-                      <span class="text-gray-300">|</span>
-                      <button @click="openDeleteModal(item)" class="flex items-center gap-1 text-[#DC645E] hover:opacity-80 transition-opacity">
-                        <TrashIcon class="h-4 w-4" /> Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-            </template>
-            <tr v-else>
-                <td colspan="5" class="text-center py-6 text-gray-500">Belum ada data pengabdian masyarakat.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="flex items-center justify-between mt-4">
-        <p v-if="pengabdians.total > 0" class="text-sm text-black">
-          Menampilkan <span class="font-medium">{{ pengabdians.from }}</span> sampai <span class="font-medium">{{ pengabdians.to }}</span> dari <span class="font-medium">{{ pengabdians.total }}</span> hasil
-        </p>
-        <div class="flex items-center gap-1">
-          <Link v-for="(link, index) in pengabdians.links" :key="index" :href="link.url ?? '#'" v-html="link.label"
-            :class="['px-3 py-1 text-sm rounded border border-gray-300 transition-colors', link.active ? 'bg-[#4682A9] text-white' : 'bg-[#CBDCEB] hover:bg-gray-100 text-gray-800', !link.url ? 'text-gray-400 cursor-not-allowed' : '']" />
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div class="relative w-full sm:flex-grow">
+                <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                <input 
+                    v-model="search" 
+                    type="text" 
+                    placeholder="Cari judul pengabdian atau nama dosen..." 
+                    class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-primary focus:ring-primary transition-colors" 
+                />
+            </div>
+            <div class="relative w-full sm:w-64 flex-shrink-0">
+                <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
+                <select 
+                    v-model="prodi" 
+                    class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors cursor-pointer"
+                >
+                    <option value="">Semua Program Studi</option>
+                    <option v-for="p in prodis" :key="p.id" :value="p.id">{{ p.name }}</option>
+                </select>
+            </div>
         </div>
-      </div>
+
+        <div class="bg-white shadow-sm p-4 sm:p-6 rounded-xl border border-gray-100 overflow-hidden">
+            <h3 class="text-lg font-bold text-gray-900 mb-4 hidden sm:block">Daftar Pengabdian Masyarakat</h3>
+            
+            <div class="admin-table-container overflow-x-auto w-full">
+                <table class="w-full min-w-[800px]">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="w-16 text-center">No</th>
+                            <th scope="col" class="w-48">Nama Dosen / Pelaksana</th>
+                            <th scope="col">Judul Pengabdian</th>
+                            <th scope="col" class="w-40 text-center">Program Studi</th>
+                            <th scope="col" class="w-24 text-center">Tahun</th>
+                            <th scope="col" class="text-center w-32">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-if="pengabdians.data && pengabdians.data.length > 0" v-for="(item, index) in pengabdians.data" :key="item.id">
+                            <td class="text-center font-medium text-gray-500">
+                                {{ (Number(pengabdians.current_page) - 1) * Number(pengabdians.per_page) + Number(index) + 1 }}
+                            </td>
+                            <td>
+                                <div class="font-bold text-gray-900">{{ item.nama_dosen }}</div>
+                            </td>
+                            <td>
+                                <div class="text-sm font-medium text-gray-700 leading-snug">{{ item.judul }}</div>
+                            </td>
+                            <td class="text-center">
+                                <span class="inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800">
+                                    {{ item.study_program?.name || 'Fakultas' }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <div class="font-bold text-gray-900">{{ item.tahun }}</div>
+                            </td>
+                            <td>
+                                <div class="flex items-center justify-center gap-3">
+                                    <Link :href="(route as Function)('admin.pengabdian.edit', item.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
+                                        <PencilSquareIcon class="h-4 w-4" /> Edit
+                                    </Link>
+                                    <span class="text-gray-300">|</span>
+                                    <button @click="openDeleteModal(item)" type="button" class="flex items-center gap-1 text-red-600 hover:text-red-800 font-semibold transition-colors">
+                                        <TrashIcon class="h-4 w-4" /> Hapus
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr v-else>
+                            <td colspan="6" class="py-8 text-center text-gray-500 font-medium">Belum ada data pengabdian masyarakat.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+                <p v-if="pengabdians.total > 0" class="text-sm text-gray-600 text-center sm:text-left">
+                    Menampilkan <span class="font-bold text-gray-900">{{ pengabdians.from }}</span> sampai <span class="font-bold text-gray-900">{{ pengabdians.to }}</span> dari <span class="font-bold text-gray-900">{{ pengabdians.total }}</span> hasil
+                </p>
+                <p v-else></p>
+
+                <div v-if="formattedLinks.length > 0" class="flex flex-wrap justify-center items-center gap-1.5">
+                    <Link 
+                        v-for="(link, index) in formattedLinks" 
+                        :key="index"
+                        :href="link.url ?? '#'"
+                        v-html="link.label"
+                        :class="[
+                            'px-3.5 py-1.5 rounded-lg border text-sm font-medium transition-colors',
+                            link.active ? 'bg-primary text-white border-primary shadow-sm' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-primary',
+                            !link.url && 'opacity-50 bg-gray-50 cursor-not-allowed hover:bg-gray-50 hover:text-gray-700'
+                        ]"
+                    />
+                </div>
+            </div>
+        </div>
     </div>
     
-    <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity" @click.self="closeDeleteModal">
-      <div class="w-full max-w-md rounded-lg bg-white p-8 shadow-2xl transform transition-all scale-95" :class="{'scale-100': isModalOpen}">
-        <div class="flex flex-col items-center text-center">
-          <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100"><ExclamationTriangleIcon class="h-10 w-10 text-red-500" /></div>
-          <h2 class="text-2xl font-bold text-gray-800">Hapus Pengabdian</h2>
-          <p class="mt-2 text-gray-600">Apakah Anda yakin ingin menghapus pengabdian oleh <br><span class="font-semibold">"{{ itemToDelete?.nama_dosen }}"</span>?</p>
+    <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click.self="closeDeleteModal">
+        <div class="w-full max-w-md rounded-2xl bg-white p-6 sm:p-8 shadow-2xl transform transition-all scale-100">
+            <div class="flex flex-col items-center text-center">
+                <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                    <ExclamationTriangleIcon class="h-10 w-10 text-red-600" />
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900">Hapus Pengabdian?</h2>
+                <p class="mt-2 text-gray-600 text-center">
+                    Apakah Anda yakin ingin menghapus data pengabdian oleh <br>
+                    <span class="font-bold text-gray-900 mt-1 line-clamp-2">"{{ itemToDelete?.nama_dosen }}"</span>?
+                </p>
+            </div>
+            <div class="mt-8 flex flex-col-reverse sm:flex-row justify-center gap-3">
+                <button @click="closeDeleteModal" class="rounded-lg border border-gray-300 bg-white px-6 py-2.5 font-bold text-gray-700 hover:bg-gray-50 transition-colors w-full sm:w-auto">
+                    Batal
+                </button>
+                <button @click="confirmDelete" class="rounded-lg bg-red-600 px-6 py-2.5 font-bold text-white hover:bg-red-700 transition-colors shadow-sm w-full sm:w-auto">
+                    Ya, Hapus
+                </button>
+            </div>
         </div>
-        <div class="mt-8 flex justify-center gap-4">
-          <button @click="closeDeleteModal" class="rounded-lg bg-gray-200 px-6 py-2 font-semibold text-gray-800 hover:bg-gray-300 transition-colors">Batal</button>
-          <button @click="confirmDelete" class="rounded-lg bg-[#DC645E] px-6 py-2 font-semibold text-white hover:bg-red-700 transition-colors">Ya, Hapus</button>
-        </div>
-      </div>
     </div>
     
-    <transition enter-active-class="transform ease-out duration-300 transition" enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2" enter-to-class="translate-y-0 opacity-100 sm:translate-x-0" leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100" leave-to-class="opacity-0">
-        <div v-if="showNotification" class="fixed top-5 right-5 z-50">
-            <div class="flex items-center gap-4 rounded-lg bg-green-600 p-4 text-white shadow-lg"><CheckCircleIcon class="h-8 w-8" /><p class="font-semibold">{{ notificationMessage }}</p></div>
+    <div v-if="showNotification" class="fixed top-5 right-5 sm:top-8 sm:right-8 z-50">
+        <div class="flex items-center gap-3 rounded-xl bg-green-600 px-5 py-4 text-white shadow-xl">
+            <CheckCircleIcon class="h-6 w-6" />
+            <p class="font-bold text-sm tracking-wide">{{ notificationMessage }}</p>
         </div>
-    </transition>
-  </div>
+    </div>
 </template>

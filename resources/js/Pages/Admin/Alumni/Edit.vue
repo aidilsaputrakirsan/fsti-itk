@@ -1,83 +1,134 @@
-<script setup>
+<script setup lang="ts">
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useForm, Link } from '@inertiajs/vue3';
-import { ArrowLeftIcon, PaperAirplaneIcon } from '@heroicons/vue/24/outline';
+import { useForm, Link, Head } from '@inertiajs/vue3';
+import { ArrowLeftIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
 
-const props = defineProps({
-    alumni: Object
-});
+const props = defineProps<{
+    alumni?: any;
+    data?: any;
+}>();
+
+const dataAlumni = props.alumni || props.data || {};
 
 const prodis = [
     'Matematika', 'Ilmu Aktuaria', 'Statistika', 'Fisika', 
     'Informatika', 'Sistem Informasi', 'Bisnis Digital', 'Teknik Elektro'
 ];
 
-const form = useForm({
-    nim: props.alumni.nim,
-    name: props.alumni.name,
-    study_program: props.alumni.study_program,
-    graduation_year: props.alumni.graduation_year,
+interface AlumniFormData {
+    _method: string;
+    nim: string;
+    name: string;
+    study_program: string;
+    graduation_year: number;
+}
+
+const form = useForm<AlumniFormData>({
+    _method: 'PUT',
+    nim: dataAlumni.nim || '',
+    name: dataAlumni.name || '',
+    study_program: dataAlumni.study_program || '',
+    graduation_year: dataAlumni.graduation_year || new Date().getFullYear(),
 });
 
 const submit = () => {
-    form.put(route('admin.alumni.update', props.alumni.id));
+    form.clearErrors();
+    let hasError = false;
+
+    if (!form.nim) {
+        form.setError('nim', 'NIM wajib diisi.');
+        hasError = true;
+    }
+
+    if (!form.name) {
+        form.setError('name', 'Nama lengkap wajib diisi.');
+        hasError = true;
+    }
+
+    if (!form.study_program) {
+        form.setError('study_program', 'Program studi wajib dipilih.');
+        hasError = true;
+    }
+
+    if (!form.graduation_year) {
+        form.setError('graduation_year', 'Tahun kelulusan wajib diisi.');
+        hasError = true;
+    }
+
+    if (hasError) return;
+
+    const targetUrl: string = (route as Function)('admin.alumni.update', dataAlumni.id);
+    form.post(targetUrl);
 };
 </script>
 
 <template>
     <div>
+        <Head :title="'Edit Alumni: ' + (dataAlumni.name || '')" />
+
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-black">Edit Data Alumni</h1>
-            <p class="mt-1 text-black">Perbarui informasi kelulusan untuk mahasiswa <strong>{{ props.alumni.name }}</strong></p>
+            <Link :href="(route as Function)('admin.alumni.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
+                <ArrowLeftIcon class="h-4 w-4 stroke-2" /> Kembali ke Daftar
+            </Link>
+            <h1 class="text-3xl font-bold text-gray-900">Edit Data Alumni</h1>
+            <p class="mt-1 text-gray-600">Perbarui informasi kelulusan dan data riwayat alumni fakultas.</p>
         </div>
 
-        <div class="bg-white shadow-sm p-8 rounded-lg">
-            <form @submit.prevent="submit">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+        <div v-if="dataAlumni.id" class="bg-white shadow-sm p-5 sm:p-8 rounded-xl border-t-4 border-primary">
+            <form @submit.prevent="submit" novalidate>
+                <div class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-x-8 gap-y-6 md:gap-y-8">
                     
-                    <div class="space-y-6">
-                        <div>
-                            <label for="nim" class="block text-sm font-semibold text-black">Nomor Induk Mahasiswa (NIM) *</label>
-                            <input type="text" id="nim" v-model="form.nim" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
-                            <p v-if="form.errors.nim" class="mt-2 text-sm text-red-600">{{ form.errors.nim }}</p>
-                        </div>
-
-                        <div>
-                            <label for="name" class="block text-sm font-semibold text-black">Nama Lengkap *</label>
-                            <input type="text" id="name" v-model="form.name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
-                            <p v-if="form.errors.name" class="mt-2 text-sm text-red-600">{{ form.errors.name }}</p>
-                        </div>
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Nomor Induk Mahasiswa <span class="text-red-600">*</span></label>
+                    <div>
+                        <input v-model="form.nim" type="text" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.nim ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            required>
+                        <InputError :message="form.errors.nim" />
                     </div>
 
-                    <div class="space-y-6">
-                        <div>
-                            <label for="study_program" class="block text-sm font-semibold text-black">Program Studi *</label>
-                            <select id="study_program" v-model="form.study_program" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required>
-                                <option value="" disabled>Pilih Program Studi</option>
-                                <option v-for="prodi in prodis" :key="prodi" :value="prodi">{{ prodi }}</option>
-                            </select>
-                            <p v-if="form.errors.study_program" class="mt-2 text-sm text-red-600">{{ form.errors.study_program }}</p>
-                        </div>
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Nama Lengkap <span class="text-red-600">*</span></label>
+                    <div>
+                        <input v-model="form.name" type="text" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            required>
+                        <InputError :message="form.errors.name" />
+                    </div>
 
-                        <div>
-                            <label for="graduation_year" class="block text-sm font-semibold text-black">Tahun Kelulusan *</label>
-                            <input type="number" id="graduation_year" v-model="form.graduation_year" min="2000" :max="new Date().getFullYear() + 1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] focus:ring-opacity-50 sm:text-sm" required />
-                            <p v-if="form.errors.graduation_year" class="mt-2 text-sm text-red-600">{{ form.errors.graduation_year }}</p>
-                        </div>
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Program Studi <span class="text-red-600">*</span></label>
+                    <div>
+                        <select v-model="form.study_program" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.study_program ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            required>
+                            <option value="" disabled>Pilih Program Studi</option>
+                            <option v-for="prodi in prodis" :key="prodi" :value="prodi">{{ prodi }}</option>
+                        </select>
+                        <InputError :message="form.errors.study_program" />
+                    </div>
+
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Tahun Kelulusan <span class="text-red-600">*</span></label>
+                    <div>
+                        <input v-model="form.graduation_year" type="number" min="2000" :max="new Date().getFullYear() + 1" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.graduation_year ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            required>
+                        <InputError :message="form.errors.graduation_year" />
                     </div>
 
                 </div>
 
-                <div class="mt-12 flex items-center justify-end gap-4">
-                    <Link :href="route('admin.alumni.index')" class="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-6 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">
-                        <ArrowLeftIcon class="h-5 w-5" />
+                <div class="mt-12 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 border-t border-gray-100 pt-6">
+                    <Link :href="(route as Function)('admin.alumni.index')" class="w-full sm:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
                         Batal
                     </Link>
-                    <button type="submit" :disabled="form.processing" class="flex items-center gap-2 rounded-lg bg-[#4682A9] px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90 disabled:opacity-50">
-                        <PaperAirplaneIcon class="h-5 w-5" />
-                        Simpan Perubahan
+                    <button type="submit" :disabled="form.processing" class="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-8 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors disabled:opacity-50">
+                        <PencilSquareIcon class="h-5 w-5 stroke-2" />
+                        {{ form.processing ? 'Menyimpan...' : 'Perbarui Data' }}
                     </button>
                 </div>
             </form>

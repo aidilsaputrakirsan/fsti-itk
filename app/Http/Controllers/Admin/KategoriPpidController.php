@@ -9,11 +9,20 @@ use Inertia\Inertia;
 
 class KategoriPpidController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kategoris = KategoriPpid::orderBy('urutan', 'asc')->get();
+        $query = KategoriPpid::query();
+
+        if ($request->filled('search')) {
+            $query->where('nama_kategori', 'like', '%' . $request->search . '%')
+                  ->orWhere('jenis_informasi', 'like', '%' . $request->search . '%');
+        }
+
+        $kategoris = $query->orderBy('urutan', 'asc')->paginate(10)->withQueryString();
+
         return Inertia::render('Admin/KategoriPpid/Index', [
-            'kategoris' => $kategoris
+            'kategoris' => $kategoris,
+            'filters' => $request->only(['search'])
         ]);
     }
 

@@ -1,62 +1,69 @@
 <script setup lang="ts">
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ArrowLeftIcon, CheckIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { ArrowLeftIcon, PaperAirplaneIcon } from '@heroicons/vue/24/outline';
+import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
 
-const form = useForm({
+interface CategoryForm {
+    name: string;
+}
+
+const form = useForm<CategoryForm>({
     name: '',
 });
 
 const submit = () => {
-    form.post(route('admin.post-categories.store'));
+    form.clearErrors();
+    let hasError = false;
+
+    if (!form.name) {
+        form.setError('name', 'Nama kategori wajib diisi.');
+        hasError = true;
+    }
+
+    if (hasError) return;
+
+    form.post((route as Function)('admin.post-categories.store'));
 };
 </script>
 
 <template>
     <div>
         <Head title="Tambah Kategori Berita" />
-        
-        <div class="mb-8 flex items-center gap-4">
-            <Link :href="route('admin.post-categories.index')" class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm border border-gray-200 hover:bg-gray-50 transition-colors">
-                <ArrowLeftIcon class="h-5 w-5 text-gray-600" />
+
+        <div class="mb-8">
+            <Link :href="(route as Function)('admin.post-categories.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
+                <ArrowLeftIcon class="h-4 w-4 stroke-2" /> Kembali ke Daftar
             </Link>
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Tambah Kategori Berita</h1>
-                <p class="mt-1 text-sm text-gray-600">Lengkapi formulir di bawah ini untuk menambahkan kategori berita baru.</p>
-            </div>
+            <h1 class="text-3xl font-bold text-gray-900">Tambah Kategori Berita</h1>
+            <p class="mt-1 text-gray-600">Buat kelompok kategori baru untuk publikasi berita ITK.</p>
         </div>
 
-        <div class="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden w-full">
-            <div class="bg-gray-50/50 px-8 py-5 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-800">Informasi Kategori</h3>
-            </div>
-            
-            <form @submit.prevent="submit" class="p-8 space-y-6">
-                <div>
-                    <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Nama Kategori <span class="text-red-500">*</span></label>
-                    <input 
-                        id="name"
-                        v-model="form.name" 
-                        type="text" 
-                        placeholder="Contoh: Pengabdian Masyarakat" 
-                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] text-sm" 
-                        required
-                    />
-                    <p class="text-xs text-gray-500 mt-2">Kategori ini nantinya akan muncul sebagai pilihan saat Admin menulis berita.</p>
-                    <p v-if="form.errors.name" class="text-xs text-red-500 mt-1">{{ form.errors.name }}</p>
+        <div class="bg-white shadow-sm p-5 sm:p-8 rounded-xl border-t-4 border-primary">
+            <form @submit.prevent="submit" novalidate>
+                <div class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-x-8 gap-y-6 md:gap-y-8">
+                    
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Nama Kategori <span class="text-red-600">*</span></label>
+                    <div>
+                        <input v-model="form.name" type="text" placeholder="Contoh: Pengabdian Masyarakat" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            required>
+                        <p class="mt-2 text-[11px] text-gray-500 font-medium">Kategori ini nantinya akan muncul sebagai pilihan saat Admin menulis berita.</p>
+                        <InputError :message="form.errors.name" />
+                    </div>
+
                 </div>
 
-                <div class="pt-6 border-t border-gray-200 flex items-center justify-end gap-3">
-                    <Link :href="route('admin.post-categories.index')" class="inline-flex items-center gap-2 rounded-lg bg-white border border-gray-300 px-6 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
-                        <XMarkIcon class="w-4 h-4" />
+                <div class="mt-12 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 border-t border-gray-100 pt-6">
+                    <Link :href="(route as Function)('admin.post-categories.index')" class="w-full sm:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
                         Batal
                     </Link>
-                    <button type="submit" :disabled="form.processing" class="inline-flex items-center gap-2 rounded-lg bg-[#4682A9] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#133E87] shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                        <CheckIcon class="w-4 h-4" v-if="!form.processing" />
-                        <svg v-else class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                        {{ form.processing ? 'Menyimpan...' : 'Simpan Kategori' }}
+                    <button type="submit" :disabled="form.processing" class="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-8 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors disabled:opacity-50">
+                        <PaperAirplaneIcon class="h-5 w-5 stroke-2" />
+                        {{ form.processing ? 'Menyimpan...' : 'Simpan Data' }}
                     </button>
                 </div>
             </form>

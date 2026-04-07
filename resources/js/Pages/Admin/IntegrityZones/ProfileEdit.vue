@@ -2,7 +2,17 @@
 import { ref, watch, computed } from 'vue';
 import { useForm, Head, Link, usePage } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { ArrowLeftIcon, CheckIcon, IdentificationIcon, InformationCircleIcon, PhotoIcon, DocumentTextIcon, CheckCircleIcon } from '@heroicons/vue/24/outline';
+import { 
+    ArrowLeftIcon, 
+    CheckIcon, 
+    IdentificationIcon, 
+    InformationCircleIcon, 
+    PhotoIcon, 
+    DocumentTextIcon, 
+    CheckCircleIcon,
+    ExclamationTriangleIcon
+} from '@heroicons/vue/24/outline';
+import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
 
@@ -14,9 +24,21 @@ const props = defineProps<{
     } | null
 }>();
 
-const form = useForm({
+interface ProfileFormData {
+    description: string;
+    service_declaration_image: File | null;
+}
+
+const form = useForm<ProfileFormData>({
     description: props.profile?.description || '',
-    service_declaration_image: null as File | null,
+    service_declaration_image: null,
+});
+
+const fileNameDisplay = computed(() => {
+    if (form.service_declaration_image instanceof File) {
+        return form.service_declaration_image.name;
+    }
+    return 'Pilih gambar Maklumat (Opsional, Maks. 5 MB)';
 });
 
 const handleMaklumatUpload = (e: Event) => {
@@ -24,14 +46,32 @@ const handleMaklumatUpload = (e: Event) => {
     form.service_declaration_image = target.files?.[0] || null;
 };
 
+const validateForm = () => {
+    form.clearErrors();
+    let hasError = false;
+
+    if (form.service_declaration_image) {
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+        if (!allowedTypes.includes(form.service_declaration_image.type)) {
+            form.setError('service_declaration_image', 'Format file gambar harus JPG, PNG, atau WEBP.');
+            hasError = true;
+        } else if (form.service_declaration_image.size > 5 * 1024 * 1024) {
+            form.setError('service_declaration_image', 'Ukuran file gambar maksimal 5 MB.');
+            hasError = true;
+        }
+    }
+
+    return !hasError;
+};
+
 const submit = () => {
-    form.post('/admin/zona-integritas/profil', {
+    if (!validateForm()) return;
+    form.post((route as Function)('admin.zi.profile.update'), {
         preserveScroll: true,
         forceFormData: true,
     });
 };
 
-// --- Logika Notifikasi Sukses ---
 const page = usePage();
 const showNotification = ref(false);
 const notificationMessage = ref('');
@@ -47,36 +87,36 @@ watch(flashSuccess, (message) => {
 </script>
 
 <template>
-    <Head title="Kelola Halaman ZI" />
-    
     <div>
+        <Head title="Kelola Halaman ZI" />
+        
         <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <Link href="/admin/dashboard" class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm border border-gray-200 hover:bg-gray-50 transition-colors">
-                    <ArrowLeftIcon class="h-5 w-5 text-gray-600" />
+                <Link :href="(route as Function)('admin.dashboard')" class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm border border-gray-200 hover:bg-gray-50 transition-colors flex-shrink-0">
+                    <ArrowLeftIcon class="h-5 w-5 text-gray-600 stroke-2" />
                 </Link>
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900">Kelola Halaman ZI</h1>
-                    <p class="mt-1 text-sm text-gray-600">Perbarui konten visual dan narasi pada halaman utama Zona Integritas FSTI.</p>
+                    <p class="mt-1 text-sm text-gray-600">Perbarui konten visual dan narasi pada halaman utama Zona Integritas FSTI ITK.</p>
                 </div>
             </div>
         </div>
 
-        <div class="mb-6 bg-blue-50 border-l-4 border-[#4682A9] p-4 rounded-r-lg shadow-sm flex items-start">
-            <InformationCircleIcon class="h-6 w-6 text-[#4682A9] mt-0.5 mr-3 flex-shrink-0" />
+        <div class="mb-6 bg-blue-50 border-l-4 border-primary p-5 rounded-r-xl shadow-sm flex items-start">
+            <InformationCircleIcon class="h-6 w-6 text-primary mt-0.5 mr-3 flex-shrink-0" />
             <div class="text-sm text-blue-900 leading-relaxed">
                 <p class="font-bold mb-1">Pusat Pembaruan Data (Satu Pintu)</p>
                 <p>Data yang Anda simpan di bawah ini akan <strong>langsung menimpa dan menggantikan</strong> tampilan di halaman publik web FSTI. Pastikan resolusi dan ukuran gambar sesuai dengan ketentuan agar website tetap cepat diakses.</p>
             </div>
         </div>
 
-        <div class="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden w-full">
-            <div class="bg-gray-50/50 px-8 py-5 border-b border-gray-200 flex items-center">
-                <IdentificationIcon class="w-5 h-5 text-[#4682A9] mr-2" />
-                <h3 class="text-lg font-semibold text-gray-800">Formulir Pembaruan Konten</h3>
+        <div class="bg-white shadow-sm rounded-xl border-t-4 border-primary overflow-hidden w-full">
+            <div class="bg-gray-50/50 px-6 sm:px-8 py-5 border-b border-gray-200 flex items-center">
+                <IdentificationIcon class="w-6 h-6 text-primary mr-2" />
+                <h3 class="text-lg font-bold text-gray-800">Formulir Pembaruan Konten</h3>
             </div>
             
-            <form @submit.prevent="submit" class="p-8 space-y-10">
+            <form @submit.prevent="submit" novalidate class="p-6 sm:p-8 space-y-10">
                 
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8">
                     <div class="md:col-span-4">
@@ -91,10 +131,10 @@ watch(flashSuccess, (message) => {
                             v-model="form.description" 
                             rows="8" 
                             placeholder="Contoh: Fakultas Sains dan Teknologi Informasi (FSTI) ITK senantiasa berkomitmen penuh dalam mewujudkan Wilayah Bebas dari Korupsi (WBK)..." 
-                            class="w-full rounded-xl border-gray-300 shadow-sm focus:border-[#4682A9] focus:ring-[#4682A9] text-sm leading-relaxed"
+                            class="w-full rounded-xl border-gray-300 shadow-sm focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white text-sm leading-relaxed transition-colors py-3"
                         ></textarea>
-                        <p class="text-[11px] text-gray-500 mt-2 italic">* Teks akan otomatis menyesuaikan paragraf (enter) saat ditampilkan di halaman publik.</p>
-                        <p v-if="form.errors.description" class="text-xs text-red-500 mt-1 font-semibold">{{ form.errors.description }}</p>
+                        <p class="text-[11px] text-gray-500 mt-2 font-medium">Teks akan otomatis menyesuaikan paragraf (enter) saat ditampilkan di halaman publik.</p>
+                        <InputError :message="form.errors.description" class="mt-2" />
                     </div>
                 </div>
 
@@ -108,56 +148,60 @@ watch(flashSuccess, (message) => {
                         </label>
                         <p class="text-sm text-gray-500 mb-4 leading-relaxed">Poster atau piagam resmi Maklumat Pelayanan yang telah disahkan.</p>
 
-                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 text-[11px] text-gray-600 space-y-1.5">
-                            <p class="font-bold text-gray-700">Aturan File:</p>
-                            <p>• <strong>Format:</strong> JPG, PNG, WEBP</p>
-                            <p>• <strong>Maks Ukuran:</strong> 5 MB</p>
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 text-[11px] text-gray-600 space-y-2">
+                            <p class="font-bold text-gray-800 text-xs">Aturan File:</p>
+                            <p class="font-medium">• Format: JPG, PNG, WEBP</p>
+                            <p class="font-medium">• Maksimal Ukuran: 5 MB</p>
                         </div>
                     </div>
                     <div class="md:col-span-8">
-                        <div class="p-5 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/30">
-                            <div v-if="props.profile?.service_declaration_image_path" class="mb-4">
-                                <span class="inline-block bg-green-100 text-green-800 text-[10px] font-bold px-2 py-1 rounded mb-2">Dokumen Saat Ini Terpasang</span>
-                                <div class="bg-white p-2 border border-gray-200 rounded-lg inline-block shadow-sm">
-                                    <img :src="props.profile.service_declaration_image_path" alt="Maklumat Pelayanan" class="h-64 w-auto object-contain rounded">
+                        <div class="p-5 sm:p-6 border border-gray-200 rounded-xl bg-gray-50/50">
+                            <div v-if="props.profile?.service_declaration_image_path" class="mb-5">
+                                <span class="inline-flex items-center gap-1.5 bg-green-100 text-green-800 text-[10px] font-bold px-3 py-1.5 rounded-full mb-3 border border-green-200">
+                                    <CheckCircleIcon class="w-4 h-4 stroke-2" /> Dokumen Saat Ini Terpasang
+                                </span>
+                                <div class="bg-white p-3 border border-gray-200 rounded-xl inline-block shadow-sm w-full sm:w-auto">
+                                    <img :src="props.profile.service_declaration_image_path" alt="Maklumat Pelayanan" class="h-auto sm:h-64 w-full sm:w-auto object-contain rounded-lg">
                                 </div>
                             </div>
-                            <div v-else class="mb-4 text-sm text-amber-600 font-medium bg-amber-50 p-3 rounded-lg border border-amber-200">
-                                ⚠️ Belum ada Maklumat Pelayanan yang diunggah.
+                            <div v-else class="mb-5 text-sm text-gray-600 font-medium bg-white p-4 rounded-xl border border-gray-200 flex items-center gap-3 shadow-sm">
+                                <ExclamationTriangleIcon class="h-6 w-6 text-gray-400 flex-shrink-0" />
+                                Belum ada Maklumat Pelayanan yang diunggah.
                             </div>
 
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Ganti / Unggah Maklumat Baru:</label>
-                            <input type="file" @change="handleMaklumatUpload" accept="image/png, image/jpeg, image/webp" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-[#CBDCEB] file:text-[#133E87] hover:file:bg-[#a6c1da] transition cursor-pointer" />
-                            <p v-if="form.errors.service_declaration_image" class="text-xs text-red-500 mt-2 font-semibold">{{ form.errors.service_declaration_image }}</p>
+                            <label class="block text-sm font-bold text-gray-800 mb-3">Ganti / Unggah Maklumat Baru:</label>
+                            <div class="relative flex items-center w-full rounded-lg border border-gray-300 bg-white hover:bg-gray-50 focus-within:bg-white focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors shadow-sm px-4 py-3 cursor-pointer">
+                                <PhotoIcon class="h-5 w-5 text-gray-400 flex-shrink-0" />
+                                <span class="ml-3 text-sm truncate" :class="{'text-gray-400': !form.service_declaration_image, 'text-gray-900 font-medium': form.service_declaration_image}">
+                                    {{ fileNameDisplay }}
+                                </span>
+                                <input
+                                    type="file"
+                                    accept="image/png, image/jpeg, image/webp"
+                                    @change="handleMaklumatUpload"
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                />
+                            </div>
+                            <InputError :message="form.errors.service_declaration_image" class="mt-3" />
                         </div>
                     </div>
                 </div>
 
                 <div class="pt-8 border-t border-gray-200 flex items-center justify-end">
-                    <button type="submit" :disabled="form.processing" class="inline-flex items-center gap-2 rounded-lg bg-[#4682A9] px-8 py-3 text-sm font-bold text-white hover:bg-[#133E87] shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                        <CheckIcon class="w-5 h-5" v-if="!form.processing" />
-                        <svg v-else class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                        {{ form.processing ? 'Menyimpan Perubahan...' : 'Simpan Pembaruan Halaman' }}
+                    <button type="submit" :disabled="form.processing" class="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-8 py-3 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors disabled:opacity-50">
+                        <CheckIcon class="h-5 w-5 stroke-2" />
+                        {{ form.processing ? 'Menyimpan...' : 'Simpan Pembaruan Halaman' }}
                     </button>
                 </div>
             </form>
         </div>
         
-        <transition
-            enter-active-class="transform ease-out duration-300 transition"
-            enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-            enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
-            leave-active-class="transition ease-in duration-100"
-            leave-from-class="opacity-100"
-            leave-to-class="opacity-0"
-        >
-            <div v-if="showNotification" class="fixed top-5 right-5 z-50">
-                <div class="flex items-center gap-4 rounded-lg bg-green-600 p-4 text-white shadow-lg">
-                    <CheckCircleIcon class="h-8 w-8" />
-                    <p class="font-semibold">{{ notificationMessage }}</p>
-                </div>
+        <div v-if="showNotification" class="fixed top-5 right-5 sm:top-8 sm:right-8 z-50">
+            <div class="flex items-center gap-3 rounded-xl bg-green-600 px-5 py-4 text-white shadow-xl">
+                <CheckCircleIcon class="h-6 w-6" />
+                <p class="font-bold text-sm tracking-wide">{{ notificationMessage }}</p>
             </div>
-        </transition>
+        </div>
 
     </div>
 </template>

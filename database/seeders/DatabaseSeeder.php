@@ -57,6 +57,7 @@ class DatabaseSeeder extends Seeder
             AnnouncementSeeder::class,
             PenelitianSeeder::class,
             AlumniSeeder::class,
+            PengabdianSeeder::class,
         ]);
     }
 }
