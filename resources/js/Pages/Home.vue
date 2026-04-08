@@ -106,8 +106,12 @@ const closeModal = () => { showModal.value = false; };
 
 const addHoverAnimation = (elements: Element[]) => {
   elements.forEach(el => {
-    el.addEventListener('mouseenter', () => { gsap.to(el, { scale: 1.05, duration: 0.3, ease: 'power2.out' }); });
-    el.addEventListener('mouseleave', () => { gsap.to(el, { scale: 1, duration: 0.3, ease: 'power2.out' }); });
+    el.addEventListener('mouseenter', () => { 
+        gsap.to(el, { y: -8, scale: 1.01, duration: 0.3, ease: 'power2.out' }); 
+    });
+    el.addEventListener('mouseleave', () => { 
+        gsap.to(el, { y: 0, scale: 1, duration: 0.3, ease: 'power2.out' }); 
+    });
   });
 };
 
@@ -200,22 +204,22 @@ onMounted(() => {
   <PublicLayout>
     <div class="hidden bg-[#2F4DD3]"></div>
 
-    <div class="relative bg-white pb-24 font-public-sans">
-      <section 
+<div class="relative bg-white lg:pb-24 font-public-sans">
+        <section 
         ref="heroSectionRef"
         class="relative w-full h-[600px] bg-gray-500 overflow-hidden"
         style="clip-path: ellipse(120% 100% at 50% 0%);"
       >
         <img src="/images/gambar-beranda-1.jpeg" alt="Suasana FSTI ITK" class="hero-image absolute inset-0 w-full h-full object-cover object-[center_68%]">
         <div class="absolute inset-0 bg-[#00509D] opacity-70"></div>
-        <div class="relative container mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center items-center text-center -mt-16">
-          
-          <h1 ref="heroTitle1Ref" class="font-optimus uppercase text-2xl sm:text-3xl md:text-5xl lg:text-5xl xl:text-6xl font-reguler text-white text-shadow-custom tracking-wider mt-8 whitespace-nowrap">
-            FAKULTAS SAINS DAN TEKNOLOGI INFORMASI
-          </h1>
-          <h2 ref="heroTitle2Ref" class="mt-4 font-optimus uppercase text-xl sm:text-2xl md:text-4xl lg:text-4xl xl:text-5xl font-reguler text-white text-shadow-custom tracking-wider">
-            INSTITUT TEKNOLOGI KALIMANTAN
-          </h2>
+<div class="relative container mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center items-center text-center -mt-32 lg:-mt-16">          
+        <h1 ref="heroTitle1Ref" class="font-optimus uppercase text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-reguler text-white text-shadow-custom tracking-wider mt-8 leading-tight px-4 md:px-0 lg:whitespace-nowrap">
+  FAKULTAS SAINS DAN TEKNOLOGI INFORMASI
+</h1>
+
+<h2 ref="heroTitle2Ref" class="mt-4 font-optimus uppercase text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-reguler text-white text-shadow-custom tracking-wider px-4 md:px-0 lg:whitespace-nowrap">
+  INSTITUT TEKNOLOGI KALIMANTAN
+</h2>
           
           <div ref="heroButtonRef" class="mt-10">
             <Link :href="route('profil.tentang')" class="inline-block bg-white text-black font-public-sans font-bold text-base px-6 py-2 rounded-lg shadow-md hover:bg-gray-100 transition-transform transform hover:scale-105 duration-300 -mt-16">
@@ -225,8 +229,7 @@ onMounted(() => {
         </div>
       </section>
 
-      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full container mx-auto px-4 sm:px-6 lg:px-8">
-        <div ref="heroCardsRef" class="flex justify-center items-start gap-8 flex-wrap">
+<div class="relative lg:absolute lg:bottom-0 lg:left-1/2 lg:-translate-x-1/2 w-full container mx-auto px-4 sm:px-6 lg:px-8 -mt-24 lg:mt-0 z-20 pb-12 lg:pb-0">        <div ref="heroCardsRef" class="flex justify-center items-start gap-8 flex-wrap">
           <Link :href="route('profil.pimpinan-prodi')" class="block w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
             <GraduationCap :size="80" class="mx-auto" />
             <h3 class="mt-4 text-xl font-bold font-public-sans">Program Studi</h3>
@@ -308,8 +311,7 @@ onMounted(() => {
             Lihat Semua <ArrowRight class="ml-2 h-4 w-4" />
           </Link>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 -mt-10 relative z-20">
-          <div v-for="(achievement, index) in latestAchievements" :key="achievement.id" class="relative z-20 bg-white rounded-lg h-full shadow-lg flex">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-20 mt-4">          <div v-for="(achievement, index) in latestAchievements" :key="achievement.id" class="relative z-20 bg-white rounded-lg h-full shadow-lg flex">
             <AchievementCard :achievement="achievement" class="w-full h-full flex-grow" />
           </div>
         </div>
