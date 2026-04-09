@@ -11,9 +11,8 @@ class PenelitianSeeder extends Seeder
 {
     public function run()
     {
-        // Arahkan langsung ke 1 file sinta_data.json
         $jsonPath = database_path('seeders/data/sinta_data.json');
-        
+
         if (!File::exists($jsonPath)) {
             $this->command->error("File tidak ditemukan di: {$jsonPath}");
             return;
@@ -28,26 +27,24 @@ class PenelitianSeeder extends Seeder
 
         foreach ($data['lecturers'] as $lecturer) {
             if (isset($lecturer['research']) && is_array($lecturer['research'])) {
-                
-                // Cari ID Prodi dari tabel study_programs
+
                 $prodiName = $lecturer['prodi'] ?? 'Sistem Informasi';
                 $prodi = StudyProgram::where('name', 'like', "%{$prodiName}%")->first();
 
                 foreach ($lecturer['research'] as $research) {
                     if (!empty($research['title']) && !empty($research['year'])) {
-                        
+
                         Penelitian::create([
                             'study_program_id' => $prodi ? $prodi->id : null,
-                            'nama_dosen'       => $lecturer['name'], 
+                            'nama_dosen'       => $lecturer['name'],
                             'judul'            => $research['title'],
                             'tahun'            => $research['year'],
                         ]);
-
                     }
                 }
             }
         }
-        
+
         $this->command->info('Data Penelitian berhasil di-seed dari sinta_data.json!');
     }
 }

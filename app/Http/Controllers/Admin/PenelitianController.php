@@ -12,7 +12,6 @@ class PenelitianController extends Controller
 {
     public function index(Request $request)
     {
-        // Panggil relasi studyProgram agar nama prodi bisa ditampilkan di tabel
         $query = Penelitian::with('studyProgram');
 
         if ($request->search) {

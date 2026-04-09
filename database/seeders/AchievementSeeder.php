@@ -4,12 +4,27 @@ namespace Database\Seeders;
 
 use App\Models\Achievement;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
 
 class AchievementSeeder extends Seeder
 {
     public function run(): void
     {
+        // 1. Kosongkan tabel database
         Achievement::truncate();
+
+        // 2. Siapkan folder Storage (Tujuan) dan Folder Assets (Sumber)
+        $storagePrestasiPath = storage_path('app/public/prestasi');
+        $assetPrestasiPath = database_path('seeders/assets/prestasi');
+
+        // Buat folder di storage jika belum ada
+        if (!File::exists($storagePrestasiPath)) {
+            File::makeDirectory($storagePrestasiPath, 0755, true);
+        }
+
+        foreach (File::files($storagePrestasiPath) as $file) {
+            File::delete($file);
+        }
 
         $data = [
             [
@@ -234,8 +249,29 @@ class AchievementSeeder extends Seeder
             ]
         ];
 
+        $copiedCount = 0;
+
+        // 3. Eksekusi Input ke Database & Proses Copy File
         foreach ($data as $item) {
+
+            // Logika untuk menyalin file gambar
+            if (!empty($item['image_path'])) {
+                $imageName = basename($item['image_path']);
+
+                $sourceFile = $assetPrestasiPath . '/' . $imageName;
+                $destinationFile = $storagePrestasiPath . '/' . $imageName;
+
+                if (File::exists($sourceFile)) {
+                    File::copy($sourceFile, $destinationFile);
+                    $copiedCount++;
+                } else {
+                    $this->command->warn("Peringatan: File Gambar '{$imageName}' tidak ditemukan di assets/prestasi!");
+                }
+            }
+
             Achievement::create($item);
         }
+
+        $this->command->info("Selesai! " . count($data) . " Data Prestasi berhasil di-seed. Total {$copiedCount} gambar disalin ke Storage.");
     }
 }
