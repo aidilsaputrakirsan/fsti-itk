@@ -1,5 +1,7 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
+import typography from '@tailwindcss/typography';
+
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -13,11 +15,19 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                 sans: ['Inter', 'sans-serif'], 
-                'kulim-park': ['"Kulim Park"', 'sans-serif'],
+                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                'optimus': ['"Optimus Princeps"', 'serif'],
+                'public-sans': ['"Public Sans"', 'sans-serif'],
             },
+
+            colors: {
+                primary: {
+                    DEFAULT: '#2F4DD3', // Warna utama FSTI ITK
+                    hover: '#00509D',   // Warna lebih gelap untuk efek hover
+                }
+            }
         },
     },
 
-    plugins: [forms],
+    plugins: [forms, typography],
 };

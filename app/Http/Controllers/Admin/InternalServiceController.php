@@ -3,90 +3,90 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\InternalService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class InternalServiceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = \App\Models\InternalService::query();
+        $query = InternalService::query();
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%');
         }
 
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->status);
         }
 
-        $services = $query->orderBy('sort_order')->orderBy('id', 'desc')->paginate(10)->withQueryString();
+        $services = $query->orderBy('sort_order', 'asc')->paginate(10)->through(fn($item) => [
+            'id' => $item->id,
+            'name' => $item->name,
+            'link_url' => $item->link_url,
+            'description' => $item->description,
+            'sort_order' => $item->sort_order,
+            'is_active' => $item->is_active,
+        ])->withQueryString();
 
-        return \Inertia\Inertia::render('Admin/InternalServices/Index', [
+        return Inertia::render('Admin/InternalServices/Index', [
             'services' => $services,
-            'filters' => $request->only(['search', 'category']),
+            'filters' => $request->only(['search', 'status'])
         ]);
     }
 
     public function create()
     {
-        return \Inertia\Inertia::render('Admin/InternalServices/Create');
+        return Inertia::render('Admin/InternalServices/Create');
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
             'link_url' => 'required|url',
-            'category' => 'nullable|string',
-            'sort_order' => 'nullable|integer',
+            'description' => 'required|string',
+            'sort_order' => 'required|integer|min:1',
+            'is_active' => 'required|boolean',
         ]);
-
-        $validated['is_active'] = $request->boolean('is_active');
-
-        \App\Models\InternalService::create($validated);
-
-        return redirect()->route('admin.internal-services.index')->with('success', 'Layanan berhasil ditambahkan!');
+        
+        InternalService::create($validated);
+        return redirect()->route('admin.internal-services.index')->with('success', 'Layanan berhasil ditambahkan.');
     }
 
-    public function show(string $id)
+    public function edit(InternalService $internalService)
     {
-        //
-    }
-
-    public function edit(string $id)
-    {
-        $service = \App\Models\InternalService::findOrFail($id);
-
-        return \Inertia\Inertia::render('Admin/InternalServices/Edit', [
-            'service' => $service,
+        return Inertia::render('Admin/InternalServices/Edit', [
+            'service' => [
+                'id' => $internalService->id,
+                'name' => $internalService->name,
+                'link_url' => $internalService->link_url,
+                'description' => $internalService->description,
+                'sort_order' => $internalService->sort_order,
+                'is_active' => $internalService->is_active,
+            ]
         ]);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, InternalService $internalService)
     {
-        $service = \App\Models\InternalService::findOrFail($id);
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
             'link_url' => 'required|url',
-            'category' => 'nullable|string',
-            'sort_order' => 'nullable|integer',
+            'description' => 'required|string',
+            'sort_order' => 'required|integer|min:1',
+            'is_active' => 'required|boolean',
         ]);
-
-        $validated['is_active'] = $request->boolean('is_active');
-
-        $service->update($validated);
-
-        return redirect()->route('admin.internal-services.index')->with('success', 'Layanan berhasil diperbarui!');
+        
+        $internalService->update($validated);
+        return redirect()->route('admin.internal-services.index')->with('success', 'Layanan berhasil diperbarui.');
     }
 
-    public function destroy(string $id)
+    public function destroy(InternalService $internalService)
     {
-        $service = \App\Models\InternalService::findOrFail($id);
-        $service->delete();
-
-        return redirect()->route('admin.internal-services.index')->with('success', 'Layanan berhasil dihapus!');
+        $internalService->delete();
+        return redirect()->route('admin.internal-services.index')->with('success', 'Layanan berhasil dihapus.');
     }
 }

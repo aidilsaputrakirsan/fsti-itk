@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('excerpt');
             $table->longText('content');
             $table->string('image_path')->nullable();
-            $table->enum('category', ['Prestasi', 'Liputan Kegiatan', 'Kerjasama']);
+            $table->foreignId('post_category_id')->constrained('post_categories')->cascadeOnDelete();
             $table->text('tags')->nullable();
             $table->enum('status', ['Draft', 'Terbitkan'])->default('Draft');
             $table->timestamp('published_at')->nullable();

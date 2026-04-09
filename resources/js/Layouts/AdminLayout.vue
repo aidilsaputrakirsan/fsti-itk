@@ -3,82 +3,120 @@ import { Link, usePage, router } from '@inertiajs/vue3';
 import {
     ChartBarSquareIcon,
     NewspaperIcon,
-    TrophyIcon,
     UsersIcon,
     ArrowLeftOnRectangleIcon,
     ChevronRightIcon,
     InformationCircleIcon,
     AcademicCapIcon,
+    ArchiveBoxIcon,
+    ShieldCheckIcon,
+    UserGroupIcon, 
+    BookOpenIcon,
+    GlobeAltIcon
 } from '@heroicons/vue/24/outline';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
 const page = usePage();
-const isProfileOpen = ref(false);
-
 const openMenu = ref<string | null>(null);
 
-const navigation = ref([
-    { name: 'Dashboard', href: '/admin/dashboard', icon: ChartBarSquareIcon, children: null },
-    { 
-        name: 'Berita', 
-        href: null,
-        icon: NewspaperIcon, 
-        children: [
-            { name: 'Kelola Berita', href: '/admin/posts' }
-        ] 
-    },
-    { 
-        name: 'Prestasi', 
-        href: null,
-        icon: TrophyIcon,
-        children: [
-            { name: 'Kelola Daftar Prestasi', href: '/admin/achievements' }
-        ]
-    },
-    {
-        name: 'Profil Fakultas',
-        href: null,
-        icon: AcademicCapIcon,
-        children: [
-            { name: 'Kelola Halaman', href: '/admin/static-pages' },
-            { name: 'Civitas Akademika', href: '/admin/staff' },
-        ]
-    },
-    {
-        name: 'Informasi & Layanan',
-        href: null,
-        icon: InformationCircleIcon,
-        children: [
-            { name: 'PPID', href: '/admin/ppid' },
-            { name: 'Zona Integritas', href: '/admin/integrity-zones' },
-            { name: 'Alumni & Tracer', href: '/admin/alumni' },
-            { name: 'Survei Kepuasan', href: '/admin/satisfaction-surveys' },
-            { name: 'Layanan Internal', href: '/admin/internal-services' },
-        ]
-    },
-    { name: 'Kelola Akun Admin', href: '/admin/users', icon: UsersIcon, children: null },
-]);
+// Memantau perubahan URL secara reaktif
+const currentUrl = computed(() => page.url);
+
+// [PERBAIKAN 1]: Mengambil data user yang sedang login saat ini
+const currentUser = computed(() => page.props.auth.user as any);
+
+// [PERBAIKAN 2]: Mengubah navigation menjadi computed agar bisa difilter
+const navigation = computed(() => {
+    const menus = [
+        { name: 'Dashboard', href: '/admin/dashboard', icon: ChartBarSquareIcon, children: null },
+        {
+            name: 'Profil Fakultas',
+            href: null,
+            icon: AcademicCapIcon,
+            children: [
+                { name: 'Kelola Tentang Fakultas', href: '/admin/tentang-fakultas' },
+                { name: 'Kelola Civitas Akademika', href: '/admin/staff' },
+                { name: 'Kelola Kerjasama', href: '/admin/partners' },
+                { name: 'Kelola Kontak', href: '/admin/contacts' },
+            ]
+        },
+        { name: 'Program Studi', href: '/admin/study-programs', icon: BookOpenIcon, children: null },
+        { 
+            name: 'Kemahasiswaan', 
+            href: null,
+            icon: UserGroupIcon,
+            children: [
+                { name: 'Kelola Daftar Prestasi', href: '/admin/achievements' },
+                { name: 'Kelola Portal Layanan', href: '/admin/internal-services' },
+                { name: 'Kelola Kegiatan', href: '/admin/kegiatan-mahasiswa' },
+                { name: 'Kelola Beasiswa', href: '/admin/beasiswa' },
+            ]
+        },
+        { name: 'Data Alumni', href: '/admin/alumni', icon: BookOpenIcon, children: null },
+        { 
+            name: 'Informasi', 
+            href: null,
+            icon: NewspaperIcon, 
+            children: [
+                { name: 'Kelola Agenda', href: '/admin/agenda-fakultas' },
+                { name: 'Kelola Berita', href: '/admin/posts' },
+                { name: 'Kelola Kategori Berita', href: '/admin/post-categories' },
+                { name: 'Kelola Pengumuman', href: '/admin/announcements' },
+            ] 
+        },
+        {
+            name: 'PPID',
+            href: null,
+            icon: ArchiveBoxIcon,
+            children: [
+                { name: 'Kelola PPID', href: '/admin/ppid' },
+                { name: 'Kelola Kategori PPID', href: '/admin/kategori-ppid' }
+            ]
+        },
+        {
+            name: 'Zona Integritas (ZI)',
+            href: null,
+            icon: ShieldCheckIcon,
+            children: [
+                { name: 'Kelola Halaman ZI', href: '/admin/zona-integritas/profil' },
+                { name: 'Kelola Dokumen ZI', href: '/admin/zona-integritas/dokumen' },
+                { name: 'Kelola Survei Kepuasan', href: '/admin/satisfaction-surveys' },
+            ]
+        },
+        {
+            name: 'Riset', 
+            href: null,
+            icon: NewspaperIcon, 
+            children: [
+                { name: 'Kelola Penelitian', href: '/admin/penelitian' },
+                { name: 'Kelola Pengabdian kepada Masyarakat', href: '/admin/pengabdian' },
+            ] 
+        },
+    ];
+
+    // [PERBAIKAN 3]: HANYA tambahkan menu Kelola Akun Admin JIKA user adalah superadmin!
+    if (currentUser.value?.is_superadmin) {
+        menus.push({ name: 'Kelola Akun Admin', href: '/admin/users', icon: UsersIcon, children: null });
+    }
+
+    return menus;
+});
 
 const isParentUrlActive = (item: any) => {
     if (!item.children) return false;
-    return item.children.some((child: any) => page.url.startsWith(child.href));
+    return item.children.some((child: any) => currentUrl.value.startsWith(child.href));
 };
 
-// PERUBAHAN: Memperbarui logika toggle submenu
 const toggleSubMenu = (name: string) => {
-    // Jika menu yang sama diklik (artinya submenu sedang terbuka)
     if (openMenu.value === name) {
-        openMenu.value = null; // Tutup submenu
-        // Arahkan kembali ke dashboard
-        router.visit('/admin/dashboard');
+        openMenu.value = null;
     } else {
-        // Jika menu lain yang diklik, cukup buka submenunya
         openMenu.value = name;
     }
 };
 
 onMounted(() => {
-    const currentParent = navigation.value.find(item => isParentUrlActive(item));
+    const currentParent = navigation.value.find((item: any) => isParentUrlActive(item));
     if (currentParent) {
         openMenu.value = currentParent.name;
     }
@@ -86,106 +124,87 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex h-screen bg-gray-50 text-gray-800">
-        <aside class="flex w-72 flex-col flex-shrink-0 bg-white px-5 pt-6 pb-4 border-r border-gray-200 shadow-lg">
-            <div class="px-4 mb-8">
-                <img src="/images/logofsti.png" alt="Logo FSTV Prestasi" width="192" height="69" />
+    <div class="flex h-screen bg-slate-50 text-black font-public-sans">
+        <aside class="flex w-72 flex-col flex-shrink-0 bg-white px-5 pt-6 pb-4 border-r border-gray-200 shadow-xl z-20">
+            <div class="px-4 mb-4">
+                <img src="/images/logofsti.png" alt="Logo FSTI" width="192" height="69" />
             </div>
 
-            <nav class="flex-1 space-y-3">
+            <a href="/" target="_blank" rel="noopener noreferrer" 
+               class="flex items-center justify-center w-full p-2.5 mb-6 text-sm transition-colors duration-200 rounded-lg bg-primary/10 text-primary font-bold hover:bg-primary hover:text-white">
+                <GlobeAltIcon class="h-4 w-4 mr-2" />
+                Lihat Halaman Publik
+            </a>
+
+            <nav class="flex-1 space-y-3 overflow-y-auto pr-1">
                 <template v-for="item in navigation" :key="item.name">
                     <div>
-                        <!-- Link untuk menu tanpa anak -->
                         <Link
                             v-if="!item.children"
                             :href="item.href"
                             :class="[
-                                'flex items-center w-full p-3 transition-colors duration-200 rounded-lg',
-                                page.url.startsWith(item.href)
-                                    ? 'bg-[#4682A9] text-white shadow-md'
-                                    : 'bg-[#CBDCEB] text-gray-800 hover:bg-[#a6c1da]', 
+                                'flex items-center w-full p-3 transition-colors duration-200 rounded-lg group',
+                                currentUrl.startsWith(item.href)
+                                    ? 'bg-primary text-white shadow-md' // Aktif
+                                    : 'bg-primary/5 text-gray-700 hover:bg-primary/15 hover:text-primary-hover', // Inaktif jadi sangat tipis
                             ]"
                         >
-                            <span class="flex items-center justify-center h-8 w-8 bg-white rounded-full">
-                                <component :is="item.icon" :class="['h-5 w-5', page.url.startsWith(item.href) ? 'text-[#4682A9]' : 'text-gray-600']" />
+                            <span class="flex items-center justify-center h-8 w-8 bg-white rounded-full shadow-sm">
+                                <component :is="item.icon" :class="['h-5 w-5 transition-colors', currentUrl.startsWith(item.href) ? 'text-primary' : 'text-gray-500 group-hover:text-primary-hover']" />
                             </span>
                             <span class="ml-4 font-semibold">{{ item.name }}</span>
-                            <ChevronRightIcon class="h-5 w-5 ml-auto" />
                         </Link>
 
-                        <!-- Tombol untuk menu dengan anak -->
-                        <button
-                            v-else
-                            @click="toggleSubMenu(item.name)"
-                            :class="[
-                                'flex items-center w-full p-3 transition-colors duration-200 text-left',
-                                openMenu === item.name ? 'rounded-t-lg' : 'rounded-lg',
-                                'bg-[#CBDCEB] text-gray-800 hover:bg-[#a6c1da]',
-                            ]"
-                        >
-                            <span class="flex items-center justify-center h-8 w-8 bg-white rounded-full">
-                                <component :is="item.icon" :class="['h-5 w-5', isParentUrlActive(item) ? 'text-[#4682A9]' : 'text-gray-600']" />
-                            </span>
-                            <span class="ml-4 font-semibold">{{ item.name }}</span>
-                            <ChevronRightIcon class="h-5 w-5 ml-auto" />
-                        </button>
-                        
-                        <!-- Submenu -->
-                        <div v-if="item.children && openMenu === item.name">
-                            <Link v-for="child in item.children" :key="child.name" :href="child.href"
+                        <div v-else>
+                            <button
+                                @click="toggleSubMenu(item.name)"
                                 :class="[
-                                    'block w-full text-center py-2 font-semibold transition-colors duration-200 rounded-b-lg',
-                                    page.url.startsWith(child.href) 
-                                        ? 'bg-[#4682A9] text-white' 
-                                        : 'bg-[#CBDCEB] text-black hover:bg-[#a6c1da]'
+                                    'flex items-center w-full p-3 transition-colors duration-200 text-left rounded-lg group',
+                                    openMenu === item.name || isParentUrlActive(item) ? 'bg-primary/15 text-primary-hover' : 'bg-primary/5 text-gray-700',
+                                    'hover:bg-primary/15 hover:text-primary-hover',
                                 ]"
                             >
-                                {{ child.name }}
-                            </Link>
+                                <span class="flex items-center justify-center h-8 w-8 bg-white rounded-full shadow-sm">
+                                    <component :is="item.icon" :class="['h-5 w-5 transition-colors', isParentUrlActive(item) || openMenu === item.name ? 'text-primary' : 'text-gray-500 group-hover:text-primary-hover']" />
+                                </span>
+                                <span class="ml-4 font-semibold flex-1">{{ item.name }}</span>
+                                <ChevronRightIcon :class="['h-4 w-4 transition-transform duration-200', openMenu === item.name ? 'rotate-90' : '']" />
+                            </button>
+                            
+                            <div v-show="openMenu === item.name" class="bg-gray-50 rounded-b-lg border-x border-b border-gray-200 overflow-hidden mt-1 shadow-inner">
+                                <Link v-for="child in item.children" :key="child.name" :href="child.href"
+                                    :class="[
+                                        'block w-full px-12 py-3 text-sm font-semibold transition-colors duration-200',
+                                        currentUrl.startsWith(child.href) 
+                                            ? 'bg-primary text-white border-l-4 border-primary-hover' 
+                                            : 'text-gray-600 hover:bg-primary/10 hover:text-primary-hover border-l-4 border-transparent'
+                                    ]"
+                                >
+                                    {{ child.name }}
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </template>
             </nav>
             
-            <div class="mt-auto">
+            <div class="mt-auto pt-5 border-t border-gray-200">
                 <Link 
                     href="/logout" 
                     method="post" 
                     as="button" 
-                    class="flex w-full items-center justify-between rounded-lg p-3 bg-[#CBDCEB] text-black hover:bg-[#a6c1da] transition-colors duration-200"
+                    class="flex items-center justify-between w-full p-3 transition-colors duration-200 rounded-lg bg-red-50 text-red-700 hover:bg-red-600 hover:text-white border border-red-200 group shadow-sm"
                 >
-                    <span class="font-semibold">Logout</span>
-                    <span class="flex h-7 w-7 items-center justify-center rounded-md bg-black">
-                        <ArrowLeftOnRectangleIcon class="h-5 w-5 text-white" />
+                    <span class="font-bold">Keluar Sistem</span>
+                    <span class="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow-sm">
+                        <ArrowLeftOnRectangleIcon class="h-5 w-5 text-red-600 group-hover:text-red-700" />
                     </span>
                 </Link>
             </div>
         </aside>
 
-        <div class="flex flex-1 flex-col overflow-x-hidden">
-            <!-- Header removed as requested -->
-            <!-- <header class="flex items-center justify-end border-b border-gray-200 bg-white px-6 py-3 shadow-md">
-                <div class="relative">
-                    <button @click="isProfileOpen = !isProfileOpen" class="flex items-center gap-4 p-1 rounded-lg">
-                        <div class="text-right">
-                            <p class="font-bold">Hikmah</p>
-                            <p class="text-sm text-gray-500">Super Admin</p>
-                        </div>
-                        <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center border-2 border-black">
-                                <UsersIcon class="h-8 w-8 text-gray-400" />
-                        </div>
-                    </button>
-                    
-                    <div v-if="isProfileOpen" @click="isProfileOpen = false" class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                            <Link href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile</Link>
-                            <Link href="/reset-password" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Reset Password</Link>
-                        </div>
-                    </div>
-                </div>
-            </header> -->
-            
-            <main class="flex-1 overflow-auto bg-[#CBDCEB] p-8">
+        <div class="flex flex-1 flex-col overflow-x-hidden relative">
+            <main class="flex-1 overflow-auto bg-slate-50 p-8 pt-10">
                 <slot />
             </main>
         </div>

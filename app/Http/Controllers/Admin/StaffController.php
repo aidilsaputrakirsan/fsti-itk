@@ -4,130 +4,142 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Staff;
+use App\Models\StudyProgram;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 class StaffController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $query = Staff::query();
 
+        // Diperbarui: Bisa mencari berdasarkan Nama atau NIP
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                ->orWhere('nip', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                    ->orWhere('nip', 'like', '%' . $request->search . '%');
+            });
         }
 
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
+        if ($request->filled('type') && $request->type !== 'Semua') {
+            $query->where('type', $request->type);
         }
 
-        $staff = $query->orderBy('sort_order')->orderBy('name')->paginate(10)->withQueryString();
+        if ($request->filled('status') && $request->status !== 'Semua') {
+            $isActive = $request->status === 'Aktif' ? true : false;
+            $query->where('is_active', $isActive);
+        }
+
+        $staff = $query->orderBy('type', 'asc')->orderBy('name', 'asc')->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/Staff/Index', [
             'staff' => $staff,
-            'filters' => $request->only(['search', 'category']),
+            'filters' => $request->only(['search', 'type', 'status']),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return Inertia::render('Admin/Staff/Create');
+        $studyPrograms = StudyProgram::orderBy('name', 'asc')->get();
+        return Inertia::render('Admin/Staff/Create', [
+            'studyPrograms' => $studyPrograms
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'nip' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'category' => 'required|string',
-            'position' => 'nullable|string|max:255',
-            'prodi' => 'nullable|string|max:255',
-            'jurusan' => 'nullable|string|max:255',
-            'sort_order' => 'nullable|integer',
-            'is_active' => 'boolean',
-            'image' => 'nullable|image|max:2048',
+            'type' => 'required|in:Dosen,Tendik',
+            'structural_position' => 'nullable|string|max:255',
+            'functional_position' => 'nullable|string|max:255',
+            'image_url' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'is_active' => 'required|boolean',
+            'education_history' => 'nullable|array',
+            'expertise' => 'nullable|array',
+            'competency_certification' => 'nullable|array',
+            'research_history' => 'nullable|array',
+            'community_service_history' => 'nullable|array',
+            'work_experience' => 'nullable|array',
+            'awards' => 'nullable|array',
+            'academic_profiles' => 'nullable|array',
         ]);
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('staff', 'public');
-            $validated['image_path'] = '/storage/' . $path;
+            $validated['image_url'] = $path;
         }
 
-        Staff::create($validated);
+        $validated['is_active'] = filter_var($request->is_active, FILTER_VALIDATE_BOOLEAN);
 
-        return redirect()->route('admin.staff.index')->with('success', 'Data berhasil ditambahkan!');
+        Staff::create($validated);
+        return redirect()->route('admin.staff.index')->with('success', 'Data berhasil ditambahkan.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Staff $staff)
     {
+        $studyPrograms = StudyProgram::orderBy('name', 'asc')->get();
         return Inertia::render('Admin/Staff/Edit', [
-            'staff' => $staff
+            'staff' => $staff,
+            'studyPrograms' => $studyPrograms
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Staff $staff)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'nip' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'category' => 'required|string',
-            'position' => 'nullable|string|max:255',
-            'prodi' => 'nullable|string|max:255',
-            'jurusan' => 'nullable|string|max:255',
-            'sort_order' => 'nullable|integer',
-            'is_active' => 'boolean',
-            'image' => 'nullable|image|max:2048',
+            'type' => 'required|in:Dosen,Tendik',
+            'structural_position' => 'nullable|string|max:255',
+            'functional_position' => 'nullable|string|max:255',
+            'image_url' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'is_active' => 'required|boolean',
+            'education_history' => 'nullable|array',
+            'expertise' => 'nullable|array',
+            'competency_certification' => 'nullable|array',
+            'research_history' => 'nullable|array',
+            'community_service_history' => 'nullable|array',
+            'work_experience' => 'nullable|array',
+            'awards' => 'nullable|array',
+            'academic_profiles' => 'nullable|array',
         ]);
 
         if ($request->hasFile('image')) {
-            if ($staff->image_path) {
-                $oldPath = str_replace('/storage/', '', $staff->image_path);
-                Storage::disk('public')->delete($oldPath);
+            if ($staff->image_url && !str_starts_with($staff->image_url, 'http')) {
+                Storage::disk('public')->delete($staff->image_url);
             }
-            
-            $path = $request->file('image')->store('staff', 'public');
-            $validated['image_path'] = '/storage/' . $path;
+            $validated['image_url'] = $request->file('image')->store('staff', 'public');
+        } elseif ($request->filled('image_url')) {
+            if ($staff->image_url && !str_starts_with($staff->image_url, 'http') && $staff->image_url !== $request->image_url) {
+                Storage::disk('public')->delete($staff->image_url);
+            }
+            $validated['image_url'] = $request->image_url;
+        } else {
+            if ($staff->image_url && str_starts_with($staff->image_url, 'http')) {
+                $validated['image_url'] = null;
+            } else {
+                unset($validated['image_url']);
+            }
         }
-        
-        // Handle boolean because sometimes form data sends strings "true"/"1"
-        $validated['is_active'] = $request->boolean('is_active');
+
+        $validated['is_active'] = filter_var($request->is_active, FILTER_VALIDATE_BOOLEAN);
 
         $staff->update($validated);
-
-        return redirect()->route('admin.staff.index')->with('success', 'Data berhasil diperbarui!');
+        return redirect()->route('admin.staff.index')->with('success', 'Data berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Staff $staff)
     {
-        if ($staff->image_path) {
-            $oldPath = str_replace('/storage/', '', $staff->image_path);
-            Storage::disk('public')->delete($oldPath);
+        if ($staff->image_url && !str_starts_with($staff->image_url, 'http')) {
+            Storage::disk('public')->delete($staff->image_url);
         }
-
         $staff->delete();
-
-        return redirect()->route('admin.staff.index')->with('success', 'Data berhasil dihapus!');
+        return redirect()->route('admin.staff.index')->with('success', 'Data berhasil dihapus.');
     }
 }

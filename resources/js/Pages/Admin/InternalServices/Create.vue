@@ -1,71 +1,133 @@
 <script setup lang="ts">
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { Link, useForm } from '@inertiajs/vue3';
-import { ArrowLeftIcon } from '@heroicons/vue/24/outline';
+import { useForm, Link, Head } from '@inertiajs/vue3';
+import { ArrowLeftIcon, PaperAirplaneIcon } from '@heroicons/vue/24/outline';
+import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
 
-const form = useForm({
+interface ServiceFormData {
+    name: string;
+    description: string;
+    link_url: string;
+    sort_order: number;
+    is_active: boolean;
+}
+
+const form = useForm<ServiceFormData>({
     name: '',
     description: '',
     link_url: '',
-    category: '',
-    sort_order: 0,
+    sort_order: 1,
     is_active: true,
 });
 
 const submit = () => {
+    form.clearErrors();
+    let hasError = false;
+
+    if (!form.name) { 
+        form.setError('name', 'Nama layanan wajib diisi.'); 
+        hasError = true; 
+    }
+    
+    if (!form.description) { 
+        form.setError('description', 'Deskripsi layanan wajib diisi.'); 
+        hasError = true; 
+    }
+    
+    if (!form.link_url) { 
+        form.setError('link_url', 'Tautan URL wajib diisi.'); 
+        hasError = true; 
+    } else if (!/^https?:\/\/.+/.test(form.link_url)) {
+        form.setError('link_url', 'Tautan harus diawali dengan http:// atau https://');
+        hasError = true;
+    }
+
+    if (!form.sort_order || form.sort_order < 1) { 
+        form.setError('sort_order', 'Urutan tampil wajib diisi angka minimal 1.'); 
+        hasError = true; 
+    }
+
+    if (hasError) return;
     form.post(route('admin.internal-services.store'));
 };
 </script>
 
 <template>
-    <div>
-        <div class="mb-8">
-            <Link :href="route('admin.internal-services.index')" class="inline-flex items-center gap-2 text-[#4682A9] hover:opacity-80 mb-4">
-                <ArrowLeftIcon class="h-5 w-5" />
-                Kembali ke Daftar
-            </Link>
-            <h1 class="text-3xl font-bold text-black">Tambah Layanan Internal</h1>
+  <div>
+    <Head title="Tambah Layanan Internal" />
+    <div class="mb-8">
+        <Link :href="route('admin.internal-services.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
+            <ArrowLeftIcon class="h-4 w-4 stroke-2" /> Kembali ke Daftar
+        </Link>
+        <h1 class="text-3xl font-bold text-gray-900">Tambah Layanan Internal</h1>
+        <p class="mt-1 text-gray-600">Tambah tautan portal layanan baru untuk civitas akademika.</p>
+    </div>
+
+    <div class="bg-white shadow-sm p-5 sm:p-8 rounded-xl border-t-4 border-primary">
+      <form @submit.prevent="submit" novalidate>
+        <div class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-x-8 gap-y-6 md:gap-y-8">
+          
+            <label class="md:pt-3 text-sm font-bold text-gray-800">Nama Layanan <span class="text-red-600">*</span></label>
+            <div>
+                <input v-model="form.name" type="text" placeholder="Contoh: Portal Akademik ITK" 
+                    class="block w-full rounded-lg transition-colors py-3"
+                    :class="form.errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                    required>
+                <InputError :message="form.errors.name" />
+            </div>
+
+            <label class="md:pt-3 text-sm font-bold text-gray-800">Deskripsi Singkat <span class="text-red-600">*</span></label>
+            <div>
+                <textarea v-model="form.description" rows="3" placeholder="Contoh: Sistem informasi akademik terpadu..." 
+                    class="block w-full rounded-lg transition-colors py-3"
+                    :class="form.errors.description ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                    required></textarea>
+                <InputError :message="form.errors.description" />
+            </div>
+
+            <label class="md:pt-3 text-sm font-bold text-gray-800">Tautan Akses (URL) <span class="text-red-600">*</span></label>
+            <div>
+                <input v-model="form.link_url" type="url" placeholder="Contoh: https://akademik.itk.ac.id" 
+                    class="block w-full rounded-lg transition-colors py-3"
+                    :class="form.errors.link_url ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                    required>
+                <InputError :message="form.errors.link_url" />
+            </div>
+
+            <label class="md:pt-3 text-sm font-bold text-gray-800">Pengaturan Tampilan <span class="text-red-600">*</span></label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-2">Urutan Tampil</label>
+                    <input v-model="form.sort_order" type="number" min="1"
+                        class="block w-full rounded-lg transition-colors py-3"
+                        :class="form.errors.sort_order ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                        required>
+                    <InputError :message="form.errors.sort_order" />
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-2">Status Visibilitas</label>
+                    <label class="relative inline-flex items-center cursor-pointer mt-2">
+                        <input type="checkbox" v-model="form.is_active" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary/20 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        <span class="ml-3 text-sm font-bold text-gray-700">{{ form.is_active ? 'Aktif (Ditampilkan)' : 'Nonaktif (Disembunyikan)' }}</span>
+                    </label>
+                </div>
+            </div>
+
         </div>
 
-        <div class="bg-white shadow-sm p-8 rounded-lg">
-            <form @submit.prevent="submit" class="space-y-6">
-                <div>
-                    <label class="block text-sm font-semibold text-black mb-2">Nama Layanan *</label>
-                    <input v-model="form.name" type="text" required class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" />
-                    <p v-if="form.errors.name" class="mt-1 text-sm text-red-600">{{ form.errors.name }}</p>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-black mb-2">URL Link *</label>
-                    <input v-model="form.link_url" type="url" required class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" placeholder="https://..." />
-                    <p v-if="form.errors.link_url" class="mt-1 text-sm text-red-600">{{ form.errors.link_url }}</p>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-black mb-2">Deskripsi</label>
-                    <textarea v-model="form.description" rows="3" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"></textarea>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-black mb-2">Kategori</label>
-                        <input v-model="form.category" type="text" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" placeholder="e.g. Akademik" />
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-black mb-2">Urutan Tampilan</label>
-                        <input v-model.number="form.sort_order" type="number" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" />
-                    </div>
-                </div>
-                <div class="flex items-center">
-                    <input v-model="form.is_active" type="checkbox" id="is_active" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                    <label for="is_active" class="ml-2 text-sm font-medium text-black">Aktifkan layanan</label>
-                </div>
-                <div class="flex items-center justify-end gap-4 pt-4 border-t">
-                    <Link :href="route('admin.internal-services.index')" class="px-6 py-2 rounded-lg bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300">Batal</Link>
-                    <button type="submit" :disabled="form.processing" class="px-6 py-2 rounded-lg bg-[#4682A9] text-white font-semibold hover:bg-opacity-90 disabled:opacity-50">
-                        {{ form.processing ? 'Menyimpan...' : 'Simpan' }}
-                    </button>
-                </div>
-            </form>
+        <div class="mt-12 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 border-t border-gray-100 pt-6">
+            <Link :href="route('admin.internal-services.index')" class="w-full sm:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                Batal
+            </Link>
+            <button type="submit" :disabled="form.processing" class="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-8 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors disabled:opacity-50">
+                <PaperAirplaneIcon class="h-5 w-5 stroke-2" />
+                {{ form.processing ? 'Menyimpan...' : 'Simpan Data' }}
+            </button>
         </div>
+      </form>
     </div>
+  </div>
 </template>

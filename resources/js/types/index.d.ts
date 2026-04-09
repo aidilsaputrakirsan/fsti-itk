@@ -57,18 +57,18 @@ export interface Filters {
 export interface Achievement {
   id: number;
   student_name: string;
-  student_nim: string;
-  study_program: string;
-  achievement_name: string;
+  student_nim: null;
+  study_program: null;
+  title: string;
   category: 'Akademik' | 'Non-Akademik';
   level: 'Internasional' | 'Nasional' | 'Provinsi' | 'Kota/Kabupaten' | 'Universitas';
-  organizer: string;
+  organizer: null;
   year: number;
-  proof_url?: string | null; // URL lengkap untuk file bukti
-  photo_path: string;
+  image_url?: string | null; 
+  certificate_path: null;
 
-  photo_url: string;
-  proof_url?: string | null;
+  image_url: string;
+  certificate_url?: string | null;
 }
 
 export interface PaginatedAchievements {

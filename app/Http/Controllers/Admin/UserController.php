@@ -6,11 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Generic\Password;
 use Illuminate\Validation\Rule;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            function ($request, $next) {
+                if (!$request->user() || !$request->user()->is_superadmin) {
+                    abort(403, 'Akses Ditolak! Hanya Super Admin yang diizinkan mengelola halaman ini.');
+                }
+                return $next($request);
+            },
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -23,7 +35,6 @@ class UserController extends Controller
                 ->orWhere('email', 'like', '%' . $request->search . '%');
         }
 
-        // Hide Super Admin from regular Admins
         if (!$request->user()->is_superadmin) {
             $query->where('is_superadmin', false);
         }
@@ -63,7 +74,7 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'is_superadmin' => false, // Default admin biasa
+            'is_superadmin' => false,
         ]);
 
         return redirect()->route('admin.users.index')->with('success', 'Admin baru berhasil ditambahkan!');
@@ -111,19 +122,16 @@ class UserController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        // 1. Authorization: Only Superadmin can delete
         if (!$request->user()->is_superadmin) {
             return redirect()->back()->with('error', 'Anda tidak memiliki hak akses untuk menghapus admin.');
         }
 
         $user = User::findOrFail($id);
 
-        // 2. Protection: Cannot delete Superadmin
         if ($user->is_superadmin) {
             return redirect()->back()->with('error', 'Akun Superadmin tidak dapat dihapus.');
         }
 
-        // 3. Protection: Cannot delete self
         if ($user->id === $request->user()->id) {
             return redirect()->back()->with('error', 'Anda tidak dapat menghapus akun sendiri.');
         }

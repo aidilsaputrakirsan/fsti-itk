@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Models\PostCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -16,7 +17,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Post::query();
+        $query = Post::with('category');
 
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
@@ -26,8 +27,6 @@ class PostController extends Controller
             $query->where('status', $request->status);
         }
 
-        // Ambil data. 'image_url' akan otomatis ada berkat perbaikan di Model.
-        // Tidak perlu lagi blok ->transform() di sini.
         $posts = $query->latest()->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/Posts/Index', [
@@ -41,7 +40,11 @@ class PostController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Admin/Posts/Create');
+        $categories = PostCategory::all();
+
+        return Inertia::render('Admin/Posts/Create', [
+            'categories' => $categories
+        ]);
     }
 
     /**
@@ -51,9 +54,8 @@ class PostController extends Controller
     {
         $validatedData = $request->validate([
             'title' => 'required|string|max:255|unique:posts,title',
-            'excerpt' => 'required|string',
             'content' => 'required|string',
-            'category' => 'required|in:Prestasi,Liputan Kegiatan,Kerjasama',
+            'post_category_id' => 'required|exists:post_categories,id',
             'tags' => 'nullable|string',
             'status' => 'required|in:Draft,Terbitkan',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -67,6 +69,8 @@ class PostController extends Controller
         $validatedData['slug'] = Str::slug($request->title, '-');
         $validatedData['published_at'] = ($request->status === 'Terbitkan') ? now() : null;
 
+        $validatedData['excerpt'] = Str::limit(strip_tags(html_entity_decode($request->content)), 150);
+
         Post::create($validatedData);
 
         return redirect()->route('admin.posts.index')->with('success', 'Berita berhasil ditambahkan.');
@@ -77,11 +81,11 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        // PERBAIKAN: Tidak perlu kode apa pun di sini untuk membuat URL.
-        // Inertia akan otomatis mendapatkan 'image_url' dari model Post
-        // karena sudah ada accessor dan properti $appends di sana.
+        $categories = PostCategory::all();
+
         return Inertia::render('Admin/Posts/Edit', [
-            'post' => $post
+            'post' => $post,
+            'categories' => $categories
         ]);
     }
 
@@ -92,9 +96,8 @@ class PostController extends Controller
     {
         $validatedData = $request->validate([
             'title' => 'required|string|max:255|unique:posts,title,' . $post->id . ',id',
-            'excerpt' => 'required|string',
             'content' => 'required|string',
-            'category' => 'required|in:Prestasi,Liputan Kegiatan,Kerjasama',
+            'post_category_id' => 'required|exists:post_categories,id',
             'tags' => 'nullable|string',
             'status' => 'required|in:Draft,Terbitkan',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -115,6 +118,11 @@ class PostController extends Controller
         } elseif ($request->status === 'Draft') {
             $validatedData['published_at'] = null;
         }
+
+        // LOGIKA EXCERPT OTOMATIS
+        $validatedData['excerpt'] = Str::limit(strip_tags(html_entity_decode($request->content)), 150);
+
+        $validatedData['views'] = 0;
 
         $post->update($validatedData);
 

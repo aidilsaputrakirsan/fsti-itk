@@ -4,6 +4,9 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Models\Visitor;
+use App\Models\Contact;
+use Carbon\Carbon;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -34,16 +37,23 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            // PERUBAHAN: Menambahkan blok ini untuk membagikan flash messages
-            'flash' => [
-                'success' => fn() => $request->session()->get('success'),
-                'error' => fn() => $request->session()->get('error'),
-            ],
             'locale' => app()->getLocale(),
-            'translations' => function () {
-                $locale = app()->getLocale();
-                return json_decode(file_get_contents(base_path("lang/{$locale}.json")), true);
-            },
+            'flash' => [
+                'success' => $request->session()->get('success'),
+                'error' => $request->session()->get('error'),
+            ],
+            'globalProdi' => \App\Models\StudyProgram::select('name', 'degree', 'slug', 'department')
+                ->orderBy('degree')
+                ->orderBy('name')
+                ->get(),
+
+            'contact_global' => fn() => $request->is('admin*') ? null : Contact::first(),
+
+            'visitorStats' => fn() => $request->is('admin*') ? null : [
+                'today' => Visitor::where('visit_date', Carbon::today()->toDateString())->count(),
+                'month' => Visitor::where('visit_date', '>=', Carbon::now()->startOfMonth()->toDateString())->count(),
+                'total' => Visitor::count(),
+            ],
         ];
     }
 }

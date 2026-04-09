@@ -11,30 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // 1. Modul PPID Fakultas
-        Schema::create('ppid_documents', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('slug')->unique();
-            $table->enum('category', ['Informasi Berkala', 'Informasi Serta Merta', 'Informasi Setiap Saat', 'Informasi Dikecualikan', 'Regulasi', 'Formulir'])->default('Informasi Berkala');
-            $table->text('description')->nullable();
-            $table->string('file_path')->nullable(); // PDF/Doc storage path
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
-        });
-
-        // 2. Modul Zona Integritas
-        Schema::create('integrity_zones', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('slug')->unique();
-            $table->string('category')->default('Berita ZI'); // Changed from enum to string for flexibility
-            $table->text('content'); // Rich text
-            $table->string('image_path')->nullable();
-            $table->string('document_path')->nullable(); // For policy PDFs
-            $table->timestamp('published_at')->nullable();
-            $table->timestamps();
-        });
 
         // 3. Modul Alumni & Tracer Study
         Schema::create('alumni_tracers', function (Blueprint $table) {
@@ -80,7 +56,5 @@ return new class extends Migration
         Schema::dropIfExists('internal_services');
         Schema::dropIfExists('satisfaction_surveys');
         Schema::dropIfExists('alumni_tracers');
-        Schema::dropIfExists('integrity_zones');
-        Schema::dropIfExists('ppid_documents');
     }
 };

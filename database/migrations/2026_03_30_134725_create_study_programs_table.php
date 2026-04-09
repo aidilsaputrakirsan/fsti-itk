@@ -1,0 +1,41 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+
+    public function up(): void
+    {
+        Schema::create('study_programs', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('department');
+            $table->string('degree', 10);
+            $table->string('slug')->unique();
+            $table->text('description')->nullable();
+            $table->text('vision')->nullable();
+            $table->json('mission')->nullable();
+            $table->text('goals')->nullable();
+            $table->json('graduate_profiles')->nullable();
+            $table->string('accreditation_certificate_image')->nullable();
+            $table->string('accreditation_pdf_link')->nullable();
+            $table->text('accreditation_text')->nullable();
+            $table->string('website_link')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('study_programs');
+    }
+};

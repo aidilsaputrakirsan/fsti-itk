@@ -84,7 +84,7 @@ onMounted(() => {
     <div class="p-6 flex flex-col flex-grow">
       <!-- Kategori & Tanggal -->
       <div class="flex justify-between items-center text-sm text-black mb-4">
-        <span class="border border-[#133E87] rounded-md px-3 py-1 text-xs font-semibold">
+        <span class="border border-[#2F4DD3] rounded-md px-3 py-1 text-xs font-semibold">
           {{ post.category }}
         </span>
         <span class="flex items-center gap-2 text-black">
@@ -95,7 +95,7 @@ onMounted(() => {
 
       <!-- Judul -->
       <h3 class="text-xl font-bold text-black leading-snug">
-        <Link :href="route('berita.show', post.slug)" class="hover:text-[#133E87] transition-colors duration-300">
+        <Link :href="route('berita.show', post.slug)" class="hover:text-[#2F4DD3] transition-colors duration-300">
           {{ post.title }}
         </Link>
       </h3>
@@ -109,7 +109,7 @@ onMounted(() => {
       <div class="mt-6 text-right">
         <Link
           :href="route('berita.show', post.slug)"
-          class="inline-block bg-[#133E87] text-white font-bold px-6 py-2 rounded-full hover:bg-opacity-90 transition-colors duration-300 text-sm"
+          class="inline-block bg-[#2F4DD3] text-white font-bold px-6 py-2 rounded-full hover:bg-opacity-90 transition-colors duration-300 text-sm"
         >
           Baca Selengkapnya
         </Link>

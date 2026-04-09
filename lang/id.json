@@ -27,5 +27,26 @@
     "Pimpinan Prodi": "Pimpinan Prodi",
     "Pimpinan Laboratorium": "Pimpinan Laboratorium",
     "Dosen": "Dosen",
-    "Tenaga Kependidikan": "Tenaga Kependidikan"
+    "Tenaga Kependidikan": "Tenaga Kependidikan",
+
+    "The :attribute field is required.": ":attribute wajib diisi.",
+    "The :attribute has already been taken.": ":attribute ini sudah terdaftar.",
+    "The :attribute field must be a string.": ":attribute harus berupa teks.",
+    "The :attribute field must be an integer.": ":attribute harus berupa angka.",
+    "The :attribute field must be at least :min characters.": ":attribute minimal :min karakter.",
+    "The :attribute field must not be greater than :max characters.": ":attribute maksimal :max karakter.",
+    "The :attribute field confirmation does not match.": "Konfirmasi :attribute tidak cocok.",
+    "The :attribute field format is invalid.": "Format :attribute tidak valid.",
+    "The :attribute field must be a valid email address.": "Format email tidak valid.",
+    "The :attribute field must be an image.": "File :attribute harus berupa gambar.",
+    "The :attribute field must be a file of type: :values.": "File :attribute harus berformat: :values.",
+    "The :attribute field must not be greater than :max kilobytes.": "Ukuran :attribute maksimal adalah :max KB.",
+    "These credentials do not match our records.": "Email atau kata sandi salah.",
+    "auth.failed": "Email atau kata sandi salah.",
+    
+    "name": "Nama lengkap",
+    "email": "Alamat email",
+    "password": "Kata sandi",
+    "title": "Judul",
+    "category": "Kategori"
 }

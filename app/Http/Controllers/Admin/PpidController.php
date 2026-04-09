@@ -4,90 +4,99 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\DokumenPpid;
+use App\Models\KategoriPpid; // Tambahkan import ini
+use Inertia\Inertia;
 
 class PpidController extends Controller
 {
     public function index(Request $request)
     {
-        $query = \App\Models\PpidDocument::query();
+        $query = DokumenPpid::with('kategori');
 
+        // Filter Pencarian
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $query->where('judul_dokumen', 'like', '%' . $request->search . '%');
         }
 
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
+        // Filter Jenis Informasi
+        if ($request->filled('jenis')) {
+            $jenis = $request->jenis;
+            $query->whereHas('kategori', function ($q) use ($jenis) {
+                $q->where('jenis_informasi', $jenis);
+            });
         }
 
         $documents = $query->latest()->paginate(10)->withQueryString();
 
-        return \Inertia\Inertia::render('Admin/Ppid/Index', [
+        // AMBIL JENIS INFORMASI SECARA DINAMIS
+        $listJenis = KategoriPpid::select('jenis_informasi')
+            ->distinct()
+            ->pluck('jenis_informasi');
+
+        return Inertia::render('Admin/Ppid/Index', [
             'documents' => $documents,
-            'filters' => $request->only(['search', 'category']),
+            'filters' => $request->only(['search', 'jenis']),
+            'listJenis' => $listJenis, // Kirim ke Vue
         ]);
     }
-
     public function create()
     {
-        return \Inertia\Inertia::render('Admin/Ppid/Create');
+        // Mengambil semua kategori agar muncul di dropdown pilihan form
+        $kategoris = KategoriPpid::orderBy('jenis_informasi')->orderBy('urutan')->get();
+
+        return Inertia::render('Admin/Ppid/Create', [
+            'kategoris' => $kategoris
+        ]);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'category' => 'required|string',
-            'description' => 'nullable|string',
-            'file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'kategori_ppid_id' => 'required|exists:kategori_ppids,id',
+            'judul_dokumen'    => 'required|string|max:255',
+            'file'             => 'nullable|file|mimes:pdf|max:10240',
+            'file_url'         => 'nullable|string', // Diubah jadi string agar bisa menerima slug/path internal
         ]);
 
-        $validated['slug'] = \Str::slug($validated['title']);
-        $validated['is_active'] = $request->boolean('is_active');
-
         if ($request->hasFile('file')) {
-            $path = $request->file('file')->store('ppid', 'public');
-            $validated['file_path'] = $path;
+            $path = $request->file('file')->store('ppid-documents', 'public');
+            $validated['file_url'] = '/storage/' . $path;
         }
 
-        \App\Models\PpidDocument::create($validated);
+        \App\Models\DokumenPpid::create($validated);
 
         return redirect()->route('admin.ppid.index')->with('success', 'Dokumen berhasil ditambahkan!');
     }
-
-    public function show(string $id)
-    {
-        //
-    }
-
     public function edit(string $id)
     {
-        $document = \App\Models\PpidDocument::findOrFail($id);
+        $document = DokumenPpid::findOrFail($id);
+        $kategoris = KategoriPpid::orderBy('jenis_informasi')->orderBy('urutan')->get();
 
-        return \Inertia\Inertia::render('Admin/Ppid/Edit', [
+        return Inertia::render('Admin/Ppid/Edit', [
             'document' => $document,
+            'kategoris' => $kategoris
         ]);
     }
 
     public function update(Request $request, string $id)
     {
-        $document = \App\Models\PpidDocument::findOrFail($id);
+        $document = DokumenPpid::findOrFail($id);
 
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'category' => 'required|string',
-            'description' => 'nullable|string',
-            'file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'kategori_ppid_id' => 'required|exists:kategori_ppids,id',
+            'judul_dokumen'    => 'required|string|max:255',
+            'file'             => 'nullable|file|mimes:pdf|max:10240',
+            'file_url'         => 'nullable|string',
         ]);
 
-        $validated['slug'] = \Str::slug($validated['title']);
-        $validated['is_active'] = $request->boolean('is_active'); // Handle checkbox properly
-
         if ($request->hasFile('file')) {
-            if ($document->file_path) {
-                \Storage::disk('public')->delete($document->file_path);
+            // Hapus file lama jika ada
+            if ($document->file_url && \Storage::disk('public')->exists(str_replace('/storage/', '', $document->file_url))) {
+                \Storage::disk('public')->delete(str_replace('/storage/', '', $document->file_url));
             }
-            $path = $request->file('file')->store('ppid', 'public');
-            $validated['file_path'] = $path;
+            $path = $request->file('file')->store('ppid-documents', 'public');
+            $validated['file_url'] = '/storage/' . $path;
         }
 
         $document->update($validated);
@@ -97,10 +106,10 @@ class PpidController extends Controller
 
     public function destroy(string $id)
     {
-        $document = \App\Models\PpidDocument::findOrFail($id);
+        $document = DokumenPpid::findOrFail($id);
 
-        if ($document->file_path) {
-            \Storage::disk('public')->delete($document->file_path);
+        if ($document->file_url && \Storage::disk('public')->exists(str_replace('/storage/', '', $document->file_url))) {
+            \Storage::disk('public')->delete(str_replace('/storage/', '', $document->file_url));
         }
 
         $document->delete();

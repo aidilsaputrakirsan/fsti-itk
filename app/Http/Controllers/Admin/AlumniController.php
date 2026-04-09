@@ -3,110 +3,93 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Alumni;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class AlumniController extends Controller
 {
     public function index(Request $request)
     {
-        $query = \App\Models\AlumniTracer::query();
+        $query = Alumni::query();
 
+        // Fitur Pencarian
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('nim', 'like', '%' . $request->search . '%');
+            });
         }
 
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
+        // Fitur Filter Prodi & Tahun
+        if ($request->filled('prodi')) {
+            $query->where('study_program', $request->prodi);
+        }
+        if ($request->filled('year')) {
+            $query->where('graduation_year', $request->year);
         }
 
-        $tracers = $query->latest('year')->paginate(10)->withQueryString();
+        $alumnis = $query->orderBy('graduation_year', 'desc')
+                         ->orderBy('name', 'asc')
+                         ->paginate(15)
+                         ->withQueryString();
 
-        return \Inertia\Inertia::render('Admin/Alumni/Index', [
-            'tracers' => $tracers,
-            'filters' => $request->only(['search', 'type']),
+        // Data untuk Dropdown Filter di Admin
+        $prodis = Alumni::select('study_program')->distinct()->orderBy('study_program')->pluck('study_program');
+        $years = Alumni::select('graduation_year')->distinct()->orderBy('graduation_year', 'desc')->pluck('graduation_year');
+
+        return Inertia::render('Admin/Alumni/Index', [
+            'alumnis' => $alumnis,
+            'filters' => $request->only(['search', 'prodi', 'year']),
+            'prodis' => $prodis,
+            'years' => $years
         ]);
     }
 
     public function create()
     {
-        return \Inertia\Inertia::render('Admin/Alumni/Create');
+        return Inertia::render('Admin/Alumni/Create');
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'type' => 'required|in:Survey Link,Report',
-            'url' => 'nullable|url',
-            'file' => 'nullable|file|mimes:pdf|max:10240',
-            'year' => 'required|integer',
-            'description' => 'nullable|string',
+            'nim' => 'required|string|unique:alumnis,nim|max:20',
+            'name' => 'required|string|max:255',
+            'study_program' => 'required|string|max:255',
+            'graduation_year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ]);
 
-        $validated['is_active'] = $request->boolean('is_active');
+        Alumni::create($validated);
 
-        if ($request->hasFile('file')) {
-            $path = $request->file('file')->store('alumni', 'public');
-            $validated['file_path'] = $path;
-        }
-
-        \App\Models\AlumniTracer::create($validated);
-
-        return redirect()->route('admin.alumni.index')->with('success', 'Data tracer berhasil ditambahkan!');
+        return redirect()->route('admin.alumni.index')->with('success', 'Data Alumni berhasil ditambahkan.');
     }
 
-    public function show(string $id)
+    public function edit(Alumni $alumnus)
     {
-        //
-    }
-
-    public function edit(string $id)
-    {
-        $tracer = \App\Models\AlumniTracer::findOrFail($id);
-
-        return \Inertia\Inertia::render('Admin/Alumni/Edit', [
-            'tracer' => $tracer,
+        return Inertia::render('Admin/Alumni/Edit', [
+            'alumni' => $alumnus
         ]);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, Alumni $alumnus)
     {
-        $tracer = \App\Models\AlumniTracer::findOrFail($id);
-
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'type' => 'required|in:Survey Link,Report',
-            'url' => 'nullable|url',
-            'file' =>  'nullable|file|mimes:pdf|max:10240',
-            'year' => 'required|integer',
-            'description' => 'nullable|string',
+            'nim' => 'required|string|max:20|unique:alumnis,nim,' . $alumnus->id,
+            'name' => 'required|string|max:255',
+            'study_program' => 'required|string|max:255',
+            'graduation_year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ]);
 
-        $validated['is_active'] = $request->boolean('is_active');
+        $alumnus->update($validated);
 
-        if ($request->hasFile('file')) {
-            if ($tracer->file_path) {
-                \Storage::disk('public')->delete($tracer->file_path);
-            }
-            $path = $request->file('file')->store('alumni', 'public');
-            $validated['file_path'] = $path;
-        }
-
-        $tracer->update($validated);
-
-        return redirect()->route('admin.alumni.index')->with('success', 'Data tracer berhasil diperbarui!');
+        return redirect()->route('admin.alumni.index')->with('success', 'Data Alumni berhasil diperbarui.');
     }
 
-    public function destroy(string $id)
+    public function destroy(Alumni $alumnus)
     {
-        $tracer = \App\Models\AlumniTracer::findOrFail($id);
+        $alumnus->delete();
 
-        if ($tracer->file_path) {
-            \Storage::disk('public')->delete($tracer->file_path);
-        }
-
-        $tracer->delete();
-
-        return redirect()->route('admin.alumni.index')->with('success', 'Data tracer berhasil dihapus!');
+        return redirect()->route('admin.alumni.index')->with('success', 'Data Alumni berhasil dihapus.');
     }
 }

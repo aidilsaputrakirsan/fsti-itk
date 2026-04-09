@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
-import { ArrowLeftIcon } from '@heroicons/vue/24/outline';
+import { ArrowLeftIcon, UserPlusIcon } from '@heroicons/vue/24/outline';
+// 1. Import komponen InputError
+import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
 
@@ -13,82 +15,128 @@ const form = useForm({
 });
 
 const submit = () => {
+    form.clearErrors();
+    let hasError = false;
+
+    if (!form.name) {
+        form.setError('name', 'Kolom nama wajib diisi.');
+        hasError = true;
+    } else if (!/^[a-zA-Z\s.,']+$/.test(form.name)) {
+        form.setError('name', 'Format salah! Jangan gunakan angka atau simbol khusus.');
+        hasError = true;
+    }
+
+    if (!form.email) {
+        form.setError('email', 'Kolom email wajib diisi.');
+        hasError = true;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+        form.setError('email', 'Format email tidak valid.');
+        hasError = true;
+    }
+
+    if (!form.password) {
+        form.setError('password', 'Kolom password wajib diisi.');
+        hasError = true;
+    } else if (form.password.length < 8) {
+        form.setError('password', 'Terlalu pendek! Minimal 8 karakter.');
+        hasError = true;
+    }
+
+    if (!form.password_confirmation) {
+        form.setError('password_confirmation', 'Harap konfirmasi password Anda.');
+        hasError = true;
+    } else if (form.password !== form.password_confirmation) {
+        form.setError('password_confirmation', 'Sandi tidak cocok dengan yang di atas!');
+        hasError = true;
+    }
+
+    if (hasError) return;
+
     form.post(route('admin.users.store'));
 };
 </script>
 
 <template>
     <div>
-        <div class="mb-8">
-            <Link :href="route('admin.users.index')" class="inline-flex items-center gap-2 text-[#4682A9] hover:opacity-80 mb-4">
-                <ArrowLeftIcon class="h-5 w-5" />
+        <div class="mb-6">
+            <Link :href="route('admin.users.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-100 hover:text-primary transition-colors shadow-sm w-fit">
+                <ArrowLeftIcon class="h-4 w-4 stroke-2" />
                 Kembali ke Daftar
             </Link>
-            <h1 class="text-3xl font-bold text-black">Tambah Admin Baru</h1>
-            <p class="mt-1 text-black">Buat akun admin baru untuk mengelola website</p>
+        </div>
+        
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Tambah Admin Baru</h1>
+            <p class="mt-1 text-gray-600">Buat akun admin baru untuk mengelola website FSTI ITK</p>
         </div>
 
-        <div class="bg-white shadow-sm p-8 rounded-lg max-w-3xl">
-            <form @submit.prevent="submit" class="space-y-6">
-                <div>
-                    <label class="block text-sm font-semibold text-black mb-2">Nama Lengkap *</label>
-                    <input 
-                        v-model="form.name" 
-                        type="text" 
-                        required 
-                        class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                        placeholder="Contoh: Budi Santoso"
-                    />
-                    <p v-if="form.errors.name" class="mt-1 text-sm text-red-600">{{ form.errors.name }}</p>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold text-black mb-2">Email *</label>
-                    <input 
-                        v-model="form.email" 
-                        type="email" 
-                        required 
-                        class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" 
-                        placeholder="contoh@fsti.itk.ac.id"
-                    />
-                    <p v-if="form.errors.email" class="mt-1 text-sm text-red-600">{{ form.errors.email }}</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white shadow-lg p-8 rounded-2xl border-t-4 border-primary">
+            <form @submit.prevent="submit" novalidate class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <label class="block text-sm font-semibold text-black mb-2">Password *</label>
+                        <label class="block text-sm font-bold text-gray-800 mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
+                        <input 
+                            v-model="form.name" 
+                            type="text" 
+                            class="w-full rounded-lg py-3 transition-all duration-200"
+                            :class="form.errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"
+                            placeholder="Contoh: Budi Santoso"
+                        />
+                        <InputError :message="form.errors.name" />
+                        <p v-if="!form.errors.name" class="mt-1.5 text-xs text-gray-500">Hanya huruf, titik, dan koma. (Tanpa angka)</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800 mb-2">Email <span class="text-red-500">*</span></label>
+                        <input 
+                            v-model="form.email" 
+                            type="email" 
+                            class="w-full rounded-lg py-3 transition-all duration-200"
+                            :class="form.errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            placeholder="contoh@fsti.itk.ac.id"
+                        />
+                        <InputError :message="form.errors.email" />
+                        <p v-if="!form.errors.email" class="mt-1.5 text-xs text-gray-500">Gunakan email institusi aktif.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800 mb-2">Password <span class="text-red-500">*</span></label>
                         <input 
                             v-model="form.password" 
                             type="password" 
-                            required 
-                            minlength="8"
-                            class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" 
+                            class="w-full rounded-lg py-3 transition-all duration-200"
+                            :class="form.errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
                             placeholder="Minimal 8 karakter"
                         />
-                        <p v-if="form.errors.password" class="mt-1 text-sm text-red-600">{{ form.errors.password }}</p>
+                        <InputError :message="form.errors.password" />
+                        <p v-if="!form.errors.password" class="mt-1.5 text-xs text-gray-500">Minimal 8 karakter untuk keamanan akun.</p>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-black mb-2">Konfirmasi Password *</label>
+                        <label class="block text-sm font-bold text-gray-800 mb-2">Konfirmasi Password <span class="text-red-500">*</span></label>
                         <input 
                             v-model="form.password_confirmation" 
                             type="password" 
-                            required 
-                            class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" 
+                            class="w-full rounded-lg py-3 transition-all duration-200"
+                            :class="form.errors.password_confirmation ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
                             placeholder="Ulangi password"
                         />
+                        <InputError :message="form.errors.password_confirmation" />
                     </div>
                 </div>
 
-                <div class="flex items-center justify-end gap-4 pt-4 border-t">
-                    <Link :href="route('admin.users.index')" class="px-6 py-2 rounded-lg bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300">
+                <div class="flex items-center justify-end gap-3 pt-8 border-t border-gray-100 mt-10">
+                    <Link :href="route('admin.users.index')" class="px-6 py-3 rounded-lg border border-gray-300 bg-white text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm">
                         Batal
                     </Link>
                     <button 
                         type="submit" 
                         :disabled="form.processing"
-                        class="px-6 py-2 rounded-lg bg-[#4682A9] text-white font-semibold hover:bg-opacity-90 disabled:opacity-50"
+                        class="flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-white font-bold hover:bg-primary-hover transition-colors shadow-md disabled:opacity-50"
                     >
+                        <UserPlusIcon class="h-5 w-5" />
                         {{ form.processing ? 'Menyimpan...' : 'Simpan Admin' }}
                     </button>
                 </div>

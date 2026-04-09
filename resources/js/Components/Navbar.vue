@@ -1,19 +1,17 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
-import { ChevronDown, Search, X, Menu, Globe } from 'lucide-vue-next';
-
-import LanguageSwitcher from '@/Components/LanguageSwitcher.vue';
-import { usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
+import { ChevronDown, X, Menu } from 'lucide-vue-next';
 
 const page = usePage();
-const trans = (key: string): string => {
-    const translations = page.props.translations as Record<string, string> | undefined;
-    return translations?.[key] || key;
-};
 
-// --- Interface untuk struktur data ---
+interface StudyProgramGlobal {
+    name: string;
+    degree: string;
+    slug: string;
+    department: string;
+}
+
 interface NavLink {
     name: string;
     href: string;
@@ -22,144 +20,153 @@ interface NavLink {
     megaMenu?: boolean;
     columns?: {
         title: string;
-        links: NavLink[];
+        links: { name: string; href: string }[];
     }[];
 }
 
-// --- Data Menu Navigasi ---
-const navigationMenu = computed(() => [
-    { name: trans('Beranda'), href: route('home') },
+const globalProdi = computed<StudyProgramGlobal[]>(() => {
+    return ((page.props as any).globalProdi as StudyProgramGlobal[]) || [];
+});
+
+const uniqueDepartments = computed(() => {
+    const deps = globalProdi.value.map(p => p.department);
+    return [...new Set(deps)].filter(Boolean);
+});
+
+const navigationMenu = computed<NavLink[]>(() => [
+    { name: 'Beranda', href: route('home') },
     {
-        name: trans('Profil'),
+        name: 'Profil',
         href: '#',
         sublinks: [
-            { name: trans('Visi & Misi'), href: route('visi-misi') },
+            { name: 'Tentang FSTI', href: route('profil.tentang') },            
             {
-                name: trans('Struktur Organisasi'),
+                name: 'Struktur Organisasi',
                 href: '#',
                 sublinks: [
-                    { name: trans('Bagan Organisasi'), href: route('bagan-organisasi') },
-                    { name: trans('Pimpinan Fakultas'), href: route('profil.pimpinan-fakultas') },
-                    { name: trans('Pimpinan Jurusan'), href: route('profil.pimpinan-jurusan') },
-                    { name: trans('Pimpinan Prodi'), href: route('profil.pimpinan-prodi') },
-                    { name: trans('Pimpinan Laboratorium'), href: route('profil.pimpinan-laboratorium') },
+                    { name: 'Bagan Organisasi', href: route('bagan-organisasi') },
+                    { name: 'Pimpinan Fakultas', href: route('profil.pimpinan-fakultas') },
+                    { name: 'Pimpinan Jurusan', href: route('profil.pimpinan-jurusan') },
+                    { name: 'Pimpinan Prodi', href: route('profil.pimpinan-prodi') },
+                    { name: 'Pimpinan Laboratorium', href: route('profil.pimpinan-laboratorium') },
                 ],
             },
             {
-                name: trans('Civitas Akademika'), // Fallback if not in JSON, but keys should be there
+                name: 'Civitas Akademika',
                 href: '#',
                 sublinks: [
-                    { name: trans('Dosen'), href: route('profil.dosen') },
-                    { name: trans('Tenaga Kependidikan'), href: route('profil.tenaga-kependidikan') },
+                    { name: 'Dosen', href: route('profil.dosen') },
+                    { name: 'Tenaga Kependidikan', href: route('profil.tenaga-kependidikan') },
                 ],
             },
+            { name: 'Kerjasama', href: route('kerjasama.index') },
+            { name: 'Kontak', href: route('kontak') },
         ],
     },
     {
-        name: trans('Program Studi'),
+        name: 'Program Studi',
         href: '#',
         megaMenu: true,
-        columns: [
-            {
-                title: 'Jurusan Teknik Elektro, Informatika, dan Bisnis',
-                links: [
-                    { name: 'Program Studi Teknik Elektro', href: '#' },
-                    { name: 'Program Studi Sistem Informasi', href: '#' },
-                    { name: 'Program Studi Informatika', href: '#' },
-                    { name: 'Program Studi Bisnis Digital', href: '#' },
-                    { name: 'Magister Manajemen Teknologi', href: '#' },
-                ],
-            },
-            {
-                title: 'Jurusan Sains dan Analitika Data',
-                links: [
-                    { name: 'Program Studi Fisika', href: '#' },
-                    { name: 'Program Studi Matematika', href: route('prodi.matematika') },
-                    { name: 'Program Studi Statistika', href: '#' },
-                    { name: 'Program Studi Ilmu Aktuaria', href: '#' },
-                ],
-            },
+        columns: uniqueDepartments.value.map(dep => ({
+            title: `Jurusan ${dep}`,
+            links: globalProdi.value
+                .filter(p => p.department === dep)
+                .map(p => ({
+                    name: `Program Studi ${p.degree} ${p.name}`,
+                    href: route('public.prodi.show', p.slug)
+                }))
+        }))
+    },
+    {
+        name: 'Kemahasiswaan',
+        href: '#',
+        sublinks: [
+            { name: 'Prestasi Mahasiswa', href: route('prestasi.index') },
+            { name: 'Portal Layanan Mahasiswa', href: route('layanan.index') }, 
+            { name: 'Kegiatan Mahasiswa', href: route('kegiatan.index') }, 
+            { name: 'Informasi Beasiswa', href: route('beasiswa.index') }, 
+            { name: 'Penerimaan Mahasiswa Baru (PMB)', href: route('pmb.index') }, 
         ],
     },
     {
-        name: trans('Kemahasiswaan'),
+        name: 'Alumni',
         href: '#',
         sublinks: [
-            { name: trans('Prestasi Mahasiswa'), href: route('prestasi.index') },
-            { name: 'Portal Layanan Mahasiswa', href: 'https://layanan-fsti.myst-tech.com/', external: true },
+            { name: 'Data Alumni', href: route('alumni.index') },
+            { name: 'Tracer Study', href: route('tracer-study.index') }, 
         ],
     },
     {
-        name: trans('Informasi & Layanan'),
+        name: 'Informasi',
         href: '#',
         sublinks: [
-            { name: 'PPID Fakultas', href: route('ppid.index') },
-            { name: trans('Zona Integritas'), href: route('zona-integritas.index') },
-            { name: trans('Alumni & Tracer Study'), href: route('alumni.index') },
-            { name: trans('Survei Kepuasan'), href: route('survei.index') },
-            { name: trans('Layanan Internal'), href: route('layanan.index') },
+            { name: 'Agenda', href: route('agenda.index') },
+            { name: 'Berita', href: route('berita.index') },
+            { name: 'Pengumuman', href: route('pengumuman.index') },
         ],
     },
-    { name: trans('Berita'), href: route('berita.index') },
-    { name: trans('Kontak'), href: route('kontak') },
+    { name: 'PPID', href: route('public.ppid.index') },    
+    {
+        name: 'Zona Integritas',
+        href: '#',
+        sublinks: [
+            { name: 'Informasi Zona Integritas', href: route('zona-integritas.index') },
+            { name: 'Survei Kepuasan', href: route('survei.index') },
+        ],
+    },
+    {
+        name: 'Riset',
+        href: '#',
+        sublinks: [
+            { name: 'Penelitian', href: route('penelitian.index') },
+            { name: 'Pengabdian kepada Masyarakat', href: route('pengabdian.index') },
+        ],
+    },    
 ]);
 
-// --- State untuk interaktivitas ---
 const activeDropdown = ref<string | null>(null);
 const isScrolled = ref(false);
-const isSearchOpen = ref(false);
-const searchQuery = ref('');
 const isMobileMenuOpen = ref(false);
+const openMobileMenus = ref<string[]>([]);
 
-// --- Fungsi untuk Dropdown ---
 const showDropdown = (menuName: string) => activeDropdown.value = menuName;
 const hideDropdown = () => activeDropdown.value = null;
 
-// --- Fungsi untuk mengubah tampilan Navbar saat scroll ---
+const toggleMobileMenu = (menuName: string) => {
+    if (openMobileMenus.value.includes(menuName)) {
+        openMobileMenus.value = openMobileMenus.value.filter(m => m !== menuName);
+    } else {
+        openMobileMenus.value.push(menuName);
+    }
+};
+
+const closeMobileMenu = () => {
+    isMobileMenuOpen.value = false;
+};
+
 const handleScroll = () => {
     isScrolled.value = window.scrollY > 10;
 };
 
-// --- Fungsionalitas Pencarian ---
-const openSearch = () => isSearchOpen.value = true;
-const closeSearch = () => isSearchOpen.value = false;
-const submitSearch = () => {
-    if (searchQuery.value.trim()) {
-        closeSearch();
-        router.get(route('berita.index', { search: searchQuery.value }), {}, {
-            preserveState: true,
-            onSuccess: () => {
-                searchQuery.value = '';
-            }
-        });
-    }
-};
-
-// --- Fungsionalitas Ganti Bahasa (moved to Component) ---
-
-// --- Lifecycle hooks untuk event listener ---
-onMounted(() => {
-    window.addEventListener('scroll', handleScroll);
-});
-onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll);
-});
+onMounted(() => window.addEventListener('scroll', handleScroll));
+onUnmounted(() => window.removeEventListener('scroll', handleScroll));
 </script>
 
 <template>
     <header 
-        class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out bg-white/30 backdrop-blur-lg"
+        class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out bg-white/50 backdrop-blur-lg"
         :class="{ 'shadow-md': isScrolled }"
     >
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <div class="flex-shrink-0">
-                    <Link href="/" class="flex items-center space-x-2">
+                
+                <div class="flex-1 flex justify-start items-center">
+                    <Link href="/" class="flex items-center space-x-2" @click="closeMobileMenu">
                         <img class="h-10 w-auto" src="/images/logofsti.png" alt="Logo FSTI">
                     </Link>
                 </div>
 
-                <nav class="hidden md:flex items-center space-x-8">
+                <nav class="hidden xl:flex items-center justify-center space-x-8">
                     <div
                         v-for="item in navigationMenu"
                         :key="item.name"
@@ -170,46 +177,43 @@ onUnmounted(() => {
                         <component
                             :is="item.sublinks || item.megaMenu ? 'button' : Link"
                             :href="item.href"
-                            class="inline-flex items-center px-1 pt-1 text-sm font-bold transition-colors duration-200"
-                            :class="'text-[#133E87] hover:text-gray-200'"
+                            class="inline-flex items-center px-1 pt-1 text-sm font-bold transition-colors duration-200 text-[#00509D] hover:text-[#133E87]"
                         >
                             {{ item.name }}
                             <ChevronDown v-if="item.sublinks || item.megaMenu" class="ml-1 h-4 w-4" />
                         </component>
                         
-                        <!-- Dropdown biasa -->
                         <transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0 translate-y-1" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition ease-in duration-150" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-1">
                             <div v-if="activeDropdown === item.name && item.sublinks" class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                 <div class="py-1">
                                     <template v-for="sublink in item.sublinks" :key="sublink.name">
                                         <div v-if="'sublinks' in sublink && sublink.sublinks" class="relative group">
-                                            <button class="w-full text-left flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#133E87]">
+                                            <button class="w-full text-left flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#133E87] font-medium">
                                                 {{ sublink.name }}
                                                 <ChevronDown class="h-4 w-4 transform -rotate-90" />
                                             </button>
                                             <div class="absolute left-full top-0 mt-0 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden group-hover:block">
                                                 <div class="py-1">
-                                                    <Link v-for="subsublink in sublink.sublinks" :key="subsublink.name" :href="subsublink.href" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ subsublink.name }}</Link>
+                                                    <Link v-for="subsublink in sublink.sublinks" :key="subsublink.name" :href="subsublink.href" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium">{{ subsublink.name }}</Link>
                                                 </div>
                                             </div>
                                         </div>
-                                        <a v-else-if="'external' in sublink && sublink.external" :href="sublink.href" target="_blank" rel="noopener noreferrer" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ sublink.name }}</a>
-                                        <Link v-else :href="sublink.href" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ sublink.name }}</Link>
+                                        <a v-else-if="'external' in sublink && sublink.external" :href="sublink.href" target="_blank" rel="noopener noreferrer" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium">{{ sublink.name }}</a>
+                                        <Link v-else :href="sublink.href" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium">{{ sublink.name }}</Link>
                                     </template>
                                 </div>
                             </div>
                         </transition>
 
-                        <!-- Mega Menu -->
                         <transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0 translate-y-1" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition ease-in duration-150" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-1">
                              <div v-if="activeDropdown === item.name && item.megaMenu" class="absolute left-1/2 transform -translate-x-1/2 mt-2 w-screen max-w-4xl px-4 sm:px-0">
                                  <div class="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
                                      <div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8 grid-cols-2">
                                          <div v-for="column in item.columns" :key="column.title">
-                                             <h3 class="text-sm font-medium tracking-wide text-gray-500 uppercase">{{ column.title }}</h3>
-                                             <ul role="list" class="mt-4 space-y-4">
-                                                 <li v-for="link in column.links" :key="link.name" class="text-base">
-                                                     <Link :href="link.href" class="text-gray-900 hover:text-blue-800 transition-colors duration-200">{{ link.name }}</Link>
+                                             <h3 class="text-sm font-bold tracking-wide text-[#00509D] uppercase border-b pb-2 mb-3">{{ column.title }}</h3>
+                                             <ul role="list" class="space-y-3">
+                                                 <li v-for="link in column.links" :key="link.name" class="text-sm font-medium">
+                                                     <Link :href="link.href" class="text-gray-700 hover:text-[#133E87] transition-colors duration-200">{{ link.name }}</Link>
                                                  </li>
                                              </ul>
                                          </div>
@@ -220,54 +224,97 @@ onUnmounted(() => {
                     </div>
                 </nav>
 
-                <div class="hidden md:flex items-center space-x-4">
-                    <LanguageSwitcher />
-                    <button @click="openSearch" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors text-white hover:bg-white/20">
-                        <Search class="h-5 w-5" />
-                    </button>
+                <div class="flex-1 flex justify-end items-center">
+                    <div class="xl:hidden">
+                        <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="p-2 rounded-md transition-colors text-[#00509D] hover:bg-blue-50">
+                            <Menu v-if="!isMobileMenuOpen" class="h-6 w-6 stroke-2" />
+                            <X v-else class="h-6 w-6 stroke-2" />
+                        </button>
+                    </div>
                 </div>
 
-                <div class="md:hidden">
-                    <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="p-2 rounded-md transition-colors text-white">
-                        <Menu v-if="!isMobileMenuOpen" class="h-6 w-6" />
-                        <X v-else class="h-6 w-6" />
-                    </button>
-                </div>
             </div>
         </div>
         
         <transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0 -translate-y-4" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition ease-in duration-150" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 -translate-y-4">
-             <div v-if="isMobileMenuOpen" class="md:hidden bg-white/95 backdrop-blur-lg shadow-xl py-4">
-                 <p class="text-center text-gray-700">Menu mobile belum diimplementasikan.</p>
+             <div v-if="isMobileMenuOpen" class="xl:hidden bg-white shadow-2xl absolute w-full border-t border-gray-100 max-h-[85vh] overflow-y-auto">
+                 <div class="px-4 py-4 space-y-1">
+                     <div v-for="item in navigationMenu" :key="item.name">
+                         
+                         <Link 
+                             v-if="!item.sublinks && !item.megaMenu" 
+                             :href="item.href" 
+                             @click="closeMobileMenu"
+                             class="block px-4 py-3.5 rounded-xl text-base font-bold text-[#00509D] hover:bg-blue-50 transition-colors"
+                         >
+                             {{ item.name }}
+                         </Link>
+
+                         <div v-else>
+                             <button 
+                                 @click="toggleMobileMenu(item.name)" 
+                                 class="w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-base font-bold text-[#00509D] hover:bg-blue-50 transition-colors"
+                             >
+                                 {{ item.name }}
+                                 <ChevronDown class="h-5 w-5 transition-transform duration-200" :class="{ 'rotate-180': openMobileMenus.includes(item.name) }" />
+                             </button>
+                             
+                             <div v-show="openMobileMenus.includes(item.name)" class="pl-4 pr-2 pb-2 pt-1 space-y-1 border-l-2 border-blue-100 ml-6 mt-1 mb-2">
+                                 <template v-if="item.sublinks">
+                                     <div v-for="sub in item.sublinks" :key="sub.name">
+                                         
+                                         <div v-if="'sublinks' in sub && sub.sublinks" class="mb-2 mt-1">
+                                             <div class="px-4 py-2 text-sm font-bold text-gray-800">{{ sub.name }}</div>
+                                             <div class="pl-2 space-y-1">
+                                                 <Link 
+                                                     v-for="subsub in sub.sublinks" 
+                                                     :key="subsub.name" 
+                                                     :href="subsub.href" 
+                                                     @click="closeMobileMenu"
+                                                     class="block px-4 py-2 text-sm font-medium text-gray-600 hover:text-[#00509D] hover:bg-blue-50 rounded-lg transition-colors"
+                                                 >
+                                                    • {{ subsub.name }}
+                                                 </Link>
+                                             </div>
+                                         </div>
+                                         
+                                         <a v-else-if="'external' in sub && sub.external" :href="sub.href" target="_blank" rel="noopener noreferrer" class="block px-4 py-2.5 text-sm font-semibold text-gray-700 hover:text-[#00509D] hover:bg-blue-50 rounded-lg transition-colors">
+                                            {{ sub.name }}
+                                         </a>
+                                         
+                                         <Link v-else :href="sub.href" @click="closeMobileMenu" class="block px-4 py-2.5 text-sm font-semibold text-gray-700 hover:text-[#00509D] hover:bg-blue-50 rounded-lg transition-colors">
+                                            {{ sub.name }}
+                                         </Link>
+                                     </div>
+                                 </template>
+
+                                 <template v-if="item.megaMenu">
+                                     <div v-for="col in item.columns" :key="col.title" class="mb-4 mt-2">
+                                         <div class="px-4 py-1.5 text-xs font-bold text-[#00509D] uppercase tracking-wider">{{ col.title }}</div>
+                                         <div class="space-y-1 mt-1">
+                                             <Link 
+                                                 v-for="link in col.links" 
+                                                 :key="link.name" 
+                                                 :href="link.href" 
+                                                 @click="closeMobileMenu"
+                                                 class="block px-4 py-2 text-sm font-medium text-gray-600 hover:text-[#00509D] hover:bg-blue-50 rounded-lg transition-colors"
+                                             >
+                                                 • {{ link.name }}
+                                             </Link>
+                                         </div>
+                                     </div>
+                                 </template>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
             </div>
         </transition>
     </header>
-
-    <!-- Modal Search -->
-    <transition enter-active-class="ease-out duration-300" enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="ease-in duration-200" leave-from-class="opacity-100" leave-to-class="opacity-0">
-        <div v-if="isSearchOpen" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-start justify-center pt-20" @click.self="closeSearch">
-            <div class="bg-white rounded-lg shadow-2xl w-full max-w-xl">
-                 <form @submit.prevent="submitSearch" class="flex items-center border-b border-gray-200">
-                    <input v-model="searchQuery" type="text" placeholder="Ketik pencarian dan tekan Enter..." class="w-full py-4 px-6 text-lg border-none focus:ring-0">
-                    <button type="submit" class="p-4 text-gray-500 hover:text-blue-600">
-                        <Search class="h-6 w-6" />
-                    </button>
-                 </form>
-                 <div class="p-6 text-sm text-gray-500">
-                    Cari berita, pengumuman, atau informasi lainnya di situs FSTI.
-                 </div>
-            </div>
-        </div>
-    </transition>
 </template>
 
 <style scoped>
 .group:hover .group-hover\:block {
     display: block;
-}
-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
 }
 </style>

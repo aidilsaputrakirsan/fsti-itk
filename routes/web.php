@@ -1,146 +1,265 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Import semua controller yang relevan
-use App\Http\Controllers\Admin\PostController as AdminPostController;
+// ==============================================================================
+// IMPORT CONTROLLERS: ADMIN
+// ==============================================================================
 use App\Http\Controllers\Admin\AchievementsController;
+use App\Http\Controllers\Admin\AgendaFakultasController as AdminAgendaFakultasController;
+use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
+use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
+use App\Http\Controllers\Admin\BeasiswaController as AdminBeasiswaController;
+use App\Http\Controllers\Admin\ContactController as AdminContactController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\PublicPostController;
-use App\Http\Controllers\PublicAchievementController;
-use App\Http\Controllers\PublicProfileController; // <-- Import controller baru
-use App\Models\Post;
+use App\Http\Controllers\Admin\IntegrityZoneController;
+use App\Http\Controllers\Admin\InternalServiceController;
+use App\Http\Controllers\Admin\KategoriPpidController;
+use App\Http\Controllers\Admin\KegiatanMahasiswaController as AdminKegiatanMahasiswaController;
+use App\Http\Controllers\Admin\PartnerController as AdminPartnerController;
+use App\Http\Controllers\Admin\PenelitianController as AdminPenelitianController;
+use App\Http\Controllers\Admin\PengabdianController as AdminPengabdianController;
+use App\Http\Controllers\Admin\PostCategoryController;
+use App\Http\Controllers\Admin\PostController as AdminPostController;
+use App\Http\Controllers\Admin\PpidController as AdminPpidController;
+use App\Http\Controllers\Admin\SatisfactionSurveyController;
+use App\Http\Controllers\Admin\StaffController;
+use App\Http\Controllers\Admin\StudyProgramController as AdminStudyProgramController;
+use App\Http\Controllers\Admin\SurveyCategoryController;
+use App\Http\Controllers\Admin\TentangFakultasController;
+use App\Http\Controllers\Admin\UserController;
+
+// ==============================================================================
+// IMPORT CONTROLLERS: PUBLIC & SYSTEM
+// ==============================================================================
+use App\Http\Controllers\Public\PublicAchievementController;
+use App\Http\Controllers\Public\PublicAgendaFakultasController;
+use App\Http\Controllers\Public\PublicAlumniController;
+use App\Http\Controllers\Public\PublicAnnouncementController;
+use App\Http\Controllers\Public\PublicBeasiswaController;
+use App\Http\Controllers\Public\PublicKegiatanMahasiswaController;
+use App\Http\Controllers\Public\PublicPartnerController;
+use App\Http\Controllers\Public\PublicPenelitianController;
+use App\Http\Controllers\Public\PublicPengabdianController;
+use App\Http\Controllers\Public\PublicPostController;
+use App\Http\Controllers\Public\PublicPpidController;
+use App\Http\Controllers\Public\PublicProfileController;
+use App\Http\Controllers\Public\PublicProgramStudiController;
+use App\Http\Controllers\Public\PublicStaffController;
+use App\Http\Controllers\Public\PublicSurveiController;
+use App\Http\Controllers\Public\PublicZonaIntegritasController;
+use App\Http\Controllers\ProfileController;
+
+// ==============================================================================
+// IMPORT MODELS
+// ==============================================================================
 use App\Models\Achievement;
+use App\Models\Post;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+// ==============================================================================
+// 1. KELOMPOK ROUTE ADMIN
+// ==============================================================================
+Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
 
-// --- KELOMPOK ROUTE PUBLIK ---
+    // Dashboard & Pengaturan Sistem
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('/users', UserController::class);
 
-// Route untuk ganti bahasa
-Route::get('lang/{locale}', function ($locale) {
-    if (in_array($locale, ['id', 'en'])) {
-        session(['locale' => $locale]);
-    }
-    return redirect()->back();
-})->name('lang.switch');
+    // Profil Fakultas & Kontak
+    Route::get('/contacts', [AdminContactController::class, 'edit'])->name('contacts.edit');
+    Route::put('/contacts', [AdminContactController::class, 'update'])->name('contacts.update');
+    Route::get('/tentang-fakultas', [TentangFakultasController::class, 'edit'])->name('tentang.edit');
+    Route::put('/tentang-fakultas', [TentangFakultasController::class, 'update'])->name('tentang.update');
+    Route::resource('/staff', StaffController::class);
+    Route::resource('/study-programs', AdminStudyProgramController::class)->except(['show']);
+
+    // Berita & Pengumuman
+    Route::resource('/posts', AdminPostController::class);
+    Route::resource('post-categories', PostCategoryController::class)->except(['show']);
+    Route::resource('announcements', AdminAnnouncementController::class);
+    Route::resource('/agenda-fakultas', AdminAgendaFakultasController::class);
+
+    // Prestasi & Kegiatan
+    Route::resource('/achievements', AchievementsController::class);
+    Route::resource('kegiatan-mahasiswa', AdminKegiatanMahasiswaController::class);
+
+    // Tridharma (Penelitian & Pengabdian)
+    Route::resource('penelitian', AdminPenelitianController::class)->except(['show']);
+    Route::resource('pengabdian', AdminPengabdianController::class)->except(['show']);
+
+    // Layanan & Publik
+    Route::resource('/internal-services', InternalServiceController::class);
+    Route::resource('/ppid', AdminPpidController::class);
+    Route::resource('/kategori-ppid', KategoriPpidController::class);
+    Route::resource('beasiswa', AdminBeasiswaController::class);
+    Route::resource('/alumni', AdminAlumniController::class)->parameters(['alumni' => 'alumnus']);
+    Route::resource('partners', AdminPartnerController::class);
+
+    // Zona Integritas (ZI)
+    Route::prefix('zona-integritas')->name('zi.')->group(function () {
+        Route::get('/profil', [IntegrityZoneController::class, 'profileEdit'])->name('profile.edit');
+        Route::post('/profil', [IntegrityZoneController::class, 'profileUpdate'])->name('profile.update');
+        Route::get('/dokumen', [IntegrityZoneController::class, 'documentIndex'])->name('document.index');
+        Route::get('/dokumen/create', [IntegrityZoneController::class, 'documentCreate'])->name('document.create');
+        Route::post('/dokumen', [IntegrityZoneController::class, 'documentStore'])->name('document.store');
+        Route::get('/dokumen/{id}/edit', [IntegrityZoneController::class, 'documentEdit'])->name('document.edit');
+        Route::post('/dokumen/{id}', [IntegrityZoneController::class, 'documentUpdate'])->name('document.update');
+        Route::delete('/dokumen/{id}', [IntegrityZoneController::class, 'documentDestroy'])->name('document.destroy');
+    });
+
+    // Survei Kepuasan
+    Route::resource('/satisfaction-surveys', SatisfactionSurveyController::class);
+    Route::get('/survey-categories', [SurveyCategoryController::class, 'index'])->name('survey-categories.index');
+    Route::post('/survey-categories', [SurveyCategoryController::class, 'store'])->name('survey-categories.store');
+    Route::put('/survey-categories/{surveyCategory}', [SurveyCategoryController::class, 'update'])->name('survey-categories.update');
+    Route::delete('/survey-categories/{surveyCategory}', [SurveyCategoryController::class, 'destroy'])->name('survey-categories.destroy');
+});
 
 
+// ==============================================================================
+// 2. KELOMPOK ROUTE PUBLIK
+// ==============================================================================
+
+// Halaman Beranda (Home)
 Route::get('/', function () {
-    $latestPosts = Post::where('category', '!=', 'Prestasi')
-        ->where('status', 'Terbitkan')
-        ->latest('published_at')
+    $latestPosts = Post::select('posts.*', 'post_categories.name as category')
+        ->leftJoin('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
+        ->where('post_categories.name', '!=', 'Prestasi')
+        ->where('posts.status', 'Terbitkan')
+        ->latest('posts.published_at')
         ->take(3)
         ->get();
 
-    $latestAchievements = Achievement::latest()->take(3)->get();
+    $latestAchievements = Achievement::latest()
+        ->take(3)
+        ->get()
+        ->map(fn($item) => [
+            'id' => $item->id,
+            'student_name' => $item->student_name,
+            'student_nim' => $item->student_nim ?? '',
+            'study_program' => $item->study_program,
+            'title' => $item->title,
+            'organizer' => $item->organizer ?? 'FSTI ITK',
+            'level' => $item->level,
+            'category' => $item->category,
+            'year' => $item->year,
+            'image_url' => $item->image_path ? asset('storage/' . $item->image_path) : null,
+            'certificate_url' => $item->certificate_path ? asset('storage/' . $item->certificate_path) : null,
+        ]);
+
+    $tentang = \App\Models\TentangFakultas::first();
+
+    $allProdi = \App\Models\StudyProgram::all();
+    $s1 = 0;
+    $s2 = 0;
+
+    foreach ($allProdi as $p) {
+        $level = $p->level ?? '';
+        $name = strtolower($p->name);
+
+        if (strtoupper($level) === 'S1' || (!str_contains($name, 's2') && !str_contains($name, 'magister') && strtoupper($level) !== 'S2')) {
+            $s1++;
+        } else {
+            $s2++;
+        }
+    }
+
+    $statistik = [
+        'dosen' => \App\Models\Staff::where('type', 'Dosen')->where('is_active', true)->count(),
+        'tendik' => \App\Models\Staff::where('type', 'Tendik')->where('is_active', true)->count(),
+        'prodi_s1' => $s1,
+        'prodi_s2' => $s2,
+        'prodi_total' => $allProdi->count(),
+    ];
 
     return Inertia::render('Home', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'latestPosts' => $latestPosts,
-        'latestAchievements' => $latestAchievements, // Data ini sekarang berasal dari model Achievement
+        'latestAchievements' => $latestAchievements,
+        'tentang' => $tentang ? $tentang->content : null,
+        'statistik' => $statistik,
     ]);
 })->name('home');
 
-// Route untuk menampilkan daftar semua berita
+// Berita & Prestasi
 Route::get('/berita', [PublicPostController::class, 'index'])->name('berita.index');
-
-// Route untuk menampilkan satu berita berdasarkan slug-nya
 Route::get('/berita/{post:slug}', [PublicPostController::class, 'show'])->name('berita.show');
-
-// PERUBAHAN: Tambahkan route untuk halaman Prestasi Mahasiswa
 Route::get('/prestasi', [PublicAchievementController::class, 'index'])->name('prestasi.index');
 
+// Profil Institusi
+Route::get('/profil/tentang', [PublicProfileController::class, 'tentang'])->name('profil.tentang');
+Route::get('/profil/bagan-organisasi', [PublicProfileController::class, 'baganOrganisasi'])->name('bagan-organisasi');
+Route::get('/kontak', [PublicProfileController::class, 'kontak'])->name('kontak');
+Route::get('/profil/kerjasama', function () {
+    return "Halaman Kerjasama Segera Hadir";
+})->name('profil.kerjasama');
 
-// --- KELOMPOK ROUTE UNTUK ADMIN ---
-// Semua URL di sini akan diawali dengan /admin/ dan memerlukan login
-Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
-    // Route untuk Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// Direktori Staf
+Route::get('/profil/pimpinan-fakultas', [PublicStaffController::class, 'pimpinanFakultas'])->name('profil.pimpinan-fakultas');
+Route::get('/profil/pimpinan-jurusan', [PublicStaffController::class, 'pimpinanJurusan'])->name('profil.pimpinan-jurusan');
+Route::get('/profil/pimpinan-prodi', [PublicStaffController::class, 'pimpinanProdi'])->name('profil.pimpinan-prodi');
+Route::get('/profil/pimpinan-laboratorium', [PublicStaffController::class, 'pimpinanLaboratorium'])->name('profil.pimpinan-laboratorium');
+Route::get('/profil/dosen', [PublicStaffController::class, 'dosen'])->name('profil.dosen');
+Route::get('/profil/tenaga-kependidikan', [PublicStaffController::class, 'tendik'])->name('profil.tenaga-kependidikan');
 
-    // Resource Routes untuk CRUD Posts (Berita) dan Achievements (Prestasi)
-    Route::resource('/posts', AdminPostController::class);
-    Route::resource('/achievements', AchievementsController::class);
+// Akademik & Kegiatan
+Route::get('/prodi/{slug}', [PublicProgramStudiController::class, 'show'])->name('public.prodi.show');
+Route::get('/kegiatan-mahasiswa', [PublicKegiatanMahasiswaController::class, 'index'])->name('kegiatan.index');
+Route::get('/agenda-fakultas', [PublicAgendaFakultasController::class, 'index'])->name('agenda.index');
+Route::get('/beasiswa', [PublicBeasiswaController::class, 'index'])->name('beasiswa.index');
+Route::get('/pengumuman', [PublicAnnouncementController::class, 'index'])->name('pengumuman.index');
+Route::get('/kerjasama', [PublicPartnerController::class, 'index'])->name('kerjasama.index');
 
-    // Route untuk Impor & Ekspor Prestasi
-    Route::post('/achievements/import', [AchievementsController::class, 'import'])->name('achievements.import');
-    Route::get('/achievements/export', [AchievementsController::class, 'export'])->name('achievements.export');
+// Tridharma (Penelitian & Pengabdian)
+Route::get('/penelitian', [PublicPenelitianController::class, 'index'])->name('penelitian.index');
+Route::get('/pengabdian', [PublicPengabdianController::class, 'index'])->name('pengabdian.index');
 
-    // --- MODUL TAMBAHAN (Admin) ---
-    Route::resource('/ppid', \App\Http\Controllers\Admin\PpidController::class);
-    Route::resource('/integrity-zones', \App\Http\Controllers\Admin\IntegrityZoneController::class);
-    Route::resource('/alumni', \App\Http\Controllers\Admin\AlumniController::class);
-    Route::resource('/users', \App\Http\Controllers\Admin\UserController::class);
-    Route::resource('/satisfaction-surveys', \App\Http\Controllers\Admin\SatisfactionSurveyController::class);
-    Route::resource('/internal-services', \App\Http\Controllers\Admin\InternalServiceController::class);
-    
-    // Profil Module
-    Route::resource('/static-pages', \App\Http\Controllers\Admin\StaticPageController::class)->only(['index', 'edit', 'update']);
-    Route::resource('/staff', \App\Http\Controllers\Admin\StaffController::class);
-});
+// Alumni & PMB
+Route::get('/informasi-pmb', function () {
+    return Inertia::render('Public/PMB/Index');
+})->name('pmb.index');
+Route::get('/tracer-study', function () {
+    return Inertia::render('Public/Alumni/TracerStudy');
+})->name('tracer-study.index');
+Route::get('/alumni', [PublicAlumniController::class, 'index'])->name('alumni.index');
 
-// --- MODUL TAMBAHAN (Publik) ---
-use App\Http\Controllers\PublicAdditionalController;
+// Layanan Publik (PPID, ZI, Survei)
+Route::get('/ppid', [PublicPpidController::class, 'index'])->name('public.ppid.index');
+Route::get('/ppid/informasi/{slug}', [PublicPpidController::class, 'show'])->name('public.ppid.show');
+Route::get('/zona-integritas', [PublicZonaIntegritasController::class, 'index'])->name('zona-integritas.index');
+Route::get('/survei-kepuasan', [PublicSurveiController::class, 'index'])->name('survei.index');
+Route::post('/survei-kepuasan', [PublicSurveiController::class, 'store'])->name('survei.store');
+Route::get('/layanan-internal', function () {
+    $services = \App\Models\InternalService::where('is_active', true)
+        ->orderBy('sort_order', 'asc')
+        ->get()
+        ->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'name' => $item->name,
+                'description' => $item->description,
+                'link_url' => $item->link_url,
+            ];
+        });
+    return Inertia::render('Public/Layanan/Index', ['services' => $services]);
+})->name('layanan.index');
 
-Route::get('/ppid', [PublicAdditionalController::class, 'ppid'])->name('ppid.index');
-Route::get('/zona-integritas', [PublicAdditionalController::class, 'zonaIntegritas'])->name('zona-integritas.index');
-Route::get('/alumni', [PublicAdditionalController::class, 'alumni'])->name('alumni.index');
-Route::get('/survei-kepuasan', [PublicAdditionalController::class, 'survei'])->name('survei.index');
-Route::post('/survei-kepuasan', [PublicAdditionalController::class, 'storeSurvei'])->name('survei.store');
-Route::get('/layanan-internal', [PublicAdditionalController::class, 'layanan'])->name('layanan.index');
 
-
-// --- KELOMPOK ROUTE UNTUK AUTENTIKASI ---
-
+// ==============================================================================
+// 3. KELOMPOK ROUTE AUTHENTICATION
+// ==============================================================================
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Arahkan /dashboard default Laravel ke dashboard admin kita
+// Redirect /dashboard fallback
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Route untuk Visi & Misi
-Route::get('/profil/visi-misi', [PublicProfileController::class, 'visiMisi'])->name('visi-misi');
-
-Route::get('/profil/bagan-organisasi', [PublicProfileController::class, 'baganOrganisasi'])->name('bagan-organisasi');
-
-Route::get('/profil/pimpinan-fakultas', [PublicProfileController::class, 'pimpinanFakultas'])->name('profil.pimpinan-fakultas');
-
-Route::get('/profil/pimpinan-jurusan', [PublicProfileController::class, 'pimpinanJurusan'])->name('profil.pimpinan-jurusan');
-
-Route::get('/profil/pimpinan-prodi', [PublicProfileController::class, 'pimpinanProdi'])->name('profil.pimpinan-prodi');
-
-Route::get('/profil/pimpinan-laboratorium', [PublicProfileController::class, 'pimpinanLaboratorium'])->name('profil.pimpinan-laboratorium');
-
-Route::get('/profil/dosen', [PublicProfileController::class, 'dosen'])->name('profil.dosen');
-
-Route::get('/profil/tenaga-kependidikan', [PublicProfileController::class, 'tendik'])->name('profil.tenaga-kependidikan');
-
-Route::get('/program-studi/matematika', function () {
-    return Inertia::render('Public/ProgramStudi/Matematika');
-})->name('prodi.matematika');
-
-
-Route::get('/kontak', function () {
-    return Inertia::render('Public/Kontak');
-})->name('kontak');
-
-
-// Impor route-route autentikasi standar (login, register, dll.)
+// Auth routes (Login, Register, Password Reset, etc) provided by Breeze
 require __DIR__ . '/auth.php';
