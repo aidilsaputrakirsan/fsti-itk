@@ -68,7 +68,7 @@ const formatDate = (dateString: string | null) => {
 
         <Banner title="Berita" :background-image="bannerImage" />
 
-        <div class="bg-gray-50/80 py-12 md:py-20 font-public-sans min-h-screen">
+        <div class="bg-white py-12 md:py-20 font-public-sans min-h-screen">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">

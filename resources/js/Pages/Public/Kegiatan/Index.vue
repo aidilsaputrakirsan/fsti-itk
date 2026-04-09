@@ -14,7 +14,6 @@ import {
     X 
 } from 'lucide-vue-next';
 
-// Memastikan props memiliki default object agar terhindar dari error saat database kosong
 const props = defineProps({
     groupedKegiatan: {
         type: [Object, Array],
@@ -43,7 +42,6 @@ const allYears = computed(() => {
     return ['Semua', ...sortedYears];
 });
 
-// --- LOGIKA DROPDOWN ---
 const isOpen = ref(false);
 const dropdownRef = ref(null);
 const dropdownStyle = ref({});
@@ -84,7 +82,6 @@ onMounted(() => document.addEventListener('mousedown', handleClickOutside));
 onUnmounted(() => document.removeEventListener('mousedown', handleClickOutside));
 
 
-// --- SMART PAGINATION LOGIC ---
 const flatKegiatan = computed(() => {
     const flat = [];
     const data = props.groupedKegiatan || {};
@@ -320,7 +317,7 @@ const formatDateLengkap = (dateStr) => {
                             :disabled="currentPage === 1"
                             class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
                             :class="currentPage === 1 ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            v-html="'&laquo; Previous'"
+                            v-html="'&laquo; Sebelumnya'"
                         ></button>
 
                         <template v-for="(page, index) in visiblePages" :key="index">
@@ -345,7 +342,7 @@ const formatDateLengkap = (dateStr) => {
                             :disabled="currentPage === totalPages"
                             class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
                             :class="currentPage === totalPages ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            v-html="'Next &raquo;'"
+                            v-html="'Selanjutnya &raquo;'"
                         ></button>
                     </div>
                 </div>

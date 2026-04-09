@@ -24,7 +24,6 @@ const selectedProdi = ref(props.filters.prodi || '');
 watch(search, debounce(() => { applyFilters(); }, 500));
 watch([selectedYear, selectedProdi], () => { applyFilters(); });
 
-// --- Teleport Dropdown Logic ---
 const isYearOpen = ref(false);
 const isProdiOpen = ref(false);
 
@@ -121,22 +120,24 @@ const nextPage = () => changePage(currentPage.value + 1);
 <template>
     <PublicLayout>
         <Head title="Penelitian - FSTI ITK" />
-        <Banner title="Direktori Penelitian" subtitle="PANGKALAN DATA INOVASI DOSEN FSTI ITK" :background-image="bannerImage" />
+        <Banner title="Daftar Penelitian" subtitle="PANGKALAN DATA INOVASI DOSEN FSTI ITK" :background-image="bannerImage" />
 
-        <div class="bg-white -16 md:py-24 font-public-sans min-h-screen overflow-x-hidden">
+        <div class="bg-white py-12 md:py-24 font-public-sans min-h-screen overflow-x-hidden">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
-                <div class="relative w-full bg-gradient-to-br from-primary to-primary-hover rounded-[2rem] p-8 md:p-12 mb-8 overflow-hidden shadow-xl flex items-center justify-between border border-primary-hover/50">
+                <div class="relative w-full bg-gradient-to-br from-primary to-primary-hover rounded-[1.5rem] md:rounded-[2rem] p-6 sm:p-8 md:p-12 mb-8 overflow-hidden shadow-xl flex items-center justify-between border border-primary-hover/50">
                     <div class="absolute -top-[20%] -right-[10%] w-[60%] h-[140%] bg-blue-300/20 rounded-[100%] blur-[100px] pointer-events-none transform -rotate-12"></div>
                     <div class="absolute -bottom-[30%] -left-[10%] w-[60%] h-[120%] bg-white/10 rounded-[100%] blur-[120px] pointer-events-none transform rotate-12"></div>
                     <div class="absolute top-[20%] left-[40%] w-[30%] h-[50%] bg-blue-200/15 rounded-full blur-[80px] pointer-events-none"></div>
 
                    <div class="relative z-10 text-white w-full max-w-3xl">
-                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-sm font-bold mb-6 shadow-sm uppercase tracking-wider">
-                            <FlaskConical class="w-4 h-4" /> Riset
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-xs md:text-sm font-bold mb-4 md:mb-6 shadow-sm uppercase tracking-wider">
+                            <FlaskConical class="w-3.5 h-3.5 md:w-4 md:h-4" /> Riset
                         </div>
-                        <h2 class="text-3xl md:text-5xl font-optimus font-bold mb-4 leading-tight drop-shadow-sm">Direktori Penelitian<br/>Dosen FSTI</h2>
-                        <p class="text-blue-50 md:text-lg font-light leading-relaxed max-w-xl opacity-90">
+                        
+                        <h2 class="text-2xl sm:text-3xl md:text-5xl font-optimus font-bold mb-3 md:mb-4 leading-tight drop-shadow-sm">Direktori Penelitian<br/>Dosen FSTI</h2>
+                        
+                        <p class="text-blue-50 text-sm sm:text-base md:text-lg font-light leading-relaxed max-w-xl opacity-90">
                             Temukan rekam jejak penelitian dan inovasi dari para dosen di Fakultas Sains dan Teknologi Informasi.
                         </p>
                     </div>
@@ -145,18 +146,18 @@ const nextPage = () => changePage(currentPage.value + 1);
                     </div>
                 </div>
 
-                <div class="relative z-20 -mt-16 mx-4 md:mx-8 mb-16 bg-white p-4 md:p-5 rounded-2xl shadow-[0_8px_30px_rgba(47,77,211,0.08)] border border-slate-100 flex flex-col md:flex-row gap-4" data-aos="fade-down">
+                <div class="relative z-20 -mt-10 md:-mt-16 mx-2 sm:mx-4 md:mx-8 mb-12 md:mb-16 bg-white p-3 md:p-5 rounded-2xl shadow-[0_8px_30px_rgba(47,77,211,0.08)] border border-slate-100 flex flex-col md:flex-row gap-3 md:gap-4" data-aos="fade-down">
                     
                     <div class="relative flex-grow">
                         <input 
                             type="text" 
                             placeholder="Cari judul penelitian atau nama dosen..." 
-                            class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-slate-50 text-slate-800 font-medium hover:bg-white transition-colors"
+                            class="w-full pl-10 md:pl-12 pr-10 py-3 md:py-3.5 text-sm md:text-base border border-slate-200 rounded-xl md:rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-slate-50 text-slate-800 font-medium hover:bg-white transition-colors"
                             v-model="search"
                         >
-                        <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/60" />
-                        <button v-if="search" @click="resetSearch" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-primary transition-colors">
-                            <X class="w-5 h-5" />
+                        <Search class="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-primary/60" />
+                        <button v-if="search" @click="resetSearch" class="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-primary transition-colors">
+                            <X class="w-4 h-4 md:w-5 md:h-5" />
                         </button>
                     </div>
 
@@ -164,24 +165,24 @@ const nextPage = () => changePage(currentPage.value + 1);
                         <button 
                             ref="prodiBtnRef"
                             @click="toggleDropdown('prodi')"
-                            class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors focus:ring-2 focus:ring-primary focus:border-primary"
+                            class="w-full pl-10 md:pl-12 pr-10 py-3 md:py-3.5 text-sm md:text-base border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors focus:ring-2 focus:ring-primary focus:border-primary"
                         >
                             <span class="truncate">{{ selectedProdiName || 'Semua Program Studi' }}</span>
-                            <ChevronDown class="w-5 h-5 text-primary/60 transition-transform duration-200" :class="{'rotate-180': isProdiOpen}" />
+                            <ChevronDown class="w-4 h-4 md:w-5 md:h-5 text-primary/60 transition-transform duration-200" :class="{'rotate-180': isProdiOpen}" />
                         </button>
-                        <LibraryBig class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary pointer-events-none" />
+                        <LibraryBig class="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-primary pointer-events-none" />
                     </div>
 
                     <div class="relative md:w-48">
                         <button 
                             ref="yearBtnRef"
                             @click="toggleDropdown('year')"
-                            class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors focus:ring-2 focus:ring-primary focus:border-primary"
+                            class="w-full pl-10 md:pl-12 pr-10 py-3 md:py-3.5 text-sm md:text-base border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors focus:ring-2 focus:ring-primary focus:border-primary"
                         >
                             <span class="truncate">{{ selectedYear || 'Semua Tahun' }}</span>
-                            <ChevronDown class="w-5 h-5 text-primary/60 transition-transform duration-200" :class="{'rotate-180': isYearOpen}" />
+                            <ChevronDown class="w-4 h-4 md:w-5 md:h-5 text-primary/60 transition-transform duration-200" :class="{'rotate-180': isYearOpen}" />
                         </button>
-                        <ListFilter class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary pointer-events-none" />
+                        <ListFilter class="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-primary pointer-events-none" />
                     </div>
 
                 </div>
@@ -233,31 +234,31 @@ const nextPage = () => changePage(currentPage.value + 1);
                     </div>
                 </div>
 
-                <div v-if="totalPages > 1" class="flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-[0_8px_30px_rgba(47,77,211,0.04)] border border-slate-100" data-aos="fade-in">
-                    <p class="text-sm font-medium text-slate-500 text-center md:text-left">
+                <div v-if="totalPages > 1" class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 bg-white py-4 px-4 md:px-10 rounded-3xl md:rounded-full shadow-[0_8px_30px_rgba(47,77,211,0.04)] border border-slate-100" data-aos="fade-in">
+                    <p class="text-xs md:text-sm font-medium text-slate-500 text-center md:text-left">
                         Menampilkan <span class="text-primary font-bold">{{ showingFrom }}</span> - <span class="text-primary font-bold">{{ showingTo }}</span> dari <span class="text-primary font-bold">{{ totalPenelitians }}</span> Penelitian
                     </p>
                     
-                    <div class="flex flex-wrap justify-center items-center gap-2">
+                    <div class="flex flex-wrap justify-center items-center gap-1.5 md:gap-2">
                         <button 
                             @click="prevPage()"
                             :disabled="currentPage === 1"
-                            class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
+                            class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300"
                             :class="currentPage === 1 ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            v-html="'&laquo; Previous'"
+                            v-html="'&laquo; Sebelumnya'"
                         ></button>
 
                         <template v-for="(page, index) in visiblePages" :key="index">
                             <span 
                                 v-if="page === '...'"
-                                class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full text-slate-300 bg-slate-50/50 cursor-not-allowed"
+                                class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full text-slate-300 bg-slate-50/50 cursor-not-allowed"
                             >
                                 ...
                             </span>
                             <button 
                                 v-else
                                 @click="changePage(page)"
-                                class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
+                                class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300"
                                 :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
                             >
                                 {{ page }}
@@ -267,9 +268,9 @@ const nextPage = () => changePage(currentPage.value + 1);
                         <button 
                             @click="nextPage()"
                             :disabled="currentPage === totalPages"
-                            class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
+                            class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300"
                             :class="currentPage === totalPages ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            v-html="'Next &raquo;'"
+                            v-html="'Selanjutnya &raquo;'"
                         ></button>
                     </div>
                 </div>
@@ -281,8 +282,8 @@ const nextPage = () => changePage(currentPage.value + 1);
     <Teleport to="body">
         <transition enter-active-class="ease-out duration-100" enter-from-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100" leave-active-class="ease-in duration-75" leave-from-class="opacity-100" leave-to-class="opacity-0">
             <div v-if="isProdiOpen" id="prodi-dropdown-menu" :style="prodiDropdownStyle" class="z-[9999] bg-white rounded-xl shadow-xl border border-slate-100 py-2 font-public-sans overflow-hidden">
-                <a @click="selectOption('prodi', '')" class="block px-5 py-3 text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': !selectedProdi}">Semua Program Studi</a>
-                <a v-for="p in prodis" :key="p.id" @click="selectOption('prodi', String(p.id))" class="block px-5 py-3 text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': selectedProdi === String(p.id)}">{{ p.name }}</a>
+                <a @click="selectOption('prodi', '')" class="block px-5 py-3 text-sm md:text-base text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': !selectedProdi}">Semua Program Studi</a>
+                <a v-for="p in prodis" :key="p.id" @click="selectOption('prodi', String(p.id))" class="block px-5 py-3 text-sm md:text-base text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': selectedProdi === String(p.id)}">{{ p.name }}</a>
             </div>
         </transition>
     </Teleport>
@@ -290,8 +291,8 @@ const nextPage = () => changePage(currentPage.value + 1);
     <Teleport to="body">
         <transition enter-active-class="ease-out duration-100" enter-from-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100" leave-active-class="ease-in duration-75" leave-from-class="opacity-100" leave-to-class="opacity-0">
             <div v-if="isYearOpen" id="year-dropdown-menu" :style="yearDropdownStyle" class="z-[9999] bg-white rounded-xl shadow-xl border border-slate-100 py-2 font-public-sans overflow-hidden">
-                <a @click="selectOption('year', '')" class="block px-5 py-3 text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': !selectedYear}">Semua Tahun</a>
-                <a v-for="y in years" :key="y" @click="selectOption('year', y)" class="block px-5 py-3 text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': selectedYear === y}">Tahun {{ y }}</a>
+                <a @click="selectOption('year', '')" class="block px-5 py-3 text-sm md:text-base text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': !selectedYear}">Semua Tahun</a>
+                <a v-for="y in years" :key="y" @click="selectOption('year', y)" class="block px-5 py-3 text-sm md:text-base text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': selectedYear === y}">Tahun {{ y }}</a>
             </div>
         </transition>
     </Teleport>

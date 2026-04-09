@@ -40,20 +40,19 @@ const changePage = (p) => {
     }
 };
 
-// --- LOGIKA MODAL PREVIEW ---
 const isModalOpen = ref(false);
 const selectedItem = ref(null);
 
 const openModal = (item) => {
     selectedItem.value = item;
     isModalOpen.value = true;
-    document.body.style.overflow = 'hidden'; // Kunci scroll layar belakang
+    document.body.style.overflow = 'hidden'; 
 };
 
 const closeModal = () => {
     isModalOpen.value = false;
     setTimeout(() => { selectedItem.value = null; }, 300);
-    document.body.style.overflow = 'auto'; // Buka kunci scroll
+    document.body.style.overflow = 'auto'; 
 };
 
 onUnmounted(() => {
@@ -172,12 +171,12 @@ Lihat dan unduh berbagai pengumuman terbaru dalam satu halaman.                 
                     </p>
                     
                     <div class="flex flex-wrap justify-center items-center gap-2">
-                        <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300" :class="currentPage === 1 ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'" v-html="'&laquo; Previous'"></button>
+                        <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300" :class="currentPage === 1 ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'" v-html="'&laquo; Sebelumnya'"></button>
                         <template v-for="(page, index) in visiblePages" :key="index">
                             <span v-if="page === '...'" class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full text-slate-300 bg-slate-50/50 cursor-not-allowed">...</span>
                             <button v-else @click="changePage(page)" class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300" :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'">{{ page }}</button>
                         </template>
-                        <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages" class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300" :class="currentPage === totalPages ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'" v-html="'Next &raquo;'"></button>
+                        <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages" class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300" :class="currentPage === totalPages ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'" v-html="'Selanjutnya &raquo;'"></button>
                     </div>
                 </div>
 

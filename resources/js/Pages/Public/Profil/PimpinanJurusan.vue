@@ -18,7 +18,7 @@ const props = defineProps({
             background-image="/images/background-banner.png"
         />
 
-        <div class="bg-slate-50 py-16 md:py-24 overflow-x-hidden font-public-sans">
+        <div class="bg-white py-16 md:py-24 overflow-x-hidden font-public-sans">
             <div class="container mx-auto px-4 sm:px-6 md:max-w-5xl flex flex-col gap-12">
                 
                 <div v-if="pimpinan.length === 0" class="text-center text-gray-500 py-10">

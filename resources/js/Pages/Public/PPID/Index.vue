@@ -4,7 +4,6 @@ import Banner from '@/Components/Banner.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-// DATA DINAMIS 1: Alur Layanan / Tata Cara
 const alurLayanan = ref([
     {
         id: 1,
@@ -23,7 +22,6 @@ const alurLayanan = ref([
     }
 ]);
 
-// DATA DINAMIS 2: Daftar Layanan & Formulir
 const daftarLayanan = ref([
   {
     id: 1,
@@ -63,19 +61,20 @@ const getIcon = (jenis) => {
             background-image="/images/background-banner.png"
         />
 
-        <section class="bg-white pt-12 pb-6 font-public-sans">
-            <div class="relative py-8 md:py-10 overflow-hidden">
-                <div class="absolute inset-y-0 left-0 w-[95%] bg-primary/10 rounded-r-[4rem] md:rounded-r-[6rem] z-0"></div>
-                <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <section class="bg-white pt-8 md:pt-12 pb-6 font-public-sans">
+            <div class="relative py-6 md:py-10">
+                <div class="absolute inset-y-0 left-0 right-4 md:right-auto md:w-[95%] bg-primary/10 rounded-r-[2rem] md:rounded-r-[6rem] z-0"></div>
+                
+                <div class="max-w-7xl mx-auto pl-6 pr-12 md:px-8 relative z-10">
                     <div class="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8">
                         <div class="md:w-1/5 flex-shrink-0">
-                            <div class="w-12 h-1 bg-primary mb-3"></div>
-                            <h2 class="text-3xl md:text-4xl font-optimus font-bold text-primary leading-tight uppercase">
-                                Tentang<br />PPID
+                            <div class="w-12 h-1.5 md:h-2 bg-primary mb-3 rounded-full"></div>
+                            <h2 class="text-2xl sm:text-3xl md:text-4xl font-optimus font-bold text-primary leading-tight uppercase">
+                                Tentang<br class="hidden md:block" />PPID
                             </h2>
                         </div>
                         <div class="md:w-4/5 md:pl-6 md:border-l-2 border-primary/30">
-                            <p class="text-base md:text-lg text-primary font-medium leading-relaxed text-justify m-0">
+                            <p class="text-sm md:text-lg text-primary/95 font-medium leading-relaxed text-justify m-0">
                                 Dalam rangka pelaksanaan keterbukaan informasi publik di lingkungan Institut Teknologi Kalimantan, Tim Pejabat Pengelola Informasi dan Dokumentasi (PPID) tingkat Fakultas dibentuk. Pembentukan ini bertujuan untuk mempermudah pengelolaan dan pelayanan informasi kepada masyarakat sesuai dengan ketentuan peraturan perundang-undangan.
                             </p>
                         </div>
@@ -85,43 +84,43 @@ const getIcon = (jenis) => {
         </section>
 
       <section class="bg-white pb-16 pt-8 font-public-sans">
-            <div class="container mx-auto px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold font-optimus text-primary">Daftar Informasi Publik</h2>
-                    <p class="mt-3 text-gray-600 font-medium">Katalog informasi yang tersedia di Fakultas Sains dan Teknologi Informasi</p>
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-10 md:mb-12">
+                    <h2 class="text-2xl md:text-3xl font-bold font-optimus text-primary">Daftar Informasi Publik</h2>
+                    <p class="mt-2 md:mt-3 text-sm md:text-base text-gray-600 font-medium">Katalog informasi yang tersedia di Fakultas Sains dan Teknologi Informasi</p>
                 </div>
 
-                <div class="flex flex-wrap justify-center gap-8 max-w-6xl mx-auto px-4">
+                <div class="flex flex-wrap justify-center gap-3 md:gap-8 max-w-6xl mx-auto px-1 md:px-4">
                     <Link 
                         v-for="info in $page.props.jenisInformasi" 
                         :key="info.jenis"
                         :href="`/ppid/informasi/${info.slug}`"
-                        class="bg-white p-8 rounded-2xl shadow-sm border-t-4 border-primary hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 text-center group flex flex-col h-full w-full md:w-[calc(50%-2rem)] max-w-[420px]"
+                        class="bg-white p-4 md:p-8 rounded-xl md:rounded-2xl shadow-sm border-t-4 border-primary hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 text-center group flex flex-col h-full w-[calc(50%-0.375rem)] md:w-[calc(50%-2rem)] max-w-[420px]"
                     >
                         <div 
-                            class="flex items-center justify-center w-20 h-20 bg-primary/50 rounded-full mx-auto mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300" 
+                            class="flex items-center justify-center w-12 h-12 md:w-20 md:h-20 bg-primary/50 rounded-full mx-auto mb-3 md:mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300" 
                             v-html="getIcon(info.jenis)">
                         </div>
                         
-                        <h3 class="text-xl font-bold text-primary mb-4 uppercase">Informasi {{ info.jenis }}</h3>
+                        <h3 class="text-sm md:text-xl font-bold text-primary mb-2 md:mb-4 uppercase">Informasi {{ info.jenis }}</h3>
                         
-                        <p class="text-gray-600 leading-relaxed flex-grow text-[15px]">
+                        <p class="text-[10px] md:text-[15px] text-gray-600 leading-relaxed flex-grow text-center px-1 md:px-0 line-clamp-3 md:line-clamp-none">
                             Kumpulan informasi publik yang masuk ke dalam klasifikasi {{ info.jenis }} di lingkungan Fakultas Sains dan Teknologi Informasi.
                         </p>
                         
-                        <div class="flex items-center justify-center gap-3 mt-6 mb-8">
-                            <span class="text-xs font-bold bg-primary/20 text-primary px-3 py-1.5 rounded-md">
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-1.5 md:gap-3 mt-4 md:mt-6 mb-5 md:mb-8">
+                            <span class="text-[9px] md:text-xs font-bold bg-primary/20 text-primary px-2 py-1 md:px-3 md:py-1.5 rounded-md whitespace-nowrap">
                                 {{ info.total_kategori }} Kategori
                             </span>
-                            <span class="text-xs font-bold bg-primary/10 text-primary px-3 py-1.5 rounded-md">
+                            <span class="text-[9px] md:text-xs font-bold bg-primary/10 text-primary px-2 py-1 md:px-3 md:py-1.5 rounded-md whitespace-nowrap">
                                 {{ info.total_dokumen }} Dokumen
                             </span>
                         </div>
 
-                        <div class="mt-auto border-t border-gray-100 pt-6">
-                            <span class="inline-flex items-center justify-center w-full px-5 py-2.5 bg-gray-50 text-primary border border-gray-200 font-bold text-sm rounded-lg group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300">
-                                Lihat Selengkapnya
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div class="mt-auto border-t border-gray-100 pt-4 md:pt-6">
+                            <span class="inline-flex items-center justify-center w-full px-3 md:px-5 py-2 md:py-2.5 bg-gray-50 text-primary border border-gray-200 font-bold text-[10px] md:text-sm rounded-lg group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300">
+                                Lihat Detail
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 md:h-4 md:w-4 ml-1.5 md:ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                 </svg>
                             </span>
@@ -131,44 +130,46 @@ const getIcon = (jenis) => {
             </div>
         </section>
 
-        <section class="bg-white py-16 md:py-24 font-public-sans">
-            <div class="container mx-auto px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl font-bold font-optimus text-primary">Layanan & Tata Cara</h2>
-                    <p class="mt-3 text-gray-600 font-medium">SOP Pengelolaan Informasi Publik dan Akses Formulir Layanan</p>
+        <section class="bg-white py-12 md:py-24 font-public-sans">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12 md:mb-16">
+                    <h2 class="text-2xl md:text-3xl font-bold font-optimus text-primary">Layanan & Tata Cara</h2>
+                    <p class="mt-2 md:mt-3 text-sm md:text-base text-gray-600 font-medium">SOP Pengelolaan Informasi Publik dan Akses Formulir Layanan</p>
                 </div>
 
-                <div class="max-w-5xl mx-auto mb-20">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-start relative">
+                <div class="max-w-5xl mx-auto mb-16 md:mb-20">
+                    <div class="flex flex-col md:flex-row justify-between items-center md:items-start relative gap-6 md:gap-0">
                         <div class="hidden md:block absolute top-8 left-0 w-full h-1 bg-primary z-0"></div>
+                        <div class="md:hidden absolute top-0 left-1/2 -translate-x-1/2 w-1 h-full bg-primary/20 z-0"></div>
+                        
                         <div 
                             v-for="(alur, index) in alurLayanan" 
                             :key="alur.id"
-                            class="flex flex-col items-center text-center p-4 w-full md:w-1/3 z-10"
-                            :class="{ 'mt-8 md:mt-0': index > 0 }"
+                            class="flex flex-col items-center text-center p-4 w-full md:w-1/3 z-10 bg-white md:bg-transparent"
+                            :class="{ 'mt-6 md:mt-0': index > 0 }"
                         >
-                            <div class="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-bold mb-6 border-4 border-white shadow-md relative z-10">
+                            <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-primary text-white flex items-center justify-center text-xl md:text-2xl font-bold mb-4 md:mb-6 border-4 border-white shadow-md relative z-10">
                                 {{ index + 1 }}
                             </div>
-                            <h4 class="font-bold text-primary text-lg mb-3">{{ alur.title }}</h4>
-                            <p class="text-sm text-gray-600 leading-relaxed">{{ alur.description }}</p>
+                            <h4 class="font-bold text-primary text-base md:text-lg mb-2 md:mb-3 bg-white px-2">{{ alur.title }}</h4>
+                            <p class="text-xs md:text-sm text-gray-600 leading-relaxed max-w-[250px] md:max-w-none bg-white px-2">{{ alur.description }}</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto px-4">
+                <div class="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-8 max-w-4xl mx-auto">
                     <div 
                         v-for="layanan in daftarLayanan" 
                         :key="layanan.id"
-                        class="bg-white border border-gray-200 p-8 rounded-xl shadow-sm hover:border-primary hover:shadow-md transition-all flex flex-col items-center text-center"
+                        class="bg-white border border-gray-200 p-4 md:p-8 rounded-xl shadow-sm hover:border-primary hover:shadow-md transition-all flex flex-col items-center text-center h-full"
                     >
-                        <div class="p-4 bg-blue-50 text-primary rounded-full mb-5" v-html="layanan.icon"></div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">{{ layanan.title }}</h3>
-                        <p class="text-gray-500 text-sm mb-8 flex-grow leading-relaxed">{{ layanan.description }}</p>
+                        <div class="p-3 md:p-4 bg-blue-50 text-primary rounded-full mb-3 md:mb-5" v-html="layanan.icon"></div>
+                        <h3 class="text-sm md:text-xl font-bold text-gray-900 mb-2 md:mb-3 leading-snug">{{ layanan.title }}</h3>
+                        <p class="text-gray-500 text-[10px] md:text-sm mb-4 md:mb-8 flex-grow leading-relaxed line-clamp-3 md:line-clamp-none">{{ layanan.description }}</p>
                         <a 
                             :href="layanan.actionLink"
                             target="_blank"
-                            class="w-full text-center py-3 px-6 bg-primary text-white hover:bg-primary-hover font-semibold rounded-lg shadow-sm transition-colors"
+                            class="w-full text-center py-2.5 md:py-3 px-4 md:px-6 bg-primary text-white hover:bg-primary-hover text-[11px] md:text-base font-semibold rounded-lg shadow-sm transition-colors mt-auto"
                         >
                             {{ layanan.actionText }}
                         </a>

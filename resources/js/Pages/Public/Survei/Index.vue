@@ -30,7 +30,6 @@ const submit = () => {
     });
 };
 
-// --- LOGIKA CUSTOM DROPDOWN ---
 const isTypeOpen = ref(false);
 const isCategoryOpen = ref(false);
 
@@ -115,7 +114,7 @@ const respondentTypes = [
             background-image="/images/background-banner.png"
         />
 
-        <div class="relative bg-slate-50 py-12 md:py-16 overflow-hidden font-public-sans">
+        <div class="relative bg-white py-12 md:py-16 overflow-hidden font-public-sans">
             <div class="absolute top-0 left-0 w-72 h-72 bg-primary opacity-10 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
             <div class="absolute bottom-0 right-0 w-72 h-72 bg-blue-800 opacity-10 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
 

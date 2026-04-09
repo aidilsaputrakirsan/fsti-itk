@@ -60,7 +60,7 @@ const hasDetailedInfo = computed(() => {
         <Head title="Tenaga Kependidikan" />
         <Banner title="TENAGA KEPENDIDIKAN" subtitle="Fakultas Sains dan Teknologi Informasi" background-image="/images/background-banner.png" />
 
-        <div class="relative bg-slate-50 py-16 md:py-24 font-public-sans min-h-screen overflow-hidden">
+        <div class="relative bg-white py-16 md:py-24 font-public-sans min-h-screen overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
                 <div class="absolute top-[-10%] left-[-5%] w-[40rem] h-[40rem] bg-primary/5 rounded-full blur-[100px]"></div>
                 <div class="absolute top-[20%] right-[-10%] w-[35rem] h-[35rem] bg-blue-400/5 rounded-full blur-[100px]"></div>

@@ -10,20 +10,17 @@ import {
     Users, GraduationCap, Building, Zap, Beaker, UserCheck, Briefcase, Network, Quote, FileText, Globe, Cpu, Code
 } from 'lucide-vue-next';
 
-// Tangkap props statistik dinamis dari Controller
 const props = defineProps({ 
     tentang: Object,
     statistik: Object 
 });
 
-// FUNGSI PINTAR: Menggabungkan data Seeder dengan Hitungan Database secara Real-Time
 const displayStats = computed(() => {
     const cmsData = props.tentang?.statistik?.data || [];
 
     return cmsData.map(stat => {
         const labelLower = stat.label.toLowerCase();
         
-        // Pengecekan cerdas (includes) agar CMS bebas menggunakan sebutan apa saja asal ada keywordnya
         if (labelLower.includes('dosen')) {
             return { ...stat, angka: props.statistik?.dosen ?? stat.angka };
         }
@@ -40,7 +37,6 @@ const displayStats = computed(() => {
             return { ...stat, angka: props.statistik?.prodi_total ?? stat.angka };
         }
         
-        // Sisanya (Mahasiswa, Alumni, Lab, dll) biarkan pakai angka manual dari Seeder Admin
         return stat; 
     });
 });

@@ -27,7 +27,6 @@ const searchQuery = ref(props.filters.search || '');
 const selectedProdi = ref(props.filters.prodi || '');
 const selectedYear = ref(props.filters.year || '');
 
-// --- LOGIKA DROPDOWN (TELEPORT) ---
 const isProdiOpen = ref(false);
 const isYearOpen = ref(false);
 
@@ -104,7 +103,6 @@ onUnmounted(() => {
     document.removeEventListener('mousedown', handleClickOutside);
 });
 
-// --- FILTER & PAGINATION LOGIC ---
 watch([searchQuery, selectedProdi, selectedYear], throttle(([newSearch, newProdi, newYear]) => {
     router.get(route('alumni.index'), { 
         search: newSearch, 
@@ -123,7 +121,6 @@ const resetFilters = () => {
     selectedYear.value = '';
 };
 
-// Smart Pagination Setup
 const currentPage = computed(() => {
     const activeLink = props.alumnis.links.find(link => link.active);
     return activeLink ? parseInt(activeLink.label) : 1;
@@ -303,7 +300,7 @@ const changePage = (page) => {
                             :disabled="currentPage === 1"
                             class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
                             :class="currentPage === 1 ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            v-html="'&laquo; Prev'"
+                            v-html="'&laquo; Sebelumnya'"
                         ></button>
 
                         <template v-for="(page, index) in visiblePages" :key="index">
@@ -328,7 +325,7 @@ const changePage = (page) => {
                             :disabled="currentPage === totalPages"
                             class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
                             :class="currentPage === totalPages ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            v-html="'Next &raquo;'"
+                            v-html="'Selanjutnya &raquo;'"
                         ></button>
                     </div>
                 </div>

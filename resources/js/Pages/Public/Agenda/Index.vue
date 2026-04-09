@@ -15,7 +15,6 @@ const allYears = computed(() => {
     return ['Semua', ...Array.from(years).sort((a, b) => b - a)];
 });
 
-// --- Teleport Dropdown Logic ---
 const isOpen = ref(false);
 const dropdownRef = ref(null);
 const dropdownStyle = ref({});
@@ -32,7 +31,6 @@ onMounted(() => document.addEventListener('mousedown', handleClickOutside));
 onUnmounted(() => document.removeEventListener('mousedown', handleClickOutside));
 
 
-// --- PAGINATION LOGIC ---
 const flatAgendas = computed(() => {
     const flat = [];
     Object.entries(props.groupedAgendas).forEach(([monthYear, items]) => {
@@ -61,27 +59,22 @@ const totalPages = computed(() => Math.ceil(totalAgendas.value / itemsPerPage));
 const showingFrom = computed(() => totalAgendas.value === 0 ? 0 : (currentPage.value - 1) * itemsPerPage + 1);
 const showingTo = computed(() => Math.min(currentPage.value * itemsPerPage, totalAgendas.value));
 
-// LOGIKA BARU: Smart Pagination (Membatasi jumlah angka yang tampil agar tetap ramping)
 const visiblePages = computed(() => {
     const total = totalPages.value;
     const current = currentPage.value;
 
     if (total <= 7) {
-        // Jika total halaman 7 atau kurang, tampilkan semua
         return Array.from({ length: total }, (_, i) => i + 1);
     }
 
     if (current <= 4) {
-        // Jika sedang di awal: 1, 2, 3, 4, 5, ..., 10
         return [1, 2, 3, 4, 5, '...', total];
     }
 
     if (current >= total - 3) {
-        // Jika sedang di akhir: 1, ..., 6, 7, 8, 9, 10
         return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
     }
 
-    // Jika di tengah-tengah: 1, ..., 4, 5, 6, ..., 10
     return [1, '...', current - 1, current, current + 1, '...', total];
 });
 
@@ -237,7 +230,7 @@ const formatDateLengkap = (d) => new Date(d).toLocaleDateString('id-ID', { day: 
                             :disabled="currentPage === 1"
                             class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
                             :class="currentPage === 1 ? 'text-gray-300 bg-gray-50/50 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
-                            v-html="'&laquo; Previous'"
+                            v-html="'&laquo; Sebelumnya'"
                         ></button>
 
                         <template v-for="(page, index) in visiblePages" :key="index">
@@ -262,7 +255,7 @@ const formatDateLengkap = (d) => new Date(d).toLocaleDateString('id-ID', { day: 
                             :disabled="currentPage === totalPages"
                             class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
                             :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50/50 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
-                            v-html="'Next &raquo;'"
+                            v-html="'Selanjutnya &raquo;'"
                         ></button>
                     </div>
                 </div>

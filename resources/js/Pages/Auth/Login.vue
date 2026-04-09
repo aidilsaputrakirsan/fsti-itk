@@ -117,17 +117,15 @@ const submit = () => {
                         <InputError class="mt-2" :message="form.errors.password" />
                     </div>
 
-                    <div class="flex items-center">
-                        <label class="flex items-center cursor-pointer group">
-                            <input 
-                                type="checkbox" 
-                                name="remember" 
-                                v-model="form.remember" 
-                                class="w-4 h-4 rounded border-gray-300 text-[#2F4DD3] shadow-sm focus:ring-[#2F4DD3]" 
-                            />
-                            <span class="ml-2 text-sm font-medium text-gray-600 group-hover:text-gray-900 transition-colors">Ingat Saya</span>
-                        </label>
-                    </div>
+                   <label class="flex items-center">
+    <input 
+        type="checkbox" 
+        name="remember" 
+        v-model="form.remember" 
+        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+    />
+    <span class="ms-2 text-sm text-gray-600">Ingat Saya</span>
+</label>
 
                     <button 
                         type="submit" 

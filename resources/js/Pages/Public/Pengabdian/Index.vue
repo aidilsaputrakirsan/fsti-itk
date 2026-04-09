@@ -92,7 +92,7 @@ const nextPage = () => changePage(currentPage.value + 1);
 <template>
     <PublicLayout>
         <Head title="Pengabdian Masyarakat - FSTI ITK" />
-        <Banner title="Pengabdian Masyarakat" subtitle="PANGKALAN DATA PENGABDIAN DOSEN FSTI ITK" :background-image="bannerImage" />
+        <Banner title="Daftar Pengabdian Masyarakat" subtitle="PANGKALAN DATA PENGABDIAN DOSEN FSTI ITK" :background-image="bannerImage" />
 
         <div class="bg-gray-50/50 py-16 md:py-24 font-public-sans min-h-screen overflow-x-hidden">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
