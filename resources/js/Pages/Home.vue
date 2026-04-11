@@ -35,7 +35,6 @@ const displayStats = computed<StatItem[]>(() => {
 
     const rawData = data?.statistik?.data;
 
-    // Jika data CMS kosong, berikan fallback default
     if (!rawData || typeof rawData !== 'object' || Object.keys(rawData).length === 0) {
         return [
             { angka: '2260', label: 'Mahasiswa' },

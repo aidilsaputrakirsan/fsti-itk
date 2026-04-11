@@ -16,7 +16,8 @@ import {
     Award,
     BarChart3,
     Calendar,
-    Activity
+    Activity,
+    MousePointerClick // Tambahan icon untuk hits
 } from 'lucide-vue-next';
 
 defineOptions({ layout: AdminLayout });
@@ -27,9 +28,10 @@ interface Props {
         publishedPosts: number;
         totalAchievements: number;
         avgRating: number;
-        totalVisitors: number;
-        visitorsToday: number;
-        visitorsMonth: number;
+        totalKunjungan: number;
+        kunjunganHariIni: number;
+        kunjunganBulanIni: number;
+        totalHits: number;
     };
     charts: {
         achievementsTrend: Array<{ year: string; total: number }>;
@@ -182,30 +184,36 @@ const getLevelBadgeClass = (level: string) => {
             <div class="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <div class="p-2 bg-indigo-100 rounded-lg text-indigo-600"><BarChart3 class="w-5 h-5" /></div>
-                    <h2 class="font-bold text-gray-800 uppercase tracking-wide text-sm">Statistik Pengunjung</h2>
+                    <h2 class="font-bold text-gray-800 uppercase tracking-wide text-sm">Statistik Kunjungan & Tayangan</h2>
                 </div>
-                
             </div>
-            <div class="p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="flex items-center gap-5 border-r border-gray-100 last:border-0">
+            <div class="p-6 lg:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                <div class="flex items-center gap-5 sm:border-r border-gray-100 pb-4 sm:pb-0">
                     <div class="p-4 bg-blue-50 rounded-xl text-blue-600"><Users class="w-7 h-7" /></div>
                     <div>
                         <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Hari Ini</p>
-                        <p class="text-3xl font-black text-gray-900 mt-1.5">{{ stats.visitorsToday.toLocaleString() }}</p>
+                        <p class="text-3xl font-black text-gray-900 mt-1.5">{{ stats.kunjunganHariIni.toLocaleString() }}</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-5 border-r border-gray-100 last:border-0">
+                <div class="flex items-center gap-5 lg:border-r border-gray-100 pb-4 sm:pb-0">
                     <div class="p-4 bg-emerald-50 rounded-xl text-emerald-600"><Calendar class="w-7 h-7" /></div>
                     <div>
                         <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Bulan Ini</p>
-                        <p class="text-3xl font-black text-emerald-600 mt-1.5">{{ stats.visitorsMonth.toLocaleString() }}</p>
+                        <p class="text-3xl font-black text-emerald-600 mt-1.5">{{ stats.kunjunganBulanIni.toLocaleString() }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-5 sm:border-r border-gray-100 pb-4 sm:pb-0">
+                    <div class="p-4 bg-purple-50 rounded-xl text-purple-600"><Activity class="w-7 h-7" /></div>
+                    <div>
+                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Total Kunjungan</p>
+                        <p class="text-3xl font-black text-purple-600 mt-1.5">{{ stats.totalKunjungan.toLocaleString() }}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-5">
-                    <div class="p-4 bg-purple-50 rounded-xl text-purple-600"><Activity class="w-7 h-7" /></div>
+                    <div class="p-4 bg-amber-50 rounded-xl text-amber-600"><MousePointerClick class="w-7 h-7" /></div>
                     <div>
-                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Total Pengunjung</p>
-                        <p class="text-3xl font-black text-purple-600 mt-1.5">{{ stats.totalVisitors.toLocaleString() }}</p>
+                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Tayangan (Hits)</p>
+                        <p class="text-3xl font-black text-amber-600 mt-1.5">{{ stats.totalHits.toLocaleString() }}</p>
                     </div>
                 </div>
             </div>
@@ -278,9 +286,7 @@ const getLevelBadgeClass = (level: string) => {
                         <div class="mt-1 p-1.5 bg-gray-50 rounded-lg"><Award class="w-4 h-4 text-emerald-500" /></div>
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-semibold text-gray-900 line-clamp-1" :title="achievement.title">{{ achievement.title }}</p>
-                            
                             <p class="text-xs text-gray-500 mt-0.5 truncate">{{ achievement.student_name }}</p>
-                            
                             <div class="flex items-center gap-2 mt-1.5">
                                 <span :class="['text-[9px] px-1.5 py-0.5 rounded-md border font-bold uppercase tracking-tighter', getLevelBadgeClass(achievement.level)]">
                                     {{ achievement.level }}

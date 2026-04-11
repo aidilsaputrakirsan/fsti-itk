@@ -171,6 +171,7 @@ Route::get('/', function () {
         'prodi_s1' => $s1,
         'prodi_s2' => $s2,
         'prodi_total' => $allProdi->count(),
+        'kunjungan' => \App\Models\Visitor::count(),
     ];
 
     return Inertia::render('Home', [

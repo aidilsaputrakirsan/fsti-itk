@@ -19,11 +19,13 @@ class DashboardController extends Controller
             'publishedPosts' => Post::where('status', 'Terbitkan')->count(),
             'totalAchievements' => Achievement::count(),
             'avgRating' => round(SatisfactionSurvey::avg('rating') ?? 0, 1),
-            'totalVisitors' => Visitor::count(),
-            'visitorsToday' => Visitor::whereDate('visit_date', Carbon::today())->count(),
-            'visitorsMonth' => Visitor::whereMonth('visit_date', Carbon::now()->month)
+            
+            'totalKunjungan' => Visitor::count(),
+            'kunjunganHariIni' => Visitor::whereDate('visit_date', Carbon::today())->count(),
+            'kunjunganBulanIni' => Visitor::whereMonth('visit_date', Carbon::now()->month)
                 ->whereYear('visit_date', Carbon::now()->year)
                 ->count(),
+            'totalHits' => (int) Visitor::sum('hits'), 
         ];
 
         $charts = [

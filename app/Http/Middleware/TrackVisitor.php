@@ -6,12 +6,18 @@ use Closure;
 use Illuminate\Http\Request;
 use App\Models\Visitor;
 use Carbon\Carbon;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth; // Tambahkan baris ini
 
 class TrackVisitor
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        if ($request->is('admin*') || $request->is('login*')) {
+        if (Auth::check()) {
+            return $next($request);
+        }
+
+        if ($request->is('login*') || $request->is('admin*')) {
             return $next($request);
         }
 
@@ -20,16 +26,15 @@ class TrackVisitor
             return $next($request);
         }
 
+        $sessionId = $request->session()->getId(); 
         $ip = $request->ip();
         $today = Carbon::today()->toDateString();
 
-        // Cari atau buat record baru untuk IP ini di hari ini
         $visitor = Visitor::firstOrCreate(
-            ['ip_address' => $ip, 'visit_date' => $today],
-            ['hits' => 0]
+            ['session_id' => $sessionId, 'visit_date' => $today],
+            ['ip_address' => $ip, 'hits' => 0]
         );
 
-        // Tambah jumlah hit/klik
         $visitor->increment('hits');
 
         return $next($request);

@@ -6,21 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('visitors', function (Blueprint $table) {
             $table->id();
-            $table->string('ip_address', 45);
+            $table->string('session_id'); 
+            $table->string('ip_address', 45)->nullable(); 
             $table->date('visit_date');
-            $table->integer('hits')->default(1); // Jumlah halaman yang dibuka IP tersebut hari ini
+            $table->integer('hits')->default(0);
             $table->timestamps();
 
-            // Index untuk mempercepat query pencarian berdasarkan tanggal dan IP
-            $table->unique(['ip_address', 'visit_date']);
-            $table->index('visit_date');
+            $table->unique(['session_id', 'visit_date']);
         });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('visitors');
     }
 };
