@@ -10,10 +10,8 @@ class AnnouncementSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Kosongkan database
         Announcement::truncate();
 
-        // 2. Siapkan folder Storage (Tujuan) dan Folder Assets (Sumber)
         $storagePdfPath = storage_path('app/public/pengumuman');
         $storagePosterPath = storage_path('app/public/pengumuman/poster');
 

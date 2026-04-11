@@ -26,7 +26,6 @@ const bannerImage = '/images/background-banner.png';
 const search = ref(props.filters.search || '');
 const category = ref(props.filters.category || '');
 
-// --- LOGIKA DROPDOWN ---
 const isOpen = ref(false);
 const dropdownRef = ref<HTMLButtonElement | null>(null);
 const dropdownStyle = ref({});
@@ -72,7 +71,6 @@ onUnmounted(() => {
   document.removeEventListener('mousedown', handleClickOutside);
 });
 
-// Trigger pencarian & filter
 watch([search, category], debounce(() => {
     router.get(route('berita.index'), { search: search.value, category: category.value }, {
         preserveState: true, replace: true, onFinish: () => AOS.refresh()

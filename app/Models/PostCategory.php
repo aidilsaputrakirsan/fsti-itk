@@ -11,7 +11,6 @@ class PostCategory extends Model
 
     protected $fillable = ['name', 'slug'];
 
-    // Relasi: Satu kategori bisa memiliki banyak berita (posts)
     public function posts()
     {
         return $this->hasMany(Post::class);

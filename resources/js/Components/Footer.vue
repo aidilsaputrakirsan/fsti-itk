@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
 import { ref, onMounted, onUnmounted, computed } from 'vue';
-// Import icon yang dibutuhkan
 import { Users, Calendar, Activity } from 'lucide-vue-next';
 
-// Definisi interface untuk TypeScript
 interface VisitorStats {
     today: number;
     month: number;
@@ -14,12 +12,10 @@ interface VisitorStats {
 const page = usePage();
 const contact = computed(() => (page.props.contact_global as Record<string, any>) || {});
 
-// Ambil data visitor dari shared props (HandleInertiaRequests)
 const visitors = computed<VisitorStats>(() => {
     return (page.props.visitorStats as VisitorStats) || { today: 0, month: 0, total: 0 };
 });
 
-// State untuk tombol "Back to Top"
 const showScrollTop = ref(false);
 
 const scrollToTop = () => {

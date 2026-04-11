@@ -52,7 +52,6 @@ class AlumniSeeder extends Seeder
 
             $prodiClean = strtolower($prodiRaw);
 
-            // 1. Lewati jika prodi bukan milik FSTI
             if (empty($prodiClean) || !in_array($prodiClean, $allowedProdis)) {
                 continue;
             }
@@ -61,7 +60,6 @@ class AlumniSeeder extends Seeder
                 $nim = '0' . $nim;
             }
 
-            // 3. Ekstrak Tahun dari keterangan lulus
             $graduationYear = null;
             if (preg_match('/(20[1-2][0-9])/', $keterangan, $matches)) {
                 $graduationYear = $matches[1];
@@ -70,7 +68,6 @@ class AlumniSeeder extends Seeder
                 continue;
             }
 
-            // 4. Simpan ke Database
             Alumni::updateOrCreate(
                 ['nim' => $nim],
                 [

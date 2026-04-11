@@ -14,13 +14,10 @@ return new class extends Migration
         Schema::create('kategori_ppids', function (Blueprint $table) {
             $table->id();
 
-            // UBAH DI SINI: Dari enum menjadi string agar Admin bisa mengetik/menambah jenis halaman apa saja tanpa batas
             $table->string('jenis_informasi');
 
-            // Nama kategori (Contoh: "A. Profil Fakultas...")
             $table->string('nama_kategori');
 
-            // Agar Admin bisa mengatur urutan tampil (A, B, C)
             $table->integer('urutan')->default(0);
 
             $table->timestamps();

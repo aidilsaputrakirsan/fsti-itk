@@ -10,14 +10,11 @@ class AchievementSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Kosongkan tabel database
         Achievement::truncate();
 
-        // 2. Siapkan folder Storage (Tujuan) dan Folder Assets (Sumber)
         $storagePrestasiPath = storage_path('app/public/prestasi');
         $assetPrestasiPath = database_path('seeders/assets/prestasi');
 
-        // Buat folder di storage jika belum ada
         if (!File::exists($storagePrestasiPath)) {
             File::makeDirectory($storagePrestasiPath, 0755, true);
         }
@@ -251,10 +248,8 @@ class AchievementSeeder extends Seeder
 
         $copiedCount = 0;
 
-        // 3. Eksekusi Input ke Database & Proses Copy File
         foreach ($data as $item) {
 
-            // Logika untuk menyalin file gambar
             if (!empty($item['image_path'])) {
                 $imageName = basename($item['image_path']);
 

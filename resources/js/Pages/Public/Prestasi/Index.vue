@@ -2,19 +2,15 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { router, Link, Head } from '@inertiajs/vue3';
 
-// Layouts & Components
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import AchievementCard from '@/Components/AchievementCard.vue';
-// Icons
 import { Trophy, Award, Search, FileWarning, Medal, Star, Send, ChevronDown } from 'lucide-vue-next';
 import { RefreshCw } from 'lucide-vue-next'; 
 
-// Import AOS untuk animasi
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-// Types
 import type { PaginatedAchievements, Filters } from '@/types';
 
 const props = defineProps<{
@@ -40,7 +36,6 @@ const selectedYear = ref(props.filters.year || '');
 const selectedLevel = ref(props.filters.level || '');
 const selectedCategory = ref(props.filters.category || '');
 
-// --- LOGIKA BARU UNTUK 3 CUSTOM DROPDOWN ---
 const isCategoryOpen = ref(false);
 const isLevelOpen = ref(false);
 const isYearOpen = ref(false);
@@ -135,7 +130,6 @@ const resetFilters = () => {
     applyFilters();
 };
 
-// --- LOGIKA SMART PAGINATION ---
 const currentPage = computed(() => {
     const activeLink = props.achievements.links.find(link => link.active);
     return activeLink ? parseInt(activeLink.label) : 1;

@@ -2,7 +2,6 @@
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import { ArrowLeftIcon, UserPlusIcon } from '@heroicons/vue/24/outline';
-// 1. Import komponen InputError
 import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });

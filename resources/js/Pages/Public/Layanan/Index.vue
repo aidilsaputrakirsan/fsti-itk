@@ -25,13 +25,11 @@ onMounted(() => {
     AOS.init({ duration: 800, once: true });
 });
 
-// Merotasi ikon agar bervariasi
 const getIcon = (index) => {
     const icons = [Globe, AppWindow, LinkIcon, MonitorSmartphone, Compass];
     return icons[index % icons.length];
 };
 
-// Rotasi warna pastel yang kalem dengan teks menggunakan warna primary
 const getIconColorClasses = (index) => {
     const colors = [
         'bg-blue-50 text-primary',

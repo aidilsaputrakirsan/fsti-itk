@@ -255,10 +255,9 @@ class StudyProgramSeeder extends Seeder
             ]
         ];
 
-        // Masukkan semua data array di atas ke dalam Database
         foreach ($prodiData as $data) {
             StudyProgram::updateOrCreate(
-                ['slug' => $data['slug']], // Jadikan slug sebagai kunci unik agar tidak duplikat
+                ['slug' => $data['slug']], 
                 $data
             );
         }

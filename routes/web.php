@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 // ==============================================================================
-// IMPORT CONTROLLERS: ADMIN
+// CONTROLLER ADMIN
 // ==============================================================================
 use App\Http\Controllers\Admin\AchievementsController;
 use App\Http\Controllers\Admin\AgendaFakultasController as AdminAgendaFakultasController;
@@ -31,7 +31,7 @@ use App\Http\Controllers\Admin\TentangFakultasController;
 use App\Http\Controllers\Admin\UserController;
 
 // ==============================================================================
-// IMPORT CONTROLLERS: PUBLIC & SYSTEM
+// CONTROLLER PUBLIK
 // ==============================================================================
 use App\Http\Controllers\Public\PublicAchievementController;
 use App\Http\Controllers\Public\PublicAgendaFakultasController;
@@ -52,51 +52,79 @@ use App\Http\Controllers\Public\PublicZonaIntegritasController;
 use App\Http\Controllers\ProfileController;
 
 // ==============================================================================
-// IMPORT MODELS
+// MODEL
 // ==============================================================================
 use App\Models\Achievement;
 use App\Models\Post;
 
 // ==============================================================================
-// 1. KELOMPOK ROUTE ADMIN
+// RUTE ADMIN
 // ==============================================================================
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
 
-    // Dashboard & Pengaturan Sistem
+    // DASHBOARD
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // MODUL PENGGUNA
     Route::resource('/users', UserController::class);
 
-    // Profil Fakultas & Kontak
-    Route::get('/contacts', [AdminContactController::class, 'edit'])->name('contacts.edit');
-    Route::put('/contacts', [AdminContactController::class, 'update'])->name('contacts.update');
+    // MODUL TENTANG FAKULTAS
     Route::get('/tentang-fakultas', [TentangFakultasController::class, 'edit'])->name('tentang.edit');
     Route::put('/tentang-fakultas', [TentangFakultasController::class, 'update'])->name('tentang.update');
+
+    // MODUL KONTAK
+    Route::get('/contacts', [AdminContactController::class, 'edit'])->name('contacts.edit');
+    Route::put('/contacts', [AdminContactController::class, 'update'])->name('contacts.update');
+
+    // MODUL STAF
     Route::resource('/staff', StaffController::class);
+
+    // MODUL PROGRAM STUDI
     Route::resource('/study-programs', AdminStudyProgramController::class)->except(['show']);
 
-    // Berita & Pengumuman
+    // MODUL BERITA
     Route::resource('/posts', AdminPostController::class);
+
+    // MODUL KATEGORI BERITA
     Route::resource('post-categories', PostCategoryController::class)->except(['show']);
+
+    // MODUL PENGUMUMAN
     Route::resource('announcements', AdminAnnouncementController::class);
+
+    // MODUL AGENDA FAKULTAS
     Route::resource('/agenda-fakultas', AdminAgendaFakultasController::class);
 
-    // Prestasi & Kegiatan
+    // MODUL PRESTASI
     Route::resource('/achievements', AchievementsController::class);
+
+    // MODUL KEGIATAN MAHASISWA
     Route::resource('kegiatan-mahasiswa', AdminKegiatanMahasiswaController::class);
 
-    // Tridharma (Penelitian & Pengabdian)
+    // MODUL PENELITIAN
     Route::resource('penelitian', AdminPenelitianController::class)->except(['show']);
+
+    // MODUL PENGABDIAN
     Route::resource('pengabdian', AdminPengabdianController::class)->except(['show']);
 
-    // Layanan & Publik
+    // MODUL LAYANAN 
     Route::resource('/internal-services', InternalServiceController::class);
+
+    // MODUL PPID
     Route::resource('/ppid', AdminPpidController::class);
+
+    // MODUL KATEGORI PPID
     Route::resource('/kategori-ppid', KategoriPpidController::class);
+
+    // MODUL BEASISWA
     Route::resource('beasiswa', AdminBeasiswaController::class);
+
+    // MODUL ALUMNI
     Route::resource('/alumni', AdminAlumniController::class)->parameters(['alumni' => 'alumnus']);
+
+    // MODUL MITRA
     Route::resource('partners', AdminPartnerController::class);
 
-    // Zona Integritas (ZI)
+    // MODUL ZONA INTEGRITAS
     Route::prefix('zona-integritas')->name('zi.')->group(function () {
         Route::get('/profil', [IntegrityZoneController::class, 'profileEdit'])->name('profile.edit');
         Route::post('/profil', [IntegrityZoneController::class, 'profileUpdate'])->name('profile.update');
@@ -108,20 +136,21 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
         Route::delete('/dokumen/{id}', [IntegrityZoneController::class, 'documentDestroy'])->name('document.destroy');
     });
 
-    // Survei Kepuasan
+    // MODUL SURVEI KEPUASAN
     Route::resource('/satisfaction-surveys', SatisfactionSurveyController::class);
+
+    // MODUL KATEGORI SURVEI
     Route::get('/survey-categories', [SurveyCategoryController::class, 'index'])->name('survey-categories.index');
     Route::post('/survey-categories', [SurveyCategoryController::class, 'store'])->name('survey-categories.store');
     Route::put('/survey-categories/{surveyCategory}', [SurveyCategoryController::class, 'update'])->name('survey-categories.update');
     Route::delete('/survey-categories/{surveyCategory}', [SurveyCategoryController::class, 'destroy'])->name('survey-categories.destroy');
 });
 
-
 // ==============================================================================
-// 2. KELOMPOK ROUTE PUBLIK
+// RUTE PUBLIK
 // ==============================================================================
 
-// Halaman Beranda (Home)
+// HALAMAN BERANDA
 Route::get('/', function () {
     $latestPosts = Post::select('posts.*', 'post_categories.name as category')
         ->leftJoin('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
@@ -184,54 +213,94 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-// Berita & Prestasi
+// HALAMAN BERITA
 Route::get('/berita', [PublicPostController::class, 'index'])->name('berita.index');
 Route::get('/berita/{post:slug}', [PublicPostController::class, 'show'])->name('berita.show');
+
+// HALAMAN PRESTASI
 Route::get('/prestasi', [PublicAchievementController::class, 'index'])->name('prestasi.index');
 
-// Profil Institusi
+// HALAMAN TENTANG FAKULTAS
 Route::get('/profil/tentang', [PublicProfileController::class, 'tentang'])->name('profil.tentang');
+
+// HALAMAN BAGAN ORGANISASI
 Route::get('/profil/bagan-organisasi', [PublicProfileController::class, 'baganOrganisasi'])->name('bagan-organisasi');
+
+// HALAMAN KONTAK
 Route::get('/kontak', [PublicProfileController::class, 'kontak'])->name('kontak');
+
+// HALAMAN KERJASAMA
 Route::get('/profil/kerjasama', function () {
     return "Halaman Kerjasama Segera Hadir";
 })->name('profil.kerjasama');
 
-// Direktori Staf
+// HALAMAN PIMPINAN FAKULTAS
 Route::get('/profil/pimpinan-fakultas', [PublicStaffController::class, 'pimpinanFakultas'])->name('profil.pimpinan-fakultas');
+
+// HALAMAN PIMPINAN JURUSAN
 Route::get('/profil/pimpinan-jurusan', [PublicStaffController::class, 'pimpinanJurusan'])->name('profil.pimpinan-jurusan');
+
+// HALAMAN PIMPINAN PROGRAM STUDI
 Route::get('/profil/pimpinan-prodi', [PublicStaffController::class, 'pimpinanProdi'])->name('profil.pimpinan-prodi');
+
+// HALAMAN PIMPINAN LABORATORIUM
 Route::get('/profil/pimpinan-laboratorium', [PublicStaffController::class, 'pimpinanLaboratorium'])->name('profil.pimpinan-laboratorium');
+
+// HALAMAN DOSEN
 Route::get('/profil/dosen', [PublicStaffController::class, 'dosen'])->name('profil.dosen');
+
+// HALAMAN TENAGA KEPENDIDIKAN
 Route::get('/profil/tenaga-kependidikan', [PublicStaffController::class, 'tendik'])->name('profil.tenaga-kependidikan');
 
-// Akademik & Kegiatan
+// HALAMAN PROGRAM STUDI
 Route::get('/prodi/{slug}', [PublicProgramStudiController::class, 'show'])->name('public.prodi.show');
+
+// HALAMAN KEGIATAN MAHASISWA
 Route::get('/kegiatan-mahasiswa', [PublicKegiatanMahasiswaController::class, 'index'])->name('kegiatan.index');
+
+// HALAMAN AGENDA FAKULTAS
 Route::get('/agenda-fakultas', [PublicAgendaFakultasController::class, 'index'])->name('agenda.index');
+
+// HALAMAN BEASISWA
 Route::get('/beasiswa', [PublicBeasiswaController::class, 'index'])->name('beasiswa.index');
+
+// HALAMAN PENGUMUMAN
 Route::get('/pengumuman', [PublicAnnouncementController::class, 'index'])->name('pengumuman.index');
+
+// HALAMAN MITRA
 Route::get('/kerjasama', [PublicPartnerController::class, 'index'])->name('kerjasama.index');
 
-// Tridharma (Penelitian & Pengabdian)
+// HALAMAN PENELITIAN
 Route::get('/penelitian', [PublicPenelitianController::class, 'index'])->name('penelitian.index');
+
+// HALAMAN PENGABDIAN
 Route::get('/pengabdian', [PublicPengabdianController::class, 'index'])->name('pengabdian.index');
 
-// Alumni & PMB
+// HALAMAN PENERIMAAN MAHASISWA BARU
 Route::get('/informasi-pmb', function () {
     return Inertia::render('Public/PMB/Index');
 })->name('pmb.index');
+
+// HALAMAN TRACER STUDY
 Route::get('/tracer-study', function () {
     return Inertia::render('Public/Alumni/TracerStudy');
 })->name('tracer-study.index');
+
+// HALAMAN ALUMNI
 Route::get('/alumni', [PublicAlumniController::class, 'index'])->name('alumni.index');
 
-// Layanan Publik (PPID, ZI, Survei)
+// HALAMAN PPID
 Route::get('/ppid', [PublicPpidController::class, 'index'])->name('public.ppid.index');
 Route::get('/ppid/informasi/{slug}', [PublicPpidController::class, 'show'])->name('public.ppid.show');
+
+// HALAMAN ZONA INTEGRITAS
 Route::get('/zona-integritas', [PublicZonaIntegritasController::class, 'index'])->name('zona-integritas.index');
+
+// HALAMAN SURVEI KEPUASAN
 Route::get('/survei-kepuasan', [PublicSurveiController::class, 'index'])->name('survei.index');
 Route::post('/survei-kepuasan', [PublicSurveiController::class, 'store'])->name('survei.store');
+
+// HALAMAN LAYANAN
 Route::get('/layanan-internal', function () {
     $services = \App\Models\InternalService::where('is_active', true)
         ->orderBy('sort_order', 'asc')
@@ -247,20 +316,21 @@ Route::get('/layanan-internal', function () {
     return Inertia::render('Public/Layanan/Index', ['services' => $services]);
 })->name('layanan.index');
 
+// ==============================================================================
+// RUTE AUTENTIKASI
+// ==============================================================================
 
-// ==============================================================================
-// 3. KELOMPOK ROUTE AUTHENTICATION
-// ==============================================================================
+// PROFIL AKUN PENGGUNA
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Redirect /dashboard fallback
+// REDIRECT DASHBOARD
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Auth routes (Login, Register, Password Reset, etc) provided by Breeze
+// RUTE BREEZE
 require __DIR__ . '/auth.php';

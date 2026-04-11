@@ -14,7 +14,7 @@ class InternalServiceSeeder extends Seeder
     {
         InternalService::create([
             'name' => 'Layanan FSTI ITK',
-            'category' => 'Umum', // Kategori default yang disimpan
+            'category' => 'Umum', 
             'link_url' => 'https://layanan-fsti.myst-tech.com/',
             'description' => 'Website layanan administrasi untuk  mahasiswa dan dosen FSTI ITK',
         ]);

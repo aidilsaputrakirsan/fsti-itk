@@ -36,7 +36,6 @@ const filteredBeasiswas = computed(() => {
     );
 });
 
-// --- LOGIKA PAGINATION ---
 const itemsPerPage = 6; 
 const currentPage = ref(1);
 
@@ -80,7 +79,6 @@ const changePage = (page) => {
         window.scrollTo({ top: 400, behavior: 'smooth' }); 
     }
 };
-// --- END LOGIKA PAGINATION ---
 
 onMounted(() => {
     AOS.init({ duration: 800, once: true });

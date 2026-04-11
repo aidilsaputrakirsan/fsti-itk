@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\File;
 
 class PartnerController extends Controller
 {
-    // Daftar logo bawaan seeder yang HARAM dihapus secara fisik
     private $protectedLogos = [
         'bpsdm.png', 'terra-drone.png', 'jasindo.png', 'smk-cendekia.png', 'sma-7.png', 
         'sma-9.png', 'posyantek.png', 'dkumkmp.png', 'universitas-brawijaya.png', 'brida-kaltim.png', 
@@ -88,7 +87,6 @@ class PartnerController extends Controller
         $partner->name = $validated['name'];
 
         if ($request->hasFile('logo')) {
-            // PERISAI: Hanya hapus logo lama JIKA BUKAN logo bawaan seeder
             if ($partner->logo && !in_array($partner->logo, $this->protectedLogos)) {
                 if (File::exists(public_path('images/mitra/' . $partner->logo))) {
                     File::delete(public_path('images/mitra/' . $partner->logo));
@@ -113,7 +111,7 @@ class PartnerController extends Controller
             }
         }
         
-        $partner->delete(); // Baris di database tetap dihapus
+        $partner->delete(); 
         return redirect()->route('admin.partners.index')->with('success', 'Data Mitra berhasil dihapus.');
     }
 }

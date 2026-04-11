@@ -18,7 +18,6 @@ onMounted(() => {
     AOS.init({ duration: 800, once: true });
 });
 
-// Data Jalur Masuk (Rangkuman Pmb.itk.ac.id)
 const jalurMasuk = [
     {
         title: 'SNBP',

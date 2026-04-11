@@ -67,12 +67,10 @@ const getImageUrl = (path) => {
     return `/storage/${path}`; 
 };
 
-// LOGIKA VALIDASI BARU: Mandiri dan mendeteksi tab pertama yang error
 const submit = () => {
     form.clearErrors();
     let firstErrorTab = null;
 
-    // --- 1. Validasi Tab Statistik ---
     if (!form.content.statistik.deskripsi) {
         form.setError('content.statistik.deskripsi', 'Deskripsi halaman statistik wajib diisi.');
         if (!firstErrorTab) firstErrorTab = 'statistik';
@@ -91,7 +89,6 @@ const submit = () => {
         }
     });
 
-    // --- 2. Validasi Tab Tugas & Fungsi ---
     if (!form.content.tugas_fungsi.tugas) {
         form.setError('content.tugas_fungsi.tugas', 'Tugas fakultas wajib diisi.');
         if (!firstErrorTab) firstErrorTab = 'tugas';
@@ -107,7 +104,6 @@ const submit = () => {
         }
     });
 
-    // --- 3. Validasi Tab Visi & Misi ---
     if (!form.content.visi_misi.visi) {
         form.setError('content.visi_misi.visi', 'Visi fakultas wajib diisi.');
         if (!firstErrorTab) firstErrorTab = 'visi';
@@ -127,7 +123,6 @@ const submit = () => {
         }
     });
 
-    // --- 4. Validasi Tab Bagan Organisasi ---
     if (form.bagan_image) {
         const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
         if (!allowedTypes.includes(form.bagan_image.type)) {
@@ -139,7 +134,6 @@ const submit = () => {
         }
     }
 
-    // Jika ada error, hentikan submit dan langsung buka tab yang error
     if (firstErrorTab) {
         activeTab.value = firstErrorTab;
         return;
@@ -151,7 +145,7 @@ const submit = () => {
         active_tab: activeTab.value 
     })).post(route('admin.tentang.update'), {
         preserveScroll: true, 
-        preserveState: true, // Ubah ke true agar state form tidak kereset
+        preserveState: true, 
         onSuccess: () => {
             notificationMessage.value = page.props.flash?.success || 'Berhasil disimpan!';
             showNotification.value = true;

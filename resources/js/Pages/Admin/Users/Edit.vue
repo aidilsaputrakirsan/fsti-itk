@@ -2,7 +2,6 @@
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import { ArrowLeftIcon, CheckCircleIcon } from '@heroicons/vue/24/outline';
-// 1. Import komponen InputError
 import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
@@ -42,7 +41,6 @@ const submit = () => {
         hasError = true;
     }
 
-    // Password opsional saat Edit
     if (form.password) {
         if (form.password.length < 8) {
             form.setError('password', 'Terlalu pendek! Minimal 8 karakter.');

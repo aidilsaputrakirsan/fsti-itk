@@ -65,7 +65,6 @@ const submit = () => {
     form.clearErrors();
     let hasError = false;
 
-    // Validasi Teks
     if (!form.name) { form.setError('name', 'Nama Program Studi wajib diisi.'); hasError = true; }
     if (!form.degree) { form.setError('degree', 'Jenjang wajib dipilih.'); hasError = true; }
     if (!form.department) { form.setError('department', 'Jurusan wajib dipilih.'); hasError = true; }
@@ -76,7 +75,6 @@ const submit = () => {
     if (!form.graduate_profiles) { form.setError('graduate_profiles', 'Profil lulusan wajib diisi.'); hasError = true; }
     if (!form.accreditation_text) { form.setError('accreditation_text', 'Teks akreditasi wajib diisi.'); hasError = true; }
 
-    // Validasi URL (Kini Wajib Isi)
     const urlPattern = /^https?:\/\/.+/;
     if (!form.website_link) {
         form.setError('website_link', 'Tautan website resmi prodi wajib diisi.'); hasError = true;
@@ -90,7 +88,6 @@ const submit = () => {
         form.setError('accreditation_pdf_link', 'Tautan harus diawali dengan http:// atau https://'); hasError = true;
     }
 
-    // Validasi Gambar (Opsional di halaman Edit, tapi tetap dicek ukurannya jika ada file masuk)
     if (form.accreditation_certificate_image) {
         const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
         if (!allowedTypes.includes(form.accreditation_certificate_image.type)) {

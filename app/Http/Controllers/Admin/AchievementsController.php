@@ -18,13 +18,11 @@ class AchievementsController extends Controller
     {
         $query = Achievement::query();
 
-        // Terapkan filter pencarian jika ada
         if ($request->filled('search')) {
             $query->where('student_name', 'like', '%' . $request->search . '%')
                 ->orWhere('title', 'like', '%' . $request->search . '%');
         }
 
-        // Terapkan filter kategori jika ada
         if ($request->filled('category')) {
             $query->where('category', $request->category);
         }
@@ -33,7 +31,6 @@ class AchievementsController extends Controller
 
         return Inertia::render('Admin/Achievements/Index', [
             'achievements' => $achievements,
-            // PENTING: Selalu kirim 'filters' untuk menghindari error di frontend
             'filters' => $request->only(['search', 'category'])
         ]);
     }
@@ -43,7 +40,6 @@ class AchievementsController extends Controller
      */
     public function create()
     {
-        // Ambil data prodi dinamis
         $studyPrograms = StudyProgram::orderBy('degree')->orderBy('name')->get();
 
         return Inertia::render('Admin/Achievements/Create', [
@@ -57,7 +53,6 @@ class AchievementsController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi input: foto wajib, bukti opsional
         $validatedData = $request->validate([
             'student_name' => 'required|string|max:255',
             'student_nim' => 'nullable|string|max:255',
@@ -71,12 +66,10 @@ class AchievementsController extends Controller
             'certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
-        // Simpan file foto
         if ($request->hasFile('image')) {
             $validatedData['image_path'] = $request->file('image')->store('achievements/images', 'public');
         }
 
-        // Simpan file bukti jika ada
         if ($request->hasFile('certificate')) {
             $validatedData['certificate_path'] = $request->file('certificate')->store('achievements/certificates', 'public');
         }
@@ -107,7 +100,6 @@ class AchievementsController extends Controller
      */
     public function update(Request $request, Achievement $achievement)
     {
-        // Validasi input
         $validatedData = $request->validate([
             'student_name' => 'required|string|max:255',
             'student_nim' => 'nullable|string|max:255',
@@ -121,7 +113,6 @@ class AchievementsController extends Controller
             'certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
-        // Cek jika ada foto baru yang diunggah
         if ($request->hasFile('image')) {
             if ($achievement->image_path) {
                 Storage::disk('public')->delete($achievement->image_path);
@@ -129,7 +120,6 @@ class AchievementsController extends Controller
             $validatedData['image_path'] = $request->file('image')->store('achievements/images', 'public');
         }
 
-        // Cek jika ada bukti baru yang diunggah
         if ($request->hasFile('certificate')) {
             if ($achievement->certificate_path) {
                 Storage::disk('public')->delete($achievement->certificate_path);
@@ -149,12 +139,10 @@ class AchievementsController extends Controller
      */
     public function destroy(Achievement $achievement)
     {
-        // Hapus file foto dari storage
         if ($achievement->image_path) {
             Storage::disk('public')->delete($achievement->image_path);
         }
 
-        // Hapus file bukti dari storage
         if ($achievement->certificate_path) {
             Storage::disk('public')->delete($achievement->certificate_path);
         }

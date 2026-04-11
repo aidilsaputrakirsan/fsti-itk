@@ -17,7 +17,7 @@ import {
     BarChart3,
     Calendar,
     Activity,
-    MousePointerClick // Tambahan icon untuk hits
+    MousePointerClick 
 } from 'lucide-vue-next';
 
 defineOptions({ layout: AdminLayout });
@@ -74,7 +74,6 @@ const colors = {
     teal: '#14B8A6',
 };
 
-// Grafik Tren Prestasi
 const achievementsTrendOptions = computed((): ApexOptions => ({
     chart: { type: 'area', toolbar: { show: false }, fontFamily: 'inherit' },
     stroke: { curve: 'smooth', width: 3 }, 
@@ -92,7 +91,6 @@ const achievementsTrendSeries = computed(() => [{
     data: props.charts.achievementsTrend.map(i => i.total),
 }]);
 
-// Grafik Donut Berita
 const postsByCategoryOptions = computed((): ApexOptions => ({
     chart: { type: 'donut', fontFamily: 'inherit' },
     labels: props.charts.postsByCategory.map(i => i.name),

@@ -20,7 +20,6 @@ const props = defineProps<{
   statistik?: { dosen: number; tendik: number; prodi_s1: number; prodi_s2: number; prodi_total: number };
 }>();
 
-// INTERFACE TYPESCRIPT
 interface StatItem {
     angka: string | number;
     label: string;
@@ -47,7 +46,6 @@ const displayStats = computed<StatItem[]>(() => {
     const dataArray = Array.isArray(rawData) ? rawData : Object.values(rawData);
     const slicedData = dataArray.slice(0, 4) as StatItem[];
 
-    // LOGIKA PINTAR: Timpa angka CMS dengan hitungan Database Real-time
     return slicedData.map(stat => {
         const label = stat.label.toLowerCase();
         if (label.includes('dosen')) return { ...stat, angka: props.statistik?.dosen ?? stat.angka };

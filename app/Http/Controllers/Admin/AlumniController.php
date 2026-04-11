@@ -13,7 +13,6 @@ class AlumniController extends Controller
     {
         $query = Alumni::query();
 
-        // Fitur Pencarian
         if ($request->filled('search')) {
             $query->where(function($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
@@ -21,7 +20,6 @@ class AlumniController extends Controller
             });
         }
 
-        // Fitur Filter Prodi & Tahun
         if ($request->filled('prodi')) {
             $query->where('study_program', $request->prodi);
         }
@@ -34,7 +32,6 @@ class AlumniController extends Controller
                          ->paginate(15)
                          ->withQueryString();
 
-        // Data untuk Dropdown Filter di Admin
         $prodis = Alumni::select('study_program')->distinct()->orderBy('study_program')->pluck('study_program');
         $years = Alumni::select('graduation_year')->distinct()->orderBy('graduation_year', 'desc')->pluck('graduation_year');
 

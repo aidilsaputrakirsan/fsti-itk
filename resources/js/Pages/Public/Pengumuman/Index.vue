@@ -22,7 +22,6 @@ const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('id-ID', options);
 };
 
-// --- LOGIKA PAGINATION ---
 const currentPage = computed(() => props.announcements.links.find(l => l.active) ? parseInt(props.announcements.links.find(l => l.active).label) : 1);
 const totalPages = computed(() => props.announcements.links.length > 2 ? props.announcements.links.length - 2 : 1);
 const visiblePages = computed(() => {

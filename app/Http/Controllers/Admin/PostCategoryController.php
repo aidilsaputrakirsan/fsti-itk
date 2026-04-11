@@ -56,7 +56,6 @@ class PostCategoryController extends Controller
 
     public function destroy(PostCategory $postCategory)
     {
-        // Cegah penghapusan jika kategori sedang dipakai oleh berita
         if ($postCategory->posts()->count() > 0) {
             return redirect()->back()->with('error', 'Kategori tidak bisa dihapus karena sedang digunakan oleh berita.');
         }

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Visitor;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth; // Tambahkan baris ini
+use Illuminate\Support\Facades\Auth;
 
 class TrackVisitor
 {
@@ -26,7 +26,7 @@ class TrackVisitor
             return $next($request);
         }
 
-        $sessionId = $request->session()->getId(); 
+        $sessionId = $request->session()->getId();
         $ip = $request->ip();
         $today = Carbon::today()->toDateString();
 

@@ -119,7 +119,6 @@ class PostController extends Controller
             $validatedData['published_at'] = null;
         }
 
-        // LOGIKA EXCERPT OTOMATIS
         $validatedData['excerpt'] = Str::limit(strip_tags(html_entity_decode($request->content)), 150);
 
         $validatedData['views'] = 0;

@@ -26,10 +26,8 @@ class PengabdianSeeder extends Seeder
         }
 
         foreach ($data['lecturers'] as $lecturer) {
-            // Perhatikan perbedaannya di sini: kita mengambil key 'services' (Pengabdian)
             if (isset($lecturer['services']) && is_array($lecturer['services'])) {
                 
-                // Cari ID Prodi dari tabel study_programs
                 $prodiName = $lecturer['prodi'] ?? 'Sistem Informasi';
                 $prodi = StudyProgram::where('name', 'like', "%{$prodiName}%")->first();
 

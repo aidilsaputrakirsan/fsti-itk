@@ -3,7 +3,6 @@ import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import { Head, Link } from '@inertiajs/vue3';
 
-// Menerima data dari Controller
 const props = defineProps({
     kategoris: Array,
     jenis_informasi: String 

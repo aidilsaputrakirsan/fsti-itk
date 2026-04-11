@@ -11,7 +11,6 @@ class PpidSeeder extends Seeder
 {
     public function run(): void
     {
-        // Bersihkan data lama agar bersih
         Schema::disableForeignKeyConstraints();
         DokumenPpid::truncate();
         KategoriPpid::truncate();
@@ -85,7 +84,6 @@ class PpidSeeder extends Seeder
                 'jenis_informasi' => 'Berkala',
                 'urutan' => 7,
                 'dokumen' => [
-                    // UBAH PATH KE ASSETS PUBLIC
                     ['judul' => 'Tata Cara Permohonan Informasi Publik', 'url' => '/assets/ppid/sop-pengelolaan-informasi-publik.pdf'],
                     ['judul' => 'Formulir Permohonan Informasi Publik', 'url' => 'https://docs.google.com/forms/d/e/1FAIpQLSfqWYCCyMTZ2TXrDGIu0dkOgh_xPIy__31NZLdjYNpjNv422w/viewform'],
                     ['judul' => 'Tata Cara Pengajuan Keberatan', 'url' => '/assets/ppid/sop-pengelolaan-keberatan-informasi.pdf'],
@@ -104,7 +102,6 @@ class PpidSeeder extends Seeder
                 'jenis_informasi' => 'Setiap Saat',
                 'urutan' => 1,
                 'dokumen' => [
-                    // UBAH PATH KE ASSETS PUBLIC
                     ['judul' => 'Daftar Informasi Publik Fakultas Sains dan Teknologi Informasi', 'url' => '/assets/ppid/daftar-informasi-publik-fsti.pdf']
                 ]
             ],
@@ -151,13 +148,11 @@ class PpidSeeder extends Seeder
                 'urutan' => 6,
                 'dokumen' => [
                     ['judul' => 'Rencana Strategis', 'url' => '#'], 
-                    // UBAH PATH KE ASSETS PUBLIC
                     ['judul' => 'Perjanjian Kinerja', 'url' => '/assets/ppid/perjanjian-kinerja.pdf']
                 ]
             ]
         ];
 
-        // Eksekusi semua data ke Database
         $semuaData = array_merge($berkala, $setiapSaat);
 
         foreach ($semuaData as $kategoriData) {

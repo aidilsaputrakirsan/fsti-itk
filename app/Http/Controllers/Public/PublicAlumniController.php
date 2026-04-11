@@ -13,7 +13,6 @@ class PublicAlumniController extends Controller
     {
         $query = Alumni::query();
 
-        // Fitur Pencarian (Nama / NIM)
         if ($request->filled('search')) {
             $query->where(function($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
@@ -21,12 +20,10 @@ class PublicAlumniController extends Controller
             });
         }
 
-        // Filter berdasarkan Prodi
         if ($request->filled('prodi')) {
             $query->where('study_program', $request->prodi);
         }
 
-        // Filter berdasarkan Tahun Lulus
         if ($request->filled('year')) {
             $query->where('graduation_year', $request->year);
         }
@@ -36,7 +33,6 @@ class PublicAlumniController extends Controller
                          ->paginate(20)
                          ->withQueryString();
 
-        // Ambil daftar prodi dan tahun unik untuk opsi dropdown
         $prodis = Alumni::select('study_program')->distinct()->orderBy('study_program')->pluck('study_program');
         $years = Alumni::select('graduation_year')->distinct()->orderBy('graduation_year', 'desc')->pluck('graduation_year');
 

@@ -92,7 +92,6 @@ const applyFilters = () => {
 
 const resetSearch = () => { search.value = ''; };
 
-// --- Smart Pagination Logic ---
 const currentPage = computed<number>(() => props.penelitians?.current_page || 1);
 const totalPages = computed<number>(() => props.penelitians?.last_page || 1);
 const showingFrom = computed<number>(() => props.penelitians?.from || 0);

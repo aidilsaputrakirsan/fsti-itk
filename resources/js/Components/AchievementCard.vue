@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { GraduationCap, Award, Calendar, Trophy, Medal } from 'lucide-vue-next';
-import type { Achievement } from '@/types'; // Import dari tipe global agar sinkron!
+import type { Achievement } from '@/types'; 
 
 const props = defineProps<{
   achievement: Achievement;

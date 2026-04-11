@@ -41,7 +41,6 @@ const form = useForm({
     academic_profiles: [] as string[],
 });
 
-// Watcher agar reset jabatan jika tipe berganti dari Dosen <-> Tendik
 watch(() => form.type, (newType) => {
     if (newType === 'Dosen' && !form.functional_position.startsWith('Dosen Program Studi')) {
         form.functional_position = '';
@@ -65,7 +64,7 @@ const handleImageChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files[0]) {
         form.image = target.files[0];
-        form.image_url = ''; // Bersihkan URL jika user memilih upload file
+        form.image_url = ''; 
     } else {
         form.image = null;
     }

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\DokumenPpid;
-use App\Models\KategoriPpid; // Tambahkan import ini
+use App\Models\KategoriPpid; 
 use Inertia\Inertia;
 
 class PpidController extends Controller
@@ -14,12 +14,10 @@ class PpidController extends Controller
     {
         $query = DokumenPpid::with('kategori');
 
-        // Filter Pencarian
         if ($request->filled('search')) {
             $query->where('judul_dokumen', 'like', '%' . $request->search . '%');
         }
 
-        // Filter Jenis Informasi
         if ($request->filled('jenis')) {
             $jenis = $request->jenis;
             $query->whereHas('kategori', function ($q) use ($jenis) {
@@ -29,7 +27,6 @@ class PpidController extends Controller
 
         $documents = $query->latest()->paginate(10)->withQueryString();
 
-        // AMBIL JENIS INFORMASI SECARA DINAMIS
         $listJenis = KategoriPpid::select('jenis_informasi')
             ->distinct()
             ->pluck('jenis_informasi');
@@ -37,12 +34,11 @@ class PpidController extends Controller
         return Inertia::render('Admin/Ppid/Index', [
             'documents' => $documents,
             'filters' => $request->only(['search', 'jenis']),
-            'listJenis' => $listJenis, // Kirim ke Vue
+            'listJenis' => $listJenis, 
         ]);
     }
     public function create()
     {
-        // Mengambil semua kategori agar muncul di dropdown pilihan form
         $kategoris = KategoriPpid::orderBy('jenis_informasi')->orderBy('urutan')->get();
 
         return Inertia::render('Admin/Ppid/Create', [
@@ -56,7 +52,7 @@ class PpidController extends Controller
             'kategori_ppid_id' => 'required|exists:kategori_ppids,id',
             'judul_dokumen'    => 'required|string|max:255',
             'file'             => 'nullable|file|mimes:pdf|max:10240',
-            'file_url'         => 'nullable|string', // Diubah jadi string agar bisa menerima slug/path internal
+            'file_url'         => 'nullable|string', 
         ]);
 
         if ($request->hasFile('file')) {
@@ -91,7 +87,6 @@ class PpidController extends Controller
         ]);
 
         if ($request->hasFile('file')) {
-            // Hapus file lama jika ada
             if ($document->file_url && \Storage::disk('public')->exists(str_replace('/storage/', '', $document->file_url))) {
                 \Storage::disk('public')->delete(str_replace('/storage/', '', $document->file_url));
             }

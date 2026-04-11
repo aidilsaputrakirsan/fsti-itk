@@ -19,13 +19,10 @@ import { ref, onMounted, computed } from 'vue';
 const page = usePage();
 const openMenu = ref<string | null>(null);
 
-// Memantau perubahan URL secara reaktif
 const currentUrl = computed(() => page.url);
 
-// [PERBAIKAN 1]: Mengambil data user yang sedang login saat ini
 const currentUser = computed(() => page.props.auth.user as any);
 
-// [PERBAIKAN 2]: Mengubah navigation menjadi computed agar bisa difilter
 const navigation = computed(() => {
     const menus = [
         { name: 'Dashboard', href: '/admin/dashboard', icon: ChartBarSquareIcon, children: null },
@@ -94,7 +91,6 @@ const navigation = computed(() => {
         },
     ];
 
-    // [PERBAIKAN 3]: HANYA tambahkan menu Kelola Akun Admin JIKA user adalah superadmin!
     if (currentUser.value?.is_superadmin) {
         menus.push({ name: 'Kelola Akun Admin', href: '/admin/users', icon: UsersIcon, children: null });
     }
@@ -145,8 +141,8 @@ onMounted(() => {
                             :class="[
                                 'flex items-center w-full p-3 transition-colors duration-200 rounded-lg group',
                                 currentUrl.startsWith(item.href)
-                                    ? 'bg-primary text-white shadow-md' // Aktif
-                                    : 'bg-primary/5 text-gray-700 hover:bg-primary/15 hover:text-primary-hover', // Inaktif jadi sangat tipis
+                                    ? 'bg-primary text-white shadow-md' 
+                                    : 'bg-primary/5 text-gray-700 hover:bg-primary/15 hover:text-primary-hover', 
                             ]"
                         >
                             <span class="flex items-center justify-center h-8 w-8 bg-white rounded-full shadow-sm">

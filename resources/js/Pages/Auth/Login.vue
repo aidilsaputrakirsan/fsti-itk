@@ -11,10 +11,9 @@ defineProps<{
 const form = useForm({
     email: '',
     password: '',
-    remember: false, // Nilai default untuk "Ingat Saya"
+    remember: false, 
 });
 
-// State untuk fitur lihat password
 const showPassword = ref(false);
 
 const submit = () => {

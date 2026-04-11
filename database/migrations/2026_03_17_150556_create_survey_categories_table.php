@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('survey_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Nama Aspek Penilaian
-            $table->boolean('is_active')->default(true); // Status Aktif/Tidak
+            $table->string('name'); 
+            $table->boolean('is_active')->default(true); 
             $table->timestamps();
         });
     }

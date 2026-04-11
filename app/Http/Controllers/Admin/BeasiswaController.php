@@ -20,7 +20,6 @@ class BeasiswaController extends Controller
             });
         }
 
-        // Tambahkan withQueryString() agar saat pindah halaman (pagination), parameter search tidak hilang
         $beasiswas = $query->latest()->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/Beasiswa/Index', [

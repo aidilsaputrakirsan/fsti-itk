@@ -12,7 +12,6 @@ class PublicSurveiController extends Controller
 {
     public function index()
     {
-        // Mengambil semua aspek penilaian yang aktif dari tabel survey_categories
         $categories = SurveyCategory::where('is_active', true)->get();
 
         return Inertia::render('Public/Survei/Index', [
@@ -22,7 +21,6 @@ class PublicSurveiController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi inputan dari form Vue
         $validated = $request->validate([
             'respondent_name' => 'nullable|string|max:255',
             'respondent_email' => 'nullable|email|max:255',
@@ -32,10 +30,8 @@ class PublicSurveiController extends Controller
             'feedback' => 'required|string',
         ]);
 
-        // Simpan ke database
         SatisfactionSurvey::create($validated);
 
-        // Kembalikan ke halaman form dengan pesan sukses
         return redirect()->back()->with('success', 'Terima kasih atas partisipasi Anda!');
     }
 }

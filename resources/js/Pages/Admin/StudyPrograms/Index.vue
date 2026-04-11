@@ -18,10 +18,9 @@ const props = defineProps<{
     studyPrograms: Array<any>;
 }>();
 
-// --- Logika Filter & Search Lokal ---
 const search = ref('');
-const statusFilter = ref(''); // Untuk Jenjang (S1/S2)
-const departmentFilter = ref(''); // Untuk Jurusan
+const statusFilter = ref(''); 
+const departmentFilter = ref(''); 
 
 const uniqueDepartments = computed(() => {
     const deps = props.studyPrograms.map(p => p.department);
@@ -39,11 +38,9 @@ const filteredPrograms = computed(() => {
     });
 });
 
-// --- Logika Pagination Client-Side (Konsisten dengan Civitas) ---
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-// Reset halaman ke 1 jika filter berubah
 watch([search, statusFilter, departmentFilter], () => {
     currentPage.value = 1;
 });
@@ -61,7 +58,6 @@ const formattedLinks = computed(() => {
     
     const links = [];
     
-    // Tombol Sebelumnya
     links.push({
         url: currentPage.value > 1 ? '#' : null,
         label: 'Sebelumnya',
@@ -69,7 +65,6 @@ const formattedLinks = computed(() => {
         page: currentPage.value - 1
     });
 
-    // Logika Sliding Window
     for (let i = 1; i <= totalPages.value; i++) {
         if (i === 1 || i === totalPages.value || (i >= currentPage.value - 1 && i <= currentPage.value + 1)) {
             links.push({
@@ -83,7 +78,6 @@ const formattedLinks = computed(() => {
         }
     }
 
-    // Tombol Selanjutnya
     links.push({
         url: currentPage.value < totalPages.value ? '#' : null,
         label: 'Selanjutnya',
@@ -101,7 +95,6 @@ const changePage = (pageNumber: number | null, event: Event) => {
     }
 };
 
-// --- Logika Modal Delete ---
 const isModalOpen = ref(false);
 const itemToDelete = ref<any | null>(null);
 
@@ -124,7 +117,6 @@ const confirmDelete = () => {
     }
 };
 
-// --- Logika Notifikasi Flash ---
 const page = usePage();
 const showNotification = ref(false);
 const notificationMessage = ref('');

@@ -43,14 +43,11 @@ class StudyProgramController extends Controller
 
         $data = $request->except(['accreditation_certificate_image', 'mission', 'graduate_profiles']);
 
-        // Buat slug otomatis dari Jenjang + Nama (Contoh: S1 Matematika -> s1-matematika)
         $data['slug'] = Str::slug($request->degree . ' ' . $request->name);
 
-        // Ubah teks baris baru (Enter) menjadi Array untuk JSON
         $data['mission'] = $request->mission ? array_values(array_filter(array_map('trim', explode("\n", $request->mission)))) : null;
         $data['graduate_profiles'] = $request->graduate_profiles ? array_values(array_filter(array_map('trim', explode("\n", $request->graduate_profiles)))) : null;
 
-        // Proses Upload Gambar
         if ($request->hasFile('accreditation_certificate_image')) {
             $path = $request->file('accreditation_certificate_image')->store('prodi', 'public');
             $data['accreditation_certificate_image'] = '/storage/' . $path;
@@ -70,7 +67,6 @@ class StudyProgramController extends Controller
 
     public function update(Request $request, StudyProgram $studyProgram)
     {
-        // PERBAIKAN: Semua kolom text & link WAJIB (required)
         $request->validate([
             'name' => 'required|string|max:255',
             'department' => 'required|string|max:255',
@@ -83,20 +79,16 @@ class StudyProgramController extends Controller
             'accreditation_text' => 'required|string',
             'accreditation_pdf_link' => 'required|url',
             'website_link' => 'required|url',
-            // Gambar nullable saat update agar admin tidak harus upload ulang gambar lama
             'accreditation_certificate_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $data = $request->except(['accreditation_certificate_image', 'mission', 'graduate_profiles']);
         $data['slug'] = Str::slug($request->degree . ' ' . $request->name);
 
-        // Ubah teks baris baru menjadi Array
         $data['mission'] = $request->mission ? array_values(array_filter(array_map('trim', explode("\n", $request->mission)))) : null;
         $data['graduate_profiles'] = $request->graduate_profiles ? array_values(array_filter(array_map('trim', explode("\n", $request->graduate_profiles)))) : null;
 
-        // Proses Upload Gambar Baru & Hapus Gambar Lama
         if ($request->hasFile('accreditation_certificate_image')) {
-            // Hapus file lama jika ada dan bukan gambar bawaan seeder
             if ($studyProgram->accreditation_certificate_image && str_starts_with($studyProgram->accreditation_certificate_image, '/storage/')) {
                 Storage::disk('public')->delete(str_replace('/storage/', '', $studyProgram->accreditation_certificate_image));
             }
@@ -111,7 +103,6 @@ class StudyProgramController extends Controller
 
     public function destroy(StudyProgram $studyProgram)
     {
-        // Hapus gambar jika ada
         if ($studyProgram->accreditation_certificate_image && str_starts_with($studyProgram->accreditation_certificate_image, '/storage/')) {
             Storage::disk('public')->delete(str_replace('/storage/', '', $studyProgram->accreditation_certificate_image));
         }

@@ -57,7 +57,6 @@ const submit = () => {
     form.clearErrors();
     let hasError = false;
 
-    // Validasi Teks
     if (!form.name) { form.setError('name', 'Nama Program Studi wajib diisi.'); hasError = true; }
     if (!form.degree) { form.setError('degree', 'Jenjang wajib dipilih.'); hasError = true; }
     if (!form.department) { form.setError('department', 'Jurusan wajib dipilih.'); hasError = true; }

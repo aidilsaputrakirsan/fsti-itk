@@ -14,13 +14,10 @@ return new class extends Migration
         Schema::create('dokumen_ppids', function (Blueprint $table) {
             $table->id();
 
-            // Foreign Key yang menyambungkan dokumen ke kategorinya
             $table->foreignId('kategori_ppid_id')->constrained('kategori_ppids')->onDelete('cascade');
 
-            // Nama/Judul dokumennya
             $table->string('judul_dokumen');
 
-            // Link PDF atau Link Google Form (Nullable jika dokumen belum ada file-nya)
             $table->text('file_url')->nullable();
 
             $table->timestamps();

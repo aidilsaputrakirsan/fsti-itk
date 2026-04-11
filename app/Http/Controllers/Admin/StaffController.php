@@ -15,7 +15,6 @@ class StaffController extends Controller
     {
         $query = Staff::query();
 
-        // Diperbarui: Bisa mencari berdasarkan Nama atau NIP
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')

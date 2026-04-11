@@ -12,17 +12,14 @@ class IntegrityZoneSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. BERSIHKAN DATA LAMA DULU (Agar tidak ada data ganda/nyangkut)
         Schema::disableForeignKeyConstraints();
         ZiProfile::truncate();
         ZiDocument::truncate();
         Schema::enableForeignKeyConstraints();
 
-        // 2. Ambil User Admin
         $admin = User::first();
         $adminId = $admin ? $admin->id : 1;
 
-        // 3. MASUKKAN PROFIL ZI (Arahkan gambar ke public/assets/zi)
         ZiProfile::create([
             'id' => 1,
             'user_id' => $adminId,
@@ -30,7 +27,6 @@ class IntegrityZoneSeeder extends Seeder
             'service_declaration_image_path' => '/assets/zi/maklumat-pelayanan.png',
         ]);
 
-        // 4. SIAPKAN DOKUMEN ZI (Arahkan PDF ke public/assets/zi)
         $documents = [
             [
                 'title' => 'SK Tim Zona Integritas FSTI Tahun 2025',
@@ -42,7 +38,6 @@ class IntegrityZoneSeeder extends Seeder
             ],
         ];
 
-        // 5. MASUKKAN DOKUMEN ZI
         foreach ($documents as $doc) {
             ZiDocument::create([
                 'user_id' => $adminId,

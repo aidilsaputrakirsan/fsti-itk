@@ -13,7 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Buat Akun Admin
         if (!User::where('email', 'admin@fsti.itk.ac.id')->exists()) {
             User::factory()->create([
                 'name' => 'Admin FSTI',
@@ -26,7 +25,6 @@ class DatabaseSeeder extends Seeder
             $this->command->info('Admin user already exists, skipping...');
         }
 
-        // 2. Buat Kategori Dasar Secara Otomatis
         $categories = [
             ['name' => 'Akademik', 'slug' => 'akademik'],
             ['name' => 'Non Akademik', 'slug' => 'non-akademik'],
@@ -38,7 +36,6 @@ class DatabaseSeeder extends Seeder
         }
         $this->command->info('Post Categories seeded successfully.');
 
-        // 3. Jalankan Seeder Lainnya
         $this->call([
             PostSeeder::class,
             AchievementSeeder::class,

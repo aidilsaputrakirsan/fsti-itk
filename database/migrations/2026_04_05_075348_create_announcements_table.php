@@ -11,9 +11,9 @@ return new class extends Migration
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description')->nullable(); // Keterangan opsional
-            $table->string('document_path')->nullable(); // Lokasi file PDF
-            $table->string('poster_path')->nullable(); // Lokasi gambar poster ala Instagram
+            $table->text('description')->nullable(); 
+            $table->string('document_path')->nullable(); 
+            $table->string('poster_path')->nullable(); 
             $table->timestamps();
         });
     }

@@ -22,7 +22,6 @@ class PartnerSeeder extends Seeder
             }
         }
 
-        // 3. MASUKKAN DATA ORISINAL (30 Data)
         $partners = [
             ['name' => 'BPSDMP Kominfo Banjarmasin KOMDIGI', 'logo' => 'bpsdm.png', 'activities' => ['Sertifikasi VSGA', 'Program DEA (Digital Entrepreneurship Acedemy)', 'Pelatihan Diploy']],
             ['name' => 'Terra Drone', 'logo' => 'terra-drone.png', 'activities' => ['Pelatihan Remote Pilot']],

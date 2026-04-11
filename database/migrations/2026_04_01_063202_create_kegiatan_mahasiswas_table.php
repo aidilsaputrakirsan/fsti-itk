@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('title');
             $table->date('start_date');
             $table->date('end_date')->nullable();
-            $table->string('organizer')->nullable(); // Penyelenggara (HIMA/UKM/BEM)
+            $table->string('organizer')->nullable(); 
             $table->string('location')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();

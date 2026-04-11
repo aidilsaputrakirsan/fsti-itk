@@ -28,7 +28,6 @@ class TentangFakultasController extends Controller
 
         $content = $page->content;
 
-        // Hitung data terbaru dari database
         $countDosen = Staff::where('type', 'Dosen')->where('is_active', true)->count();
         $countTendik = Staff::where('type', 'Tendik')->where('is_active', true)->count();
         $allProdi = StudyProgram::all();
@@ -55,7 +54,6 @@ class TentangFakultasController extends Controller
         }
 
         $page->content = $content;
-        // ------------------------------------
 
         return Inertia::render('Admin/Profil/Tentang', [
             'tentang' => $page

@@ -42,13 +42,11 @@ class PublicPpidController extends Controller
             }
         }
 
-        // Jika slug tidak cocok dengan data apapun, tampilkan 404
         if (!$jenisAsli) abort(404);
 
-        // AMBIL DATA DENGAN URUTAN YANG BENAR
         $kategoris = KategoriPpid::with(['dokumen'])
             ->where('jenis_informasi', $jenisAsli)
-            ->orderBy('urutan', 'asc') // Kategori tampil terurut (1, 2, 3)
+            ->orderBy('urutan', 'asc') 
             ->get();
 
         return Inertia::render('Public/PPID/ShowJenis', [

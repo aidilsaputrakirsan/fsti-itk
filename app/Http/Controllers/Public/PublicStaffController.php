@@ -63,9 +63,7 @@ class PublicStaffController extends Controller
         return Inertia::render('Public/Profil/PimpinanLaboratorium', ['pimpinan' => $pimpinan]);
     }
 
-    // ====================================================================
-    // DOSEN PUBLIK 
-    // ====================================================================
+    
     public function dosen(Request $request)
     {
         $query = Staff::where('type', 'Dosen')->where('is_active', true);

@@ -12,14 +12,11 @@ class PostSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Hapus data lama agar tidak dobel
         Post::truncate();
 
-        // 2. Siapkan folder Storage (Tujuan) dan Folder Assets (Sumber)
         $storagePostPath = storage_path('app/public/posts');
         $assetPostPath = database_path('seeders/assets/posts');
 
-        // Buat folder di storage jika belum ada
         if (!File::exists($storagePostPath)) {
             File::makeDirectory($storagePostPath, 0755, true);
         }
@@ -147,7 +144,6 @@ class PostSeeder extends Seeder
 
        $copiedCount = 0;
 
-        // 3. Eksekusi Input ke Database dan Copy File
         foreach ($posts as $data) {
             $category = PostCategory::firstOrCreate(
                 ['slug' => Str::slug($data['kategori'])],
@@ -159,12 +155,10 @@ class PostSeeder extends Seeder
                 $slug = $slug . '-' . uniqid();
             }
 
-            // Rapikan Format Konten
             $content = '<p style="text-align: justify;">' . str_replace("\n", '</p><p style="text-align: justify;">', $data['isi_berita']) . '</p>';
             $content = str_replace('<p></p>', '', $content);
             $excerpt = Str::limit(strip_tags($content), 150);
 
-            // LOGIKA COPY FILE GAMBAR
             $imageName = $data['gambar'];
             $sourceFile = $assetPostPath . '/' . $imageName;
             $destinationFile = $storagePostPath . '/' . $imageName;

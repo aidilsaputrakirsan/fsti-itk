@@ -13,7 +13,6 @@ class KegiatanMahasiswaController extends Controller
     {
         $query = KegiatanMahasiswa::query();
 
-        // 1. Filter Pencarian Teks
         if ($request->filled('search')) {
             $query->where(function($q) use ($request) {
                 $q->where('title', 'like', '%' . $request->search . '%')
@@ -21,18 +20,15 @@ class KegiatanMahasiswaController extends Controller
             });
         }
 
-        // 2. Filter Berdasarkan Tahun
         if ($request->filled('year')) {
             $query->whereYear('start_date', $request->year);
         }
 
-        // 3. Ambil daftar tahun dinamis untuk Dropdown (contoh: [2026, 2025])
         $years = KegiatanMahasiswa::selectRaw('YEAR(start_date) as year')
             ->distinct()
             ->orderBy('year', 'desc')
             ->pluck('year');
 
-        // Urutkan dari tanggal kegiatan terbaru
         $kegiatan = $query->orderBy('start_date', 'desc')->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/Kegiatan/Index', [

@@ -15,18 +15,15 @@ class PublicPostController extends Controller
      */
     public function index(Request $request)
     {
-        // 1. Ambil nama-nama kategori dinamis yang punya berita aktif
         $categories = PostCategory::whereHas('posts', function ($q) {
             $q->where('status', 'Terbitkan');
         })->pluck('name');
 
-        // 2. JIKA USER SEDANG MENCARI ATAU MEMFILTER KATEGORI
         if ($request->filled('search') || $request->filled('category')) {
             $query = Post::select('posts.*', 'post_categories.name as category')
                 ->leftJoin('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
                 ->where('posts.status', 'Terbitkan');
 
-            // Filter berdasarkan kata kunci
             if ($request->filled('search')) {
                 $query->where(function ($q) use ($request) {
                     $q->where('posts.title', 'like', '%' . $request->search . '%')
@@ -34,7 +31,6 @@ class PublicPostController extends Controller
                 });
             }
 
-            // Filter berdasarkan kategori dropdown
             if ($request->filled('category')) {
                 $query->where('post_categories.name', $request->category);
             }
@@ -49,9 +45,7 @@ class PublicPostController extends Controller
             ]);
         }
 
-        // 3. JIKA HALAMAN AWAL (Tanpa filter/pencarian)
 
-        // Headline (Berita Terpopuler)
         $headline = Post::select('posts.*', 'post_categories.name as category')
             ->leftJoin('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
             ->where('posts.status', 'Terbitkan')
@@ -59,7 +53,6 @@ class PublicPostController extends Controller
             ->latest('posts.created_at')
             ->first();
 
-        // Berita Terbaru di bawah Headline
         $latestPosts = Post::select('posts.*', 'post_categories.name as category')
             ->leftJoin('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
             ->where('posts.status', 'Terbitkan')
@@ -70,7 +63,6 @@ class PublicPostController extends Controller
             ->take(6)
             ->get();
 
-        // Berita Terkelompok per Kategori
         $groupedPosts = [];
         foreach ($categories as $categoryName) {
             $posts = Post::select('posts.*', 'post_categories.name as category')
@@ -113,12 +105,10 @@ class PublicPostController extends Controller
 
         $post->increment('views');
 
-        // Render data post agar mengenali string kategori untuk Vue
         $post->load('category');
         $postData = $post->toArray();
         $postData['category'] = $post->category ? $post->category->name : 'Umum';
 
-        // Sidebar Berita Terbaru
         $recentPosts = Post::with('category')
             ->where('status', 'Terbitkan')
             ->where('id', '!=', $post->id)
@@ -131,7 +121,6 @@ class PublicPostController extends Controller
                 return $arr;
             });
 
-        // Jika berita di database baru 1, munculkan berita itu sendiri agar sidebar tidak kosong
         if ($recentPosts->isEmpty()) {
             $recentPosts = Post::with('category')
                 ->where('status', 'Terbitkan')
