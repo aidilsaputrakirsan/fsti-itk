@@ -17,7 +17,7 @@ class PublicAnnouncementController extends Controller
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
-        return Inertia::render('Public/Pengumuman/Index', [
+        return Inertia::render('Public/Announcements/Index', [
             'announcements' => $query->latest()->paginate(6)->withQueryString(),
             'filters' => $request->only(['search'])
         ]);

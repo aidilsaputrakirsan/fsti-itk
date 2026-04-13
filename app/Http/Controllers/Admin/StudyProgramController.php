@@ -49,8 +49,8 @@ class StudyProgramController extends Controller
         $data['graduate_profiles'] = $request->graduate_profiles ? array_values(array_filter(array_map('trim', explode("\n", $request->graduate_profiles)))) : null;
 
         if ($request->hasFile('accreditation_certificate_image')) {
-            $path = $request->file('accreditation_certificate_image')->store('prodi', 'public');
-            $data['accreditation_certificate_image'] = '/storage/' . $path;
+            $path = $request->file('accreditation_certificate_image')->store('study_programs', 'public');
+            $data['accreditation_certificate_image'] = $path;
         }
 
         StudyProgram::create($data);
@@ -89,11 +89,11 @@ class StudyProgramController extends Controller
         $data['graduate_profiles'] = $request->graduate_profiles ? array_values(array_filter(array_map('trim', explode("\n", $request->graduate_profiles)))) : null;
 
         if ($request->hasFile('accreditation_certificate_image')) {
-            if ($studyProgram->accreditation_certificate_image && str_starts_with($studyProgram->accreditation_certificate_image, '/storage/')) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $studyProgram->accreditation_certificate_image));
+            if ($studyProgram->accreditation_certificate_image) {
+                Storage::disk('public')->delete($studyProgram->accreditation_certificate_image);
             }
-            $path = $request->file('accreditation_certificate_image')->store('prodi', 'public');
-            $data['accreditation_certificate_image'] = '/storage/' . $path;
+            $path = $request->file('accreditation_certificate_image')->store('study_programs', 'public');
+            $data['accreditation_certificate_image'] = $path;
         }
 
         $studyProgram->update($data);
@@ -103,8 +103,8 @@ class StudyProgramController extends Controller
 
     public function destroy(StudyProgram $studyProgram)
     {
-        if ($studyProgram->accreditation_certificate_image && str_starts_with($studyProgram->accreditation_certificate_image, '/storage/')) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $studyProgram->accreditation_certificate_image));
+        if ($studyProgram->accreditation_certificate_image) {
+            Storage::disk('public')->delete($studyProgram->accreditation_certificate_image);
         }
 
         $studyProgram->delete();

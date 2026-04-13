@@ -19,7 +19,7 @@ defineProps<{
             <Link 
                 v-for="post in recentPosts" 
                 :key="post.id" 
-                :href="route('berita.show', post.slug)" 
+                :href="route('posts.show', post.slug)" 
                 class="group flex gap-4 items-start"
             >
                 <div class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-gray-50">

@@ -51,7 +51,7 @@ class PublicAchievementController extends Controller
             'non_academic' => Achievement::where('category', 'Non-Akademik')->count(),
         ];
 
-        return Inertia::render('Public/Prestasi/Index', [
+        return Inertia::render('Public/Achievements/Index', [
             'achievements' => $achievements,
             'stats' => $stats,
             'filters' => $request->only(['search', 'year', 'level', 'category']),

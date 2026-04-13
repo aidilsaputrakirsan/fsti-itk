@@ -36,8 +36,8 @@ class AnnouncementController extends Controller
             'poster' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $documentPath = $request->hasFile('document') ? $request->file('document')->store('pengumuman', 'public') : null;
-        $posterPath = $request->hasFile('poster') ? $request->file('poster')->store('pengumuman/poster', 'public') : null;
+        $documentPath = $request->hasFile('document') ? $request->file('document')->store('announcements', 'public') : null;
+        $posterPath = $request->hasFile('poster') ? $request->file('poster')->store('announcements', 'public') : null;
 
         Announcement::create([
             'title' => $validated['title'],
@@ -65,12 +65,12 @@ class AnnouncementController extends Controller
 
         if ($request->hasFile('document')) {
             if ($announcement->document_path) Storage::disk('public')->delete($announcement->document_path);
-            $announcement->document_path = $request->file('document')->store('pengumuman', 'public');
-        }
+            $announcement->document_path = $request->file('document')->store('announcements', 'public');
 
-        if ($request->hasFile('poster')) {
-            if ($announcement->poster_path) Storage::disk('public')->delete($announcement->poster_path);
-            $announcement->poster_path = $request->file('poster')->store('pengumuman/poster', 'public');
+            if ($request->hasFile('poster')) {
+                if ($announcement->poster_path) Storage::disk('public')->delete($announcement->poster_path);
+                $announcement->poster_path = $request->file('poster')->store('announcements', 'public');
+            }
         }
 
         $announcement->title = $validated['title'];

@@ -20,26 +20,26 @@ class PublicAlumniController extends Controller
             });
         }
 
-        if ($request->filled('prodi')) {
-            $query->where('study_program', $request->prodi);
+        if ($request->filled('program')) {
+            $query->where('study_program', $request->program);
         }
 
         if ($request->filled('year')) {
             $query->where('graduation_year', $request->year);
         }
 
-        $alumnis = $query->orderBy('graduation_year', 'desc')
-                         ->orderBy('name', 'asc')
-                         ->paginate(20)
-                         ->withQueryString();
+        $alumni = $query->orderBy('graduation_year', 'desc')
+                          ->orderBy('name', 'asc')
+                          ->paginate(20)
+                          ->withQueryString();
 
-        $prodis = Alumni::select('study_program')->distinct()->orderBy('study_program')->pluck('study_program');
+        $studyPrograms = Alumni::select('study_program')->distinct()->orderBy('study_program')->pluck('study_program');
         $years = Alumni::select('graduation_year')->distinct()->orderBy('graduation_year', 'desc')->pluck('graduation_year');
 
         return Inertia::render('Public/Alumni/Index', [
-            'alumnis' => $alumnis,
-            'filters' => $request->only(['search', 'prodi', 'year']),
-            'prodis' => $prodis,
+            'alumni' => $alumni,
+            'filters' => $request->only(['search', 'program', 'year']),
+            'studyPrograms' => $studyPrograms,
             'years' => $years
         ]);
     }

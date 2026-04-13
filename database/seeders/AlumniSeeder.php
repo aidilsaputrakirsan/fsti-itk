@@ -9,10 +9,10 @@ class AlumniSeeder extends Seeder
 {
     public function run(): void
     {
-        $csvFile = database_path('seeders/data_alumni.csv');
+        $csvFile = database_path('seeders/assets/alumni/data_alumni.csv');
 
         if (!file_exists($csvFile)) {
-            $this->command->error("File data_alumni.csv tidak ditemukan di database/seeders/");
+            $this->command->error("File data_alumni.csv tidak ditemukan di database/seeders/assets/alumni/");
             return;
         }
 

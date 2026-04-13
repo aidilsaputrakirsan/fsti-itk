@@ -12,7 +12,7 @@ class SurveyCategoryController extends Controller
     public function index()
     {
         $categories = SurveyCategory::latest()->get();
-        return Inertia::render('Admin/SatisfactionSurveys/Categories', [
+        return Inertia::render('Admin/SurveyCategories/Index', [
             'categories' => $categories
         ]);
     }

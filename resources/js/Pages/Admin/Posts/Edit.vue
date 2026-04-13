@@ -167,14 +167,14 @@ const validateForm = () => {
 const saveAsDraft = () => {
     if (!validateForm()) return;
     form.status = 'Draft';
-    const targetUrl: string = (route as Function)('admin.posts.update', dataPost.id);
+    const targetUrl: string = route('admin.posts.update', dataPost.id);
     form.post(targetUrl);
 };
 
 const publishPost = () => {
     if (!validateForm()) return;
     form.status = 'Terbitkan';
-    const targetUrl: string = (route as Function)('admin.posts.update', dataPost.id);
+    const targetUrl: string = route('admin.posts.update', dataPost.id);
     form.post(targetUrl);
 };
 </script>
@@ -184,7 +184,7 @@ const publishPost = () => {
         <Head :title="'Edit Berita: ' + (dataPost.title || '')" />
 
         <div class="mb-8">
-            <Link :href="(route as Function)('admin.posts.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
+            <Link :href="route('admin.posts.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
                 <ArrowLeftIcon class="h-4 w-4 stroke-2" /> Kembali ke Daftar
             </Link>
             <h1 class="text-3xl font-bold text-gray-900">Edit Berita</h1>
@@ -286,10 +286,9 @@ const publishPost = () => {
                             <option value="Draft">Draft</option>
                             <option value="Terbitkan">Terbitkan</option>
                         </select>
-                        <InputError :message="form.errors.status" />
                     </div>
 
-                    <label class="md:pt-3 text-sm font-bold text-gray-800">Gambar Cover</label>
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Gambar Cover <span class="text-red-600">*</span></label>
                     <div>
                         <div v-if="imagePreview" class="mb-4">
                             <img 
@@ -318,7 +317,7 @@ const publishPost = () => {
                 </div>
 
                 <div class="mt-12 flex flex-col-reverse md:flex-row items-center justify-between gap-4 border-t border-gray-100 pt-6">
-                    <Link :href="(route as Function)('admin.posts.index')" class="w-full md:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                    <Link :href="route('admin.posts.index')" class="w-full md:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
                         Batal
                     </Link>
                     <div class="flex flex-col sm:flex-row w-full md:w-auto gap-3">

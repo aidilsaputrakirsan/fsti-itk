@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\TentangFakultas;
+use App\Models\FacultyProfile;
 use App\Models\Staff;
 use App\Models\StudyProgram;
 use App\Models\Contact;
@@ -14,13 +13,13 @@ class PublicProfileController extends Controller
 {
     public function tentang()
     {
-        $tentang = TentangFakultas::first();
+        $profile = FacultyProfile::first();
 
-        $allProdi = StudyProgram::all();
+        $allStudyPrograms = StudyProgram::all();
         $s1 = 0;
         $s2 = 0;
 
-        foreach ($allProdi as $p) {
+        foreach ($allStudyPrograms as $p) {
             $level = $p->level ?? '';
             $name = strtolower($p->name);
 
@@ -31,28 +30,28 @@ class PublicProfileController extends Controller
             }
         }
 
-        $statistik = [
+        $statistics = [
             'dosen' => Staff::where('type', 'Dosen')->where('is_active', true)->count(),
             'tendik' => Staff::where('type', 'Tendik')->where('is_active', true)->count(),
             'prodi_s1' => $s1,
             'prodi_s2' => $s2,
-            'prodi_total' => $allProdi->count(),
+            'prodi_total' => $allStudyPrograms->count(),
         ];
 
-        return Inertia::render('Public/Profil/Tentang', [
-            'tentang' => $tentang ? $tentang->content : null,
-            'statistik' => $statistik
+        return Inertia::render('Public/Profiles/About', [
+            'profile' => $profile ? $profile->content : null,
+            'statistics' => $statistics
         ]);
     }
 
     public function baganOrganisasi()
     {
-        $tentang = TentangFakultas::first();
+        $profile = FacultyProfile::first();
 
         $baganImage = null;
 
-        if ($tentang && isset($tentang->content['bagan_organisasi']) && $tentang->content['bagan_organisasi']) {
-            $path = $tentang->content['bagan_organisasi'];
+        if ($profile && isset($profile->content['bagan_organisasi']) && $profile->content['bagan_organisasi']) {
+            $path = $profile->content['bagan_organisasi'];
 
             if (str_starts_with($path, 'images/')) {
                 $baganImage = asset($path);
@@ -63,7 +62,7 @@ class PublicProfileController extends Controller
             $baganImage = asset('images/bagan-organisasi.webp');
         }
 
-        return Inertia::render('Public/Profil/BaganOrganisasi', [
+        return Inertia::render('Public/Profiles/OrganizationalChart', [
             'baganImage' => $baganImage
         ]);
     }
@@ -71,7 +70,7 @@ class PublicProfileController extends Controller
     public function kontak()
     {
         $contact = Contact::first();
-        return Inertia::render('Public/Profil/Kontak', [
+        return Inertia::render('Public/Profiles/Contacts', [
             'contact' => $contact
         ]);
     }

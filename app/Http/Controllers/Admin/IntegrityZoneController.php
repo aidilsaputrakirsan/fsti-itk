@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Auth;
 
 class IntegrityZoneController extends Controller
 {
-    // ==========================================
-    // BAGIAN 1: KELOLA PROFIL ZI
-    // ==========================================
     public function profileEdit()
     {
         $profile = ZiProfile::first();
@@ -26,7 +23,7 @@ class IntegrityZoneController extends Controller
             ];
         }
 
-        return Inertia::render('Admin/IntegrityZones/ProfileEdit', [
+        return Inertia::render('Admin/ZiProfiles/Edit', [
             'profile' => $profile
         ]);
     }
@@ -62,13 +59,10 @@ class IntegrityZoneController extends Controller
         return redirect()->back()->with('success', 'Profil Zona Integritas berhasil diperbarui!');
     }
 
-    // ==========================================
-    // BAGIAN 2: KELOLA DOKUMEN ZI
-    // ==========================================
     public function documentIndex()
     {
         $documents = ZiDocument::latest()->paginate(10);
-        return Inertia::render('Admin/IntegrityZones/DocumentIndex', [
+        return Inertia::render('Admin/ZiDocuments/Index', [
             'documents' => $documents
         ]);
     }
@@ -95,13 +89,13 @@ class IntegrityZoneController extends Controller
 
     public function documentCreate()
     {
-        return Inertia::render('Admin/IntegrityZones/DocumentCreate');
+        return Inertia::render('Admin/ZiDocuments/Create');
     }
 
     public function documentEdit($id)
     {
         $document = ZiDocument::findOrFail($id);
-        return Inertia::render('Admin/IntegrityZones/DocumentEdit', [
+        return Inertia::render('Admin/ZiDocuments/Edit', [
             'document' => $document
         ]);
     }
@@ -126,10 +120,12 @@ class IntegrityZoneController extends Controller
             $document->file_url = '/storage/' . $path;
         }
         elseif ($request->filled('file_url') && !$request->hasFile('file')) {
-            if ($document->file_url && str_contains($document->file_url, '/storage/')) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $document->file_url));
+            if ($document->file_url !== $validated['file_url']) {
+                if ($document->file_url && str_contains($document->file_url, '/storage/')) {
+                    Storage::disk('public')->delete(str_replace('/storage/', '', $document->file_url));
+                }
+                $document->file_url = $validated['file_url'];
             }
-            $document->file_url = $validated['file_url'];
         }
 
         $document->save();

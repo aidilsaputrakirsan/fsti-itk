@@ -44,17 +44,17 @@ class DatabaseSeeder extends Seeder
             SurveyCategorySeeder::class,
             InternalServiceSeeder::class,
             ContactSeeder::class,
-            TentangFakultasSeeder::class,
+            FacultyProfileSeeder::class,
             StudyProgramSeeder::class,
             StaffSeeder::class,
-            KegiatanMahasiswaSeeder::class,
-            AgendaFakultasSeeder::class,
-            BeasiswaSeeder::class,
+            StudentActivitySeeder::class,
+            AgendaSeeder::class,
+            ScholarshipSeeder::class,
             PartnerSeeder::class,
             AnnouncementSeeder::class,
-            PenelitianSeeder::class,
+            ResearchSeeder::class,
             AlumniSeeder::class,
-            PengabdianSeeder::class,
+            CommunityServiceSeeder::class,
         ]);
     }
 }

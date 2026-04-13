@@ -69,7 +69,7 @@ const closeDeleteModal = () => {
 
 const confirmDelete = () => {
     if (itemToDelete.value) {
-        router.delete((route as Function)('admin.post-categories.destroy', itemToDelete.value.id), {
+        router.delete(route('admin.post-categories.destroy', itemToDelete.value.id), {
             onSuccess: () => closeDeleteModal(),
         });
     }
@@ -107,7 +107,7 @@ watch([flashSuccess, flashError], ([successMsg, errorMsg]) => {
                 <h1 class="text-3xl font-bold text-gray-900">Kelola Kategori Berita</h1>
                 <p class="mt-1 text-gray-600">Manajemen kelompok dan kategori untuk publikasi berita ITK.</p>
             </div>
-            <Link :href="(route as Function)('admin.post-categories.create')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
+            <Link :href="route('admin.post-categories.create')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
                 <PlusIcon class="h-5 w-5 stroke-2" />
                 Tambah Kategori
             </Link>
@@ -139,7 +139,7 @@ watch([flashSuccess, flashError], ([successMsg, errorMsg]) => {
                             </td>
                             <td>
                                 <div class="flex items-center justify-center gap-3">
-                                    <Link :href="(route as Function)('admin.post-categories.edit', item.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
+                                    <Link :href="route('admin.post-categories.edit', item.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
                                         <PencilSquareIcon class="h-4 w-4" /> Edit
                                     </Link>
                                     <span class="text-gray-300">|</span>

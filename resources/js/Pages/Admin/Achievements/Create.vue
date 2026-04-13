@@ -8,23 +8,23 @@ import { ref } from 'vue';
 defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
-  studyPrograms: Array<any>;
+    studyPrograms: Array<any>;
 }>();
 
 const imageInput = ref<HTMLInputElement | null>(null);
 const certificateInput = ref<HTMLInputElement | null>(null);
 
 const form = useForm({
-  student_name: '',
-  student_nim: '',    
-  study_program: '',  
-  title: '',
-  category: '', 
-  level: '', 
-  organizer: '',
-  year: new Date().getFullYear(),
-  image: null as File | null, 
-  certificate: null as File | null,
+    student_name: '',
+    student_nim: '',    
+    study_program: '',  
+    title: '',
+    category: '', 
+    level: '', 
+    organizer: '',
+    year: new Date().getFullYear(),
+    image: null as File | null, 
+    certificate: null as File | null,
 });
 
 const handleImageChange = (event: Event) => {

@@ -17,45 +17,45 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 const props = defineProps({
-    alumnis: Object,
+    alumni: Object,
     filters: Object,
-    prodis: Array,
+    studyPrograms: Array,
     years: Array
 });
 
 const searchQuery = ref(props.filters.search || '');
-const selectedProdi = ref(props.filters.prodi || '');
+const selectedProgram = ref(props.filters.program || '');
 const selectedYear = ref(props.filters.year || '');
 
-const isProdiOpen = ref(false);
+const isProgramOpen = ref(false);
 const isYearOpen = ref(false);
 
-const prodiBtnRef = ref(null);
+const programBtnRef = ref(null);
 const yearBtnRef = ref(null);
 
-const prodiDropdownStyle = ref({});
+const programDropdownStyle = ref({});
 const yearDropdownStyle = ref({});
 
 const toggleDropdown = (type) => {
-    if (type === 'prodi') {
+    if (type === 'program') {
         isYearOpen.value = false;
-        if (isProdiOpen.value) {
-            isProdiOpen.value = false;
+        if (isProgramOpen.value) {
+            isProgramOpen.value = false;
         } else {
-            const button = prodiBtnRef.value;
+            const button = programBtnRef.value;
             if (button) {
                 const rect = button.getBoundingClientRect();
-                prodiDropdownStyle.value = {
+                programDropdownStyle.value = {
                     position: 'absolute',
                     top: `${rect.bottom + window.scrollY + 8}px`,
                     left: `${rect.left}px`,
                     width: `${rect.width}px`,
                 };
             }
-            isProdiOpen.value = true;
+            isProgramOpen.value = true;
         }
     } else if (type === 'year') {
-        isProdiOpen.value = false;
+        isProgramOpen.value = false;
         if (isYearOpen.value) {
             isYearOpen.value = false;
         } else {
@@ -75,9 +75,9 @@ const toggleDropdown = (type) => {
 };
 
 function selectOption(type, value) {
-    if (type === 'prodi') {
-        selectedProdi.value = value;
-        isProdiOpen.value = false;
+    if (type === 'program') {
+        selectedProgram.value = value;
+        isProgramOpen.value = false;
     } else if (type === 'year') {
         selectedYear.value = value;
         isYearOpen.value = false;
@@ -85,9 +85,9 @@ function selectOption(type, value) {
 }
 
 const handleClickOutside = (event) => {
-    if (prodiBtnRef.value && !prodiBtnRef.value.contains(event.target)) {
-        const menu = document.getElementById('prodi-dropdown-menu');
-        if (menu && !menu.contains(event.target)) isProdiOpen.value = false;
+    if (programBtnRef.value && !programBtnRef.value.contains(event.target)) {
+        const menu = document.getElementById('program-dropdown-menu');
+        if (menu && !menu.contains(event.target)) isProgramOpen.value = false;
     }
     if (yearBtnRef.value && !yearBtnRef.value.contains(event.target)) {
         const menu = document.getElementById('year-dropdown-menu');
@@ -103,10 +103,10 @@ onUnmounted(() => {
     document.removeEventListener('mousedown', handleClickOutside);
 });
 
-watch([searchQuery, selectedProdi, selectedYear], throttle(([newSearch, newProdi, newYear]) => {
+watch([searchQuery, selectedProgram, selectedYear], throttle(([newSearch, newProgram, newYear]) => {
     router.get(route('alumni.index'), { 
         search: newSearch, 
-        prodi: newProdi, 
+        program: newProgram, 
         year: newYear 
     }, { 
         preserveState: true, 
@@ -117,17 +117,17 @@ watch([searchQuery, selectedProdi, selectedYear], throttle(([newSearch, newProdi
 
 const resetFilters = () => {
     searchQuery.value = '';
-    selectedProdi.value = '';
+    selectedProgram.value = '';
     selectedYear.value = '';
 };
 
 const currentPage = computed(() => {
-    const activeLink = props.alumnis.links.find(link => link.active);
+    const activeLink = props.alumni.links.find(link => link.active);
     return activeLink ? parseInt(activeLink.label) : 1;
 });
 
 const totalPages = computed(() => {
-    return props.alumnis.links.length > 2 ? props.alumnis.links.length - 2 : 1;
+    return props.alumni.links.length > 2 ? props.alumni.links.length - 2 : 1;
 });
 
 const visiblePages = computed(() => {
@@ -144,7 +144,7 @@ const changePage = (page) => {
     if (typeof page === 'number' && page >= 1 && page <= totalPages.value) {
         router.get(route('alumni.index'), {
             search: searchQuery.value,
-            prodi: selectedProdi.value,
+            program: selectedProgram.value,
             year: selectedYear.value,
             page: page 
         }, {
@@ -210,12 +210,12 @@ const changePage = (page) => {
                     <div class="flex flex-col sm:flex-row gap-4 md:w-[45%]">
                         <div class="relative w-full sm:w-3/5">
                             <button 
-                                ref="prodiBtnRef"
-                                @click="toggleDropdown('prodi')"
+                                ref="programBtnRef"
+                                @click="toggleDropdown('program')"
                                 class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors focus:ring-2 focus:ring-primary focus:border-primary"
                             >
-                                <span class="truncate">{{ selectedProdi || 'Semua Program Studi' }}</span>
-                                <ChevronDown class="w-5 h-5 text-primary/60 transition-transform duration-200 shrink-0" :class="{'rotate-180': isProdiOpen}" />
+                                <span class="truncate">{{ selectedProgram || 'Semua Program Studi' }}</span>
+                                <ChevronDown class="w-5 h-5 text-primary/60 transition-transform duration-200 shrink-0" :class="{'rotate-180': isProgramOpen}" />
                             </button>
                             <BookOpen class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary pointer-events-none" />
                         </div>
@@ -234,11 +234,11 @@ const changePage = (page) => {
                     </div>
                 </div>
 
-                <div v-if="searchQuery || selectedProdi || selectedYear" class="mb-8 px-2 md:px-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-aos="fade-in">
+                <div v-if="searchQuery || selectedProgram || selectedYear" class="mb-8 px-2 md:px-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-aos="fade-in">
                     <h3 class="text-lg font-bold text-slate-700 flex items-center flex-wrap gap-x-1.5">
                         <span class="text-slate-400 font-medium">Menampilkan hasil untuk:</span>
                         <span v-if="searchQuery" class="text-primary">"{{ searchQuery }}"</span>
-                        <span v-if="selectedProdi" class="px-2.5 py-1 bg-primary/10 text-primary rounded-lg text-sm">{{ selectedProdi }}</span>
+                        <span v-if="selectedProgram" class="px-2.5 py-1 bg-primary/10 text-primary rounded-lg text-sm">{{ selectedProgram }}</span>
                         <span v-if="selectedYear" class="px-2.5 py-1 bg-[#D9FFFE]/80 text-[#00509D] rounded-lg text-sm">Tahun {{ selectedYear }}</span>
                     </h3>
                     
@@ -247,7 +247,7 @@ const changePage = (page) => {
                     </button>
                 </div>
 
-                <div v-if="alumnis.data.length === 0" class="text-center py-20 bg-white rounded-[2rem] border border-dashed border-slate-300 shadow-sm mx-2 md:mx-8" data-aos="fade-up">
+                <div v-if="alumni.data.length === 0" class="text-center py-20 bg-white rounded-[2rem] border border-dashed border-slate-300 shadow-sm mx-2 md:mx-8" data-aos="fade-up">
                     <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-slate-100">
                         <Users class="w-10 h-10 text-slate-300" />
                     </div>
@@ -270,17 +270,17 @@ const changePage = (page) => {
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
-                                <tr v-for="alumni in alumnis.data" :key="alumni.id" class="hover:bg-slate-50/80 transition-colors duration-200 group">
-                                    <td class="px-6 py-4 text-slate-600 font-bold text-sm">{{ alumni.nim }}</td>
-                                    <td class="px-6 py-4 font-bold text-slate-800 group-hover:text-primary transition-colors">{{ alumni.name }}</td>
+                                <tr v-for="item in alumni.data" :key="item.id" class="hover:bg-slate-50/80 transition-colors duration-200 group">
+                                    <td class="px-6 py-4 text-slate-600 font-bold text-sm">{{ item.nim }}</td>
+                                    <td class="px-6 py-4 font-bold text-slate-800 group-hover:text-primary transition-colors">{{ item.name }}</td>
                                     <td class="px-6 py-4 text-sm">
                                         <span class="px-3 py-1.5 bg-slate-50 border border-slate-100 text-slate-600 rounded-lg font-semibold group-hover:bg-blue-50 group-hover:text-primary group-hover:border-blue-100 transition-colors">
-                                            {{ alumni.study_program }}
+                                            {{ item.study_program }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         <span class="inline-flex items-center justify-center w-14 h-8 rounded-lg bg-slate-100 text-slate-600 font-bold text-sm group-hover:bg-[#D9FFFE]/80 group-hover:text-[#00509D] transition-colors">
-                                            {{ alumni.graduation_year }}
+                                            {{ item.graduation_year }}
                                         </span>
                                     </td>
                                 </tr>
@@ -291,7 +291,7 @@ const changePage = (page) => {
 
                 <div v-if="totalPages > 1" class="mt-10 mx-2 md:mx-8 flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-slate-100" data-aos="fade-in">
                     <p class="text-sm font-medium text-slate-500 text-center md:text-left">
-                        Menampilkan <span class="text-primary font-bold">{{ alumnis.from }}</span> - <span class="text-primary font-bold">{{ alumnis.to }}</span> dari <span class="text-primary font-bold">{{ alumnis.total }}</span> Data
+                        Menampilkan <span class="text-primary font-bold">{{ alumni.from }}</span> - <span class="text-primary font-bold">{{ alumni.to }}</span> dari <span class="text-primary font-bold">{{ alumni.total }}</span> Data
                     </p>
                     
                     <div class="flex flex-wrap justify-center items-center gap-2">
@@ -336,12 +336,12 @@ const changePage = (page) => {
 
     <Teleport to="body">
         <transition enter-active-class="ease-out duration-100" enter-from-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100" leave-active-class="ease-in duration-75" leave-from-class="opacity-100" leave-to-class="opacity-0">
-            <div v-if="isProdiOpen" id="prodi-dropdown-menu" :style="prodiDropdownStyle" class="z-[9999] bg-white rounded-xl shadow-xl border border-slate-100 py-2 font-public-sans overflow-hidden max-h-60 overflow-y-auto">
-                <a @click="selectOption('prodi', '')" class="block px-5 py-3 text-sm text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': selectedProdi === ''}">
+            <div v-if="isProgramOpen" id="program-dropdown-menu" :style="programDropdownStyle" class="z-[9999] bg-white rounded-xl shadow-xl border border-slate-100 py-2 font-public-sans overflow-hidden max-h-60 overflow-y-auto">
+                <a @click="selectOption('program', '')" class="block px-5 py-3 text-sm text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': selectedProgram === ''}">
                     Semua Program Studi
                 </a>
-                <a v-for="prodi in prodis" :key="prodi" @click="selectOption('prodi', prodi)" class="block px-5 py-3 text-sm text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': selectedProdi === prodi}">
-                    {{ prodi }}
+                <a v-for="program in studyPrograms" :key="program" @click="selectOption('program', program)" class="block px-5 py-3 text-sm text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': selectedProgram === program}">
+                    {{ program }}
                 </a>
             </div>
         </transition>

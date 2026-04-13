@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Achievement;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class AchievementSeeder extends Seeder
 {
@@ -12,15 +13,10 @@ class AchievementSeeder extends Seeder
     {
         Achievement::truncate();
 
-        $storagePrestasiPath = storage_path('app/public/prestasi');
-        $assetPrestasiPath = database_path('seeders/assets/prestasi');
+        $sourcePath = database_path('seeders' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'achievements');
 
-        if (!File::exists($storagePrestasiPath)) {
-            File::makeDirectory($storagePrestasiPath, 0755, true);
-        }
-
-        foreach (File::files($storagePrestasiPath) as $file) {
-            File::delete($file);
+        if (!Storage::disk('public')->exists('achievements')) {
+            Storage::disk('public')->makeDirectory('achievements');
         }
 
         $data = [
@@ -33,7 +29,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Duta Pustaka Indonesia',
                 'year' => 2025,
-                'image_path' => 'prestasi/duta.png'
+                'image_path' => 'achievements/duta.png'
             ],
             [
                 'student_name' => "Karina Ambar Wati",
@@ -44,7 +40,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Kota/Kabupaten',
                 'organizer' => 'Kota Balikpapan',
                 'year' => 2025,
-                'image_path' => 'prestasi/silat.png'
+                'image_path' => 'achievements/silat.png'
             ],
             [
                 'student_name' => "Tim Recraft",
@@ -55,7 +51,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Kota/Kabupaten',
                 'organizer' => 'Kecamatan Balikpapan Utara',
                 'year' => 2025,
-                'image_path' => 'prestasi/ttg-balikpapan-utara.png'
+                'image_path' => 'achievements/ttg-balikpapan-utara.png'
             ],
             [
                 'student_name' => "Siti Aminatuzzuhriyah\nZidane Alfarizi\nRifki Anashirul",
@@ -66,7 +62,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Kota/Kabupaten',
                 'organizer' => 'Bappeda Litbang Kota Balikpapan',
                 'year' => 2025,
-                'image_path' => 'prestasi/krenova.png'
+                'image_path' => 'achievements/krenova.png'
             ],
             [
                 'student_name' => "Karina Ambar Wati",
@@ -77,7 +73,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Provinsi',
                 'organizer' => 'Koni Bayan',
                 'year' => 2025,
-                'image_path' => 'prestasi/koni-bayan.png'
+                'image_path' => 'achievements/koni-bayan.png'
             ],
             [
                 'student_name' => "Tim Himawari",
@@ -88,7 +84,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'UKM ITC Universitas Trunojoyo Madura',
                 'year' => 2025,
-                'image_path' => 'prestasi/technotainment.png'
+                'image_path' => 'achievements/technotainment.png'
             ],
             [
                 'student_name' => "Tim Debat Pemuda ITK",
@@ -99,7 +95,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Kota/Kabupaten',
                 'organizer' => 'Disporapar Kota Balikpapan',
                 'year' => 2025,
-                'image_path' => 'prestasi/debat.png'
+                'image_path' => 'achievements/debat.png'
             ],
             [
                 'student_name' => "Tim ECO-MAHAR",
@@ -110,7 +106,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Pertamina Foundation',
                 'year' => 2025,
-                'image_path' => 'prestasi/eco-mahar.png'
+                'image_path' => 'achievements/eco-mahar.png'
             ],
             [
                 'student_name' => "Gibran Ivantry Dilma\nMohammad Qudus\nZahra Elycia Armans",
@@ -121,7 +117,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Universitas Brawijaya Malang',
                 'year' => 2025,
-                'image_path' => 'prestasi/uiux-itfest.png'
+                'image_path' => 'achievements/uiux-itfest.png'
             ],
             [
                 'student_name' => "Tim Sugar Monster",
@@ -132,7 +128,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Universitas Bunda Mulia',
                 'year' => 2025,
-                'image_path' => 'prestasi/technoart.png'
+                'image_path' => 'achievements/technoart.png'
             ],
             [
                 'student_name' => "Tim Medisense ITK",
@@ -143,7 +139,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Universitas',
                 'organizer' => 'Dies Natalis Institut Teknologi Kalimantan',
                 'year' => 2025,
-                'image_path' => 'prestasi/techno-dies.png'
+                'image_path' => 'achievements/techno-dies.png'
             ],
             [
                 'student_name' => "Tim Blessplast",
@@ -154,7 +150,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Pertamina Foundation',
                 'year' => 2025,
-                'image_path' => 'prestasi/pfmuda.png'
+                'image_path' => 'achievements/pfmuda.png'
             ],
             [
                 'student_name' => "Tim KidUp",
@@ -165,7 +161,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Compassionate Gamification Challenge 2025 (CGC 2025)',
                 'year' => 2025,
-                'image_path' => 'prestasi/gamification.png'
+                'image_path' => 'achievements/gamification.png'
             ],
             [
                 'student_name' => "Danang Windaryoko\nKeyshal Naufal Juliantila\nRafi Muhammad Akbar",
@@ -176,7 +172,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Universitas',
                 'organizer' => 'Teknik Perkapalan ITK',
                 'year' => 2025,
-                'image_path' => 'prestasi/etam-ship.png'
+                'image_path' => 'achievements/etam-ship.png'
             ],
             [
                 'student_name' => "Tim KidUp",
@@ -187,7 +183,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Provinsi',
                 'organizer' => 'Bank Indonesia Kantor Perwakilan Balikpapan',
                 'year' => 2025,
-                'image_path' => 'prestasi/mahligai.png'
+                'image_path' => 'achievements/mahligai.png'
             ],
             [
                 'student_name' => "Dwi Arnesta Saputra",
@@ -198,7 +194,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Inteleksa & HMDE Universitas Andalas',
                 'year' => 2025,
-                'image_path' => 'prestasi/inteleksa.png'
+                'image_path' => 'achievements/inteleksa.png'
             ],
             [
                 'student_name' => "Michell Patricia",
@@ -209,7 +205,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Provinsi',
                 'organizer' => 'Universitas Mulawarman',
                 'year' => 2025,
-                'image_path' => 'prestasi/taekwondo.png'
+                'image_path' => 'achievements/taekwondo.png'
             ],
             [
                 'student_name' => "Muhammad Hafidz Ardan\nAmelia Ramadhani\nFebriyanti Nur",
@@ -220,7 +216,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'HIMASADA Universitas Negeri Surabaya',
                 'year' => 2025,
-                'image_path' => 'prestasi/himasada.png'
+                'image_path' => 'achievements/himasada.png'
             ],
             [
                 'student_name' => "Nadya Azwarelda Haryanto\nAhmad Tijani Noor\nAura Nabil Arsy\nMila Fitria Sari",
@@ -231,7 +227,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'BPJS Kesehatan Pusat',
                 'year' => 2025,
-                'image_path' => 'prestasi/aktuaria.png'
+                'image_path' => 'achievements/aktuaria.png'
             ],
             [
                 'student_name' => "Tim KidUp",
@@ -242,31 +238,28 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Universitas Kristen Duta Wacana',
                 'year' => 2025,
-                'image_path' => 'prestasi/uyuh-handak.png'
+                'image_path' => 'achievements/uyuh-handak.png'
             ]
         ];
 
         $copiedCount = 0;
 
         foreach ($data as $item) {
-
             if (!empty($item['image_path'])) {
                 $imageName = basename($item['image_path']);
+                $fullSourcePath = $sourcePath . DIRECTORY_SEPARATOR . $imageName;
 
-                $sourceFile = $assetPrestasiPath . '/' . $imageName;
-                $destinationFile = $storagePrestasiPath . '/' . $imageName;
-
-                if (File::exists($sourceFile)) {
-                    File::copy($sourceFile, $destinationFile);
+                if (File::exists($fullSourcePath)) {
+                    Storage::disk('public')->put('achievements/' . $imageName, File::get($fullSourcePath));
                     $copiedCount++;
                 } else {
-                    $this->command->warn("Peringatan: File Gambar '{$imageName}' tidak ditemukan di assets/prestasi!");
+                    $this->command->error("GAGAL: Gambar {$imageName} tidak ditemukan di path: {$fullSourcePath}");
                 }
             }
 
             Achievement::create($item);
         }
 
-        $this->command->info("Selesai! " . count($data) . " Data Prestasi berhasil di-seed. Total {$copiedCount} gambar disalin ke Storage.");
+        $this->command->info("Selesai! " . count($data) . " Data Prestasi di-seed. Total {$copiedCount} gambar disalin ke Storage.");
     }
 }

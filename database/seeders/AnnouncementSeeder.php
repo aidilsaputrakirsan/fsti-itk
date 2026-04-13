@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Announcement;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class AnnouncementSeeder extends Seeder
 {
@@ -12,17 +13,16 @@ class AnnouncementSeeder extends Seeder
     {
         Announcement::truncate();
 
-        $storagePdfPath = storage_path('app/public/pengumuman');
-        $storagePosterPath = storage_path('app/public/pengumuman/poster');
+        $assetPath = database_path('seeders' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'announcements');
 
-        $assetPdfPath = database_path('seeders/assets/pengumuman');
-        $assetPosterPath = database_path('seeders/assets/pengumuman/poster');
+        if (!Storage::disk('public')->exists('announcements')) {
+            Storage::disk('public')->makeDirectory('announcements');
+        }
 
-        if (!File::exists($storagePdfPath)) File::makeDirectory($storagePdfPath, 0755, true);
-        if (!File::exists($storagePosterPath)) File::makeDirectory($storagePosterPath, 0755, true);
-
-        foreach (File::files($storagePdfPath) as $file) File::delete($file);
-        foreach (File::files($storagePosterPath) as $file) File::delete($file);
+        $existingFiles = Storage::disk('public')->files('announcements');
+        foreach ($existingFiles as $file) {
+            Storage::disk('public')->delete($file);
+        }
 
         $announcements = [
             [
@@ -48,26 +48,24 @@ class AnnouncementSeeder extends Seeder
             $posPath = null;
 
             if ($data['document']) {
-                $sourceFile = $assetPdfPath . '/' . $data['document'];
-                $destinationFile = $storagePdfPath . '/' . $data['document'];
+                $sourceFile = $assetPath . DIRECTORY_SEPARATOR . $data['document'];
                 if (File::exists($sourceFile)) {
-                    File::copy($sourceFile, $destinationFile);
+                    Storage::disk('public')->put('announcements/' . $data['document'], File::get($sourceFile));
                     $copiedCount++;
-                    $docPath = 'pengumuman/' . $data['document'];
+                    $docPath = 'announcements/' . $data['document'];
                 } else {
-                    $this->command->warn("Peringatan: File PDF '{$data['document']}' tidak ditemukan di assets/pengumuman!");
+                    $this->command->warn("Peringatan: File PDF '{$data['document']}' tidak ditemukan di assets/announcements!");
                 }
             }
 
             if ($data['poster']) {
-                $sourceFile = $assetPosterPath . '/' . $data['poster'];
-                $destinationFile = $storagePosterPath . '/' . $data['poster'];
+                $sourceFile = $assetPath . DIRECTORY_SEPARATOR . $data['poster'];
                 if (File::exists($sourceFile)) {
-                    File::copy($sourceFile, $destinationFile);
+                    Storage::disk('public')->put('announcements/' . $data['poster'], File::get($sourceFile));
                     $copiedCount++;
-                    $posPath = 'pengumuman/poster/' . $data['poster'];
+                    $posPath = 'announcements/' . $data['poster'];
                 } else {
-                    $this->command->warn("Peringatan: File Poster '{$data['poster']}' tidak ditemukan di assets/pengumuman/poster!");
+                    $this->command->warn("Peringatan: File Poster '{$data['poster']}' tidak ditemukan di assets/announcements!");
                 }
             }
 

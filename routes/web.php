@@ -6,50 +6,50 @@ use Inertia\Inertia;
 // ==============================================================================
 // CONTROLLER ADMIN
 // ==============================================================================
-use App\Http\Controllers\Admin\AchievementsController;
-use App\Http\Controllers\Admin\AgendaFakultasController as AdminAgendaFakultasController;
+use App\Http\Controllers\Admin\AchievementController;
+use App\Http\Controllers\Admin\AgendaController;
 use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
 use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
-use App\Http\Controllers\Admin\BeasiswaController as AdminBeasiswaController;
+use App\Http\Controllers\Admin\CommunityServiceController;
 use App\Http\Controllers\Admin\ContactController as AdminContactController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\FacultyProfileController;
 use App\Http\Controllers\Admin\IntegrityZoneController;
 use App\Http\Controllers\Admin\InternalServiceController;
-use App\Http\Controllers\Admin\KategoriPpidController;
-use App\Http\Controllers\Admin\KegiatanMahasiswaController as AdminKegiatanMahasiswaController;
 use App\Http\Controllers\Admin\PartnerController as AdminPartnerController;
-use App\Http\Controllers\Admin\PenelitianController as AdminPenelitianController;
-use App\Http\Controllers\Admin\PengabdianController as AdminPengabdianController;
 use App\Http\Controllers\Admin\PostCategoryController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
-use App\Http\Controllers\Admin\PpidController as AdminPpidController;
+use App\Http\Controllers\Admin\PpidCategoryController;
 use App\Http\Controllers\Admin\SatisfactionSurveyController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\StudyProgramController as AdminStudyProgramController;
 use App\Http\Controllers\Admin\SurveyCategoryController;
-use App\Http\Controllers\Admin\TentangFakultasController;
+use App\Http\Controllers\Admin\PpidDocumentController;
+use App\Http\Controllers\Admin\ResearchController;
+use App\Http\Controllers\Admin\ScholarshipController;
+use App\Http\Controllers\Admin\StudentActivityController;
 use App\Http\Controllers\Admin\UserController;
 
 // ==============================================================================
 // CONTROLLER PUBLIK
 // ==============================================================================
 use App\Http\Controllers\Public\PublicAchievementController;
-use App\Http\Controllers\Public\PublicAgendaFakultasController;
 use App\Http\Controllers\Public\PublicAlumniController;
 use App\Http\Controllers\Public\PublicAnnouncementController;
-use App\Http\Controllers\Public\PublicBeasiswaController;
-use App\Http\Controllers\Public\PublicKegiatanMahasiswaController;
 use App\Http\Controllers\Public\PublicPartnerController;
-use App\Http\Controllers\Public\PublicPenelitianController;
-use App\Http\Controllers\Public\PublicPengabdianController;
 use App\Http\Controllers\Public\PublicPostController;
-use App\Http\Controllers\Public\PublicPpidController;
 use App\Http\Controllers\Public\PublicProfileController;
-use App\Http\Controllers\Public\PublicProgramStudiController;
 use App\Http\Controllers\Public\PublicStaffController;
-use App\Http\Controllers\Public\PublicSurveiController;
-use App\Http\Controllers\Public\PublicZonaIntegritasController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Public\PublicAgendaController;
+use App\Http\Controllers\Public\PublicCommunityServiceController;
+use App\Http\Controllers\Public\PublicIntegrityZoneController;
+use App\Http\Controllers\Public\PublicPpidDocumentController;
+use App\Http\Controllers\Public\PublicResearchController;
+use App\Http\Controllers\Public\PublicSatisfactionSurveyController;
+use App\Http\Controllers\Public\PublicScholarshipController;
+use App\Http\Controllers\Public\PublicStudentActivityController;
+use App\Http\Controllers\Public\PublicStudyProgramController;
 
 // ==============================================================================
 // MODEL
@@ -69,8 +69,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('/users', UserController::class);
 
     // MODUL TENTANG FAKULTAS
-    Route::get('/tentang-fakultas', [TentangFakultasController::class, 'edit'])->name('tentang.edit');
-    Route::put('/tentang-fakultas', [TentangFakultasController::class, 'update'])->name('tentang.update');
+    Route::get('/tentang-fakultas', [FacultyProfileController::class, 'edit'])->name('faculty-profiles.edit');
+    Route::put('/tentang-fakultas', [FacultyProfileController::class, 'update'])->name('faculty-profiles.update');
 
     // MODUL KONTAK
     Route::get('/contacts', [AdminContactController::class, 'edit'])->name('contacts.edit');
@@ -92,31 +92,36 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('announcements', AdminAnnouncementController::class);
 
     // MODUL AGENDA FAKULTAS
-    Route::resource('/agenda-fakultas', AdminAgendaFakultasController::class);
+    Route::resource('/agenda-fakultas', AgendaController::class);
 
     // MODUL PRESTASI
-    Route::resource('/achievements', AchievementsController::class);
+    Route::resource('/achievements', AchievementController::class);
 
     // MODUL KEGIATAN MAHASISWA
-    Route::resource('kegiatan-mahasiswa', AdminKegiatanMahasiswaController::class);
+    Route::resource('kegiatan-mahasiswa', StudentActivityController::class)
+        ->parameters(['kegiatan_mahasiswa' => 'studentActivity']);
 
     // MODUL PENELITIAN
-    Route::resource('penelitian', AdminPenelitianController::class)->except(['show']);
+    Route::resource('penelitian', ResearchController::class)
+        ->parameters(['penelitian' => 'research'])
+        ->except(['show']);
 
     // MODUL PENGABDIAN
-    Route::resource('pengabdian', AdminPengabdianController::class)->except(['show']);
+    Route::resource('pengabdian', CommunityServiceController::class)
+        ->parameters(['pengabdian' => 'communityService'])
+        ->except(['show']);
 
     // MODUL LAYANAN 
     Route::resource('/internal-services', InternalServiceController::class);
 
     // MODUL PPID
-    Route::resource('/ppid', AdminPpidController::class);
+    Route::resource('/ppid', PpidDocumentController::class);
 
     // MODUL KATEGORI PPID
-    Route::resource('/kategori-ppid', KategoriPpidController::class);
+    Route::resource('/kategori-ppid', PpidCategoryController::class);
 
     // MODUL BEASISWA
-    Route::resource('beasiswa', AdminBeasiswaController::class);
+    Route::resource('beasiswa', ScholarshipController::class)->parameters(['beasiswa' => 'scholarship']);
 
     // MODUL ALUMNI
     Route::resource('/alumni', AdminAlumniController::class)->parameters(['alumni' => 'alumnus']);
@@ -177,7 +182,7 @@ Route::get('/', function () {
             'certificate_url' => $item->certificate_path ? asset('storage/' . $item->certificate_path) : null,
         ]);
 
-    $tentang = \App\Models\TentangFakultas::first();
+    $profile = \App\Models\FacultyProfile::first();
 
     $allProdi = \App\Models\StudyProgram::all();
     $s1 = 0;
@@ -194,7 +199,7 @@ Route::get('/', function () {
         }
     }
 
-    $statistik = [
+    $statistics = [
         'dosen' => \App\Models\Staff::where('type', 'Dosen')->where('is_active', true)->count(),
         'tendik' => \App\Models\Staff::where('type', 'Tendik')->where('is_active', true)->count(),
         'prodi_s1' => $s1,
@@ -208,26 +213,26 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'latestPosts' => $latestPosts,
         'latestAchievements' => $latestAchievements,
-        'tentang' => $tentang ? $tentang->content : null,
-        'statistik' => $statistik,
+        'profile' => $profile ? $profile->content : null,
+        'statistics' => $statistics,
     ]);
 })->name('home');
 
 // HALAMAN BERITA
-Route::get('/berita', [PublicPostController::class, 'index'])->name('berita.index');
-Route::get('/berita/{post:slug}', [PublicPostController::class, 'show'])->name('berita.show');
+Route::get('/berita', [PublicPostController::class, 'index'])->name('posts.index');
+Route::get('/berita/{post:slug}', [PublicPostController::class, 'show'])->name('posts.show');
 
 // HALAMAN PRESTASI
-Route::get('/prestasi', [PublicAchievementController::class, 'index'])->name('prestasi.index');
+Route::get('/prestasi', [PublicAchievementController::class, 'index'])->name('achievements.index');
 
 // HALAMAN TENTANG FAKULTAS
-Route::get('/profil/tentang', [PublicProfileController::class, 'tentang'])->name('profil.tentang');
+Route::get('/profil/tentang', [PublicProfileController::class, 'tentang'])->name('profiles.about');
 
 // HALAMAN BAGAN ORGANISASI
-Route::get('/profil/bagan-organisasi', [PublicProfileController::class, 'baganOrganisasi'])->name('bagan-organisasi');
+Route::get('/profil/bagan-organisasi', [PublicProfileController::class, 'baganOrganisasi'])->name('profiles.organizational-chart');
 
 // HALAMAN KONTAK
-Route::get('/kontak', [PublicProfileController::class, 'kontak'])->name('kontak');
+Route::get('/kontak', [PublicProfileController::class, 'kontak'])->name('profiles.contact');
 
 // HALAMAN KERJASAMA
 Route::get('/profil/kerjasama', function () {
@@ -235,46 +240,46 @@ Route::get('/profil/kerjasama', function () {
 })->name('profil.kerjasama');
 
 // HALAMAN PIMPINAN FAKULTAS
-Route::get('/profil/pimpinan-fakultas', [PublicStaffController::class, 'pimpinanFakultas'])->name('profil.pimpinan-fakultas');
+Route::get('/profil/pimpinan-fakultas', [PublicStaffController::class, 'pimpinanFakultas'])->name('profiles.faculty-leaders');
 
 // HALAMAN PIMPINAN JURUSAN
-Route::get('/profil/pimpinan-jurusan', [PublicStaffController::class, 'pimpinanJurusan'])->name('profil.pimpinan-jurusan');
+Route::get('/profil/pimpinan-jurusan', [PublicStaffController::class, 'pimpinanJurusan'])->name('profiles.department-leaders');
 
 // HALAMAN PIMPINAN PROGRAM STUDI
-Route::get('/profil/pimpinan-prodi', [PublicStaffController::class, 'pimpinanProdi'])->name('profil.pimpinan-prodi');
+Route::get('/profil/pimpinan-prodi', [PublicStaffController::class, 'pimpinanProdi'])->name('profiles.program-leaders');
 
 // HALAMAN PIMPINAN LABORATORIUM
-Route::get('/profil/pimpinan-laboratorium', [PublicStaffController::class, 'pimpinanLaboratorium'])->name('profil.pimpinan-laboratorium');
+Route::get('/profil/pimpinan-laboratorium', [PublicStaffController::class, 'pimpinanLaboratorium'])->name('profiles.lab-leaders');
 
 // HALAMAN DOSEN
-Route::get('/profil/dosen', [PublicStaffController::class, 'dosen'])->name('profil.dosen');
+Route::get('/profil/dosen', [PublicStaffController::class, 'dosen'])->name('profiles.lecturers');
 
 // HALAMAN TENAGA KEPENDIDIKAN
-Route::get('/profil/tenaga-kependidikan', [PublicStaffController::class, 'tendik'])->name('profil.tenaga-kependidikan');
+Route::get('/profil/tenaga-kependidikan', [PublicStaffController::class, 'tendik'])->name('profiles.support-staff');
 
 // HALAMAN PROGRAM STUDI
-Route::get('/prodi/{slug}', [PublicProgramStudiController::class, 'show'])->name('public.prodi.show');
+Route::get('/prodi/{slug}', [PublicStudyProgramController::class, 'show'])->name('study-programs.show');
 
 // HALAMAN KEGIATAN MAHASISWA
-Route::get('/kegiatan-mahasiswa', [PublicKegiatanMahasiswaController::class, 'index'])->name('kegiatan.index');
+Route::get('/kegiatan-mahasiswa', [PublicStudentActivityController::class, 'index'])->name('student-activities.index');
 
 // HALAMAN AGENDA FAKULTAS
-Route::get('/agenda-fakultas', [PublicAgendaFakultasController::class, 'index'])->name('agenda.index');
+Route::get('/agenda-fakultas', [PublicAgendaController::class, 'index'])->name('agendas.index');
 
 // HALAMAN BEASISWA
-Route::get('/beasiswa', [PublicBeasiswaController::class, 'index'])->name('beasiswa.index');
+Route::get('/beasiswa', [PublicScholarshipController::class, 'index'])->name('scholarships.index');
 
 // HALAMAN PENGUMUMAN
-Route::get('/pengumuman', [PublicAnnouncementController::class, 'index'])->name('pengumuman.index');
+Route::get('/pengumuman', [PublicAnnouncementController::class, 'index'])->name('announcements.index');
 
 // HALAMAN MITRA
-Route::get('/kerjasama', [PublicPartnerController::class, 'index'])->name('kerjasama.index');
+Route::get('/kerjasama', [PublicPartnerController::class, 'index'])->name('partners.index');
 
 // HALAMAN PENELITIAN
-Route::get('/penelitian', [PublicPenelitianController::class, 'index'])->name('penelitian.index');
+Route::get('/penelitian', [PublicResearchController::class, 'index'])->name('research.index');
 
 // HALAMAN PENGABDIAN
-Route::get('/pengabdian', [PublicPengabdianController::class, 'index'])->name('pengabdian.index');
+Route::get('/pengabdian', [PublicCommunityServiceController::class, 'index'])->name('community-services.index');
 
 // HALAMAN PENERIMAAN MAHASISWA BARU
 Route::get('/informasi-pmb', function () {
@@ -290,15 +295,15 @@ Route::get('/tracer-study', function () {
 Route::get('/alumni', [PublicAlumniController::class, 'index'])->name('alumni.index');
 
 // HALAMAN PPID
-Route::get('/ppid', [PublicPpidController::class, 'index'])->name('public.ppid.index');
-Route::get('/ppid/informasi/{slug}', [PublicPpidController::class, 'show'])->name('public.ppid.show');
+Route::get('/ppid', [PublicPpidDocumentController::class, 'index'])->name('ppid-documents.index');
+Route::get('/ppid/informasi/{slug}', [PublicPpidDocumentController::class, 'show'])->name('ppid-documents.show');
 
 // HALAMAN ZONA INTEGRITAS
-Route::get('/zona-integritas', [PublicZonaIntegritasController::class, 'index'])->name('zona-integritas.index');
+Route::get('/zona-integritas', [PublicIntegrityZoneController::class, 'index'])->name('integrity-zones.index');
 
 // HALAMAN SURVEI KEPUASAN
-Route::get('/survei-kepuasan', [PublicSurveiController::class, 'index'])->name('survei.index');
-Route::post('/survei-kepuasan', [PublicSurveiController::class, 'store'])->name('survei.store');
+Route::get('/survei-kepuasan', [PublicSatisfactionSurveyController::class, 'index'])->name('satisfaction-surveys.index');
+Route::post('/survei-kepuasan', [PublicSatisfactionSurveyController::class, 'store'])->name('satisfaction-surveys.store');
 
 // HALAMAN LAYANAN
 Route::get('/layanan-internal', function () {
@@ -313,8 +318,8 @@ Route::get('/layanan-internal', function () {
                 'link_url' => $item->link_url,
             ];
         });
-    return Inertia::render('Public/Layanan/Index', ['services' => $services]);
-})->name('layanan.index');
+    return Inertia::render('Public/InternalServices/Index', ['services' => $services]);
+})->name('internal-services.index');
 
 // ==============================================================================
 // RUTE AUTENTIKASI

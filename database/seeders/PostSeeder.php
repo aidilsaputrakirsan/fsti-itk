@@ -7,6 +7,7 @@ use App\Models\PostCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class PostSeeder extends Seeder
 {
@@ -14,15 +15,15 @@ class PostSeeder extends Seeder
     {
         Post::truncate();
 
-        $storagePostPath = storage_path('app/public/posts');
-        $assetPostPath = database_path('seeders/assets/posts');
+        $assetPostPath = database_path('seeders' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'posts');
 
-        if (!File::exists($storagePostPath)) {
-            File::makeDirectory($storagePostPath, 0755, true);
+        if (!Storage::disk('public')->exists('posts')) {
+            Storage::disk('public')->makeDirectory('posts');
         }
 
-        foreach (File::files($storagePostPath) as $file) {
-            File::delete($file);
+        $existingFiles = Storage::disk('public')->files('posts');
+        foreach ($existingFiles as $file) {
+            Storage::disk('public')->delete($file);
         }
 
         $posts = [
@@ -142,7 +143,7 @@ class PostSeeder extends Seeder
             ]
         ];
 
-       $copiedCount = 0;
+        $copiedCount = 0;
 
         foreach ($posts as $data) {
             $category = PostCategory::firstOrCreate(
@@ -160,11 +161,10 @@ class PostSeeder extends Seeder
             $excerpt = Str::limit(strip_tags($content), 150);
 
             $imageName = $data['gambar'];
-            $sourceFile = $assetPostPath . '/' . $imageName;
-            $destinationFile = $storagePostPath . '/' . $imageName;
+            $sourceFile = $assetPostPath . DIRECTORY_SEPARATOR . $imageName;
 
             if (File::exists($sourceFile)) {
-                File::copy($sourceFile, $destinationFile);
+                Storage::disk('public')->put('posts/' . $imageName, File::get($sourceFile));
                 $copiedCount++;
             } else {
                 $this->command->warn("Peringatan: File Gambar '{$imageName}' tidak ditemukan di database/seeders/assets/posts!");

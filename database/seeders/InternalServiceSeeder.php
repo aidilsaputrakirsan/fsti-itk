@@ -12,11 +12,14 @@ class InternalServiceSeeder extends Seeder
      */
     public function run(): void
     {
-        InternalService::create([
-            'name' => 'Layanan FSTI ITK',
-            'category' => 'Umum', 
-            'link_url' => 'https://layanan-fsti.myst-tech.com/',
-            'description' => 'Website layanan administrasi untuk  mahasiswa dan dosen FSTI ITK',
-        ]);
+        InternalService::updateOrCreate(
+            ['name' => 'Layanan FSTI ITK'],
+
+            [
+                'category' => 'Umum',
+                'link_url' => 'https://layanan-fsti.myst-tech.com/',
+                'description' => 'Website layanan administrasi untuk  mahasiswa dan dosen FSTI ITK',
+            ]
+        );
     }
 }

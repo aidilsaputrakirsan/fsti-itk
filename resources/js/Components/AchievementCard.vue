@@ -10,7 +10,7 @@ const props = defineProps<{
 <template>
   <div 
     class="bg-gradient-to-br from-[#4361EE] via-[#2F4DD3] to-[#1E338A] rounded-lg overflow-hidden transition-all duration-300 ease-in-out 
-           hover:scale-105 hover:shadow-xl hover:shadow-blue-900/20 border border-blue-600/30 flex flex-col h-full"
+            hover:scale-105 hover:shadow-xl hover:shadow-blue-900/20 border border-blue-600/30 flex flex-col h-full"
   >
     <div class="aspect-[3/2] relative shrink-0 overflow-hidden border-b border-blue-400/30">
       <img 

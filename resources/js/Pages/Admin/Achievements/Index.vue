@@ -12,8 +12,8 @@ import { debounce } from 'lodash';
 defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
-  achievements: PaginatedAchievements;
-  filters: Filters;
+    achievements: PaginatedAchievements;
+    filters: Filters;
 }>();
 
 const search = ref(props.filters.search || '');

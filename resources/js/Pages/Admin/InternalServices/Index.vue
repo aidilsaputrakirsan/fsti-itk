@@ -103,7 +103,7 @@ watch(flashSuccess, (message) => {
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
       <div>
         <h1 class="text-3xl font-bold text-gray-900">Kelola Portal Layanan</h1>
-        <p class="mt-1 text-gray-600">Manajemen daftar tautan portal layanan internal mahasiswa dan dosen.</p>
+        <p class="mt-1 text-gray-600">Manajemen daftar tautan portal layanan internal mahasiswa.</p>
       </div>
       <Link :href="route('admin.internal-services.create')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
         <PlusIcon class="h-5 w-5 stroke-2" />

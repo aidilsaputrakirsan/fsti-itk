@@ -28,7 +28,7 @@ const search = ref(props.filters?.search || '');
 const status = ref(props.filters?.status || '');
 
 watch([search, status], debounce(() => {
-    router.get((route as Function)('admin.posts.index'), { 
+    router.get(route('admin.posts.index'), { 
         search: search.value,
         status: status.value === '' ? null : status.value
     }, {
@@ -90,7 +90,7 @@ const closeDeleteModal = () => {
 
 const confirmDelete = () => {
     if (itemToDelete.value) {
-        router.delete((route as Function)('admin.posts.destroy', itemToDelete.value.id), {
+        router.delete(route('admin.posts.destroy', itemToDelete.value.id), {
             onSuccess: () => closeDeleteModal(),
         });
     }
@@ -123,7 +123,7 @@ const formatDate = (dateString: string) => {
                 <h1 class="text-3xl font-bold text-gray-900">Kelola Berita</h1>
                 <p class="mt-1 text-gray-600">Manajemen konten berita untuk website FSTI ITK.</p>
             </div>
-            <Link :href="(route as Function)('admin.posts.create')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
+            <Link :href="route('admin.posts.create')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
                 <PlusIcon class="h-5 w-5 stroke-2" />
                 Tambah Berita
             </Link>
@@ -197,7 +197,7 @@ const formatDate = (dateString: string) => {
                             </td>
                             <td>
                                 <div class="flex items-center justify-center gap-3">
-                                    <Link :href="(route as Function)('admin.posts.edit', item.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
+                                    <Link :href="route('admin.posts.edit', item.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
                                         <PencilSquareIcon class="h-4 w-4" /> Edit
                                     </Link>
                                     <span class="text-gray-300">|</span>

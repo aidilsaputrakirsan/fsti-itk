@@ -15,7 +15,7 @@ class PublicPartnerController extends Controller
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
-        return Inertia::render('Public/Kerjasama/Index', [
+        return Inertia::render('Public/Partners/Index', [
             'partners' => $query->orderBy('name', 'asc')->paginate(12)->withQueryString(),
             'filters' => $request->only(['search'])
         ]);

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import { Link, useForm, Head } from '@inertiajs/vue3';
 import { ArrowLeftIcon, UserPlusIcon } from '@heroicons/vue/24/outline';
 import InputError from '@/Components/InputError.vue';
 
@@ -57,6 +57,7 @@ const submit = () => {
 
 <template>
     <div>
+        <Head title="Tambah Admin Baru" />
         <div class="mb-6">
             <Link :href="route('admin.users.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-100 hover:text-primary transition-colors shadow-sm w-fit">
                 <ArrowLeftIcon class="h-4 w-4 stroke-2" />

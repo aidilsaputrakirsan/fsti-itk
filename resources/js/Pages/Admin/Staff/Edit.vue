@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useForm, Link } from '@inertiajs/vue3';
+import { useForm, Link, Head } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import { 
@@ -136,6 +136,7 @@ const submit = () => {
 
 <template>
     <div>
+        <Head :title="'Edit Civitas: ' + props.staff.name" />
         <div class="mb-8">
             <Link :href="route('admin.staff.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
                 <ArrowLeftIcon class="h-4 w-4 stroke-2" /> Kembali ke Daftar
@@ -280,38 +281,6 @@ const submit = () => {
                         </div>
                     </div>
 
-                    <label class="md:pt-2 text-sm font-bold text-gray-800">Pengalaman Kerja</label>
-                    <div>
-                        <div class="space-y-3">
-                            <div v-for="(item, index) in form.work_experience" :key="index" class="flex gap-2 items-start">
-                                <div class="w-full">
-                                    <textarea v-model="form.work_experience[index]" rows="2" 
-                                        class="block w-full rounded-lg transition-colors text-sm"
-                                        :class="form.errors[`work_experience.${index}`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"></textarea>
-                                    <InputError :message="form.errors[`work_experience.${index}`]" />
-                                </div>
-                                <button type="button" @click="removeArrayItem('work_experience', index)" class="p-2 sm:p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0 mt-0.5"><TrashIcon class="w-5 h-5"/></button>
-                            </div>
-                            <button type="button" @click="addArrayItem('work_experience')" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-primary-hover transition-colors"><PlusIcon class="w-4 h-4 stroke-2"/> Tambah Pengalaman</button>
-                        </div>
-                    </div>
-
-                    <label class="md:pt-2 text-sm font-bold text-gray-800">Penghargaan / Awards</label>
-                    <div>
-                        <div class="space-y-3">
-                            <div v-for="(item, index) in form.awards" :key="index" class="flex gap-2 items-start">
-                                <div class="w-full">
-                                    <textarea v-model="form.awards[index]" rows="2" 
-                                        class="block w-full rounded-lg transition-colors text-sm"
-                                        :class="form.errors[`awards.${index}`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"></textarea>
-                                    <InputError :message="form.errors[`awards.${index}`]" />
-                                </div>
-                                <button type="button" @click="removeArrayItem('awards', index)" class="p-2 sm:p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0 mt-0.5"><TrashIcon class="w-5 h-5"/></button>
-                            </div>
-                            <button type="button" @click="addArrayItem('awards')" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-primary-hover transition-colors"><PlusIcon class="w-4 h-4 stroke-2"/> Tambah Penghargaan</button>
-                        </div>
-                    </div>
-
                     <label class="md:pt-2 text-sm font-bold text-gray-800">Riwayat Penelitian</label>
                     <div>
                         <div class="space-y-3">
@@ -341,6 +310,38 @@ const submit = () => {
                                 <button type="button" @click="removeArrayItem('community_service_history', index)" class="p-2 sm:p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0 mt-0.5"><TrashIcon class="w-5 h-5"/></button>
                             </div>
                             <button type="button" @click="addArrayItem('community_service_history')" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-primary-hover transition-colors"><PlusIcon class="w-4 h-4 stroke-2"/> Tambah PKM</button>
+                        </div>
+                    </div>
+
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Pengalaman Kerja</label>
+                    <div>
+                        <div class="space-y-3">
+                            <div v-for="(item, index) in form.work_experience" :key="index" class="flex gap-2 items-start">
+                                <div class="w-full">
+                                    <textarea v-model="form.work_experience[index]" rows="2" 
+                                        class="block w-full rounded-lg transition-colors text-sm"
+                                        :class="form.errors[`work_experience.${index}`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"></textarea>
+                                    <InputError :message="form.errors[`work_experience.${index}`]" />
+                                </div>
+                                <button type="button" @click="removeArrayItem('work_experience', index)" class="p-2 sm:p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0 mt-0.5"><TrashIcon class="w-5 h-5"/></button>
+                            </div>
+                            <button type="button" @click="addArrayItem('work_experience')" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-primary-hover transition-colors"><PlusIcon class="w-4 h-4 stroke-2"/> Tambah Pengalaman</button>
+                        </div>
+                    </div>
+
+                    <label class="md:pt-2 text-sm font-bold text-gray-800">Penghargaan / Awards</label>
+                    <div>
+                        <div class="space-y-3">
+                            <div v-for="(item, index) in form.awards" :key="index" class="flex gap-2 items-start">
+                                <div class="w-full">
+                                    <textarea v-model="form.awards[index]" rows="2" 
+                                        class="block w-full rounded-lg transition-colors text-sm"
+                                        :class="form.errors[`awards.${index}`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"></textarea>
+                                    <InputError :message="form.errors[`awards.${index}`]" />
+                                </div>
+                                <button type="button" @click="removeArrayItem('awards', index)" class="p-2 sm:p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex-shrink-0 mt-0.5"><TrashIcon class="w-5 h-5"/></button>
+                            </div>
+                            <button type="button" @click="addArrayItem('awards')" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-primary-hover transition-colors"><PlusIcon class="w-4 h-4 stroke-2"/> Tambah Penghargaan</button>
                         </div>
                     </div>
 

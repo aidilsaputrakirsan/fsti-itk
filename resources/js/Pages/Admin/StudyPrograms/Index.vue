@@ -192,38 +192,40 @@ watch(flashSuccess, (message) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-if="paginatedPrograms.length > 0" v-for="prodi in paginatedPrograms" :key="prodi.id">
-                            <td>
-                                <span class="inline-flex rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider mb-1.5 bg-blue-100 text-blue-800">
-                                    {{ prodi.degree }}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="font-bold text-gray-900">{{ prodi.name }}</div>
-                            </td>
-                            <td>
-                                <div class="text-sm text-gray-700 font-medium">{{ prodi.department || '-' }}</div>
-                            </td>
-                            <td class="text-center">
-                                <span v-if="prodi.accreditation_certificate_image" class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-800">
-                                    Tersedia
-                                </span>
-                                <span v-else class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-800">
-                                    Kosong
-                                </span>
-                            </td>
-                            <td>
-                                <div class="flex items-center justify-center gap-3">
-                                    <Link :href="route('admin.study-programs.edit', prodi.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
-                                        <PencilSquareIcon class="h-4 w-4" /> Edit
-                                    </Link>
-                                    <span class="text-gray-300">|</span>
-                                    <button @click="openDeleteModal(prodi)" type="button" class="flex items-center gap-1 text-red-600 hover:text-red-800 font-semibold transition-colors">
-                                        <TrashIcon class="h-4 w-4" /> Hapus
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                        <template v-if="paginatedPrograms.length > 0">
+                            <tr v-for="prodi in paginatedPrograms" :key="prodi.id">
+                                <td>
+                                    <span class="inline-flex rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider mb-1.5 bg-blue-100 text-blue-800">
+                                        {{ prodi.degree }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="font-bold text-gray-900">{{ prodi.name }}</div>
+                                </td>
+                                <td>
+                                    <div class="text-sm text-gray-700 font-medium">{{ prodi.department || '-' }}</div>
+                                </td>
+                                <td class="text-center">
+                                    <span v-if="prodi.accreditation_certificate_image" class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-800">
+                                        Tersedia
+                                    </span>
+                                    <span v-else class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-800">
+                                        Kosong
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="flex items-center justify-center gap-3">
+                                        <Link :href="route('admin.study-programs.edit', prodi.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
+                                            <PencilSquareIcon class="h-4 w-4" /> Edit
+                                        </Link>
+                                        <span class="text-gray-300">|</span>
+                                        <button @click="openDeleteModal(prodi)" type="button" class="flex items-center gap-1 text-red-600 hover:text-red-800 font-semibold transition-colors">
+                                            <TrashIcon class="h-4 w-4" /> Hapus
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
                         <tr v-else>
                             <td colspan="5" class="py-8 text-center text-gray-500 font-medium">Tidak ada program studi yang cocok dengan pencarian Anda.</td>
                         </tr>

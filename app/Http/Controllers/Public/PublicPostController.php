@@ -10,9 +10,6 @@ use Inertia\Inertia;
 
 class PublicPostController extends Controller
 {
-    /**
-     * Menampilkan halaman daftar berita publik.
-     */
     public function index(Request $request)
     {
         $categories = PostCategory::whereHas('posts', function ($q) {
@@ -37,14 +34,13 @@ class PublicPostController extends Controller
 
             $searchResults = $query->latest('posts.created_at')->paginate(12)->withQueryString();
 
-            return Inertia::render('Public/Berita/Index', [
+            return Inertia::render('Public/Posts/Index', [
                 'isSearching' => true,
                 'searchResults' => $searchResults,
                 'categories' => $categories,
                 'filters' => $request->only(['search', 'category']),
             ]);
         }
-
 
         $headline = Post::select('posts.*', 'post_categories.name as category')
             ->leftJoin('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
@@ -84,7 +80,7 @@ class PublicPostController extends Controller
             }
         }
 
-        return Inertia::render('Public/Berita/Index', [
+        return Inertia::render('Public/Posts/Index', [
             'isSearching' => false,
             'headline' => $headline,
             'latestPosts' => $latestPosts,
@@ -94,9 +90,6 @@ class PublicPostController extends Controller
         ]);
     }
 
-    /**
-     * Menampilkan halaman detail untuk satu berita.
-     */
     public function show(Post $post)
     {
         if ($post->status !== 'Terbitkan') {
@@ -134,7 +127,7 @@ class PublicPostController extends Controller
                 });
         }
 
-        return Inertia::render('Public/Berita/Show', [
+        return Inertia::render('Public/Posts/Show', [
             'post' => $postData,
             'recentPosts' => $recentPosts,
         ]);

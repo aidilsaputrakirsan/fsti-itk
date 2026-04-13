@@ -16,8 +16,8 @@ const props = defineProps<{
   latestAchievements: Achievement[];
   canLogin?: boolean;
   canRegister?: boolean;
-  tentang?: any; 
-  statistik?: { dosen: number; tendik: number; prodi_s1: number; prodi_s2: number; prodi_total: number };
+  profile?: any; 
+  statistics?: { dosen: number; tendik: number; prodi_s1: number; prodi_s2: number; prodi_total: number };
 }>();
 
 interface StatItem {
@@ -26,7 +26,7 @@ interface StatItem {
 }
 
 const displayStats = computed<StatItem[]>(() => {
-    let data = props.tentang;
+    let data = props.profile;
     
     if (typeof data === 'string') {
         try { data = JSON.parse(data); } catch (e) { data = {}; }
@@ -37,9 +37,9 @@ const displayStats = computed<StatItem[]>(() => {
     if (!rawData || typeof rawData !== 'object' || Object.keys(rawData).length === 0) {
         return [
             { angka: '2260', label: 'Mahasiswa' },
-            { angka: props.statistik?.prodi_s1 || '8', label: 'Program Studi S1' },
-            { angka: props.statistik?.dosen || '0', label: 'Dosen Tetap' },
-            { angka: props.statistik?.tendik || '0', label: 'Tenaga Kependidikan' }
+            { angka: props.statistics?.prodi_s1 || '8', label: 'Program Studi S1' },
+            { angka: props.statistics?.dosen || '0', label: 'Dosen Tetap' },
+            { angka: props.statistics?.tendik || '0', label: 'Tenaga Kependidikan' }
         ];
     }
 
@@ -48,17 +48,17 @@ const displayStats = computed<StatItem[]>(() => {
 
     return slicedData.map(stat => {
         const label = stat.label.toLowerCase();
-        if (label.includes('dosen')) return { ...stat, angka: props.statistik?.dosen ?? stat.angka };
-        if (label.includes('tendik') || label.includes('kependidikan')) return { ...stat, angka: props.statistik?.tendik ?? stat.angka };
-        if (label.includes('s1')) return { ...stat, angka: props.statistik?.prodi_s1 ?? stat.angka };
-        if (label.includes('s2') || label.includes('magister')) return { ...stat, angka: props.statistik?.prodi_s2 ?? stat.angka };
-        if (label.includes('prodi') || label.includes('program studi')) return { ...stat, angka: props.statistik?.prodi_total ?? stat.angka };
+        if (label.includes('dosen')) return { ...stat, angka: props.statistics?.dosen ?? stat.angka };
+        if (label.includes('tendik') || label.includes('kependidikan')) return { ...stat, angka: props.statistics?.tendik ?? stat.angka };
+        if (label.includes('s1')) return { ...stat, angka: props.statistics?.prodi_s1 ?? stat.angka };
+        if (label.includes('s2') || label.includes('magister')) return { ...stat, angka: props.statistics?.prodi_s2 ?? stat.angka };
+        if (label.includes('prodi') || label.includes('program studi')) return { ...stat, angka: props.statistics?.prodi_total ?? stat.angka };
         return stat;
     });
 });
 
 const deskripsiFakultas = computed<string>(() => {
-    let data = props.tentang;
+    let data = props.profile;
     if (typeof data === 'string') {
         try { data = JSON.parse(data); } catch (e) { data = {}; }
     }
@@ -219,7 +219,7 @@ onMounted(() => {
 </h2>
           
           <div ref="heroButtonRef" class="mt-10">
-            <Link :href="route('profil.tentang')" class="inline-block bg-white text-black font-public-sans font-bold text-base px-6 py-2 rounded-lg shadow-md hover:bg-gray-100 transition-transform transform hover:scale-105 duration-300 -mt-16">
+            <Link :href="route('profiles.about')" class="inline-block bg-white text-black font-public-sans font-bold text-base px-6 py-2 rounded-lg shadow-md hover:bg-gray-100 transition-transform transform hover:scale-105 duration-300 -mt-16">
               Tentang FSTI
             </Link>
           </div>
@@ -227,16 +227,16 @@ onMounted(() => {
       </section>
 
 <div class="relative lg:absolute lg:bottom-0 lg:left-1/2 lg:-translate-x-1/2 w-full container mx-auto px-4 sm:px-6 lg:px-8 -mt-24 lg:mt-0 z-20 pb-12 lg:pb-0">        <div ref="heroCardsRef" class="flex justify-center items-start gap-8 flex-wrap">
-          <Link :href="route('profil.pimpinan-prodi')" class="block w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
+          <Link :href="route('profiles.program-leaders')" class="w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
             <GraduationCap :size="80" class="mx-auto" />
             <h3 class="mt-4 text-xl font-bold font-public-sans">Program Studi</h3>
           </Link>
-          <Link :href="route('prestasi.index')" class="block w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
+          <Link :href="route('achievements.index')" class="w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
             <Trophy :size="80" class="mx-auto" />
             <h3 class="mt-4 text-xl font-bold font-public-sans">Prestasi Mahasiswa</h3>
           </Link>
           
-          <Link :href="route('layanan.index')" class="block w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
+          <Link :href="route('internal-services.index')" class="w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
             <CheckSquare :size="80" class="mx-auto" />
             <h3 class="mt-4 text-xl font-bold font-public-sans">Layanan Mahasiswa</h3>
           </Link>
@@ -304,7 +304,7 @@ onMounted(() => {
             <h2 class="text-5xl font-bold font-optimus text-[#2F4DD3]">Prestasi Terbaru</h2>
             <p class="mt-2 text-black text-base font-normal">Capaian membanggakan dari Mahasiswa FSTI ITK</p>
           </div>
-          <Link :href="route('prestasi.index')" class="inline-flex items-center font-bold font-public-sans text-white bg-[#2F4DD3] border border-transparent rounded-full px-5 py-2 hover:bg-blue-700 transition-colors duration-300 shadow-sm">
+          <Link :href="route('achievements.index')" class="inline-flex items-center font-bold font-public-sans text-white bg-[#2F4DD3] border border-transparent rounded-full px-5 py-2 hover:bg-blue-700 transition-colors duration-300 shadow-sm">
             Lihat Semua <ArrowRight class="ml-2 h-4 w-4" />
           </Link>
         </div>
@@ -322,7 +322,7 @@ onMounted(() => {
             <h2 class="text-5xl font-bold font-optimus text-[#2F4DD3]">Berita Terbaru</h2>
             <p class="mt-2 text-black text-base font-normal">Informasi terkini seputar FSTI</p>
           </div>
-          <Link :href="route('berita.index')" class="inline-flex items-center font-bold font-public-sans text-black bg-white border border-gray-300 rounded-full px-5 py-2 hover:bg-gray-100 transition-colors duration-300 shadow-sm">
+          <Link :href="route('posts.index')" class="inline-flex items-center font-bold font-public-sans text-black bg-white border border-gray-300 rounded-full px-5 py-2 hover:bg-gray-100 transition-colors duration-300 shadow-sm">
             Lihat Semua <ArrowRight class="ml-2 h-4 w-4" />
           </Link>
         </div>

@@ -31,7 +31,10 @@ class PartnerController extends Controller
         ]);
     }
 
-    public function create() { return Inertia::render('Admin/Partners/Create'); }
+    public function create() 
+    { 
+        return Inertia::render('Admin/Partners/Create'); 
+    }
 
     public function store(Request $request)
     {
@@ -66,7 +69,10 @@ class PartnerController extends Controller
         return redirect()->route('admin.partners.index')->with('success', 'Data Kerjasama Mitra berhasil ditambahkan.');
     }
 
-    public function edit(Partner $partner) { return Inertia::render('Admin/Partners/Edit', compact('partner')); }
+    public function edit(Partner $partner) 
+    { 
+        return Inertia::render('Admin/Partners/Edit', compact('partner')); 
+    }
 
     public function update(Request $request, Partner $partner)
     {

@@ -11,28 +11,28 @@ import { debounce } from 'lodash';
 defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
-    alumnis: any;
+    alumni: any;
     filters: any;
-    prodis: any[];
+    studyPrograms: any[];
     years: any[];
 }>();
 
 const search = ref(props.filters?.search || '');
-const selectedProdi = ref(props.filters?.prodi || '');
+const selectedProdi = ref(props.filters?.program || '');
 const selectedYear = ref(props.filters?.year || '');
 
 watch([search, selectedProdi, selectedYear], debounce(() => {
-    router.get((route as Function)('admin.alumni.index'), { 
+    router.get(route('admin.alumni.index'), { 
         search: search.value,
-        prodi: selectedProdi.value,
+        program: selectedProdi.value,
         year: selectedYear.value
     }, { preserveState: true, replace: true });
 }, 300));
 
 const formattedLinks = computed(() => {
-    if (!props.alumnis?.links) return [];
+    if (!props.alumni?.links) return [];
     
-    const links = props.alumnis.links.map((link: any) => {
+    const links = props.alumni.links.map((link: any) => {
         let label = link.label;
         if (label.includes('Previous') || label.includes('&laquo;')) label = 'Sebelumnya';
         if (label.includes('Next') || label.includes('&raquo;')) label = 'Selanjutnya';
@@ -82,7 +82,7 @@ const closeDeleteModal = () => {
 
 const confirmDelete = () => {
     if (itemToDelete.value) {
-        router.delete((route as Function)('admin.alumni.destroy', itemToDelete.value.id), {
+        router.delete(route('admin.alumni.destroy', itemToDelete.value.id), {
             onSuccess: () => closeDeleteModal()
         });
     }
@@ -112,7 +112,7 @@ watch(flashSuccess, (message) => {
                 <p class="mt-1 text-gray-600">Manajemen direktori kelulusan mahasiswa FSTI ITK.</p>
             </div>
             <div class="flex items-center gap-3 flex-shrink-0">
-                <Link :href="(route as Function)('admin.alumni.create')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
+                <Link :href="route('admin.alumni.create')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
                     <PlusIcon class="h-5 w-5 stroke-2" />
                     Tambah Alumni
                 </Link>
@@ -134,7 +134,7 @@ watch(flashSuccess, (message) => {
                     <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
                     <select v-model="selectedProdi" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors cursor-pointer">
                         <option value="">Semua Program Studi</option>
-                        <option v-for="prodi in prodis" :key="prodi" :value="prodi">{{ prodi }}</option>
+                        <option v-for="prodi in studyPrograms" :key="prodi" :value="prodi">{{ prodi }}</option>
                     </select>
                 </div>
                 <div class="relative w-full sm:w-48">
@@ -163,25 +163,17 @@ watch(flashSuccess, (message) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-if="alumnis.data && alumnis.data.length > 0" v-for="(item, index) in alumnis.data" :key="item.id">
+                        <tr v-if="alumni.data && alumni.data.length > 0" v-for="(item, index) in alumni.data" :key="item.id">
                             <td class="text-center font-medium text-gray-500">
-                                {{ (Number(alumnis.current_page) - 1) * Number(alumnis.per_page) + Number(index) + 1 }}
+                                {{ (Number(alumni.current_page) - 1) * Number(alumni.per_page) + Number(index) + 1 }}
                             </td>
-                            <td>
-                                <div class="font-bold text-gray-900">{{ item.nim }}</div>
-                            </td>
-                            <td>
-                                <div class="font-bold text-gray-900">{{ item.name }}</div>
-                            </td>
-                            <td>
-                                <span class="rounded-full px-3 py-1 text-xs font-bold bg-blue-100 text-blue-800">{{ item.study_program }}</span>
-                            </td>
-                            <td class="text-center">
-                                <div class="font-bold text-gray-900">{{ item.graduation_year }}</div>
-                            </td>
+                            <td><div class="font-bold text-gray-900">{{ item.nim }}</div></td>
+                            <td><div class="font-bold text-gray-900">{{ item.name }}</div></td>
+                            <td><span class="rounded-full px-3 py-1 text-xs font-bold bg-blue-100 text-blue-800">{{ item.study_program }}</span></td>
+                            <td class="text-center"><div class="font-bold text-gray-900">{{ item.graduation_year }}</div></td>
                             <td>
                                 <div class="flex items-center justify-center gap-3">
-                                    <Link :href="(route as Function)('admin.alumni.edit', item.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
+                                    <Link :href="route('admin.alumni.edit', item.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
                                         <PencilSquareIcon class="h-4 w-4" /> Edit
                                     </Link>
                                     <span class="text-gray-300">|</span>
@@ -199,22 +191,14 @@ watch(flashSuccess, (message) => {
             </div>
             
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
-                <p v-if="alumnis.total > 0" class="text-sm text-gray-600 text-center sm:text-left">
-                    Menampilkan <span class="font-bold text-gray-900">{{ alumnis.from }}</span> sampai <span class="font-bold text-gray-900">{{ alumnis.to }}</span> dari <span class="font-bold text-gray-900">{{ alumnis.total }}</span> hasil
+                <p v-if="alumni.total > 0" class="text-sm text-gray-600 text-center sm:text-left">
+                    Menampilkan <span class="font-bold text-gray-900">{{ alumni.from }}</span> sampai <span class="font-bold text-gray-900">{{ alumni.to }}</span> dari <span class="font-bold text-gray-900">{{ alumni.total }}</span> hasil
                 </p>
-                <p v-else></p>
-
                 <div v-if="formattedLinks.length > 0" class="flex flex-wrap justify-center items-center gap-1.5">
                     <Link 
                         v-for="(link, index) in formattedLinks" 
-                        :key="index" 
-                        :href="link.url ?? '#'" 
-                        v-html="link.label"
-                        :class="[
-                            'px-3.5 py-1.5 rounded-lg border text-sm font-medium transition-colors',
-                            link.active ? 'bg-primary text-white border-primary shadow-sm' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-primary',
-                            !link.url && 'opacity-50 bg-gray-50 cursor-not-allowed hover:bg-gray-50 hover:text-gray-700'
-                        ]"
+                        :key="index" :href="link.url ?? '#'" v-html="link.label"
+                        :class="['px-3.5 py-1.5 rounded-lg border text-sm font-medium transition-colors', link.active ? 'bg-primary text-white border-primary shadow-sm' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-primary', !link.url && 'opacity-50 bg-gray-50 cursor-not-allowed hover:bg-gray-50 hover:text-gray-700']"
                     />
                 </div>
             </div>
@@ -228,22 +212,15 @@ watch(flashSuccess, (message) => {
             <ExclamationTriangleIcon class="h-10 w-10 text-red-600" />
           </div>
           <h2 class="text-2xl font-bold text-gray-900">Hapus Data Alumni?</h2>
-          <p class="mt-2 text-gray-600 text-center">
-            Apakah Anda yakin ingin menghapus data kelulusan milik <br>
-            <span class="font-bold text-gray-900">"{{ itemToDelete?.name }}"</span>?
-          </p>
+          <p class="mt-2 text-gray-600 text-center">Apakah Anda yakin ingin menghapus data kelulusan milik <br> <span class="font-bold text-gray-900">"{{ itemToDelete?.name }}"</span>?</p>
         </div>
         <div class="mt-8 flex flex-col-reverse sm:flex-row justify-center gap-3">
-          <button @click="closeDeleteModal" class="rounded-lg border border-gray-300 bg-white px-6 py-2.5 font-bold text-gray-700 hover:bg-gray-50 transition-colors w-full sm:w-auto">
-            Batal
-          </button>
-          <button @click="confirmDelete" class="rounded-lg bg-red-600 px-6 py-2.5 font-bold text-white hover:bg-red-700 transition-colors shadow-sm w-full sm:w-auto">
-            Ya, Hapus
-          </button>
+          <button @click="closeDeleteModal" class="rounded-lg border border-gray-300 bg-white px-6 py-2.5 font-bold text-gray-700 hover:bg-gray-50 transition-colors w-full sm:w-auto">Batal</button>
+          <button @click="confirmDelete" class="rounded-lg bg-red-600 px-6 py-2.5 font-bold text-white hover:bg-red-700 transition-colors shadow-sm w-full sm:w-auto">Ya, Hapus</button>
         </div>
       </div>
     </div>
-    
+
     <div v-if="showNotification" class="fixed top-5 right-5 sm:top-8 sm:right-8 z-50">
         <div class="flex items-center gap-3 rounded-xl bg-green-600 px-5 py-4 text-white shadow-xl">
             <CheckCircleIcon class="h-6 w-6" />

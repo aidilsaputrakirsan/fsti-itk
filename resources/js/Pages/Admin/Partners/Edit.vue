@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { useForm, Link } from '@inertiajs/vue3';
+import { useForm, Link, Head } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import { ArrowLeftIcon, PencilSquareIcon, PaperClipIcon, XMarkIcon } from '@heroicons/vue/24/outline';
@@ -61,6 +61,7 @@ const submit = () => {
 
 <template>
     <div>
+        <Head :title="'Edit Kerjasama: ' + props.partner.name" />
         <div class="mb-8">
             <Link :href="route('admin.partners.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
                 <ArrowLeftIcon class="h-4 w-4 stroke-2" /> Kembali ke Daftar
@@ -89,7 +90,7 @@ const submit = () => {
                             <div v-if="props.partner.logo" class="shrink-0 flex flex-col items-center">
                                 <p class="text-[10px] font-extrabold text-primary mb-1.5 uppercase tracking-widest text-center">Logo Saat Ini</p>
                                 <div class="h-20 w-32 bg-white rounded-lg border border-gray-200 flex items-center justify-center p-2 shadow-sm">
-                                    <img :src="`/images/mitra/${props.partner.logo}`" class="h-full w-full object-contain mix-blend-multiply" />
+                                    <img :src="`/storage/${props.partner.logo}`" class="h-full w-full object-contain mix-blend-multiply" />
                                 </div>
                             </div>
                             

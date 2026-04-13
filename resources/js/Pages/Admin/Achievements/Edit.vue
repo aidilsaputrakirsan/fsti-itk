@@ -17,17 +17,17 @@ const imageInput = ref<HTMLInputElement | null>(null);
 const certificateInput = ref<HTMLInputElement | null>(null);
 
 const form = useForm({
-  _method: 'patch', 
-  student_name: props.achievement.student_name,
-  student_nim: props.achievement.student_nim || '',
-  study_program: props.achievement.study_program || '',
-  title: props.achievement.title, 
-  category: props.achievement.category,
-  level: props.achievement.level,
-  organizer: props.achievement.organizer || '',
-  year: props.achievement.year,
-  image: null as File | null, 
-  certificate: null as File | null,
+    _method: 'patch', 
+    student_name: props.achievement.student_name,
+    student_nim: props.achievement.student_nim || '',
+    study_program: props.achievement.study_program || '',
+    title: props.achievement.title, 
+    category: props.achievement.category,
+    level: props.achievement.level,
+    organizer: props.achievement.organizer || '',
+    year: props.achievement.year,
+    image: null as File | null, 
+    certificate: null as File | null,
 });
 
 const handleImageChange = (event: Event) => {

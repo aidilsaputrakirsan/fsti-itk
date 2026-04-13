@@ -13,7 +13,20 @@ const props = defineProps<{
 
 const fileInput = ref<HTMLInputElement | null>(null);
 
-const formatArrayToText = (arr: any): string => Array.isArray(arr) ? arr.join('\n') : '';
+const formatArrayToText = (arr: any): string => {
+    if (!arr) return '';
+    if (Array.isArray(arr)) return arr.join('\n');
+    if (typeof arr === 'string') {
+        try {
+            const parsed = JSON.parse(arr);
+            if (Array.isArray(parsed)) return parsed.join('\n');
+        } catch {
+            return arr;
+        }
+        return arr;
+    }
+    return '';
+};
 
 interface StudyProgramForm {
     _method: string;
@@ -39,7 +52,7 @@ const form = useForm<StudyProgramForm>({
     description: props.studyProgram.description || '',
     vision: props.studyProgram.vision || '',
     mission: formatArrayToText(props.studyProgram.mission),
-    goals: props.studyProgram.goals || '',
+    goals: formatArrayToText(props.studyProgram.goals),
     graduate_profiles: formatArrayToText(props.studyProgram.graduate_profiles),
     accreditation_text: props.studyProgram.accreditation_text || '',
     accreditation_pdf_link: props.studyProgram.accreditation_pdf_link || '',

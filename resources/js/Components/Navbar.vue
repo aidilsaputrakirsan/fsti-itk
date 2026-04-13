@@ -39,28 +39,28 @@ const navigationMenu = computed<NavLink[]>(() => [
         name: 'Profil',
         href: '#',
         sublinks: [
-            { name: 'Tentang FSTI', href: route('profil.tentang') },            
+            { name: 'Tentang FSTI', href: route('profiles.about') },            
             {
                 name: 'Struktur Organisasi',
                 href: '#',
                 sublinks: [
-                    { name: 'Bagan Organisasi', href: route('bagan-organisasi') },
-                    { name: 'Pimpinan Fakultas', href: route('profil.pimpinan-fakultas') },
-                    { name: 'Pimpinan Jurusan', href: route('profil.pimpinan-jurusan') },
-                    { name: 'Pimpinan Prodi', href: route('profil.pimpinan-prodi') },
-                    { name: 'Pimpinan Laboratorium', href: route('profil.pimpinan-laboratorium') },
+                    { name: 'Bagan Organisasi', href: route('profiles.organizational-chart') },
+                    { name: 'Pimpinan Fakultas', href: route('profiles.faculty-leaders') },
+                    { name: 'Pimpinan Jurusan', href: route('profiles.department-leaders') },
+                    { name: 'Pimpinan Prodi', href: route('profiles.program-leaders') },
+                    { name: 'Pimpinan Laboratorium', href: route('profiles.lab-leaders') },
                 ],
             },
             {
                 name: 'Civitas Akademika',
                 href: '#',
                 sublinks: [
-                    { name: 'Dosen', href: route('profil.dosen') },
-                    { name: 'Tenaga Kependidikan', href: route('profil.tenaga-kependidikan') },
+                    { name: 'Dosen', href: route('profiles.lecturers') },
+                    { name: 'Tenaga Kependidikan', href: route('profiles.support-staff') },
                 ],
             },
-            { name: 'Kerjasama', href: route('kerjasama.index') },
-            { name: 'Kontak', href: route('kontak') },
+            { name: 'Kerjasama', href: route('partners.index') },
+            { name: 'Kontak', href: route('profiles.contact') },
         ],
     },
     {
@@ -73,7 +73,7 @@ const navigationMenu = computed<NavLink[]>(() => [
                 .filter(p => p.department === dep)
                 .map(p => ({
                     name: `Program Studi ${p.degree} ${p.name}`,
-                    href: route('public.prodi.show', p.slug)
+                    href: route('study-programs.show', p.slug)
                 }))
         }))
     },
@@ -81,10 +81,10 @@ const navigationMenu = computed<NavLink[]>(() => [
         name: 'Kemahasiswaan',
         href: '#',
         sublinks: [
-            { name: 'Prestasi Mahasiswa', href: route('prestasi.index') },
-            { name: 'Portal Layanan Mahasiswa', href: route('layanan.index') }, 
-            { name: 'Kegiatan Mahasiswa', href: route('kegiatan.index') }, 
-            { name: 'Informasi Beasiswa', href: route('beasiswa.index') }, 
+            { name: 'Prestasi Mahasiswa', href: route('achievements.index') },
+            { name: 'Portal Layanan Mahasiswa', href: route('internal-services.index') }, 
+            { name: 'Kegiatan Mahasiswa', href: route('student-activities.index') }, 
+            { name: 'Informasi Beasiswa', href: route('scholarships.index') }, 
             { name: 'Penerimaan Mahasiswa Baru (PMB)', href: route('pmb.index') }, 
         ],
     },
@@ -100,26 +100,26 @@ const navigationMenu = computed<NavLink[]>(() => [
         name: 'Informasi',
         href: '#',
         sublinks: [
-            { name: 'Agenda', href: route('agenda.index') },
-            { name: 'Berita', href: route('berita.index') },
-            { name: 'Pengumuman', href: route('pengumuman.index') },
+            { name: 'Agenda', href: route('agendas.index') },
+            { name: 'Berita', href: route('posts.index') },
+            { name: 'Pengumuman', href: route('announcements.index') },
         ],
     },
-    { name: 'PPID', href: route('public.ppid.index') },    
+    { name: 'PPID', href: route('ppid-documents.index') },    
     {
         name: 'Zona Integritas',
         href: '#',
         sublinks: [
-            { name: 'Informasi Zona Integritas', href: route('zona-integritas.index') },
-            { name: 'Survei Kepuasan', href: route('survei.index') },
+            { name: 'Informasi Zona Integritas', href: route('integrity-zones.index') },
+            { name: 'Survei Kepuasan', href: route('satisfaction-surveys.index') },
         ],
     },
     {
         name: 'Riset',
         href: '#',
         sublinks: [
-            { name: 'Penelitian', href: route('penelitian.index') },
-            { name: 'Pengabdian kepada Masyarakat', href: route('pengabdian.index') },
+            { name: 'Penelitian', href: route('research.index') },
+            { name: 'Pengabdian kepada Masyarakat', href: route('community-services.index') },
         ],
     },    
 ]);
@@ -273,7 +273,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
                                                      @click="closeMobileMenu"
                                                      class="block px-4 py-2 text-sm font-medium text-gray-600 hover:text-[#00509D] hover:bg-blue-50 rounded-lg transition-colors"
                                                  >
-                                                    • {{ subsub.name }}
+                                                     • {{ subsub.name }}
                                                  </Link>
                                              </div>
                                          </div>

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Partner;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class PartnerSeeder extends Seeder
 {
@@ -12,14 +13,10 @@ class PartnerSeeder extends Seeder
     {
         Partner::truncate();
 
-        $imagePath = public_path('images/mitra');
-        if (File::exists($imagePath)) {
-            $files = File::files($imagePath);
-            foreach ($files as $file) {
-                if (preg_match('/^[0-9]+_/', $file->getFilename())) {
-                    File::delete($file);
-                }
-            }
+        $sourcePath = database_path('seeders' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'partners');
+
+        if (!Storage::disk('public')->exists('partners')) {
+            Storage::disk('public')->makeDirectory('partners');
         }
 
         $partners = [
@@ -51,18 +48,34 @@ class PartnerSeeder extends Seeder
             ['name' => 'Inixindo Jogjakarta', 'logo' => 'inixindo.png', 'activities' => ['Sertifikasi Kopetensi']],
             ['name' => 'BPS Kota Balikpapan', 'logo' => 'bps.png', 'activities' => ['Kegiatan Workshop Satria Data 2025', 'Kuliah Tamu Hari Statistik Nasional', 'Kegiatan Expo Kerja Praktik']],
             ['name' => 'BPSDM Komdigi', 'logo' => 'bpsdm.png', 'activities' => ['Penyelenggaran Program Beasiswa Talenta Digital', 'Pelaksanaan Program Pendidikan dan Pengembangan SDM Bidang Komunikasi dan Digital']],
-            ['name' => 'Chongqing University of Technology  (CQUT), China', 'logo' => 'cqut.png', 'activities' => []],
+            ['name' => 'Chongqing University of Technology (CQUT), China', 'logo' => 'cqut.png', 'activities' => []],
             ['name' => 'Krishna Institute of Engineering and Technology (KIET), India', 'logo' => 'kiet.png', 'activities' => []],
         ];
 
+        $copiedCount = 0;
+
         foreach ($partners as $partner) {
+            $logoName = $partner['logo'];
+            $fullSourcePath = $sourcePath . DIRECTORY_SEPARATOR . $logoName;
+
+            if (File::exists($fullSourcePath)) {
+                Storage::disk('public')->put('partners/' . $logoName, File::get($fullSourcePath));
+                $copiedCount++;
+            } else {
+                $this->command->error("GAGAL: Gambar {$logoName} tidak ditemukan di path: {$fullSourcePath}");
+            }
+
             Partner::create([
                 'name' => $partner['name'],
-                'logo' => $partner['logo'],
+                'logo' => 'partners/' . $logoName,
                 'activities' => $partner['activities']
             ]);
         }
 
-        $this->command->info("Selesai! File sampah gambar dibersihkan, dan 30 Data Kerjasama orisinal berhasil di-seed.");
+        if ($copiedCount > 0) {
+            $this->command->info("Selesai! {$copiedCount} gambar berhasil disalin ke storage, dan 30 Data Kerjasama di-seed.");
+        } else {
+            $this->command->warn("Peringatan: Data di-seed, TAPI TIDAK ADA SATUPUN GAMBAR YANG DISALIN!");
+        }
     }
 }
