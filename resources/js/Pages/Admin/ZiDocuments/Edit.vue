@@ -17,14 +17,12 @@ const dataDocument = props.document || props.data || {};
 const currentIsUrl = dataDocument.file_url && !dataDocument.file_url.includes('/storage/');
 
 interface ZIDocumentFormData {
-    _method: string;
     title: string;
     file: File | null;
     file_url: string;
 }
 
 const form = useForm<ZIDocumentFormData>({
-    _method: 'PUT',
     title: dataDocument.title || '',
     file: null,
     file_url: currentIsUrl ? dataDocument.file_url : '',

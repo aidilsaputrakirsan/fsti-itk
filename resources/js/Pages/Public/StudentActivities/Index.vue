@@ -11,8 +11,11 @@ import {
     Search, 
     ChevronDown, 
     ListFilter, 
-    X 
+    X,
+    FileX2
 } from 'lucide-vue-next';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const props = defineProps({
     groupedKegiatan: {
@@ -23,6 +26,8 @@ const props = defineProps({
 
 const searchQuery = ref('');
 const selectedYear = ref('Semua');
+
+const isFiltering = computed(() => searchQuery.value !== '' || selectedYear.value !== 'Semua');
 
 const allYears = computed(() => {
     const years = new Set();
@@ -78,7 +83,11 @@ const handleClickOutside = (event) => {
     }
 };
 
-onMounted(() => document.addEventListener('mousedown', handleClickOutside));
+onMounted(() => {
+    AOS.init({ duration: 800, once: true });
+    document.addEventListener('mousedown', handleClickOutside);
+});
+
 onUnmounted(() => document.removeEventListener('mousedown', handleClickOutside));
 
 
@@ -199,7 +208,7 @@ const formatDateLengkap = (dateStr) => {
                     </div>
                 </div>
 
-                <div class="relative z-20 -mt-16 mx-4 md:mx-8 mb-16 bg-white p-4 md:p-5 rounded-2xl shadow-[0_8px_30px_rgba(47,77,211,0.08)] border border-slate-100 flex flex-col md:flex-row gap-4" data-aos="fade-down">
+                <div class="relative z-20 -mt-16 mx-4 md:mx-8 mb-8 bg-white p-4 md:p-5 rounded-2xl shadow-[0_8px_30px_rgba(47,77,211,0.08)] border border-slate-100 flex flex-col md:flex-row gap-4" data-aos="fade-down">
                     <div class="relative flex-grow">
                         <input 
                             type="text" 
@@ -242,26 +251,33 @@ const formatDateLengkap = (dateStr) => {
                     </transition>
                 </Teleport>
 
-                <div v-if="filteredKegiatanFlat.length === 0" class="text-center py-20 bg-slate-50/50 rounded-[2rem] border border-dashed border-slate-200 shadow-sm" data-aos="fade-up">
-                    <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-slate-100">
-                        <CalendarIcon class="w-10 h-10 text-primary/40" />
-                    </div>
-                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Kegiatan Tidak Ditemukan</h3>
-                    <p class="text-slate-500 max-w-md mx-auto">Mungkin kegiatan yang Anda cari belum dijadwalkan pada tahun tersebut, atau coba kata kunci lain.</p>
-                    <button @click="searchQuery = ''; selectedYear = 'Semua'" class="mt-6 px-8 py-3 bg-blue-50 text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-all duration-300 shadow-sm">
-                        Reset Pencarian
-                    </button>
+               <div v-if="isFiltering" class="mb-8 mx-4 md:mx-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-aos="fade-up">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800 flex items-center">
+                        <div class="w-1.5 h-6 bg-primary mr-3 rounded-full hidden sm:block"></div>
+                        <span v-if="searchQuery && selectedYear !== 'Semua'">Pencarian <span class="text-primary">"{{ searchQuery }}"</span> di Tahun <span class="text-primary">"{{ selectedYear }}"</span></span>
+                        <span v-else-if="searchQuery">Hasil pencarian untuk <span class="text-primary">"{{ searchQuery }}"</span></span>
+                        <span v-else-if="selectedYear !== 'Semua'">Semua kegiatan di Tahun <span class="text-primary">{{ selectedYear }}</span></span>
+                    </h3>
+                    <button @click="searchQuery = ''; selectedYear = 'Semua'" class="px-5 py-2 bg-gray-50 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl border border-gray-200 transition-colors self-start sm:self-auto">Reset Filter</button>
                 </div>
 
-                <div v-for="(kegiatanList, monthYear) in paginatedGroupedKegiatan" :key="monthYear" class="mb-16 last:mb-0">
+                <div v-if="filteredKegiatanFlat.length === 0" class="bg-white border border-gray-100 rounded-3xl p-16 text-center shadow-sm mx-4 md:mx-8" data-aos="zoom-in">
+                    <div class="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FileX2 class="h-10 w-10 text-primary" />
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Tidak Ditemukan</h3>
+                    <p class="mt-2 text-gray-500 font-medium max-w-md mx-auto">Kegiatan dengan kriteria pencarian atau tahun tersebut tidak tersedia.</p>
+                </div>
+
+                <div v-else v-for="(kegiatanList, monthYear) in paginatedGroupedKegiatan" :key="monthYear" class="mb-16 last:mb-0">
                     
-                    <div class="flex items-center gap-5 mb-8" data-aos="fade-right">
+                    <div class="flex items-center gap-5 mb-8 mx-4 md:mx-8" data-aos="fade-right">
                         <div class="w-12 h-1.5 bg-primary rounded-full shadow-sm"></div>
                         <h2 class="text-3xl font-optimus font-bold text-slate-800 capitalize tracking-wide">{{ monthYear }}</h2>
                         <div class="flex-grow h-px bg-slate-200"></div>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mx-4 md:mx-8">
                         <div 
                             v-for="(keg, index) in kegiatanList" :key="keg.id"
                             class="bg-white rounded-[1.5rem] border border-slate-100 shadow-[0_2px_15px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(47,77,211,0.08)] hover:border-primary/20 transform hover:-translate-y-1 transition-all duration-300 flex flex-col group relative"
@@ -306,7 +322,7 @@ const formatDateLengkap = (dateStr) => {
                     </div>
                 </div>
 
-                <div v-if="totalPages > 1" class="mt-16 flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-slate-100" data-aos="fade-in">
+                <div v-if="totalPages > 1 && filteredKegiatanFlat.length > 0" class="mt-16 mx-4 md:mx-8 flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-slate-100" data-aos="fade-in">
                     <p class="text-sm font-medium text-slate-500 text-center md:text-left">
                         Menampilkan <span class="text-primary font-bold">{{ showingFrom }}</span> - <span class="text-primary font-bold">{{ showingTo }}</span> dari <span class="text-primary font-bold">{{ totalKegiatans }}</span> Kegiatan
                     </p>

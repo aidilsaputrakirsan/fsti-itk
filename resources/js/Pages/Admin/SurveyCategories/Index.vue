@@ -10,13 +10,12 @@ import InputError from '@/Components/InputError.vue';
 defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
-    categories: Array<{ id: number; name: string; is_active: boolean; created_at: string; }>;
+    categories: Array<{ id: number; name: string; created_at: string; }>;
 }>();
 
 const form = useForm({
     id: null as number | null,
-    name: '',
-    is_active: true
+    name: ''
 });
 
 const isModalOpen = ref(false);
@@ -35,7 +34,6 @@ const openEditModal = (category: any) => {
     form.clearErrors();
     form.id = category.id;
     form.name = category.name;
-    form.is_active = category.is_active;
     isModalOpen.value = true;
 };
 
@@ -122,7 +120,6 @@ watch(flashSuccess, (message) => {
                         <tr>
                             <th scope="col" class="w-16 text-center">No</th>
                             <th scope="col">Nama Aspek Penilaian</th>
-                            <th scope="col" class="text-center w-40">Status Publikasi</th>
                             <th scope="col" class="text-center w-32">Aksi</th>
                         </tr>
                     </thead>
@@ -133,10 +130,6 @@ watch(flashSuccess, (message) => {
                             </td>
                             <td>
                                 <div class="font-bold text-gray-900">{{ category.name }}</div>
-                            </td>
-                            <td class="text-center">
-                                <span v-if="category.is_active" class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-800">Aktif</span>
-                                <span v-else class="inline-flex rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-600">Nonaktif</span>
                             </td>
                             <td>
                                 <div class="flex items-center justify-center gap-3">
@@ -151,7 +144,7 @@ watch(flashSuccess, (message) => {
                             </td>
                         </tr>
                         <tr v-else>
-                            <td colspan="4" class="py-8 text-center text-gray-500 font-medium">Belum ada aspek penilaian yang ditambahkan.</td>
+                            <td colspan="3" class="py-8 text-center text-gray-500 font-medium">Belum ada aspek penilaian yang ditambahkan.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -169,15 +162,6 @@ watch(flashSuccess, (message) => {
             </div>
             <form @submit.prevent="submitForm" novalidate>
                 <div class="p-6 sm:p-8 space-y-6">
-                    
-                    <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-start gap-3">
-                        <ExclamationTriangleIcon class="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5 stroke-2" />
-                        <p class="text-xs text-blue-800 leading-relaxed">
-                            <span class="font-bold block mb-1">Aturan Pengisian:</span> 
-                            Nama aspek harus jelas dan padat. Jika status diatur menjadi <b>Aktif</b>, aspek ini akan otomatis muncul sebagai opsi pilihan di formulir Survei Publik.
-                        </p>
-                    </div>
-
                     <div>
                         <label class="block text-sm font-bold text-gray-800 mb-2">Nama Aspek Layanan <span class="text-red-600">*</span></label>
                         <input v-model="form.name" type="text" required placeholder="Contoh: Kualitas Konten Website" 
@@ -185,15 +169,6 @@ watch(flashSuccess, (message) => {
                             :class="form.errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
                         />
                         <InputError :message="form.errors.name" class="mt-2"/>
-                    </div>
-                    
-                    <div v-if="modalMode === 'edit'">
-                        <label class="block text-sm font-bold text-gray-800 mb-2">Status Publikasi</label>
-                        <label class="relative inline-flex items-center cursor-pointer mt-1">
-                            <input type="checkbox" v-model="form.is_active" class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary/20 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                            <span class="ml-3 text-sm font-bold text-gray-700">{{ form.is_active ? 'Aktif (Ditampilkan)' : 'Nonaktif (Disembunyikan)' }}</span>
-                        </label>
                     </div>
                 </div>
                 <div class="px-6 py-5 border-t border-gray-100 bg-gray-50 flex flex-col-reverse sm:flex-row justify-end gap-3 rounded-b-2xl">

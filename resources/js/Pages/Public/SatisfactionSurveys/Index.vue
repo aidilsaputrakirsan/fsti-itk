@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
+import InputError from '@/Components/InputError.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { ChevronDown } from 'lucide-vue-next';
 
@@ -21,6 +22,39 @@ const form = useForm({
 const isSubmitted = ref(false);
 
 const submit = () => {
+    form.clearErrors();
+    let hasError = false;
+
+    if (!form.respondent_name) {
+        form.setError('respondent_name', 'Nama lengkap wajib diisi.');
+        hasError = true;
+    }
+    if (!form.respondent_email) {
+        form.setError('respondent_email', 'Email aktif wajib diisi.');
+        hasError = true;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.respondent_email)) {
+        form.setError('respondent_email', 'Format email tidak valid.');
+        hasError = true;
+    }
+    if (!form.respondent_type) {
+        form.setError('respondent_type', 'Kategori responden wajib dipilih.');
+        hasError = true;
+    }
+    if (!form.service_category) {
+        form.setError('service_category', 'Aspek penilaian wajib dipilih.');
+        hasError = true;
+    }
+    if (!form.rating) {
+        form.setError('rating', 'Penilaian wajib diberikan.');
+        hasError = true;
+    }
+    if (!form.feedback) {
+        form.setError('feedback', 'Masukan tambahan wajib diisi.');
+        hasError = true;
+    }
+
+    if (hasError) return;
+
     form.post(route('satisfaction-surveys.store'), {
         preserveScroll: true,
         onSuccess: () => {
@@ -148,7 +182,7 @@ const respondentTypes = [
                                 </p>
                             </div>
 
-                            <form @submit.prevent="submit" class="space-y-10">
+                            <form @submit.prevent="submit" novalidate class="space-y-10">
                                 <section>
                                     <div class="flex items-center mb-6">
                                         <div class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center font-bold text-sm mr-3 shadow-md shadow-primary/20">01</div>
@@ -158,19 +192,32 @@ const respondentTypes = [
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:ml-12">
                                         <div class="space-y-1.5">
                                             <label class="block text-xs font-public-sans font-bold text-gray-700 ml-1">Nama Lengkap <span class="text-red-500">*</span></label>
-                                            <input v-model="form.respondent_name" required type="text" placeholder="Masukkan nama Anda" class="w-full text-sm font-medium rounded-xl border-transparent bg-slate-100 text-gray-900 placeholder-gray-400 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 py-3.5 px-4 transition-all duration-300 shadow-inner">
+                                            <input v-model="form.respondent_name" type="text" placeholder="Masukkan nama Anda" 
+                                                class="w-full text-sm font-medium rounded-xl py-3.5 px-4 transition-all duration-300 shadow-inner"
+                                                :class="form.errors.respondent_name ? 'border-red-500 bg-red-50 text-red-900 placeholder-red-400 focus:ring-red-500 focus:border-red-500' : 'border-transparent bg-slate-100 text-gray-900 placeholder-gray-400 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20'"
+                                            >
+                                            <InputError :message="form.errors.respondent_name" />
                                         </div>
                                         <div class="space-y-1.5">
                                             <label class="block text-xs font-public-sans font-bold text-gray-700 ml-1">Email Aktif <span class="text-red-500">*</span></label>
-                                            <input v-model="form.respondent_email" required type="email" placeholder="contoh@email.com" class="w-full text-sm font-medium rounded-xl border-transparent bg-slate-100 text-gray-900 placeholder-gray-400 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 py-3.5 px-4 transition-all duration-300 shadow-inner">
+                                            <input v-model="form.respondent_email" type="email" placeholder="contoh@email.com" 
+                                                class="w-full text-sm font-medium rounded-xl py-3.5 px-4 transition-all duration-300 shadow-inner"
+                                                :class="form.errors.respondent_email ? 'border-red-500 bg-red-50 text-red-900 placeholder-red-400 focus:ring-red-500 focus:border-red-500' : 'border-transparent bg-slate-100 text-gray-900 placeholder-gray-400 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20'"
+                                            >
+                                            <InputError :message="form.errors.respondent_email" />
                                         </div>
                                         <div class="md:col-span-2 space-y-1.5 relative">
                                             <label class="block text-xs font-public-sans font-bold text-gray-700 ml-1">Kategori Anda <span class="text-red-500">*</span></label>
-                                            <button ref="typeBtnRef" @click="toggleDropdown('type')" type="button" class="w-full text-sm rounded-xl border-transparent bg-slate-100 hover:bg-gray-100 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 py-3.5 px-4 transition-all duration-300 shadow-inner font-public-sans flex items-center justify-between text-left" :class="form.respondent_type ? 'text-gray-900 font-bold' : 'text-gray-400 font-medium'">
+                                            <button ref="typeBtnRef" @click="toggleDropdown('type')" type="button" 
+                                                class="w-full text-sm rounded-xl py-3.5 px-4 transition-all duration-300 shadow-inner font-public-sans flex items-center justify-between text-left" 
+                                                :class="[
+                                                    form.respondent_type ? 'text-gray-900 font-bold' : 'text-gray-400 font-medium',
+                                                    form.errors.respondent_type ? 'border border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500' : 'border border-transparent bg-slate-100 hover:bg-gray-100 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20'
+                                                ]">
                                                 <span>{{ form.respondent_type || 'Pilih Kategori Responden' }}</span>
                                                 <ChevronDown class="w-4 h-4 text-gray-500 transition-transform" :class="{'rotate-180': isTypeOpen}" />
                                             </button>
-                                            <input type="text" v-model="form.respondent_type" required class="opacity-0 absolute -z-10 w-0 h-0 border-0 p-0" />
+                                            <InputError :message="form.errors.respondent_type" />
                                         </div>
                                     </div>
                                 </section>
@@ -184,14 +231,19 @@ const respondentTypes = [
                                     <div class="space-y-8 md:ml-12">
                                         <div class="space-y-1.5 relative">
                                             <label class="block text-xs font-public-sans font-bold text-gray-700 ml-1">Fokus yang Dinilai <span class="text-red-500">*</span></label>
-                                            <button ref="categoryBtnRef" @click="toggleDropdown('category')" type="button" class="w-full text-sm rounded-xl border-transparent bg-slate-100 hover:bg-gray-100 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 py-3.5 px-4 transition-all duration-300 shadow-inner font-public-sans flex items-center justify-between text-left" :class="form.service_category ? 'text-gray-900 font-bold' : 'text-gray-400 font-medium'">
+                                            <button ref="categoryBtnRef" @click="toggleDropdown('category')" type="button" 
+                                                class="w-full text-sm rounded-xl py-3.5 px-4 transition-all duration-300 shadow-inner font-public-sans flex items-center justify-between text-left" 
+                                                :class="[
+                                                    form.service_category ? 'text-gray-900 font-bold' : 'text-gray-400 font-medium',
+                                                    form.errors.service_category ? 'border border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500' : 'border border-transparent bg-slate-100 hover:bg-gray-100 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20'
+                                                ]">
                                                 <span>{{ form.service_category || 'Pilih Aspek Penilaian' }}</span>
                                                 <ChevronDown class="w-4 h-4 text-gray-500 transition-transform" :class="{'rotate-180': isCategoryOpen}" />
                                             </button>
-                                            <input type="text" v-model="form.service_category" required class="opacity-0 absolute -z-10 w-0 h-0 border-0 p-0" />
+                                            <InputError :message="form.errors.service_category" />
                                         </div>
 
-                                        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm relative z-0">
+                                        <div class="bg-white p-6 rounded-2xl border shadow-sm relative z-0" :class="form.errors.rating ? 'border-red-500 bg-red-50/30' : 'border-gray-200'">
                                             <label class="block font-optimus font-bold text-center text-primary text-lg mb-8">Seberapa puas Anda terhadap hal ini? <span class="text-red-500">*</span></label>
                                             
                                             <div class="relative max-w-[260px] sm:max-w-xs mx-auto">
@@ -200,7 +252,7 @@ const respondentTypes = [
 
                                                 <div class="flex justify-between items-center relative">
                                                     <label v-for="i in 5" :key="i" class="cursor-pointer text-center group">
-                                                        <input type="radio" v-model="form.rating" :value="i" class="hidden" required>
+                                                        <input type="radio" v-model="form.rating" :value="i" class="hidden">
                                                         <div 
                                                             class="w-10 h-10 sm:w-12 sm:h-12 mx-auto flex items-center justify-center rounded-full border-2 transition-all duration-300 relative bg-white"
                                                             :class="form.rating >= i ? 'border-primary shadow-md transform scale-110' : 'border-gray-300 group-hover:border-primary/50'"
@@ -220,11 +272,16 @@ const respondentTypes = [
                                                 <span class="text-[10px] font-public-sans font-bold uppercase tracking-widest transition-colors" :class="form.rating <= 2 ? 'text-red-500' : 'text-gray-400'">Kurang</span>
                                                 <span class="text-[10px] font-public-sans font-bold uppercase tracking-widest transition-colors" :class="form.rating >= 4 ? 'text-green-600' : 'text-gray-400'">Puas</span>
                                             </div>
+                                            <InputError :message="form.errors.rating" class="text-center mt-4" />
                                         </div>
 
                                         <div class="space-y-1.5">
                                             <label class="block text-xs font-public-sans font-bold text-gray-700 ml-1">Masukan Tambahan <span class="text-red-500">*</span></label>
-                                            <textarea v-model="form.feedback" required rows="4" class="w-full text-sm font-medium rounded-2xl border-transparent bg-slate-100 text-gray-900 placeholder-gray-400 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 py-4 px-4 transition-all duration-300 shadow-inner resize-none" placeholder="Tuliskan saran atau pengalaman Anda secara singkat..."></textarea>
+                                            <textarea v-model="form.feedback" rows="4" 
+                                                class="w-full text-sm font-medium rounded-2xl py-4 px-4 transition-all duration-300 shadow-inner resize-none" 
+                                                :class="form.errors.feedback ? 'border-red-500 bg-red-50 text-red-900 placeholder-red-400 focus:ring-red-500 focus:border-red-500' : 'border-transparent bg-slate-100 text-gray-900 placeholder-gray-400 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20'"
+                                                placeholder="Tuliskan saran atau pengalaman Anda secara singkat..."></textarea>
+                                            <InputError :message="form.errors.feedback" />
                                         </div>
                                     </div>
                                 </section>

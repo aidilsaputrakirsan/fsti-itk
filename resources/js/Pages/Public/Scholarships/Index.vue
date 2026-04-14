@@ -11,8 +11,8 @@ import {
     Award, 
     Search, 
     X, 
-    AlertCircle, 
-    ExternalLink
+    ExternalLink,
+    FileX2
 } from 'lucide-vue-next';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -25,6 +25,8 @@ const props = defineProps({
 });
 
 const searchQuery = ref('');
+
+const isFiltering = computed(() => searchQuery.value !== '');
 
 const filteredBeasiswas = computed(() => {
     if (!searchQuery.value) return props.beasiswas;
@@ -137,7 +139,7 @@ const getIconColorClasses = (index) => {
                     </div>
                 </div>
 
-                <div class="relative z-20 -mt-12 md:-mt-16 mx-2 sm:mx-4 md:mx-auto max-w-3xl mb-12 md:mb-16 bg-white p-3 md:p-4 rounded-2xl shadow-[0_8px_30px_rgba(47,77,211,0.08)] border border-slate-100 flex" data-aos="fade-up" data-aos-delay="100">
+                <div class="relative z-20 -mt-12 md:-mt-16 mx-auto max-w-3xl mb-8 bg-white p-3 md:p-4 rounded-2xl shadow-[0_8px_30px_rgba(47,77,211,0.08)] border border-slate-100 flex" data-aos="fade-up" data-aos-delay="100">
                     <div class="relative flex-grow">
                         <input 
                             type="text" 
@@ -152,7 +154,23 @@ const getIconColorClasses = (index) => {
                     </div>
                 </div>
 
-                <div v-if="filteredBeasiswas.length > 0">
+                <div v-if="isFiltering" class="mb-10 mx-auto max-w-3xl bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-aos="fade-up">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800 flex items-center">
+                        <div class="w-1.5 h-6 bg-primary mr-3 rounded-full hidden sm:block"></div>
+                        <span>Hasil pencarian untuk <span class="text-primary">"{{ searchQuery }}"</span></span>
+                    </h3>
+                    <button @click="searchQuery = ''" class="px-5 py-2 bg-gray-50 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl border border-gray-200 transition-colors self-start sm:self-auto">Reset Filter</button>
+                </div>
+
+                <div v-if="filteredBeasiswas.length === 0" class="bg-white border border-gray-100 rounded-3xl p-16 text-center shadow-sm mx-auto max-w-3xl" data-aos="zoom-in">
+                    <div class="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FileX2 class="h-10 w-10 text-primary" />
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Tidak Ditemukan</h3>
+                    <p class="mt-2 text-gray-500 font-medium max-w-md mx-auto">Beasiswa dengan kriteria pencarian tersebut tidak tersedia.</p>
+                </div>
+
+                <div v-else>
                     <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
                         <div 
                             v-for="(beasiswa, index) in paginatedBeasiswas" 
@@ -246,17 +264,6 @@ const getIconColorClasses = (index) => {
                             ></button>
                         </div>
                     </div>
-                </div>
-
-                <div v-else class="flex flex-col items-center justify-center py-16 md:py-20 text-center bg-white rounded-[2rem] shadow-sm border border-dashed border-slate-200 mx-2 sm:mx-0" data-aos="zoom-in">
-                    <div class="w-16 h-16 md:w-20 md:h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 md:mb-5 border border-slate-100">
-                        <AlertCircle class="w-8 h-8 md:w-10 md:h-10 text-slate-300" />
-                    </div>
-                    <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">Pencarian Tidak Ditemukan</h3>
-                    <p class="text-sm md:text-base text-slate-500 max-w-xs md:max-w-md mx-auto">Tidak ada beasiswa yang cocok dengan kata kunci "{{ searchQuery }}".</p>
-                    <button @click="searchQuery = ''" class="mt-5 md:mt-6 px-5 md:px-6 py-2 md:py-2.5 bg-blue-50 text-primary text-sm md:text-base font-bold rounded-xl hover:bg-primary hover:text-white transition-colors">
-                        Reset Pencarian
-                    </button>
                 </div>
 
             </div>

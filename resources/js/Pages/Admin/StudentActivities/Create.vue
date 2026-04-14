@@ -36,10 +36,20 @@ const submit = () => {
     if (!form.start_date) {
         form.setError('start_date', 'Tanggal mulai wajib diisi.');
         hasError = true;
+    } else {
+        const yearStart = new Date(form.start_date).getFullYear();
+        if (yearStart < 2000 || yearStart > 2100) {
+            form.setError('start_date', 'Tahun tidak valid (masukkan tahun yang logis).');
+            hasError = true;
+        }
     }
 
-    if (form.start_date && form.end_date) {
-        if (new Date(form.end_date) < new Date(form.start_date)) {
+    if (form.end_date) {
+        const yearEnd = new Date(form.end_date).getFullYear();
+        if (yearEnd < 2000 || yearEnd > 2100) {
+            form.setError('end_date', 'Tahun tidak valid (masukkan tahun yang logis).');
+            hasError = true;
+        } else if (new Date(form.end_date) < new Date(form.start_date)) {
             form.setError('end_date', 'Tanggal selesai tidak boleh sebelum tanggal mulai.');
             hasError = true;
         }

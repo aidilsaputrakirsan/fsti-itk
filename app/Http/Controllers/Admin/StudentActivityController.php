@@ -47,8 +47,8 @@ class StudentActivityController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'start_date' => 'required|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'start_date' => 'required|date|after_or_equal:2000-01-01|before_or_equal:2100-12-31',
+            'end_date' => 'nullable|date|after_or_equal:start_date|before_or_equal:2100-12-31',
             'organizer' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
             'description' => 'nullable|string',
@@ -74,8 +74,8 @@ class StudentActivityController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'start_date' => 'required|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'start_date' => 'required|date|after_or_equal:2000-01-01|before_or_equal:2100-12-31',
+            'end_date' => 'nullable|date|after_or_equal:start_date|before_or_equal:2100-12-31',
             'organizer' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
             'description' => 'nullable|string',

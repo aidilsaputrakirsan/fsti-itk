@@ -39,7 +39,7 @@ class ScholarshipController extends Controller
             'title' => 'required|string|max:255',
             'provider' => 'nullable|string|max:255',
             'description' => 'required|string',
-            'link_url' => 'nullable|url|max:255',
+            'link_url' => ['nullable', 'url', 'max:255', 'regex:/^https?:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}/'],
         ]);
 
         Scholarship::create($validated);
@@ -60,7 +60,7 @@ class ScholarshipController extends Controller
             'title' => 'required|string|max:255',
             'provider' => 'nullable|string|max:255',
             'description' => 'required|string',
-            'link_url' => 'nullable|url|max:255',
+            'link_url' => ['nullable', 'url', 'max:255', 'regex:/^https?:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}/'],
         ]);
 
         $scholarship->update($validated);

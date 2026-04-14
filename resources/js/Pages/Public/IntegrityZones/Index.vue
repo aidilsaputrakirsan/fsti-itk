@@ -149,7 +149,7 @@ const displayDocuments = props.documents || [];
                                 {{ doc.title }}
                             </h3>
                             <span class="inline-flex items-center justify-center sm:justify-start text-[9px] md:text-xs font-bold text-primary mt-auto md:mt-2 bg-primary/5 px-2 py-1 md:px-2.5 md:py-1 rounded-md group-hover:bg-primary group-hover:text-white transition-colors w-fit mx-auto sm:mx-0">
-                                <ArrowDownTrayIcon class="w-3 h-3 md:w-3.5 md:h-3.5 mr-1 md:mr-1.5" /> <span class="hidden sm:inline">Lihat </span> Dokumen
+                                <ArrowDownTrayIcon class="w-3 h-3 md:w-3.5 md:h-3.5 mr-1 md:mr-1.5" /> <span class="hidden sm:inline">Lihat&nbsp;</span>Dokumen
                             </span>
                         </div>
                     </a>

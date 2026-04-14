@@ -41,9 +41,9 @@ const submit = () => {
     }
 
     if (form.link_url) {
-        const urlPattern = /^https?:\/\/.+/;
+        const urlPattern = /^https?:\/\/[a-zA-Z0-9\-.]+\.[a-zA-Z]{2,}/;
         if (!urlPattern.test(form.link_url)) {
-            form.setError('link_url', 'Tautan harus diawali dengan http:// atau https://');
+            form.setError('link_url', 'Tautan harus valid diawali http:// atau https:// beserta domain (cth: .com, .id).');
             hasError = true;
         }
     }

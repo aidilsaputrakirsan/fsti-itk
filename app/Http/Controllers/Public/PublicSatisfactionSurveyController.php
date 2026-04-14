@@ -12,7 +12,7 @@ class PublicSatisfactionSurveyController extends Controller
 {
     public function index()
     {
-        $categories = SurveyCategory::where('is_active', true)->get();
+        $categories = SurveyCategory::all();
 
         return Inertia::render('Public/SatisfactionSurveys/Index', [
             'categories' => $categories

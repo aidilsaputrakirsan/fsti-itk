@@ -78,7 +78,11 @@ const submit = () => {
     if (!form.academic_wa_number) {
         form.setError('academic_wa_number', 'Teks nomor WA Akademik wajib diisi.');
         if (!firstErrorTab) firstErrorTab = 'komunikasi';
+    } else if (form.academic_wa_number.replace(/[^0-9]/g, '').length < 5) {
+        form.setError('academic_wa_number', 'Nomor WA Akademik minimal 5 angka.');
+        if (!firstErrorTab) firstErrorTab = 'komunikasi';
     }
+
     if (!form.academic_wa_link) {
         form.setError('academic_wa_link', 'Tautan WA Akademik wajib diisi.');
         if (!firstErrorTab) firstErrorTab = 'komunikasi';
@@ -90,7 +94,11 @@ const submit = () => {
     if (!form.finance_wa_number) {
         form.setError('finance_wa_number', 'Teks nomor WA Keuangan wajib diisi.');
         if (!firstErrorTab) firstErrorTab = 'komunikasi';
+    } else if (form.finance_wa_number.replace(/[^0-9]/g, '').length < 5) {
+        form.setError('finance_wa_number', 'Nomor WA Keuangan minimal 5 angka.');
+        if (!firstErrorTab) firstErrorTab = 'komunikasi';
     }
+
     if (!form.finance_wa_link) {
         form.setError('finance_wa_link', 'Tautan WA Keuangan wajib diisi.');
         if (!firstErrorTab) firstErrorTab = 'komunikasi';
@@ -252,6 +260,7 @@ const submit = () => {
                                     <input 
                                         type="text" 
                                         v-model="form.academic_wa_number" 
+                                        @input="form.academic_wa_number = form.academic_wa_number.replace(/[^0-9-]/g, '')"
                                         placeholder="Cth: 0851-7230-2157" 
                                         class="w-full rounded-xl py-2.5 transition-all duration-200 text-sm shadow-sm"
                                         :class="form.errors.academic_wa_number ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
@@ -278,6 +287,7 @@ const submit = () => {
                                     <input 
                                         type="text" 
                                         v-model="form.finance_wa_number" 
+                                        @input="form.finance_wa_number = form.finance_wa_number.replace(/[^0-9-]/g, '')"
                                         placeholder="Cth: 0851-7231-2157" 
                                         class="w-full rounded-xl py-2.5 transition-all duration-200 text-sm shadow-sm"
                                         :class="form.errors.finance_wa_number ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
