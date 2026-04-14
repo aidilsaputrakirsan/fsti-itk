@@ -13,11 +13,16 @@ defineOptions({ layout: AdminLayout });
 const props = defineProps<{
     documents: any;
     filters: any;
-    listJenis: string[];
+    listJenis?: string[]; 
+    documentTypes: string[]; 
 }>();
 
 const search = ref(props.filters?.search || '');
 const jenis = ref(props.filters?.jenis || '');
+
+const activeListJenis = computed(() => {
+    return props.documentTypes || props.listJenis || [];
+});
 
 watch([search, jenis], debounce(() => {
     router.get(route('admin.ppid.index'), {
@@ -129,7 +134,7 @@ watch(flashSuccess, (message) => {
                 <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
                 <select v-model="jenis" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors cursor-pointer">
                     <option value="">Semua Jenis Informasi</option>
-                    <option v-for="j in listJenis" :key="j" :value="j">{{ j }}</option>
+                    <option v-for="j in activeListJenis" :key="j" :value="j">{{ j }}</option>
                 </select>
             </div>
         </div>

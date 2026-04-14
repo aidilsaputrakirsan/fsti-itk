@@ -29,7 +29,7 @@ class PpidSeeder extends Seeder
         // ==========================================
         $berkala = [
             [
-                'nama_kategori' => 'A. Informasi tentang Profil Fakultas Sains dan Teknologi Informasi',
+                'nama_kategori' => 'Informasi tentang Profil Fakultas Sains dan Teknologi Informasi',
                 'jenis_informasi' => 'Berkala',
                 'urutan' => 1,
                 'dokumen' => [
@@ -43,7 +43,7 @@ class PpidSeeder extends Seeder
                 ]
             ],
             [
-                'nama_kategori' => 'B. Ringkasan program dan/atau kegiatan Fakultas Sains dan Teknologi Informasi',
+                'nama_kategori' => 'Ringkasan program dan/atau kegiatan Fakultas Sains dan Teknologi Informasi',
                 'jenis_informasi' => 'Berkala',
                 'urutan' => 2,
                 'dokumen' => [
@@ -51,11 +51,11 @@ class PpidSeeder extends Seeder
                     ['judul' => 'Informasi Penerimaan Mahasiswa Baru (PMB)', 'url' => '/informasi-pmb', 'is_file' => false],
                     ['judul' => 'Kegiatan Mahasiswa', 'url' => '/kegiatan-mahasiswa', 'is_file' => false],
                     ['judul' => 'Informasi Beasiswa', 'url' => '/beasiswa', 'is_file' => false],
-                    ['judul' => 'Informasi Program Studi', 'url' => '/prodi', 'is_file' => false],
+                    ['judul' => 'Informasi Program Studi', 'url' => '/profil/pimpinan-prodi', 'is_file' => false],
                 ]
             ],
             [
-                'nama_kategori' => 'C. Informasi tentang kinerja Fakultas Sains dan Teknologi Informasi',
+                'nama_kategori' => 'Informasi tentang kinerja Fakultas Sains dan Teknologi Informasi',
                 'jenis_informasi' => 'Berkala',
                 'urutan' => 3,
                 'dokumen' => [
@@ -63,7 +63,7 @@ class PpidSeeder extends Seeder
                 ]
             ],
             [
-                'nama_kategori' => 'D. Laporan Keuangan',
+                'nama_kategori' => 'Laporan Keuangan',
                 'jenis_informasi' => 'Berkala',
                 'urutan' => 4,
                 'dokumen' => [
@@ -71,7 +71,7 @@ class PpidSeeder extends Seeder
                 ]
             ],
             [
-                'nama_kategori' => 'E. Ringkasan Laporan Akses Informasi Publik',
+                'nama_kategori' => 'Ringkasan Laporan Akses Informasi Publik',
                 'jenis_informasi' => 'Berkala',
                 'urutan' => 5,
                 'dokumen' => [
@@ -79,7 +79,7 @@ class PpidSeeder extends Seeder
                 ]
             ],
             [
-                'nama_kategori' => 'F. Kebijakan/Edaran Fakultas Sains dan Teknologi Informasi',
+                'nama_kategori' => 'Kebijakan/Edaran Fakultas Sains dan Teknologi Informasi',
                 'jenis_informasi' => 'Berkala',
                 'urutan' => 6,
                 'dokumen' => [
@@ -88,7 +88,7 @@ class PpidSeeder extends Seeder
                 ]
             ],
             [
-                'nama_kategori' => 'G. Informasi Terkait Hak Dan Tata Cara Memperoleh Informasi Publik',
+                'nama_kategori' => 'Informasi Terkait Hak Dan Tata Cara Memperoleh Informasi Publik',
                 'jenis_informasi' => 'Berkala',
                 'urutan' => 7,
                 'dokumen' => [
@@ -106,7 +106,7 @@ class PpidSeeder extends Seeder
         // ==========================================
         $setiapSaat = [
             [
-                'nama_kategori' => 'A. Daftar Informasi Publik Fakultas Sains dan Teknologi Informasi',
+                'nama_kategori' => 'Daftar Informasi Publik Fakultas Sains dan Teknologi Informasi',
                 'jenis_informasi' => 'Setiap Saat',
                 'urutan' => 1,
                 'dokumen' => [
@@ -114,7 +114,7 @@ class PpidSeeder extends Seeder
                 ]
             ],
             [
-                'nama_kategori' => 'B. Dokumen pendukung dalam penyusunan kebijakan/edaran/pengumuman yang telah ditetapkan Fakultas Sains dan Teknologi Informasi',
+                'nama_kategori' => 'Dokumen pendukung dalam penyusunan kebijakan/edaran/pengumuman yang telah ditetapkan Fakultas Sains dan Teknologi Informasi',
                 'jenis_informasi' => 'Setiap Saat',
                 'urutan' => 2,
                 'dokumen' => [
@@ -122,7 +122,7 @@ class PpidSeeder extends Seeder
                 ]
             ],
             [
-                'nama_kategori' => 'C. Informasi Tentang Organisasi, Administrasi, Kepegawaian, dan Keuangan Fakultas Sains dan Teknologi Informasi',
+                'nama_kategori' => 'Informasi Tentang Organisasi, Administrasi, Kepegawaian, dan Keuangan Fakultas Sains dan Teknologi Informasi',
                 'jenis_informasi' => 'Setiap Saat',
                 'urutan' => 3,
                 'dokumen' => [
@@ -135,7 +135,7 @@ class PpidSeeder extends Seeder
                 ]
             ],
             [
-                'nama_kategori' => 'D. Surat Menyurat Fakultas Sains dan Teknologi Informasi',
+                'nama_kategori' => 'Surat Menyurat Fakultas Sains dan Teknologi Informasi',
                 'jenis_informasi' => 'Setiap Saat',
                 'urutan' => 4,
                 'dokumen' => [
@@ -143,7 +143,7 @@ class PpidSeeder extends Seeder
                 ]
             ],
             [
-                'nama_kategori' => 'E. Daftar Penelitian & Pengabdian Masyarakat Fakultas Sains dan Teknologi Informasi',
+                'nama_kategori' => 'Daftar Penelitian & Pengabdian Masyarakat Fakultas Sains dan Teknologi Informasi',
                 'jenis_informasi' => 'Setiap Saat',
                 'urutan' => 5,
                 'dokumen' => [
@@ -152,7 +152,7 @@ class PpidSeeder extends Seeder
                 ]
             ],
             [
-                'nama_kategori' => 'F. Rencana Strategis dan Rencana Kerja Fakultas Sains dan Teknologi Informasi',
+                'nama_kategori' => 'Rencana Strategis dan Rencana Kerja Fakultas Sains dan Teknologi Informasi',
                 'jenis_informasi' => 'Setiap Saat',
                 'urutan' => 6,
                 'dokumen' => [

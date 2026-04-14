@@ -92,13 +92,22 @@ const confirmDelete = () => {
 const page = usePage();
 const showNotification = ref(false);
 const notificationMessage = ref('');
-const flashSuccess = computed(() => (page.props as any).flash?.success);
+const notificationType = ref('success'); 
 
-watch(flashSuccess, (message) => {
-    if (message) {
-        notificationMessage.value = message as string;
+const flashSuccess = computed(() => (page.props as any).flash?.success);
+const flashError = computed(() => (page.props as any).flash?.error);
+
+watch([flashSuccess, flashError], ([successMsg, errorMsg]) => {
+    if (successMsg) {
+        notificationMessage.value = successMsg as string;
+        notificationType.value = 'success';
         showNotification.value = true;
-        setTimeout(() => { showNotification.value = false; }, 3000);
+        setTimeout(() => { showNotification.value = false; }, 4000);
+    } else if (errorMsg) {
+        notificationMessage.value = errorMsg as string;
+        notificationType.value = 'error';
+        showNotification.value = true;
+        setTimeout(() => { showNotification.value = false; }, 6000); 
     }
 }, { immediate: true });
 </script>
@@ -211,7 +220,6 @@ watch(flashSuccess, (message) => {
                     <p class="mt-2 text-gray-600 text-center">
                         Apakah Anda yakin ingin menghapus kategori <br>
                         <span class="font-bold text-gray-900 mt-1 line-clamp-2">"{{ itemToDelete?.nama_kategori }}"</span>?
-                        <br><span class="text-red-600 font-semibold text-xs mt-2 block">Semua dokumen di dalamnya juga akan ikut terhapus!</span>
                     </p>
                 </div>
                 <div class="mt-8 flex flex-col-reverse sm:flex-row justify-center gap-3">
@@ -226,10 +234,16 @@ watch(flashSuccess, (message) => {
         </div>
         
         <div v-if="showNotification" class="fixed top-5 right-5 sm:top-8 sm:right-8 z-50">
-            <div class="flex items-center gap-3 rounded-xl bg-green-600 px-5 py-4 text-white shadow-xl">
-                <CheckCircleIcon class="h-6 w-6" />
-                <p class="font-bold text-sm tracking-wide">{{ notificationMessage }}</p>
+            <div class="flex items-center gap-3 rounded-xl px-5 py-4 text-white shadow-xl transition-all"
+                 :class="notificationType === 'error' ? 'bg-red-600' : 'bg-green-600'">
+                <CheckCircleIcon v-if="notificationType === 'success'" class="h-6 w-6 flex-shrink-0" />
+                <ExclamationTriangleIcon v-else class="h-6 w-6 flex-shrink-0" />
+                
+                <p class="font-bold text-sm tracking-wide max-w-[280px] sm:max-w-sm leading-snug">
+                    {{ notificationMessage }}
+                </p>
             </div>
         </div>
+
     </div>
 </template>

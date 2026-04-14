@@ -262,13 +262,13 @@ watch([search, category], debounce(() => {
                 </div>
             </div>
 
-            <div v-else class="text-center py-24 bg-white border border-slate-100 rounded-[3rem] shadow-sm max-w-4xl mx-auto" data-aos="zoom-in">
-                <div class="bg-slate-50 w-24 h-24 flex items-center justify-center rounded-full mx-auto mb-6 border border-slate-100">
-                    <FileX2 class="w-12 h-12 text-slate-300" />
+            <div v-else class="bg-white border border-gray-100 rounded-3xl p-16 text-center shadow-sm mt-8" data-aos="zoom-in">
+                <div class="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <FileX2 class="h-10 w-10 text-primary" />
                 </div>
-                <h3 class="text-2xl md:text-3xl font-bold text-slate-800 font-optimus mb-3">Tidak Ditemukan</h3>
-                <p class="mt-2 text-slate-500 font-medium max-w-md mx-auto">
-                    Berita atau pengumuman yang Anda cari tidak tersedia. Silakan coba kata kunci lain atau reset filter.
+                <h3 class="text-xl font-bold text-gray-900">Tidak Ditemukan</h3>
+                <p class="mt-2 text-gray-500 font-medium max-w-md mx-auto">
+                    Berita dengan kriteria pencarian atau kategori tersebut tidak tersedia.
                 </p>
             </div>
         </div>

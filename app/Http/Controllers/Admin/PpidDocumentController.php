@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PpidDocument;
-use App\Models\PpidCategory; 
+use App\Models\PpidCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
@@ -13,7 +13,7 @@ class PpidDocumentController extends Controller
 {
     public function index(Request $request)
     {
-        $query = PpidDocument::with('kategori'); 
+        $query = PpidDocument::with('kategori');
 
         if ($request->filled('search')) {
             $query->where('judul_dokumen', 'like', '%' . $request->search . '%');
@@ -35,7 +35,7 @@ class PpidDocumentController extends Controller
         return Inertia::render('Admin/PpidDocuments/Index', [
             'documents' => $documents,
             'filters' => $request->only(['search', 'jenis']),
-            'documentTypes' => $documentTypes, 
+            'documentTypes' => $documentTypes,
         ]);
     }
 
@@ -51,18 +51,24 @@ class PpidDocumentController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'kategori_ppid_id' => 'required|exists:kategori_ppids,id',
+            'kategori_ppid_id' => 'required|exists:ppid_categories,id',
             'judul_dokumen'    => 'required|string|max:255',
             'file'             => 'nullable|file|mimes:pdf|max:10240',
-            'file_url'         => 'nullable|string', 
+            'file_url'         => 'nullable|string',
         ]);
+
+        $dataToSave = [
+            'ppid_category_id' => $validated['kategori_ppid_id'],
+            'judul_dokumen'    => $validated['judul_dokumen'],
+            'file_url'         => $validated['file_url'] ?? null,
+        ];
 
         if ($request->hasFile('file')) {
             $path = $request->file('file')->store('ppid-documents', 'public');
-            $validated['file_url'] = '/storage/' . $path;
+            $dataToSave['file_url'] = '/storage/' . $path;
         }
 
-        PpidDocument::create($validated);
+        PpidDocument::create($dataToSave);
 
         return redirect()->route('admin.ppid.index')->with('success', 'Dokumen berhasil ditambahkan!');
     }
@@ -83,21 +89,27 @@ class PpidDocumentController extends Controller
         $document = PpidDocument::findOrFail($id);
 
         $validated = $request->validate([
-            'kategori_ppid_id' => 'required|exists:kategori_ppids,id',
+            'kategori_ppid_id' => 'required|exists:ppid_categories,id',
             'judul_dokumen'    => 'required|string|max:255',
             'file'             => 'nullable|file|mimes:pdf|max:10240',
             'file_url'         => 'nullable|string',
         ]);
+
+        $dataToUpdate = [
+            'ppid_category_id' => $validated['kategori_ppid_id'],
+            'judul_dokumen'    => $validated['judul_dokumen'],
+            'file_url'         => $validated['file_url'] ?? $document->file_url,
+        ];
 
         if ($request->hasFile('file')) {
             if ($document->file_url && Storage::disk('public')->exists(str_replace('/storage/', '', $document->file_url))) {
                 Storage::disk('public')->delete(str_replace('/storage/', '', $document->file_url));
             }
             $path = $request->file('file')->store('ppid-documents', 'public');
-            $validated['file_url'] = '/storage/' . $path;
+            $dataToUpdate['file_url'] = '/storage/' . $path;
         }
 
-        $document->update($validated);
+        $document->update($dataToUpdate);
 
         return redirect()->route('admin.ppid.index')->with('success', 'Dokumen berhasil diperbarui!');
     }

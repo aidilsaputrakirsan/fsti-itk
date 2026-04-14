@@ -49,7 +49,9 @@ class PostController extends Controller
             'post_category_id' => 'required|exists:post_categories,id',
             'tags' => 'nullable|string',
             'status' => 'required|in:Draft,Terbitkan',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'title.unique' => 'Judul berita sudah digunakan, silakan gunakan judul lain.',
         ]);
 
         if ($request->hasFile('image')) {
@@ -84,7 +86,9 @@ class PostController extends Controller
             'post_category_id' => 'required|exists:post_categories,id',
             'tags' => 'nullable|string',
             'status' => 'required|in:Draft,Terbitkan',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'title.unique' => 'Judul berita sudah digunakan, silakan gunakan judul lain.',
         ]);
 
         if ($request->hasFile('image')) {
@@ -104,7 +108,7 @@ class PostController extends Controller
         }
 
         $validatedData['excerpt'] = Str::limit(strip_tags(html_entity_decode($request->content)), 150);
-        $validatedData['views'] = 0;
+
 
         $post->update($validatedData);
 

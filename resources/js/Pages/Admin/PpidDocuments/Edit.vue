@@ -10,7 +10,7 @@ defineOptions({ layout: AdminLayout });
 const props = defineProps<{
     document?: any;
     data?: any;
-    kategoris: any[];
+    categories: any[]; 
 }>();
 
 const dataDocument = props.document || props.data || {};
@@ -25,7 +25,7 @@ interface PpidFormData {
 
 const form = useForm<PpidFormData>({
     _method: 'PUT',
-    kategori_ppid_id: dataDocument.kategori_ppid_id || '',
+    kategori_ppid_id: dataDocument.ppid_category_id || dataDocument.kategori_ppid_id || '',
     judul_dokumen: dataDocument.judul_dokumen || '',
     file: null,
     file_url: dataDocument.file_url && !dataDocument.file_url.includes('/storage/') ? dataDocument.file_url : '', 
@@ -35,10 +35,19 @@ const fileNameDisplay = computed(() => {
     if (form.file instanceof File) {
         return form.file.name;
     }
-    return 'Pilih file PDF (Opsional, Maks. 10 MB)';
+    return 'Pilih file PDF baru untuk mengganti (Opsional)';
 });
 
-const validateForm = () => {
+const handleFileChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files[0]) {
+        form.file = target.files[0];
+    } else {
+        form.file = null;
+    }
+};
+
+const submit = () => {
     form.clearErrors();
     let hasError = false;
 
@@ -62,11 +71,8 @@ const validateForm = () => {
         }
     }
 
-    return !hasError;
-};
+    if (hasError) return;
 
-const submit = () => {
-    if (!validateForm()) return;
     const targetUrl: string = route('admin.ppid.update', dataDocument.id);
     form.post(targetUrl);
 };
@@ -95,7 +101,7 @@ const submit = () => {
                             :class="form.errors.kategori_ppid_id ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
                             required>
                             <option value="" disabled>-- Pilih Kategori --</option>
-                            <option v-for="kat in kategoris" :key="kat.id" :value="kat.id">
+                            <option v-for="kat in categories" :key="kat.id" :value="kat.id">
                                 [{{ kat.jenis_informasi }}] {{ kat.nama_kategori }}
                             </option>
                         </select>
@@ -112,10 +118,9 @@ const submit = () => {
                     </div>
 
                     <label class="md:pt-3 text-sm font-bold text-gray-800">Ganti File PDF</label>
-                    <div>
-                        <div class="relative flex items-center w-full rounded-lg border border-gray-300 bg-gray-50 hover:bg-white focus-within:bg-white focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors shadow-sm px-4 py-3 cursor-pointer mb-3" :class="{'opacity-50 cursor-not-allowed': form.file_url !== ''}">
+                    <div class="overflow-hidden"> <div class="relative flex items-center w-full rounded-lg border border-gray-300 bg-gray-50 hover:bg-white focus-within:bg-white focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors shadow-sm px-4 py-3 cursor-pointer mb-3 min-w-0" :class="{'opacity-50 cursor-not-allowed': form.file_url !== ''}">
                             <DocumentIcon class="h-5 w-5 text-gray-400 flex-shrink-0" />
-                            <span class="ml-3 text-sm truncate" :class="{'text-gray-400': !form.file, 'text-gray-900 font-medium': form.file}">
+                            <span class="ml-3 text-sm truncate block flex-grow overflow-hidden text-ellipsis" :class="{'text-gray-400': !form.file, 'text-gray-900 font-medium': form.file}">
                                 {{ fileNameDisplay }}
                             </span>
                             <input
