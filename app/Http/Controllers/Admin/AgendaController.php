@@ -57,13 +57,16 @@ class AgendaController extends Controller
         return redirect()->route('admin.agenda-fakultas.index')->with('success', 'Agenda berhasil ditambahkan.');
     }
 
-    public function edit(Agenda $agenda)
+    public function edit($id)
     {
+        $agenda = Agenda::findOrFail($id);
         return Inertia::render('Admin/Agendas/Edit', ['agenda' => $agenda]);
     }
 
-    public function update(Request $request, Agenda $agenda)
+    public function update(Request $request, $id)
     {
+        $agenda = Agenda::findOrFail($id);
+        
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'start_date' => 'required|date',
@@ -78,8 +81,9 @@ class AgendaController extends Controller
         return redirect()->route('admin.agenda-fakultas.index')->with('success', 'Agenda berhasil diperbarui.');
     }
 
-    public function destroy(Agenda $agenda)
+    public function destroy($id)
     {
+        $agenda = Agenda::findOrFail($id);
         $agenda->delete();
 
         return redirect()->route('admin.agenda-fakultas.index')->with('success', 'Agenda berhasil dihapus.');

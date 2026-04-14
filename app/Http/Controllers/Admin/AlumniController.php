@@ -60,6 +60,8 @@ class AlumniController extends Controller
             'name' => 'required|string|max:255',
             'study_program' => 'required|string|max:255',
             'graduation_year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+        ], [
+            'nim.unique' => 'Data dengan NIM ini sudah terdaftar sebagai alumni.',
         ]);
 
         Alumni::create($validated);
@@ -67,8 +69,9 @@ class AlumniController extends Controller
         return redirect()->route('admin.alumni.index')->with('success', 'Data Alumni berhasil ditambahkan.');
     }
 
-    public function edit(Alumni $alumnus)
+    public function edit($id)
     {
+        $alumnus = Alumni::findOrFail($id);
         $studyPrograms = StudyProgram::orderBy('name')->pluck('name');
         return Inertia::render('Admin/Alumni/Edit', [
             'alumni' => $alumnus,
@@ -76,13 +79,17 @@ class AlumniController extends Controller
         ]);
     }
 
-    public function update(Request $request, Alumni $alumnus)
+    public function update(Request $request, $id)
     {
+        $alumnus = Alumni::findOrFail($id);
+        
         $validated = $request->validate([
             'nim' => 'required|string|max:20|unique:alumnis,nim,' . $alumnus->id,
             'name' => 'required|string|max:255',
             'study_program' => 'required|string|max:255',
             'graduation_year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+        ], [
+            'nim.unique' => 'Data dengan NIM ini sudah terdaftar pada alumni lain.',
         ]);
 
         $alumnus->update($validated);
@@ -90,8 +97,9 @@ class AlumniController extends Controller
         return redirect()->route('admin.alumni.index')->with('success', 'Data Alumni berhasil diperbarui.');
     }
 
-    public function destroy(Alumni $alumnus)
+    public function destroy($id)
     {
+        $alumnus = Alumni::findOrFail($id);
         $alumnus->delete();
 
         return redirect()->route('admin.alumni.index')->with('success', 'Data Alumni berhasil dihapus.');
