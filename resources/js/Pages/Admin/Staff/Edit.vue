@@ -66,6 +66,45 @@ const form = useForm<StaffFormData>({
     academic_profiles: props.staff.academic_profiles || [],
 });
 
+const predefinedPositions = [
+    'Dekan Fakultas Sains dan Teknologi Informasi',
+    'Wakil Dekan Bidang Akademik dan Kemahasiswaan Fakultas Sains dan Teknologi Informasi',
+    'Wakil Dekan Bidang Keuangan dan Umum Fakultas Sains dan Teknologi Informasi',
+    'Kepala Subbagian Umum Fakultas Sains dan Teknologi Informasi',
+    'Ketua Jurusan Sains dan Analitika Data',
+    'Ketua Jurusan Teknik Elektro, Informatika, dan Bisnis',
+    'Koordinator Program Studi Statistika',
+    'Koordinator Program Studi Fisika',
+    'Koordinator Program Studi Matematika',
+    'Koordinator Program Studi Ilmu Aktuaria',
+    'Koordinator Program Studi Bisnis Digital',
+    'Koordinator Program Studi Teknik Elektro',
+    'Koordinator Program Studi Teknik Informatika',
+    'Koordinator Program Studi Sistem Informasi',
+    'Koordinator Program Studi Magister Manajemen Teknologi',
+    'Kepala Laboratorium Inovasi Digital',
+    'Kepala Laboratorium Sistem Cerdas',
+    'Kepala Laboratorium Komputasi dan Data',
+    'Kepala Laboratorium Fisika Dasar',
+    'Kepala Laboratorium Fisika Lanjut'
+];
+
+const initialPosition = props.staff.structural_position || '';
+const isCustomPosition = ref(initialPosition !== '' && !predefinedPositions.includes(initialPosition));
+
+const handleStructuralChange = (event: Event) => {
+    const target = event.target as HTMLSelectElement;
+    if (target.value === 'lainnya') {
+        isCustomPosition.value = true;
+        form.structural_position = ''; 
+    }
+};
+
+const cancelCustomPosition = () => {
+    isCustomPosition.value = false;
+    form.structural_position = '';
+};
+
 watch(() => form.type, (newType) => {
     if (newType === 'Dosen' && !form.functional_position.startsWith('Dosen Program Studi')) {
         form.functional_position = '';
@@ -130,6 +169,11 @@ const submit = () => {
 
     if (hasError) return;
 
+    const arrayFields: ArrayFields[] = ['education_history', 'expertise', 'competency_certification', 'research_history', 'community_service_history', 'work_experience', 'awards', 'academic_profiles'];
+    arrayFields.forEach(field => {
+        form[field] = form[field].filter(item => item && item.trim() !== '');
+    });
+
     form.post(route('admin.staff.update', props.staff.id)); 
 };
 </script>
@@ -170,8 +214,9 @@ const submit = () => {
 
                     <label class="md:pt-2 text-sm font-bold text-gray-800">NIP / NIPH / NIDN</label>
                     <div>
-                        <input v-model="form.nip" type="text" 
+                        <input v-model="form.nip" type="text" placeholder="Hanya Angka"
                             class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white">
+                        <InputError :message="form.errors.nip" />
                     </div>
 
                     <label class="md:pt-2 text-sm font-bold text-gray-800">Status Visibilitas</label>
@@ -199,7 +244,29 @@ const submit = () => {
 
                     <label class="md:pt-2 text-sm font-bold text-gray-800">Jabatan Struktural</label>
                     <div>
-                        <input v-model="form.structural_position" type="text" class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white">
+                        <select v-if="!isCustomPosition" v-model="form.structural_position" @change="handleStructuralChange"
+                            class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white"
+                            :class="form.errors.structural_position ? 'border-red-500 bg-red-50' : ''">
+                            <option value="">-- Tidak Ada / Kosong --</option>
+                            <option v-for="pos in predefinedPositions" :key="pos" :value="pos">{{ pos }}</option>
+                            <option value="lainnya" class="font-bold text-primary">➜ Lainnya (Ketik Manual)...</option>
+                        </select>
+
+                        <div v-else class="flex gap-2">
+                            <input v-model="form.structural_position" type="text" placeholder="Ketik jabatan struktural lengkap..." 
+                                class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-white shadow-sm"
+                                :class="form.errors.structural_position ? 'border-red-500 bg-red-50' : ''" autofocus>
+                            <button type="button" @click="cancelCustomPosition" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm font-bold shadow-sm transition-colors flex-shrink-0">
+                                Batal
+                            </button>
+                        </div>
+
+                        <InputError :message="form.errors.structural_position" />
+                        <p class="mt-1.5 text-xs text-gray-500 font-medium">
+                            <span v-if="!isCustomPosition">Pilih dari opsi, atau pilih "Lainnya" untuk mengetik manual.</span>
+                            <span v-else class="text-primary font-bold">Mode Ketik Manual.</span>
+                            Sistem akan otomatis menolak jika jabatan utama sudah terisi orang lain.
+                        </p>
                     </div>
 
                     <label class="md:pt-2 text-sm font-bold text-gray-800">Foto Profil</label>
@@ -212,12 +279,17 @@ const submit = () => {
                             
                             <div class="w-full space-y-4 overflow-hidden">
                                 <div>
-                                    <label class="block text-xs font-bold text-primary mb-1 uppercase tracking-wider">Opsi 1: Ganti File Gambar</label>
-                                    <div class="relative flex items-center w-full rounded-md border bg-white shadow-sm px-3 py-2 hover:bg-gray-50 transition" :class="form.errors.image ? 'border-red-500 bg-red-50' : 'border-gray-300'">
+                                    <label class="block text-xs font-bold text-primary mb-1 uppercase tracking-wider" :class="{'opacity-50': form.image_url}">Opsi 1: Ganti File Gambar</label>
+                                    <div class="relative flex items-center w-full rounded-md border bg-white shadow-sm px-3 py-2 transition" 
+                                         :class="[form.errors.image ? 'border-red-500 bg-red-50' : 'border-gray-300', form.image_url ? 'bg-gray-100' : 'hover:bg-gray-50']">
                                         <PaperClipIcon :class="form.errors.image ? 'text-red-400' : 'text-gray-400'" class="h-5 w-5 flex-shrink-0" />
                                         <span class="ml-2 text-xs sm:text-sm truncate flex-1" :class="form.errors.image ? 'text-red-700' : 'text-gray-500'">{{ fileNameDisplay }}</span>
                                         <button v-if="form.image" type="button" @click.prevent="clearImage" class="ml-1 p-1 text-red-500 hover:bg-red-50 rounded-md relative z-10 flex-shrink-0"><XMarkIcon class="w-4 h-4 sm:w-5 sm:h-5"/></button>
-                                        <input ref="fileInput" type="file" accept="image/*" @change="handleImageChange" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" :class="{'hidden': form.image}" />
+                                        
+                                        <input ref="fileInput" type="file" accept="image/*" @change="handleImageChange" 
+                                            class="absolute inset-0 w-full h-full opacity-0" 
+                                            :class="{'hidden': form.image, 'cursor-pointer': !form.image_url, 'cursor-not-allowed pointer-events-none': form.image_url}" 
+                                            :disabled="!!form.image_url" />
                                     </div>
                                     <InputError :message="form.errors.image" />
                                 </div>

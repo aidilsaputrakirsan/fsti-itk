@@ -35,8 +35,10 @@ class FacultyProfileController extends Controller
         $s2 = 0;
         
         foreach ($allStudyPrograms as $p) {
+            $degree = strtoupper($p->degree ?? '');
             $name = strtolower($p->name);
-            if (str_contains($name, 's2') || str_contains($name, 'magister')) {
+            
+            if ($degree === 'S2' || str_contains($name, 's2') || str_contains($name, 'magister')) {
                 $s2++;
             } else {
                 $s1++;
@@ -49,7 +51,7 @@ class FacultyProfileController extends Controller
                 if (str_contains($label, 'dosen')) $stat['angka'] = (string)$countDosen;
                 if (str_contains($label, 'tendik') || str_contains($label, 'kependidikan')) $stat['angka'] = (string)$countTendik;
                 if (str_contains($label, 's1')) $stat['angka'] = (string)$s1;
-                if (str_contains($label, 's2')) $stat['angka'] = (string)$s2;
+                if (str_contains($label, 's2') || str_contains($label, 'magister')) $stat['angka'] = (string)$s2;
                 if ($label === 'program studi' || $label === 'prodi') $stat['angka'] = (string)$allStudyPrograms->count();
             }
         }

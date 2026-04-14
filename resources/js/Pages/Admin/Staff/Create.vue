@@ -21,6 +21,30 @@ const props = defineProps<{
 
 const fileInput = ref<HTMLInputElement | null>(null);
 
+const isCustomPosition = ref(false);
+const predefinedPositions = [
+    'Dekan Fakultas Sains dan Teknologi Informasi',
+    'Wakil Dekan Bidang Akademik dan Kemahasiswaan Fakultas Sains dan Teknologi Informasi',
+    'Wakil Dekan Bidang Keuangan dan Umum Fakultas Sains dan Teknologi Informasi',
+    'Kepala Subbagian Umum Fakultas Sains dan Teknologi Informasi',
+    'Ketua Jurusan Sains dan Analitika Data',
+    'Ketua Jurusan Teknik Elektro, Informatika, dan Bisnis',
+    'Koordinator Program Studi Statistika',
+    'Koordinator Program Studi Fisika',
+    'Koordinator Program Studi Matematika',
+    'Koordinator Program Studi Ilmu Aktuaria',
+    'Koordinator Program Studi Bisnis Digital',
+    'Koordinator Program Studi Teknik Elektro',
+    'Koordinator Program Studi Teknik Informatika',
+    'Koordinator Program Studi Sistem Informasi',
+    'Koordinator Program Studi Magister Manajemen Teknologi',
+    'Kepala Laboratorium Inovasi Digital',
+    'Kepala Laboratorium Sistem Cerdas',
+    'Kepala Laboratorium Komputasi dan Data',
+    'Kepala Laboratorium Fisika Dasar',
+    'Kepala Laboratorium Fisika Lanjut'
+];
+
 const form = useForm({
     name: '',
     nip: '',
@@ -40,6 +64,19 @@ const form = useForm({
     awards: [] as string[],
     academic_profiles: [] as string[],
 });
+
+const handleStructuralChange = (event: Event) => {
+    const target = event.target as HTMLSelectElement;
+    if (target.value === 'lainnya') {
+        isCustomPosition.value = true;
+        form.structural_position = ''; 
+    }
+};
+
+const cancelCustomPosition = () => {
+    isCustomPosition.value = false;
+    form.structural_position = '';
+};
 
 watch(() => form.type, (newType) => {
     if (newType === 'Dosen' && !form.functional_position.startsWith('Dosen Program Studi')) {
@@ -104,6 +141,11 @@ const submit = () => {
 
     if (hasError) return;
 
+    const arrayFields: ArrayFields[] = ['education_history', 'expertise', 'competency_certification', 'research_history', 'community_service_history', 'work_experience', 'awards', 'academic_profiles'];
+    arrayFields.forEach(field => {
+        form[field] = form[field].filter(item => item && item.trim() !== '');
+    });
+
     form.post(route('admin.staff.store'));
 };
 </script>
@@ -146,9 +188,10 @@ const submit = () => {
 
                     <label class="md:pt-2 text-sm font-bold text-gray-800">NIP / NIPH / NIDN</label>
                     <div>
-                        <input v-model="form.nip" type="text" placeholder="Masukkan Nomor Induk" 
+                        <input v-model="form.nip" type="text" placeholder="Masukkan Nomor Induk (Hanya Angka)" 
                             class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white">
-                        <p class="mt-1.5 text-xs text-gray-500">Idealnya diisi sebagai identitas resmi, namun boleh dikosongkan jika staf belum memiliki.</p>
+                        <InputError :message="form.errors.nip" />
+                        <p class="mt-1.5 text-xs text-gray-500">Hanya angka. Opsional, namun jika diisi tidak boleh sama dengan civitas lain.</p>
                     </div>
 
                     <label class="md:pt-2 text-sm font-bold text-gray-800">Status Visibilitas</label>
@@ -181,16 +224,38 @@ const submit = () => {
 
                     <label class="md:pt-2 text-sm font-bold text-gray-800">Jabatan Struktural</label>
                     <div>
-                        <input v-model="form.structural_position" type="text" placeholder="Contoh: Dekan, Koordinator Program Studi" class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white">
-                        <p class="mt-1.5 text-xs text-gray-500">Opsional. Diisi jika yang bersangkutan menjabat posisi pimpinan di fakultas atau jurusan.</p>
+                        <select v-if="!isCustomPosition" v-model="form.structural_position" @change="handleStructuralChange"
+                            class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white"
+                            :class="form.errors.structural_position ? 'border-red-500 bg-red-50' : ''">
+                            <option value="">-- Tidak Ada / Kosong --</option>
+                            <option v-for="pos in predefinedPositions" :key="pos" :value="pos">{{ pos }}</option>
+                            <option value="lainnya" class="font-bold text-primary">➜ Lainnya (Ketik Manual)...</option>
+                        </select>
+
+                        <div v-else class="flex gap-2">
+                            <input v-model="form.structural_position" type="text" placeholder="Ketik jabatan struktural lengkap..." 
+                                class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-white shadow-sm"
+                                :class="form.errors.structural_position ? 'border-red-500 bg-red-50' : ''" autofocus>
+                            <button type="button" @click="cancelCustomPosition" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm font-bold shadow-sm transition-colors flex-shrink-0">
+                                Batal
+                            </button>
+                        </div>
+
+                        <InputError :message="form.errors.structural_position" />
+                        <p class="mt-1.5 text-xs text-gray-500 font-medium">
+                            <span v-if="!isCustomPosition">Pilih dari opsi, atau pilih "Lainnya" untuk mengetik secara manual.</span>
+                            <span v-else class="text-primary font-bold">Mode Ketik Manual.</span>
+                            Sistem akan otomatis menolak jika jabatan utama sudah terisi orang lain (contoh: Dekan, Kajur, Koordinator).
+                        </p>
                     </div>
 
                     <label class="md:pt-2 text-sm font-bold text-gray-800">Foto Diri Formal</label>
                     <div class="bg-gray-50 p-4 sm:p-5 rounded-lg border border-gray-200">
                         <p class="text-xs text-primary font-bold mb-3">Disarankan ada agar profil tidak terlihat kosong. Jika dikosongkan, sistem akan menampilkan placeholder "Foto Belum Tersedia".</p>
                         
-                        <label class="block text-sm text-gray-800 mb-1 font-bold">Opsi 1: Upload File Gambar</label>
-                        <div class="relative flex items-center w-full rounded-md border bg-white shadow-sm px-4 py-2 mb-4 hover:bg-gray-50 transition" :class="form.errors.image ? 'border-red-500 bg-red-50' : 'border-gray-300'">
+                        <label class="block text-sm text-gray-800 mb-1 font-bold" :class="{'opacity-50': form.image_url}">Opsi 1: Upload File Gambar</label>
+                        <div class="relative flex items-center w-full rounded-md border bg-white shadow-sm px-4 py-2 mb-4 transition" 
+                             :class="[form.errors.image ? 'border-red-500 bg-red-50' : 'border-gray-300', form.image_url ? 'bg-gray-100' : 'hover:bg-gray-50']">
                             <PaperClipIcon :class="form.errors.image ? 'text-red-400' : 'text-gray-400'" class="h-5 w-5 flex-shrink-0" />
                             <span class="ml-3 text-sm truncate flex-1" :class="form.errors.image ? 'text-red-700' : 'text-gray-500'">
                               {{ form.image ? form.image.name : 'Klik di sini untuk memilih file gambar dari perangkat...' }}
@@ -200,7 +265,10 @@ const submit = () => {
                                 <XMarkIcon class="w-5 h-5"/>
                             </button>
 
-                            <input ref="fileInput" type="file" accept="image/*" @change="handleImageChange" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" :class="{'hidden': form.image}" />
+                            <input ref="fileInput" type="file" accept="image/*" @change="handleImageChange" 
+                                class="absolute inset-0 w-full h-full opacity-0" 
+                                :class="{'hidden': form.image, 'cursor-pointer': !form.image_url, 'cursor-not-allowed pointer-events-none': form.image_url}" 
+                                :disabled="!!form.image_url" />
                         </div>
                         <InputError :message="form.errors.image" class="mb-4" />
 
@@ -210,8 +278,9 @@ const submit = () => {
                             :class="form.errors.image_url ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'">
                         <InputError :message="form.errors.image_url" />
                         <p v-if="!form.errors.image_url" class="mt-2 text-xs text-gray-500 italic">
-                            Gunakan opsi ini jika foto disimpan di GDrive (pastikan visibilitas link: "Anyone with the link"). 
-                            <br/><span v-if="form.image" class="text-red-500 font-bold mt-1 inline-block">🔒 Opsi Link Drive dinonaktifkan karena Anda telah memilih file upload (Opsi 1). Hapus file di Opsi 1 jika ingin menggunakan link.</span>
+                            Gunakan opsi ini jika foto disimpan di GDrive. 
+                            <br/><span v-if="form.image" class="text-red-500 font-bold mt-1 inline-block">🔒 Opsi Link Drive dinonaktifkan karena Anda telah memilih file upload (Opsi 1).</span>
+                            <span v-else-if="form.image_url" class="text-blue-500 font-bold mt-1 inline-block">🔒 Area Upload (Opsi 1) otomatis dinonaktifkan karena Anda telah memasukkan link GDrive.</span>
                         </p>
                     </div>
 

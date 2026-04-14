@@ -20,13 +20,13 @@ class PublicProfileController extends Controller
         $s2 = 0;
 
         foreach ($allStudyPrograms as $p) {
-            $level = $p->level ?? '';
+            $degree = strtoupper($p->degree ?? '');
             $name = strtolower($p->name);
 
-            if (strtoupper($level) === 'S1' || (!str_contains($name, 's2') && !str_contains($name, 'magister') && strtoupper($level) !== 'S2')) {
-                $s1++;
-            } else {
+            if ($degree === 'S2' || str_contains($name, 's2') || str_contains($name, 'magister')) {
                 $s2++;
+            } else {
+                $s1++;
             }
         }
 

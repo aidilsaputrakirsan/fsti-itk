@@ -189,10 +189,10 @@ Route::get('/', function () {
     $s2 = 0;
 
     foreach ($allProdi as $p) {
-        $level = $p->level ?? '';
+        $degree = $p->level ?? '';
         $name = strtolower($p->name);
 
-        if (strtoupper($level) === 'S1' || (!str_contains($name, 's2') && !str_contains($name, 'magister') && strtoupper($level) !== 'S2')) {
+        if (strtoupper($degree) === 'S1' || (!str_contains($name, 's2') && !str_contains($name, 'magister') && strtoupper($degree) !== 'S2')) {
             $s1++;
         } else {
             $s2++;

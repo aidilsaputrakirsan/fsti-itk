@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Alumni;
+use App\Models\StudyProgram;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,9 +15,9 @@ class PublicAlumniController extends Controller
         $query = Alumni::query();
 
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('nim', 'like', '%' . $request->search . '%');
+                    ->orWhere('nim', 'like', '%' . $request->search . '%');
             });
         }
 
@@ -29,11 +30,14 @@ class PublicAlumniController extends Controller
         }
 
         $alumni = $query->orderBy('graduation_year', 'desc')
-                          ->orderBy('name', 'asc')
-                          ->paginate(20)
-                          ->withQueryString();
+            ->orderBy('name', 'asc')
+            ->paginate(20)
+            ->withQueryString();
 
-        $studyPrograms = Alumni::select('study_program')->distinct()->orderBy('study_program')->pluck('study_program');
+        $officialProdis = StudyProgram::orderBy('name')->pluck('name')->toArray();
+        $alumniProdis = Alumni::select('study_program')->distinct()->pluck('study_program')->toArray();
+        $studyPrograms = collect(array_merge($officialProdis, $alumniProdis))->filter()->unique()->sort()->values();
+
         $years = Alumni::select('graduation_year')->distinct()->orderBy('graduation_year', 'desc')->pluck('graduation_year');
 
         return Inertia::render('Public/Alumni/Index', [

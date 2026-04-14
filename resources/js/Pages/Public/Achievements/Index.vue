@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { router, Link, Head } from '@inertiajs/vue3';
+import debounce from 'lodash/debounce';
 
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import AchievementCard from '@/Components/AchievementCard.vue';
-import { Trophy, Award, Search, FileWarning, Medal, Star, Send, ChevronDown } from 'lucide-vue-next';
-import { RefreshCw } from 'lucide-vue-next'; 
+import { Trophy, Award, Search, Medal, Star, Send, ChevronDown } from 'lucide-vue-next';
 
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -111,6 +111,10 @@ const applyFilters = () => {
         onFinish: () => { AOS.refresh(); } 
     });
 };
+
+watch(search, debounce(() => {
+    applyFilters();
+}, 300));
 
 const resetFilters = () => {
     search.value = '';
@@ -230,7 +234,7 @@ const changePage = (page: number | string) => {
                     <p class="text-gray-500 mt-2 font-medium text-sm md:text-base">Temukan galeri capaian mahasiswa berdasarkan kategori dan tingkat</p>
                 </div>
 
-                <form @submit.prevent="applyFilters" class="bg-white p-3 sm:p-4 md:p-3 rounded-3xl md:rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 flex flex-col md:flex-row items-center gap-3 md:gap-4">
+                <div class="bg-white p-3 sm:p-4 md:p-3 rounded-3xl md:rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 flex flex-col md:flex-row items-center gap-3 md:gap-4">
                     
                     <div class="relative w-full md:w-2/5 md:ml-4">
                         <Search class="absolute left-3 md:left-0 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -239,7 +243,7 @@ const changePage = (page: number | string) => {
                     
                     <div class="hidden md:block w-px h-8 bg-gray-200"></div>
                     
-                    <div class="flex flex-col sm:flex-row w-full md:w-3/5 gap-2 md:gap-2">
+                    <form @submit.prevent="applyFilters" class="flex flex-col sm:flex-row w-full md:w-3/5 gap-2 md:gap-2">
                         <div class="relative w-full sm:w-1/3">
                             <button ref="categoryBtnRef" @click="toggleDropdown('category')" type="button" class="w-full py-3 px-4 bg-gray-50 md:bg-transparent border border-gray-200 md:border-none rounded-xl md:rounded-full text-xs font-bold text-gray-600 flex justify-between items-center hover:bg-gray-100 md:hover:bg-gray-50 transition-colors">
                                 <span class="truncate">{{ selectedCategory || 'Kategori' }}</span>
@@ -263,8 +267,8 @@ const changePage = (page: number | string) => {
                                 Terapkan
                             </button>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </section>
 
             <section class="max-w-[95%] xl:max-w-[100rem] mx-auto px-4 xl:px-8 mb-24 min-h-[400px]">
@@ -296,55 +300,43 @@ const changePage = (page: number | string) => {
                         </div>
                     </div>
 
-                    <div v-if="totalPages > 1" class="mt-12 md:mt-16 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 bg-white py-4 px-4 md:px-10 rounded-3xl md:rounded-full shadow-sm border border-gray-100" data-aos="fade-in">
-                        <p class="text-xs md:text-sm font-medium text-gray-500 text-center md:text-left">
-                            Menampilkan <span class="text-primary font-bold">{{ achievements.from }}</span> - <span class="text-primary font-bold">{{ achievements.to }}</span> dari <span class="text-primary font-bold">{{ achievements.total }}</span> Prestasi
-                        </p>
-                        
-                        <div class="flex flex-wrap justify-center items-center gap-1 md:gap-2">
-                            <button 
-                                @click="changePage(currentPage - 1)"
-                                :disabled="currentPage === 1"
-                                class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300"
-                                :class="currentPage === 1 ? 'text-gray-300 bg-gray-50/50 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
-                                v-html="'&laquo; Sebelumnya'"
-                            ></button>
+                    <div v-if="totalPages > 1" class="mt-12 flex items-center justify-center gap-2">
+                        <button 
+                            @click="changePage(currentPage - 1)"
+                            :disabled="currentPage === 1"
+                            class="h-10 px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors"
+                            :class="currentPage === 1 ? 'text-gray-300 bg-gray-50 cursor-not-allowed' : 'text-gray-600 bg-white hover:bg-gray-50 border border-gray-200 shadow-sm'"
+                        >&laquo; Sebelumnya</button>
 
-                            <template v-for="(page, index) in visiblePages" :key="index">
-                                <span 
-                                    v-if="page === '...'"
-                                    class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full text-gray-300 bg-gray-50/50 cursor-not-allowed"
-                                >
-                                    ...
-                                </span>
-                                <button 
-                                    v-else
-                                    @click="changePage(page)"
-                                    class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300"
-                                    :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
-                                >
-                                    {{ page }}
-                                </button>
-                            </template>
-
+                        <template v-for="(page, index) in visiblePages" :key="index">
+                            <span v-if="page === '...'" class="h-10 px-4 flex items-center justify-center text-sm font-bold text-gray-400">...</span>
                             <button 
-                                @click="changePage(currentPage + 1)"
-                                :disabled="currentPage === totalPages"
-                                class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300"
-                                :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50/50 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
-                                v-html="'Selanjutnya &raquo;'"
-                            ></button>
-                        </div>
+                                v-else
+                                @click="changePage(page)"
+                                class="h-10 px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors"
+                                :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-gray-600 bg-white hover:bg-gray-50 border border-gray-200 shadow-sm'"
+                            >{{ page }}</button>
+                        </template>
+
+                        <button 
+                            @click="changePage(currentPage + 1)"
+                            :disabled="currentPage === totalPages"
+                            class="h-10 px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors"
+                            :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50 cursor-not-allowed' : 'text-gray-600 bg-white hover:bg-gray-50 border border-gray-200 shadow-sm'"
+                        >Selanjutnya &raquo;</button>
                     </div>
-
                 </div>
 
-                <div v-else class="text-center py-16 md:py-24 bg-white border border-gray-100 rounded-[2rem] md:rounded-[3rem] shadow-sm max-w-4xl mx-auto" data-aos="zoom-in">
-                    <div class="bg-gray-50 w-20 h-20 md:w-24 md:h-24 flex items-center justify-center rounded-full mx-auto mb-4 md:mb-6">
-                        <FileWarning class="w-10 h-10 md:w-12 md:h-12 text-gray-300" />
+                <div v-else class="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-2xl border border-gray-100 shadow-sm text-center" data-aos="zoom-in">
+                    <div class="h-16 w-16 bg-blue-50 text-primary rounded-full flex items-center justify-center mb-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m6.75 12-3-3m0 0-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                        </svg>
                     </div>
-                    <h3 class="text-xl md:text-3xl font-bold text-gray-800 font-optimus mb-2 md:mb-3">Belum Ada Prestasi</h3>
-                    <p class="text-sm md:text-base text-gray-500 max-w-xs md:max-w-md mx-auto px-4">Silakan ubah filter pencarian Anda, atau tunggu admin memperbarui galeri capaian mahasiswa.</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Tidak Ditemukan</h3>
+                    <p class="text-gray-500 text-sm max-w-sm mx-auto">
+                        Prestasi dengan kriteria pencarian tersebut tidak tersedia.
+                    </p>
                 </div>
             </section>
             

@@ -2875,7 +2875,7 @@ class StaffSeeder extends Seeder
                 'name' => 'Kharis Sugiarto, SST.,M.T.',
                 'nip' => '199202022022031014',
                 'type' => 'Dosen',
-                'structural_position' => 'Koordinator Program Studi Teknik Elektro',
+                'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'https://drive.google.com/file/d/185UYSIE346TnrxymI_-cIM-QgTayK6zZ/view?usp=sharing',
 

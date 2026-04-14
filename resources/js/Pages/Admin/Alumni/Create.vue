@@ -6,10 +6,9 @@ import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
 
-const prodis = [
-    'Matematika', 'Ilmu Aktuaria', 'Statistika', 'Fisika', 
-    'Informatika', 'Sistem Informasi', 'Bisnis Digital', 'Teknik Elektro'
-];
+const props = defineProps<{
+    studyPrograms: string[];
+}>();
 
 interface AlumniFormData {
     nim: string;
@@ -96,7 +95,7 @@ const submit = () => {
                             :class="form.errors.study_program ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
                             required>
                             <option value="" disabled>Pilih Program Studi</option>
-                            <option v-for="prodi in prodis" :key="prodi" :value="prodi">{{ prodi }}</option>
+                            <option v-for="prodi in studyPrograms" :key="prodi" :value="prodi">{{ prodi }}</option>
                         </select>
                         <InputError :message="form.errors.study_program" />
                     </div>

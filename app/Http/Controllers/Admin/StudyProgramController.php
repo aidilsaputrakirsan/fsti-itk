@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class StudyProgramController extends Controller
 {
@@ -27,7 +28,7 @@ class StudyProgramController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:study_programs,name',
             'department' => 'required|string|max:255',
             'degree' => 'required|string|max:10',
             'description' => 'required|string',
@@ -39,6 +40,10 @@ class StudyProgramController extends Controller
             'accreditation_pdf_link' => 'required|url',
             'website_link' => 'required|url',
             'accreditation_certificate_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'name.unique' => 'Program Studi dengan nama ini sudah terdaftar.',
+            'accreditation_pdf_link.url' => 'Tautan PDF harus berupa URL yang valid.',
+            'website_link.url' => 'Tautan website harus berupa URL yang valid.',
         ]);
 
         $data = $request->except(['accreditation_certificate_image', 'mission', 'graduate_profiles']);
@@ -68,7 +73,7 @@ class StudyProgramController extends Controller
     public function update(Request $request, StudyProgram $studyProgram)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => ['required', 'string', 'max:255', Rule::unique('study_programs')->ignore($studyProgram->id)],
             'department' => 'required|string|max:255',
             'degree' => 'required|string|max:10',
             'description' => 'required|string',
@@ -80,6 +85,10 @@ class StudyProgramController extends Controller
             'accreditation_pdf_link' => 'required|url',
             'website_link' => 'required|url',
             'accreditation_certificate_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'name.unique' => 'Program Studi dengan nama ini sudah terdaftar.',
+            'accreditation_pdf_link.url' => 'Tautan PDF harus berupa URL yang valid.',
+            'website_link.url' => 'Tautan website harus berupa URL yang valid.',
         ]);
 
         $data = $request->except(['accreditation_certificate_image', 'mission', 'graduate_profiles']);

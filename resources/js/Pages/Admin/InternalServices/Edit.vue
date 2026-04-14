@@ -52,9 +52,12 @@ const submit = () => {
     if (!form.link_url) { 
         form.setError('link_url', 'Tautan URL wajib diisi.'); 
         hasError = true; 
-    } else if (!/^https?:\/\/.+/.test(form.link_url)) {
-        form.setError('link_url', 'Tautan harus diawali dengan http:// atau https://');
-        hasError = true;
+    } else {
+        const urlRegex = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+        if (!urlRegex.test(form.link_url)) {
+            form.setError('link_url', 'Format tautan tidak valid (harus lengkap dengan .com, .id, dll dan diawali http:// atau https://).');
+            hasError = true;
+        }
     }
 
     if (!form.sort_order || form.sort_order < 1) { 
@@ -108,6 +111,7 @@ const submit = () => {
                     :class="form.errors.link_url ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
                     required>
                 <InputError :message="form.errors.link_url" />
+                <p class="mt-1.5 text-xs text-gray-500 font-medium">Tautan harus lengkap dan tidak boleh sama dengan layanan lain yang sudah ada.</p>
             </div>
 
             <label class="md:pt-3 text-sm font-bold text-gray-800">Pengaturan Tampilan <span class="text-red-600">*</span></label>

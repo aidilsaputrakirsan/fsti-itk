@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Alumni;
+use App\Models\StudyProgram;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -32,7 +33,10 @@ class AlumniController extends Controller
                         ->paginate(15)
                         ->withQueryString();
 
-        $studyPrograms = Alumni::select('study_program')->distinct()->orderBy('study_program')->pluck('study_program');
+        $officialProdis = StudyProgram::orderBy('name')->pluck('name')->toArray();
+        $alumniProdis = Alumni::select('study_program')->distinct()->pluck('study_program')->toArray();
+        $studyPrograms = collect(array_merge($officialProdis, $alumniProdis))->filter()->unique()->sort()->values();
+
         $years = Alumni::select('graduation_year')->distinct()->orderBy('graduation_year', 'desc')->pluck('graduation_year');
 
         return Inertia::render('Admin/Alumni/Index', [
@@ -45,7 +49,8 @@ class AlumniController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Alumni/Create');
+        $studyPrograms = StudyProgram::orderBy('name')->pluck('name');
+        return Inertia::render('Admin/Alumni/Create', compact('studyPrograms'));
     }
 
     public function store(Request $request)
@@ -64,8 +69,10 @@ class AlumniController extends Controller
 
     public function edit(Alumni $alumnus)
     {
+        $studyPrograms = StudyProgram::orderBy('name')->pluck('name');
         return Inertia::render('Admin/Alumni/Edit', [
-            'alumni' => $alumnus
+            'alumni' => $alumnus,
+            'studyPrograms' => $studyPrograms
         ]);
     }
 
