@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\FacultyProfile;
 use App\Models\Staff;
 use App\Models\StudyProgram;
+use App\Models\Alumni;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
@@ -30,6 +31,8 @@ class FacultyProfileController extends Controller
 
         $countDosen = Staff::where('type', 'Dosen')->where('is_active', true)->count();
         $countTendik = Staff::where('type', 'Tendik')->where('is_active', true)->count();
+        $countAlumni = Alumni::count();
+        
         $allStudyPrograms = StudyProgram::all();
         $s1 = 0;
         $s2 = 0;
@@ -53,6 +56,7 @@ class FacultyProfileController extends Controller
                 if (str_contains($label, 's1')) $stat['angka'] = (string)$s1;
                 if (str_contains($label, 's2') || str_contains($label, 'magister')) $stat['angka'] = (string)$s2;
                 if ($label === 'program studi' || $label === 'prodi') $stat['angka'] = (string)$allStudyPrograms->count();
+                if (str_contains($label, 'alumni') || str_contains($label, 'lulusan')) $stat['angka'] = (string)$countAlumni;
             }
         }
 

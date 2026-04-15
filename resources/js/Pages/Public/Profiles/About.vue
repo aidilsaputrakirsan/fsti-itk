@@ -36,6 +36,9 @@ const displayStats = computed(() => {
         if (labelLower.includes('prodi') || labelLower.includes('program studi')) {
             return { ...stat, angka: props.statistics?.prodi_total ?? stat.angka };
         }
+        if (labelLower.includes('alumni') || labelLower.includes('lulusan')) {
+            return { ...stat, angka: props.statistics?.alumni ?? stat.angka };
+        }
         
         return stat; 
     });

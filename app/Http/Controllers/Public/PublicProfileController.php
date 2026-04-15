@@ -8,6 +8,7 @@ use App\Models\FacultyProfile;
 use App\Models\Staff;
 use App\Models\StudyProgram;
 use App\Models\Contact;
+use App\Models\Alumni;
 
 class PublicProfileController extends Controller
 {
@@ -36,6 +37,7 @@ class PublicProfileController extends Controller
             'prodi_s1' => $s1,
             'prodi_s2' => $s2,
             'prodi_total' => $allStudyPrograms->count(),
+            'alumni' => Alumni::count(),
         ];
 
         return Inertia::render('Public/Profiles/About', [
