@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useForm, usePage } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { 
     MapPinIcon, 
     ChatBubbleLeftRightIcon, 
@@ -152,6 +152,7 @@ const submit = () => {
 </script>
 
 <template>
+          <Head title="Kelola Kontak Fakultas" />
   <div>
     <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

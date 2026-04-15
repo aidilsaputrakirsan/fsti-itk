@@ -63,7 +63,7 @@ onUnmounted(() => {
 <template>
     <PublicLayout>
         <Head title="Pusat Pengumuman - FSTI ITK" />
-        <Banner title="PENGUMUMAN" subtitle="Informasi Terbaru dan Edaran Resmi FSTI ITK" background-image="/images/background-banner.png" />
+        <Banner title="PENGUMUMAN" subtitle="Informasi Terbaru dan Edaran Resmi FSTI ITK" background-image="/images/background-banner.webp" />
 
         <div class="bg-white py-16 md:py-24 min-h-screen font-public-sans overflow-x-hidden relative">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
@@ -133,7 +133,7 @@ onUnmounted(() => {
                             </div>
 
                             <div v-else class="w-full h-full bg-gradient-to-br from-[#003566] to-primary flex flex-col items-center justify-center relative group-hover:scale-105 transition-transform duration-500">
-                                <div class="absolute inset-0 bg-[url('/images/pattern-berita.png')] opacity-20 mix-blend-overlay"></div>
+                                <div class="absolute inset-0 bg-[url('/images/pattern-berita.webp')] opacity-20 mix-blend-overlay"></div>
                                 <Megaphone class="w-16 h-16 text-white/50 mb-3" />
                                 <span class="text-white/80 font-bold uppercase tracking-widest text-xs border border-white/30 px-3 py-1 rounded-full backdrop-blur-sm">Informasi Teks</span>
                             </div>

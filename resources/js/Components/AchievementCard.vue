@@ -16,8 +16,9 @@ const props = defineProps<{
       <img 
         :src="achievement.image_url || 'https://placehold.co/600x400/cccccc/FFFFFF?text=Image+Not+Found'" 
         :alt="'Foto ' + achievement.student_name" 
-        class="w-full h-full object-cover"
+        class="w-full h-full object-cover bg-gray-200"
         loading="lazy"
+        decoding="async"
         onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/FFFFFF?text=Image+Not+Found';"
       >
       <div class="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-[#2F4DD3]/50 to-transparent"></div>

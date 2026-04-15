@@ -15,7 +15,7 @@ const props = defineProps<{
   recentPosts: Post[];
 }>();
 
-const bannerImage = '/images/background-banner.png';
+const bannerImage = '/images/background-banner.webp';
 const notificationText = ref('');
 const showNotification = ref(false);
 

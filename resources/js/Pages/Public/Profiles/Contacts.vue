@@ -15,7 +15,7 @@ defineProps({
         <Banner
             title="KONTAK KAMI"
             subtitle="HUBUNGI DAN TEMUKAN KAMI DI KAMPUS FSTI ITK"
-            background-image="/images/background-banner.png"
+            background-image="/images/background-banner.webp"
         />
 
         <div class="bg-white py-16 md:py-24 font-public-sans">

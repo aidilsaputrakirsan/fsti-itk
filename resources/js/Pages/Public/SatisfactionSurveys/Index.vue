@@ -145,7 +145,7 @@ const respondentTypes = [
         <Banner
             title="Survei Kepuasan"
             subtitle="Bantu kami tingkatkan kualitas layanan informasi dan Zona Integritas FSTI ITK"
-            background-image="/images/background-banner.png"
+            background-image="/images/background-banner.webp"
         />
 
         <div class="relative bg-white py-12 md:py-16 overflow-hidden font-public-sans">

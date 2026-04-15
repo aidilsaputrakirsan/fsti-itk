@@ -70,7 +70,7 @@ onUnmounted(() => {
                 <div class="space-y-4 lg:col-span-1">
                     <div class="flex items-center space-x-3">
                          <div class="bg-white p-1 rounded shadow-sm">
-                            <img src="/images/logofsti.png" alt="Logo FSTI" class="h-10">
+                            <img src="/images/logofsti.webp" alt="Logo FSTI" class="h-10">
                          </div>
                          <div>
                             <p class="font-bold leading-tight">Fakultas Sains dan Teknologi Informasi</p>

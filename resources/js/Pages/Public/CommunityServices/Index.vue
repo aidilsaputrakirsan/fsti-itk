@@ -16,7 +16,7 @@ const props = defineProps<{
     studyPrograms: { id: number; name: string }[]; 
 }>();
 
-const bannerImage = '/images/background-banner.png';
+const bannerImage = '/images/background-banner.webp';
 const search = ref(props.filters?.search || '');
 const selectedYear = ref(props.filters?.year || '');
 const selectedProgram = ref(props.filters?.program || '');

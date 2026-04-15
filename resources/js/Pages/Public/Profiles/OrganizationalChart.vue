@@ -15,7 +15,7 @@ const props = defineProps({
         <Banner
             title="BAGAN ORGANISASI"
             subtitle="Fakultas Sains dan Teknologi Informasi"
-            background-image="/images/background-banner.png"
+            background-image="/images/background-banner.webp"
         />
 
         <div class="py-16 md:py-24 bg-white font-public-sans">

@@ -30,7 +30,7 @@ const departments = computed(() => {
         <Banner
             title="PIMPINAN PRODI"
             subtitle="Koordinator Program Studi FSTI"
-            background-image="/images/background-banner.png"
+            background-image="/images/background-banner.webp"
         />
 
         <div class="bg-white py-16 md:py-24 overflow-x-hidden font-public-sans">

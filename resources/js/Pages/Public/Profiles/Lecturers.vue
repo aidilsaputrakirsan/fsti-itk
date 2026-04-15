@@ -96,7 +96,7 @@ const hasDetailedInfo = computed(() => {
 <template>
     <PublicLayout>
         <Head title="Daftar Dosen" />
-        <Banner title="DOSEN" subtitle="Fakultas Sains dan Teknologi Informasi" background-image="/images/background-banner.png" />
+        <Banner title="DOSEN" subtitle="Fakultas Sains dan Teknologi Informasi" background-image="/images/background-banner.webp" />
 
         <div class="relative bg-white py-16 md:py-24 font-public-sans min-h-screen overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">

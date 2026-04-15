@@ -22,7 +22,7 @@ const props = defineProps<{
   filters: { search?: string; category?: string };
 }>();
 
-const bannerImage = '/images/background-banner.png';
+const bannerImage = '/images/background-banner.webp';
 const search = ref(props.filters.search || '');
 const category = ref(props.filters.category || '');
 

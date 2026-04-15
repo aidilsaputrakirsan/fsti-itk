@@ -48,7 +48,7 @@ const getIconColorClasses = (index) => {
         <Banner
             title="PORTAL LAYANAN MAHASISWA"
             subtitle="DIREKTORI TAUTAN WEBSITE DAN SISTEM INFORMASI EKSTERNAL FSTI ITK"
-            background-image="/images/background-banner.png"
+            background-image="/images/background-banner.webp"
         />
 
         <div class="bg-white py-20 font-public-sans min-h-[65vh] relative overflow-hidden">

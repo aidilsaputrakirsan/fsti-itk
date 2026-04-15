@@ -47,7 +47,7 @@ const displayDocuments = props.documents || [];
         <Banner
             title="Zona Integritas (ZI)"
             subtitle="WILAYAH BEBAS DARI KORUPSI (WBK) FSTI ITK"
-            background-image="/images/background-banner.png"
+            background-image="/images/background-banner.webp"
         />
 
         <section class="relative bg-white py-12 md:py-16 overflow-hidden font-public-sans">

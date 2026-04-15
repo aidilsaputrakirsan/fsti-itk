@@ -169,7 +169,7 @@ const changePage = (page) => {
         <Banner
             title="DIREKTORI ALUMNI"
             subtitle="Jejak Kelulusan Fakultas Sains dan Teknologi Informasi"
-            background-image="/images/background-banner.png"
+            background-image="/images/background-banner.webp"
         />
 
         <div class="relative bg-white py-16 md:py-24 font-public-sans min-h-screen overflow-hidden">

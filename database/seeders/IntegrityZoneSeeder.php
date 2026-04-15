@@ -31,9 +31,9 @@ class IntegrityZoneSeeder extends Seeder
             Storage::disk('public')->makeDirectory('zi-documents');
         }
 
-        $maklumatImage = 'maklumat-pelayanan.png';
+        $maklumatImage = 'maklumat-pelayanan.webp';
         $maklumatSource = $sourcePath . DIRECTORY_SEPARATOR . $maklumatImage;
-        
+
         if (File::exists($maklumatSource)) {
             Storage::disk('public')->put('zi-images/' . $maklumatImage, File::get($maklumatSource));
         }

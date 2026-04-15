@@ -52,7 +52,7 @@ class StudyProgramSeeder extends Seeder
                     'Konsultan',
                     'Analisis Keuangan'
                 ],
-                'accreditation_certificate_image' => 'akreditasi_matematika.jpg',
+                'accreditation_certificate_image' => 'akreditasi_matematika.webp',
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Matematika-2023-2028.pdf',
                 'accreditation_text' => 'Telah terakreditasi oleh Lembaga Akreditasi Mandiri Sains Alam dan Ilmu Formal (LAMSAMA) dengan peringkat Baik.',
                 'website_link' => 'https://math.itk.ac.id/'
@@ -81,7 +81,7 @@ class StudyProgramSeeder extends Seeder
                     'Praktisi Social Care',
                     'Lembaga Pemerintahan'
                 ],
-                'accreditation_certificate_image' => 'akreditasi_aktuaria.jpg',
+                'accreditation_certificate_image' => 'akreditasi_aktuaria.webp',
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Ilmu-Aktuaria-2022-2027.pdf',
                 'accreditation_text' => 'Telah terakreditasi oleh Badan Akreditasi Nasional Perguruan Tinggi (BAN-PT) dengan peringkat Baik.',
                 'website_link' => 'https://actsci.itk.ac.id/'
@@ -104,7 +104,7 @@ class StudyProgramSeeder extends Seeder
                     'Data Analyst',
                     'Konsultan Riset'
                 ],
-                'accreditation_certificate_image' => 'akreditasi_statistika.jpg',
+                'accreditation_certificate_image' => 'akreditasi_statistika.webp',
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Statistika-2022-2027.pdf',
                 'accreditation_text' => 'Telah terakreditasi oleh Badan Akreditasi Nasional Perguruan Tinggi (BAN-PT) dengan peringkat Baik.',
                 'website_link' => 'https://stat.itk.ac.id/'
@@ -133,7 +133,7 @@ class StudyProgramSeeder extends Seeder
                     'Ahli Semikonduktor & Elektronika',
                     'Geofisikawan'
                 ],
-                'accreditation_certificate_image' => 'akreditasi_fisika.jpg',
+                'accreditation_certificate_image' => 'akreditasi_fisika.webp',
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Fisika-2023-2028.pdf',
                 'accreditation_text' => 'Telah terakreditasi oleh Lembaga Akreditasi Mandiri Sains Alam dan Ilmu Formal (LAMSAMA) dengan peringkat Baik Sekali.',
                 'website_link' => 'https://phy.itk.ac.id/'
@@ -158,7 +158,7 @@ class StudyProgramSeeder extends Seeder
                     'Computer Scientist',
                     'Data Scientist'
                 ],
-                'accreditation_certificate_image' => 'akreditasi_informatika.jpg',
+                'accreditation_certificate_image' => 'akreditasi_informatika.webp',
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Informatika-2024-2029.pdf',
                 'accreditation_text' => 'Telah terakreditasi oleh Lembaga Akreditasi Mandiri Informatika dan Komputer (LAMINFOKOM) dengan peringkat Baik Sekali.',
                 'website_link' => 'https://if.itk.ac.id/'
@@ -182,7 +182,7 @@ class StudyProgramSeeder extends Seeder
                     'IT Governance Engineer',
                     'IT Project Manager'
                 ],
-                'accreditation_certificate_image' => 'akreditasi_sisteminformasi.jpg',
+                'accreditation_certificate_image' => 'akreditasi_sisteminformasi.webp',
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Sistem-Informasi-2023-2028.pdf',
                 'accreditation_text' => 'Telah terakreditasi oleh Lembaga Akreditasi Mandiri Informatika dan Komputer (LAMINFOKOM) dengan peringkat Baik Sekali.',
                 'website_link' => 'https://is.itk.ac.id/'
@@ -208,7 +208,7 @@ class StudyProgramSeeder extends Seeder
                     'Analisis Data',
                     'Pengembangan Bisnis Digital'
                 ],
-                'accreditation_certificate_image' => 'akreditasi_bisdig.jpg',
+                'accreditation_certificate_image' => 'akreditasi_bisdig.webp',
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Bisnis-Digital-2024-2029.pdf',
                 'accreditation_text' => 'Telah terakreditasi oleh Perkumpulan Lembaga Akreditasi Mandiri Ekonomi Manajemen Bisnis dan Akuntansi (LAMEMBA) dengan peringkat Baik.',
                 'website_link' => 'https://bisnisdigital.itk.ac.id/'
@@ -228,7 +228,7 @@ class StudyProgramSeeder extends Seeder
                     'Pegawai/Staf Pemerintah dan Tokoh Masyarakat',
                     'Pengusaha'
                 ],
-                'accreditation_certificate_image' => 'akreditasi_elektro.jpg',
+                'accreditation_certificate_image' => 'akreditasi_elektro.webp',
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Teknik-Elektro-2023-2027.pdf',
                 'accreditation_text' => 'Telah terakreditasi oleh Lembaga Akreditasi Mandiri Program Studi Keteknikan (LAM Teknik) dengan peringkat Baik Sekali.',
                 'website_link' => 'https://ee.itk.ac.id/'
@@ -277,7 +277,7 @@ class StudyProgramSeeder extends Seeder
             $data['accreditation_certificate_image'] = $imagePath;
 
             StudyProgram::updateOrCreate(
-                ['slug' => $data['slug']], 
+                ['slug' => $data['slug']],
                 $data
             );
         }

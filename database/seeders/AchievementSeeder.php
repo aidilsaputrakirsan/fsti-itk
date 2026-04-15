@@ -29,7 +29,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Duta Pustaka Indonesia',
                 'year' => 2025,
-                'image_path' => 'achievements/duta.png'
+                'image_path' => 'achievements/duta.webp'
             ],
             [
                 'student_name' => "Karina Ambar Wati",
@@ -40,7 +40,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Kota/Kabupaten',
                 'organizer' => 'Kota Balikpapan',
                 'year' => 2025,
-                'image_path' => 'achievements/silat.png'
+                'image_path' => 'achievements/silat.webp'
             ],
             [
                 'student_name' => "Tim Recraft",
@@ -51,7 +51,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Kota/Kabupaten',
                 'organizer' => 'Kecamatan Balikpapan Utara',
                 'year' => 2025,
-                'image_path' => 'achievements/ttg-balikpapan-utara.png'
+                'image_path' => 'achievements/ttg-balikpapan-utara.webp'
             ],
             [
                 'student_name' => "Siti Aminatuzzuhriyah\nZidane Alfarizi\nRifki Anashirul",
@@ -62,7 +62,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Kota/Kabupaten',
                 'organizer' => 'Bappeda Litbang Kota Balikpapan',
                 'year' => 2025,
-                'image_path' => 'achievements/krenova.png'
+                'image_path' => 'achievements/krenova.webp'
             ],
             [
                 'student_name' => "Karina Ambar Wati",
@@ -73,7 +73,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Provinsi',
                 'organizer' => 'Koni Bayan',
                 'year' => 2025,
-                'image_path' => 'achievements/koni-bayan.png'
+                'image_path' => 'achievements/koni-bayan.webp'
             ],
             [
                 'student_name' => "Tim Himawari",
@@ -84,7 +84,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'UKM ITC Universitas Trunojoyo Madura',
                 'year' => 2025,
-                'image_path' => 'achievements/technotainment.png'
+                'image_path' => 'achievements/technotainment.webp'
             ],
             [
                 'student_name' => "Tim Debat Pemuda ITK",
@@ -95,7 +95,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Kota/Kabupaten',
                 'organizer' => 'Disporapar Kota Balikpapan',
                 'year' => 2025,
-                'image_path' => 'achievements/debat.png'
+                'image_path' => 'achievements/debat.webp'
             ],
             [
                 'student_name' => "Tim ECO-MAHAR",
@@ -106,7 +106,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Pertamina Foundation',
                 'year' => 2025,
-                'image_path' => 'achievements/eco-mahar.png'
+                'image_path' => 'achievements/eco-mahar.webp'
             ],
             [
                 'student_name' => "Gibran Ivantry Dilma\nMohammad Qudus\nZahra Elycia Armans",
@@ -117,7 +117,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Universitas Brawijaya Malang',
                 'year' => 2025,
-                'image_path' => 'achievements/uiux-itfest.png'
+                'image_path' => 'achievements/uiux-itfest.webp'
             ],
             [
                 'student_name' => "Tim Sugar Monster",
@@ -128,7 +128,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Universitas Bunda Mulia',
                 'year' => 2025,
-                'image_path' => 'achievements/technoart.png'
+                'image_path' => 'achievements/technoart.webp'
             ],
             [
                 'student_name' => "Tim Medisense ITK",
@@ -139,7 +139,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Universitas',
                 'organizer' => 'Dies Natalis Institut Teknologi Kalimantan',
                 'year' => 2025,
-                'image_path' => 'achievements/techno-dies.png'
+                'image_path' => 'achievements/techno-dies.webp'
             ],
             [
                 'student_name' => "Tim Blessplast",
@@ -150,7 +150,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Pertamina Foundation',
                 'year' => 2025,
-                'image_path' => 'achievements/pfmuda.png'
+                'image_path' => 'achievements/pfmuda.webp'
             ],
             [
                 'student_name' => "Tim KidUp",
@@ -161,7 +161,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Compassionate Gamification Challenge 2025 (CGC 2025)',
                 'year' => 2025,
-                'image_path' => 'achievements/gamification.png'
+                'image_path' => 'achievements/gamification.webp'
             ],
             [
                 'student_name' => "Danang Windaryoko\nKeyshal Naufal Juliantila\nRafi Muhammad Akbar",
@@ -172,7 +172,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Universitas',
                 'organizer' => 'Teknik Perkapalan ITK',
                 'year' => 2025,
-                'image_path' => 'achievements/etam-ship.png'
+                'image_path' => 'achievements/etam-ship.webp'
             ],
             [
                 'student_name' => "Tim KidUp",
@@ -183,7 +183,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Provinsi',
                 'organizer' => 'Bank Indonesia Kantor Perwakilan Balikpapan',
                 'year' => 2025,
-                'image_path' => 'achievements/mahligai.png'
+                'image_path' => 'achievements/mahligai.webp'
             ],
             [
                 'student_name' => "Dwi Arnesta Saputra",
@@ -194,7 +194,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Inteleksa & HMDE Universitas Andalas',
                 'year' => 2025,
-                'image_path' => 'achievements/inteleksa.png'
+                'image_path' => 'achievements/inteleksa.webp'
             ],
             [
                 'student_name' => "Michell Patricia",
@@ -205,7 +205,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Provinsi',
                 'organizer' => 'Universitas Mulawarman',
                 'year' => 2025,
-                'image_path' => 'achievements/taekwondo.png'
+                'image_path' => 'achievements/taekwondo.webp'
             ],
             [
                 'student_name' => "Muhammad Hafidz Ardan\nAmelia Ramadhani\nFebriyanti Nur",
@@ -216,7 +216,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'HIMASADA Universitas Negeri Surabaya',
                 'year' => 2025,
-                'image_path' => 'achievements/himasada.png'
+                'image_path' => 'achievements/himasada.webp'
             ],
             [
                 'student_name' => "Nadya Azwarelda Haryanto\nAhmad Tijani Noor\nAura Nabil Arsy\nMila Fitria Sari",
@@ -227,7 +227,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'BPJS Kesehatan Pusat',
                 'year' => 2025,
-                'image_path' => 'achievements/aktuaria.png'
+                'image_path' => 'achievements/aktuaria.webp'
             ],
             [
                 'student_name' => "Tim KidUp",
@@ -238,7 +238,7 @@ class AchievementSeeder extends Seeder
                 'level' => 'Nasional',
                 'organizer' => 'Universitas Kristen Duta Wacana',
                 'year' => 2025,
-                'image_path' => 'achievements/uyuh-handak.png'
+                'image_path' => 'achievements/uyuh-handak.webp'
             ]
         ];
 

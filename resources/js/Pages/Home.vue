@@ -207,11 +207,10 @@ onMounted(() => {
         class="relative w-full h-[600px] bg-gray-500 overflow-hidden"
         style="clip-path: ellipse(120% 100% at 50% 0%);"
       >
-        <img src="/images/gambar-beranda-1.jpeg" alt="Suasana FSTI ITK" class="hero-image absolute inset-0 w-full h-full object-cover object-[center_68%]">
+        <img src="/images/gambar-beranda-1.webp" alt="Suasana FSTI ITK" class="hero-image absolute inset-0 w-full h-full object-cover object-[center_68%]" fetchpriority="high" decoding="sync">
         <div class="absolute inset-0 bg-[#00509D] opacity-70"></div>
 <div class="relative container mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center items-center text-center -mt-32 lg:-mt-16">          
-        <h1 ref="heroTitle1Ref" class="font-optimus uppercase text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-reguler text-white text-shadow-custom tracking-wider mt-8 leading-tight px-4 md:px-0 lg:whitespace-nowrap">
-  FAKULTAS SAINS DAN TEKNOLOGI INFORMASI
+<h1 ref="heroTitle1Ref" class="font-optimus uppercase text-2xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-reguler text-white text-shadow-custom tracking-normal md:tracking-wider mt-8 leading-snug md:leading-tight px-4 md:px-0 lg:whitespace-nowrap">  FAKULTAS SAINS DAN TEKNOLOGI INFORMASI
 </h1>
 
 <h2 ref="heroTitle2Ref" class="mt-4 font-optimus uppercase text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-reguler text-white text-shadow-custom tracking-wider px-4 md:px-0 lg:whitespace-nowrap">
@@ -277,7 +276,7 @@ onMounted(() => {
 
           <div ref="aboutImageRef" class="lg:w-1/2 relative">
             <div class="bg-[#2F4DD3] p-2 rounded-xl shadow-xl relative overflow-hidden">
-              <img src="/images/gambar-beranda-2.jpeg" alt="Pembekalan Wisuda FSTI" class="rounded-lg w-full scale-100 hover:scale-105 transition-transform duration-500">
+              <img src="/images/gambar-beranda-2.webp" alt="Pembekalan Wisuda FSTI" class="rounded-lg w-full scale-100 hover:scale-105 transition-transform duration-500 bg-gray-200" loading="lazy" decoding="async">
               <button @click="openModal" class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow hover:bg-white transition">
                 <Plus :size="20" class="text-[#2F4DD3]" />
               </button>
@@ -292,7 +291,7 @@ onMounted(() => {
         <button @click="closeModal" class="absolute top-2 right-2 bg-gray-100 rounded-full p-1 hover:bg-gray-200 transition">
           <X :size="20" />
         </button>
-        <img src="/images/gambar-beranda-2.jpeg" alt="Pembekalan Wisuda FSTI" class="rounded-lg w-full max-h-[80vh] object-contain">
+        <img src="/images/gambar-beranda-2.webp" alt="Pembekalan Wisuda FSTI" class="rounded-lg w-full max-h-[80vh] object-contain" loading="lazy" decoding="async">
       </div>
     </div>
 

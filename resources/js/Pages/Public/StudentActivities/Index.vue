@@ -182,7 +182,7 @@ const formatDateLengkap = (dateStr) => {
         <Banner
             title="KEGIATAN MAHASISWA"
             subtitle="Agenda, Event, dan Aktivitas Organisasi Kemahasiswaan FSTI"
-            background-image="/images/background-banner.png"
+            background-image="/images/background-banner.webp"
         />
 
         <div class="bg-white py-16 md:py-24 min-h-screen font-public-sans overflow-x-hidden">

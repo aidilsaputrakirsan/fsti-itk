@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import VueApexCharts from 'vue3-apexcharts';
 import type { ApexOptions } from 'apexcharts';
 import {
@@ -142,6 +142,7 @@ const formatNumber = (num: number | undefined | null) => {
 </script>
 
 <template>
+        <Head title="Dashboard" />
     <div class="space-y-6 max-w-7xl mx-auto pb-10">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 px-1">
             <div>

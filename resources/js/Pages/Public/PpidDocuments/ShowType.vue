@@ -16,7 +16,7 @@ const props = defineProps({
         <Banner
             title="PPID - FSTI ITK"
             :subtitle="`INFORMASI ${information_type.toUpperCase()}`"
-            background-image="/images/background-banner.png"
+            background-image="/images/background-banner.webp"
         />
 
         <section class="bg-white py-12 md:py-20 min-h-screen font-public-sans">

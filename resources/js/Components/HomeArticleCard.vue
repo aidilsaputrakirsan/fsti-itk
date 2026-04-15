@@ -65,14 +65,15 @@ onMounted(() => {
     class="rounded-xl overflow-hidden shadow-md flex flex-col h-full"
     :class="bgColorClass"
   >
-    <!-- Gambar -->
     <Link :href="route('posts.show', post.slug)">
       <div class="aspect-video overflow-hidden">
         <img
           v-if="post.image_url"
           :src="post.image_url"
           :alt="post.title"
-          class="w-full h-full object-cover"
+          class="w-full h-full object-cover bg-gray-200"
+          loading="lazy"
+          decoding="async"
         >
         <div v-else class="w-full h-56 bg-gray-200 flex items-center justify-center">
           <span class="text-gray-400">Gambar tidak tersedia</span>
@@ -80,9 +81,7 @@ onMounted(() => {
       </div>
     </Link>
 
-    <!-- Konten -->
     <div class="p-6 flex flex-col flex-grow">
-      <!-- Kategori & Tanggal -->
       <div class="flex justify-between items-center text-sm text-black mb-4">
         <span class="border border-[#2F4DD3] rounded-md px-3 py-1 text-xs font-semibold">
           {{ post.category }}
@@ -93,19 +92,16 @@ onMounted(() => {
         </span>
       </div>
 
-      <!-- Judul -->
       <h3 class="text-xl font-bold text-black leading-snug">
         <Link :href="route('posts.show', post.slug)" class="hover:text-[#2F4DD3] transition-colors duration-300">
           {{ post.title }}
         </Link>
       </h3>
 
-      <!-- Ringkasan -->
       <p class="mt-2 text-black text-base leading-relaxed flex-grow line-clamp-3">
         {{ post.excerpt }}
       </p>
 
-      <!-- Tombol -->
       <div class="mt-6 text-right">
         <Link
           :href="route('posts.show', post.slug)"

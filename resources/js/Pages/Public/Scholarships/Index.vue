@@ -110,7 +110,7 @@ const getIconColorClasses = (index) => {
         <Banner
             title="INFORMASI BEASISWA"
             subtitle="DAFTAR PROGRAM BEASISWA DAN BANTUAN PENDIDIKAN UNTUK MAHASISWA FSTI"
-            background-image="/images/background-banner.png"
+            background-image="/images/background-banner.webp"
         />
 
         <div class="bg-white py-12 md:py-24 font-public-sans min-h-[70vh]">

@@ -29,7 +29,7 @@ class AnnouncementSeeder extends Seeder
                 'title' => 'Pengumuman PILMAPRES FSTI 2026',
                 'description' => "PENGUMUMAN PILMAPRES FSTI 2026\n\nHalo Sobat FSTI! 👋✨\nDalam rangka Pemilihan Mahasiswa Berprestasi (PILMAPRES) Tahun 2026, FSTI membuka pendaftaran Mahasiswa Berprestasi (Mawapres) tingkat Fakultas 🏆\n\nIni saatnya kamu menunjukkan potensi terbaikmu dan menjadi perwakilan FSTI di tingkat Institut! 💫\n\n📅 Pendaftaran: 17 – 27 Maret 2026\n📌 Syarat utama:\n✔️ IPK minimal 3,00\n✔️ Maksimal semester 6\n✔️ Melengkapi berkas sesuai ketentuan\n\n🔗 Daftar sekarang melalui:\ns.itk.ac.id/mawapresfsti2026\n\n📞 Info lebih lanjut: Chairon Ulfah (0822-3453-9861)\n\nYuk, jadi bagian dari mahasiswa berprestasi FSTI dan ukir prestasimu! 🚀✨",
                 'document' => null,
-                'poster' => 'pengumuman-pilmapres.png',
+                'poster' => 'pengumuman-pilmapres.webp',
                 'created_at' => '2026-03-17 09:00:00'
             ],
             ['title' => 'Pengumuman Himbauan Pengisian Tracer Study bagi Alumni FSTI', 'description' => null, 'document' => 'pengumuman-tracer-study.pdf', 'poster' => null, 'created_at' => now()->subDays(rand(1, 30))],

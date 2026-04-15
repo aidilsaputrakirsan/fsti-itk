@@ -5,7 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title inertia>{{ config('app.name', 'FSTI ITK') }}</title>
+    <meta name="description"
+        content="Website Resmi Fakultas Sains dan Teknologi Informasi, Institut Teknologi Kalimantan (FSTI ITK).">
+
+    <title inertia>FSTI ITK</title>
+    <link rel="preload" as="image" href="{{ asset('images/background-banner.webp') }}" fetchpriority="high">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -15,8 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Kulim+Park:wght@400;700&display=swap"
         rel="stylesheet">
 
-
-    <link rel="icon" type="image/png" href="{{ asset('images/logofsti.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/logofsti.webp') }}">
 
     @routes
     @vite(['resources/js/app.ts', "resources/js/Pages/{$page['component']}.vue"])

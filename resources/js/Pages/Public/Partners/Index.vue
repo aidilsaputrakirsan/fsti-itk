@@ -36,7 +36,7 @@ const changePage = (p) => {
 <template>
     <PublicLayout>
         <Head title="Mitra Kerjasama - FSTI ITK" />
-        <Banner title="MITRA KERJASAMA" subtitle="Jejak Kolaborasi Industri dan Instansi FSTI ITK" background-image="/images/background-banner.png" />
+        <Banner title="MITRA KERJASAMA" subtitle="Jejak Kolaborasi Industri dan Instansi FSTI ITK" background-image="/images/background-banner.webp" />
 
         <div class="bg-white py-12 md:py-24 min-h-screen font-public-sans overflow-x-hidden relative">
             <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">

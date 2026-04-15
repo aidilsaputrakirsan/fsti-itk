@@ -83,7 +83,7 @@ onMounted(() => {
 <template>
     <PublicLayout>
         <Head title="Tentang Fakultas" />
-        <Banner title="TENTANG FAKULTAS" subtitle="PROFIL, TUGAS, FUNGSI, SERTA VISI & MISI FSTI ITK" background-image="/images/background-banner.png" />
+        <Banner title="TENTANG FAKULTAS" subtitle="PROFIL, TUGAS, FUNGSI, SERTA VISI & MISI FSTI ITK" background-image="/images/background-banner.webp" />
 
         <section class="bg-white py-16 md:py-24 font-public-sans border-b border-gray-100 relative overflow-hidden">
             <Globe class="absolute -top-16 -left-16 w-64 h-64 text-primary/5 -rotate-12 pointer-events-none" />

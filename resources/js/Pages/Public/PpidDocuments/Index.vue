@@ -58,7 +58,7 @@ const getIcon = (type) => {
         <Banner
             title="PPID - FSTI ITK"
             subtitle="PEJABAT PENGELOLA INFORMASI DAN DOKUMENTASI"
-            background-image="/images/background-banner.png"
+            background-image="/images/background-banner.webp"
         />
 
         <section class="bg-white pt-8 md:pt-12 pb-6 font-public-sans">

@@ -9,7 +9,7 @@ import {
     ExclamationTriangleIcon,
     CheckCircleIcon,
 } from '@heroicons/vue/24/outline';
-import { Link, router, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, watch } from 'vue';
 
 defineOptions({ layout: AdminLayout });
@@ -134,6 +134,7 @@ watch(flashSuccess, (message) => {
 </script>
 
 <template>
+          <Head title="Kelola Program Studi" />
     <div>
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>

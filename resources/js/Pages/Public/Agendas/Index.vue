@@ -134,7 +134,7 @@ const formatDateLengkap = (d) => new Date(d).toLocaleDateString('id-ID', { day: 
 <template>
     <PublicLayout>
         <Head title="Agenda Fakultas" />
-        <Banner title="AGENDA FAKULTAS" subtitle="Jadwal Resmi, Kegiatan Institusi, dan Akademik FSTI" background-image="/images/background-banner.png" />
+        <Banner title="AGENDA FAKULTAS" subtitle="Jadwal Resmi, Kegiatan Institusi, dan Akademik FSTI" background-image="/images/background-banner.webp" />
 
         <div class="relative bg-white py-16 md:py-24 font-public-sans min-h-screen overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">

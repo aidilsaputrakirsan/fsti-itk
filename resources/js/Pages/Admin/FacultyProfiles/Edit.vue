@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useForm, usePage } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { 
     ChartBarIcon, DocumentTextIcon, FlagIcon, 
     PaperAirplaneIcon, CheckCircleIcon, PhotoIcon, PaperClipIcon, XMarkIcon
@@ -176,6 +176,7 @@ const submit = () => {
 </script>
 
 <template>
+          <Head title="Kelola Profil Fakultas" />
   <div>
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-gray-900">Kelola Tentang Fakultas</h1>

@@ -12,8 +12,7 @@ import 'aos/dist/aos.css';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
-    title: (title) => title ? `${title} - ${appName}` : appName,
-    resolve: (name) =>
+title: (title) => title ? `${title} - FSTI ITK` : 'FSTI ITK',    resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.vue`,
             import.meta.glob<DefineComponent>('./Pages/**/*.vue'),

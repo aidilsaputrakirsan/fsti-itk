@@ -24,7 +24,7 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Log in Admin - FSTI ITK" />
+    <Head title="Login Admin" />
 
     <div class="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 font-inter relative overflow-hidden">
         <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse"></div>
@@ -39,7 +39,7 @@ const submit = () => {
 
                 <div class="relative z-10">
                     <Link href="/">
-                        <img src="/images/logofsti.png" alt="Logo FSTI ITK" class="h-16 w-auto bg-white p-2 rounded-xl shadow-md mb-8 transition-transform hover:scale-105" />
+                        <img src="/images/logofsti.webp" alt="Logo FSTI ITK" class="h-16 w-auto bg-white p-2 rounded-xl shadow-md mb-8 transition-transform hover:scale-105" />
                     </Link>
                     <h1 class="text-3xl lg:text-4xl font-bold font-kulim-park leading-tight mb-4">
                         Panel Admin <br/>

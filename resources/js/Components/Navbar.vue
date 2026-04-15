@@ -162,8 +162,15 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
                 
                 <div class="flex-1 flex justify-start items-center">
                     <Link href="/" class="flex items-center space-x-2" @click="closeMobileMenu">
-                        <img class="h-10 w-auto" src="/images/logofsti.png" alt="Logo FSTI">
-                    </Link>
+<img 
+    src="/images/logofsti.webp" 
+    alt="Logo FSTI ITK" 
+    width="192" 
+    height="69" 
+    fetchpriority="high"
+    decoding="sync"
+    class="h-10 w-auto" 
+>                    </Link>
                 </div>
 
                 <nav class="hidden xl:flex items-center justify-center space-x-8">

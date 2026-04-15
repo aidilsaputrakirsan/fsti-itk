@@ -27,7 +27,7 @@ const props = defineProps<{
   categories: string[];
 }>();
 
-const bannerImage = '/images/background-banner.png';
+const bannerImage = '/images/background-banner.webp';
 const googleFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfaToVEnR6vnZSTggEbH_IfAVbOpuPf1aCirsNTRb3m8aFL-Q/viewform?pli=1';
 
 const search = ref(props.filters.search || '');

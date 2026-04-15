@@ -28,7 +28,7 @@ onMounted(() => {
         <Banner
             title="PROGRAM STUDI"
             :subtitle="`${studyProgram.degree} ${studyProgram.name}`.toUpperCase()"
-            background-image="/images/background-banner.png"
+            background-image="/images/background-banner.webp"
         />
 
         <section class="bg-white py-20 md:py-28 font-public-sans relative overflow-hidden">
