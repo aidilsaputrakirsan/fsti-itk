@@ -49,7 +49,7 @@ class ResearchController extends Controller
         $validated = $request->validate([
             'nama_dosen' => 'required|string|max:255',
             'judul' => 'required|string',
-            'study_program_id' => 'nullable|exists:study_programs,id',
+            'study_program_id' => 'required|exists:study_programs,id',
             'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ]);
 
@@ -73,7 +73,7 @@ class ResearchController extends Controller
         $validated = $request->validate([
             'nama_dosen' => 'required|string|max:255',
             'judul' => 'required|string',
-            'study_program_id' => 'nullable|exists:study_programs,id',
+            'study_program_id' => 'required|exists:study_programs,id',
             'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ]);
 

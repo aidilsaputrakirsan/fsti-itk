@@ -3,17 +3,18 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import { Head, router } from '@inertiajs/vue3';
-import { Search, Megaphone, X, FileDown, CalendarDays, Eye } from 'lucide-vue-next';
-import { throttle } from 'lodash';
+import { Search, Megaphone, X, FileDown, CalendarDays, Eye, FileX2 } from 'lucide-vue-next';
+import { debounce } from 'lodash';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 const props = defineProps({ announcements: Object, filters: Object });
 const searchQuery = ref(props.filters.search || '');
+const isFiltering = computed(() => searchQuery.value !== '');
 
-watch(searchQuery, throttle((newSearch) => {
+watch(searchQuery, debounce((newSearch) => {
     router.get(route('announcements.index'), { search: newSearch }, { preserveState: true, replace: true, onFinish: () => AOS.refresh() });
-}, 300));
+}, 400));
 
 onMounted(() => { AOS.init({ duration: 800, once: true }); });
 
@@ -85,7 +86,7 @@ onUnmounted(() => {
                     </div>
                 </div>
 
-                <div class="relative z-20 -mt-16 mx-4 md:mx-8 mb-16 bg-white p-4 md:p-5 rounded-2xl shadow-[0_8px_30px_rgba(47,77,211,0.08)] border border-slate-100 flex flex-col md:flex-row gap-4" data-aos="fade-down">
+                <div class="relative z-20 -mt-16 mx-4 md:mx-8 mb-12 bg-white p-4 md:p-5 rounded-2xl shadow-[0_8px_30px_rgba(47,77,211,0.08)] border border-slate-100 flex flex-col md:flex-row gap-4" data-aos="fade-down">
                     <div class="relative flex-grow">
                         <input type="text" placeholder="Cari judul pengumuman atau surat edaran..." class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-slate-50 text-slate-800 font-medium hover:bg-white transition-colors" v-model="searchQuery">
                         <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/60" />
@@ -95,15 +96,21 @@ onUnmounted(() => {
                     </div>
                 </div>
 
-                <div v-if="announcements.data.length === 0" class="text-center py-20 bg-slate-50/50 rounded-[2rem] border border-dashed border-slate-200 shadow-sm" data-aos="fade-up">
-                    <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-slate-100">
-                        <Megaphone class="w-10 h-10 text-primary/40" />
-                    </div>
-                    <h3 class="text-2xl font-bold text-slate-800 mb-2 font-optimus">Pengumuman Tidak Ditemukan</h3>
-                    <p class="text-slate-500 max-w-md mx-auto">Mungkin pengumuman yang Anda cari belum diterbitkan.</p>
+                <div v-if="isFiltering" class="mb-8 mx-4 md:mx-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-aos="fade-up">
+                    <h3 class="text-lg md:text-xl font-bold text-slate-800 flex items-center">
+                        <div class="w-1.5 h-6 bg-primary mr-3 rounded-full hidden sm:block"></div>
+                        <span>Hasil pencarian untuk <span class="text-primary">"{{ searchQuery }}"</span></span>
+                    </h3>
+                    <button @click="searchQuery = ''" class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition-colors self-start sm:self-auto">Reset Pencarian</button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div v-if="announcements.data.length === 0" class="bg-white border border-gray-100 rounded-3xl p-16 text-center shadow-sm mx-4 md:mx-8" data-aos="zoom-in">
+                    <div class="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-4"><FileX2 class="h-10 w-10 text-primary" /></div>
+                    <h3 class="text-xl font-bold text-gray-900">Tidak Ditemukan</h3>
+                    <p class="mt-2 text-gray-500 font-medium max-w-md mx-auto">Pengumuman dengan kriteria pencarian tersebut tidak tersedia atau belum diterbitkan.</p>
+                </div>
+
+                <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-4 md:mx-8">
                     <div v-for="(item, index) in announcements.data" :key="item.id" class="bg-white rounded-[1.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:border-primary/30 transform hover:-translate-y-1 transition-all duration-300 flex flex-col h-[500px] group overflow-hidden" data-aos="fade-up" :data-aos-delay="index * 50">
                         
                         <div @click="openModal(item)" class="h-60 w-full relative shrink-0 overflow-hidden bg-slate-100 border-b border-slate-100 cursor-pointer">
@@ -144,28 +151,16 @@ onUnmounted(() => {
                             <p v-if="item.description" class="text-sm text-slate-600 line-clamp-2 mb-4">{{ item.description }}</p>
 
                             <div class="mt-auto pt-4 border-t border-slate-100 flex items-center gap-3">
-                                <template v-if="item.document_path">
-                                    <a :href="`/storage/${item.document_path}`" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-3 bg-white border border-slate-200 text-slate-600 hover:border-primary hover:text-primary rounded-xl font-bold text-sm transition-all duration-300 group/btn1">
-                                        <Eye class="w-4 h-4 group-hover/btn1:scale-110 transition-transform" />
-                                        Lihat PDF
-                                    </a>
-                                    <a :href="`/storage/${item.document_path}`" :download="`${item.title}.pdf`" class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-3 bg-blue-50 text-primary hover:bg-primary hover:text-white rounded-xl font-bold text-sm transition-colors duration-300 group/btn2">
-                                        <FileDown class="w-4 h-4 group-hover/btn2:animate-bounce" />
-                                        Unduh
-                                    </a>
-                                </template>
-                                <template v-else>
-                                    <button @click="openModal(item)" class="w-full inline-flex items-center justify-center gap-2 py-2.5 px-3 bg-blue-50 text-primary hover:bg-primary hover:text-white rounded-xl font-bold text-sm transition-colors duration-300 group/btn3">
-                                        <Eye class="w-4 h-4 group-hover/btn3:scale-110 transition-transform" />
-                                        Lihat Detail Lengkap
-                                    </button>
-                                </template>
+                                <button @click="openModal(item)" class="w-full inline-flex items-center justify-center gap-2 py-2.5 px-3 bg-blue-50 text-primary hover:bg-primary hover:text-white rounded-xl font-bold text-sm transition-colors duration-300 group/btn3">
+                                    <Eye class="w-4 h-4 group-hover/btn3:scale-110 transition-transform" />
+                                    Lihat Detail Lengkap
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div v-if="totalPages > 1" class="mt-16 flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-slate-100" data-aos="fade-in">
+                <div v-if="totalPages > 1" class="mt-16 mx-4 md:mx-8 flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-slate-100" data-aos="fade-in">
                     <p class="text-sm font-medium text-slate-500 text-center md:text-left">
                         Menampilkan <span class="text-primary font-bold">{{ announcements.from }}</span> - <span class="text-primary font-bold">{{ announcements.to }}</span> dari <span class="text-primary font-bold">{{ announcements.total }}</span> Pengumuman
                     </p>
@@ -210,10 +205,14 @@ onUnmounted(() => {
                                     {{ selectedItem?.description || 'Tidak ada keterangan tambahan.' }}
                                 </div>
 
-                                <div v-if="selectedItem?.document_path" class="mt-8 pt-6 border-t border-slate-100">
-                                    <a :href="`/storage/${selectedItem.document_path}`" :download="`${selectedItem.title}.pdf`" class="inline-flex items-center justify-center gap-2 py-3 px-6 bg-primary text-white hover:bg-primary-hover rounded-xl font-bold text-sm transition-colors duration-300 shadow-md">
+                                <div v-if="selectedItem?.document_path" class="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
+                                    <a :href="`/storage/${selectedItem.document_path}`" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center gap-2 py-3 px-6 bg-white border border-slate-200 text-slate-700 hover:border-primary hover:text-primary rounded-xl font-bold text-sm transition-colors duration-300 shadow-sm">
+                                        <Eye class="w-5 h-5" />
+                                        Lihat PDF di Tab Baru
+                                    </a>
+                                    <a :href="`/storage/${selectedItem.document_path}`" :download="`${selectedItem.title}.pdf`" class="flex-1 inline-flex items-center justify-center gap-2 py-3 px-6 bg-primary text-white hover:bg-primary-hover rounded-xl font-bold text-sm transition-colors duration-300 shadow-md">
                                         <FileDown class="w-5 h-5" />
-                                        Unduh Dokumen PDF
+                                        Unduh PDF
                                     </a>
                                 </div>
                             </div>

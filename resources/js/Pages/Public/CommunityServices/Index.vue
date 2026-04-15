@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { router, Head } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
-import { Search, FileWarning, HeartHandshake, ChevronDown, LibraryBig, ListFilter, X, Users } from 'lucide-vue-next';
+import { Search, HeartHandshake, ChevronDown, LibraryBig, ListFilter, X, Users, FileX2 } from 'lucide-vue-next';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { debounce } from 'lodash';
@@ -17,11 +17,25 @@ const props = defineProps<{
 }>();
 
 const bannerImage = '/images/background-banner.png';
-const search = ref(props.filters.search || '');
-const selectedYear = ref(props.filters.year || '');
-const selectedProgram = ref(props.filters.program || '');
+const search = ref(props.filters?.search || '');
+const selectedYear = ref(props.filters?.year || '');
+const selectedProgram = ref(props.filters?.program || '');
 
-watch(search, debounce(() => { applyFilters(); }, 500));
+const isFiltering = computed(() => search.value !== '' || selectedYear.value !== '' || selectedProgram.value !== '');
+
+const applyFilters = () => { 
+    router.get(route('community-services.index'), { 
+        search: search.value, 
+        year: selectedYear.value, 
+        program: selectedProgram.value 
+    }, { 
+        preserveState: true, 
+        replace: true,
+        preserveScroll: true
+    }); 
+};
+
+watch(search, debounce(() => { applyFilters(); }, 400));
 watch([selectedYear, selectedProgram], () => { applyFilters(); });
 
 const isYearOpen = ref(false); 
@@ -33,7 +47,7 @@ const programDropdownStyle = ref({});
 
 const selectedProgramName = computed(() => {
     if (!selectedProgram.value) return '';
-    const p = props.studyPrograms.find((x) => x.id == selectedProgram.value); 
+    const p = props.studyPrograms.find((x) => String(x.id) === String(selectedProgram.value)); 
     return p ? p.name : '';
 });
 
@@ -41,39 +55,65 @@ const toggleDropdown = (type: 'year' | 'program') => {
     const refs = { year: yearBtnRef, program: programBtnRef };
     const isOpenRefs = { year: isYearOpen, program: isProgramOpen };
     const styleRefs = { year: yearDropdownStyle, program: programDropdownStyle };
-    Object.keys(isOpenRefs).forEach((key) => { if (key !== type) isOpenRefs[key as keyof typeof isOpenRefs].value = false; });
+    
+    Object.keys(isOpenRefs).forEach((key) => { 
+        if (key !== type) isOpenRefs[key as keyof typeof isOpenRefs].value = false; 
+    });
+    
     const isOpen = isOpenRefs[type];
-    if (isOpen.value) isOpen.value = false;
-    else {
+    if (isOpen.value) {
+        isOpen.value = false;
+    } else {
         const button = refs[type].value;
         if (button) {
             const rect = button.getBoundingClientRect();
-            styleRefs[type].value = { position: 'absolute', top: `${rect.bottom + window.scrollY + 8}px`, left: `${rect.left}px`, width: `${rect.width}px` };
+            styleRefs[type].value = { 
+                position: 'absolute', 
+                top: `${rect.bottom + window.scrollY + 8}px`, 
+                left: `${rect.left}px`, 
+                width: `${rect.width}px` 
+            };
         }
         isOpen.value = true;
     }
 };
 
 function selectOption(type: 'year' | 'program', value: string) {
-    if (type === 'year') { selectedYear.value = value; isYearOpen.value = false; }
-    else if (type === 'program') { selectedProgram.value = value; isProgramOpen.value = false; }
+    if (type === 'year') { 
+        selectedYear.value = value; 
+        isYearOpen.value = false; 
+    } else if (type === 'program') { 
+        selectedProgram.value = value; 
+        isProgramOpen.value = false; 
+    }
 }
 
 const handleClickOutside = (event: MouseEvent) => {
     const target = event.target as Node;
-    const check = (btnRef: any, menuId: string, isOpenRef: any) => {
+    const checkDropdown = (btnRef: any, menuId: string, isOpenRef: any) => {
         const menu = document.getElementById(menuId);
-        if (btnRef.value && !btnRef.value.contains(target) && menu && !menu.contains(target)) isOpenRef.value = false;
+        if (btnRef.value && !btnRef.value.contains(target) && menu && !menu.contains(target)) {
+            isOpenRef.value = false;
+        }
     };
-    check(yearBtnRef, 'year-dropdown-menu', isYearOpen);
-    check(programBtnRef, 'program-dropdown-menu', isProgramOpen);
+    checkDropdown(yearBtnRef, 'year-dropdown-menu', isYearOpen);
+    checkDropdown(programBtnRef, 'program-dropdown-menu', isProgramOpen);
 };
 
-onMounted(() => { AOS.init({ duration: 800, once: true }); document.addEventListener('mousedown', handleClickOutside); });
-onUnmounted(() => { document.removeEventListener('mousedown', handleClickOutside); });
+onMounted(() => { 
+    AOS.init({ duration: 800, once: true }); 
+    document.addEventListener('mousedown', handleClickOutside); 
+});
 
-const applyFilters = () => { router.get(route('pengabdian.index'), { search: search.value, year: selectedYear.value, program: selectedProgram.value }, { preserveState: true, replace: true }); };
-const resetSearch = () => { search.value = ''; };
+onUnmounted(() => { 
+    document.removeEventListener('mousedown', handleClickOutside); 
+});
+
+const resetSearch = () => { 
+    search.value = ''; 
+    selectedYear.value = ''; 
+    selectedProgram.value = ''; 
+};
 
 const currentPage = computed<number>(() => props.communityServices?.current_page || 1);
 const totalPages = computed<number>(() => props.communityServices?.last_page || 1);
@@ -91,7 +131,16 @@ const visiblePages = computed(() => {
 
 const changePage = (page: number | string) => {
     if (typeof page === 'number' && page >= 1 && page <= totalPages.value) {
-        router.get(route('pengabdian.index'), { search: search.value, year: selectedYear.value, program: selectedProgram.value, page: page }, { preserveState: true, replace: true, onFinish: () => { window.scrollTo({ top: 450, behavior: 'smooth' }); } });
+        router.get(route('community-services.index'), { 
+            search: search.value, 
+            year: selectedYear.value, 
+            program: selectedProgram.value, 
+            page: page 
+        }, { 
+            preserveState: true, 
+            replace: true, 
+            onFinish: () => { window.scrollTo({ top: 450, behavior: 'smooth' }); } 
+        });
     }
 };
 
@@ -104,7 +153,7 @@ const nextPage = () => changePage(currentPage.value + 1);
         <Head title="Pengabdian Masyarakat - FSTI ITK" />
         <Banner title="Daftar Pengabdian Masyarakat" subtitle="PANGKALAN DATA PENGABDIAN DOSEN FSTI ITK" :background-image="bannerImage" />
 
-        <div class="bg-gray-50/50 py-16 md:py-24 font-public-sans min-h-screen overflow-x-hidden">
+        <div class="bg-gray-50/50 py-16 md:py-24 font-public-sans min-h-screen overflow-x-hidden relative">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
                 <div class="relative w-full bg-gradient-to-br from-primary to-primary-hover rounded-[2rem] p-8 md:p-12 mb-8 overflow-hidden shadow-xl flex items-center justify-between border border-primary-hover/50">
@@ -122,21 +171,26 @@ const nextPage = () => changePage(currentPage.value + 1);
                     </div>
                 </div>
 
-                <div class="relative z-20 -mt-16 mx-4 md:mx-8 mb-16 bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4" data-aos="fade-down">
+                <div class="relative z-20 -mt-16 mx-4 md:mx-8 mb-12 bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4" data-aos="fade-down">
                     <div class="relative flex-grow">
-                        <input type="text" placeholder="Cari judul pengabdian atau nama dosen..." class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-slate-50 text-slate-800 font-medium hover:bg-white transition-colors" v-model="search">
+                        <input 
+                            type="text" 
+                            placeholder="Cari judul pengabdian atau nama dosen..." 
+                            class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-slate-50 text-slate-800 font-medium hover:bg-white transition-colors" 
+                            v-model="search"
+                        >
                         <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/60" />
                         <button v-if="search" @click="resetSearch" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-primary transition-colors"><X class="w-5 h-5" /></button>
                     </div>
                     <div class="relative md:w-72">
-                        <button ref="programBtnRef" @click="toggleDropdown('program')" class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors focus:ring-2 focus:ring-primary focus:border-primary">
+                        <button ref="programBtnRef" @click.prevent="toggleDropdown('program')" class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors focus:ring-2 focus:ring-primary focus:border-primary">
                             <span class="truncate">{{ selectedProgramName || 'Semua Program Studi' }}</span>
                             <ChevronDown class="w-5 h-5 text-primary/60" :class="{'rotate-180': isProgramOpen}" />
                         </button>
                         <LibraryBig class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary pointer-events-none" />
                     </div>
                     <div class="relative md:w-48">
-                        <button ref="yearBtnRef" @click="toggleDropdown('year')" class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors focus:ring-2 focus:ring-primary focus:border-primary">
+                        <button ref="yearBtnRef" @click.prevent="toggleDropdown('year')" class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors focus:ring-2 focus:ring-primary focus:border-primary">
                             <span class="truncate">{{ selectedYear || 'Semua Tahun' }}</span>
                             <ChevronDown class="w-5 h-5 text-primary/60" :class="{'rotate-180': isYearOpen}" />
                         </button>
@@ -144,7 +198,18 @@ const nextPage = () => changePage(currentPage.value + 1);
                     </div>
                 </div>
 
-                <div class="bg-white rounded-3xl shadow-[0_8px_30px_rgba(0,53,102,0.04)] border border-slate-100 overflow-hidden mx-2 md:mx-8 mb-16" data-aos="fade-up">
+                <div v-if="isFiltering" class="mb-8 mx-4 md:mx-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-aos="fade-up">
+                    <h3 class="text-lg md:text-xl font-bold text-slate-800 flex items-center flex-wrap gap-x-1.5">
+                        <div class="w-1.5 h-6 bg-primary mr-3 rounded-full hidden sm:block"></div>
+                        <span class="text-slate-500 font-medium">Hasil pencarian untuk:</span>
+                        <span v-if="search" class="text-primary">"{{ search }}"</span>
+                        <span v-if="selectedProgram" class="px-2.5 py-1 bg-primary/10 text-primary rounded-lg text-sm">{{ selectedProgramName }}</span>
+                        <span v-if="selectedYear" class="px-2.5 py-1 bg-[#D9FFFE]/80 text-[#00509D] rounded-lg text-sm">Tahun {{ selectedYear }}</span>
+                    </h3>
+                    <button @click="resetSearch" class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition-colors self-start sm:self-auto">Reset Filter</button>
+                </div>
+
+                <div v-if="communityServices.data.length > 0" class="bg-white rounded-3xl shadow-[0_8px_30px_rgba(0,53,102,0.04)] border border-slate-100 overflow-hidden mx-2 md:mx-8 mb-16" data-aos="fade-up">
                     <div class="overflow-x-auto">
                         <table class="w-full min-w-[900px] text-left border-collapse">
                             <thead>
@@ -162,18 +227,12 @@ const nextPage = () => changePage(currentPage.value + 1);
                                     <td class="px-6 py-4"><div class="font-bold text-slate-800 group-hover:text-primary transition-colors">{{ item.nama_dosen }}</div></td>
                                     <td class="px-6 py-4 text-sm text-slate-600 leading-relaxed font-medium">{{ item.judul }}</td>
                                     <td class="px-6 py-4 text-sm">
-                                        <span class="px-3 py-1.5 bg-slate-50 border border-slate-100 text-slate-600 rounded-lg font-semibold group-hover:bg-blue-50 group-hover:text-primary">{{ item.studyProgram?.name || 'FSTI' }}</span>
+                                        <span class="px-3 py-1.5 bg-slate-50 border border-slate-100 text-slate-600 rounded-lg font-semibold group-hover:bg-blue-50 group-hover:text-primary">
+                                            {{ item.study_program?.name || 'FSTI' }}
+                                        </span>
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         <span class="inline-flex items-center justify-center w-14 h-8 rounded-lg bg-slate-100 text-slate-600 font-bold text-sm group-hover:bg-[#D9FFFE]/80 group-hover:text-[#00509D]">{{ item.tahun }}</span>
-                                    </td>
-                                </tr>
-                                
-                                <tr v-if="communityServices.data.length === 0">
-                                    <td colspan="5" class="py-20 text-center bg-white hover:bg-white cursor-default">
-                                        <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100 shadow-sm"><FileWarning class="w-8 h-8 text-slate-300" /></div>
-                                        <h3 class="text-xl font-bold text-slate-800 mb-2 font-optimus">Data Tidak Ditemukan</h3>
-                                        <p class="text-sm text-slate-500">Silakan sesuaikan kembali kata kunci pencarian atau filter yang Anda gunakan.</p>
                                     </td>
                                 </tr>
                             </tbody>
@@ -181,7 +240,15 @@ const nextPage = () => changePage(currentPage.value + 1);
                     </div>
                 </div>
 
-                <div v-if="totalPages > 1" class="flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-slate-100" data-aos="fade-in">
+                <div v-else class="bg-white border border-gray-100 rounded-3xl p-16 text-center shadow-sm mx-4 md:mx-8 mb-16" data-aos="zoom-in">
+                    <div class="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FileX2 class="h-10 w-10 text-primary" />
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Tidak Ditemukan</h3>
+                    <p class="mt-2 text-gray-500 font-medium max-w-md mx-auto">Data pengabdian masyarakat dengan kriteria pencarian atau filter tersebut tidak tersedia.</p>
+                </div>
+
+                <div v-if="totalPages > 1 && communityServices.data.length > 0" class="flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-slate-100 mx-4 md:mx-8" data-aos="fade-in">
                     <p class="text-sm font-medium text-slate-500 text-center md:text-left">
                         Menampilkan <span class="text-primary font-bold">{{ showingFrom }}</span> - <span class="text-primary font-bold">{{ showingTo }}</span> dari <span class="text-primary font-bold">{{ totalCommunityServices }}</span> Data
                     </p>
@@ -202,16 +269,16 @@ const nextPage = () => changePage(currentPage.value + 1);
     <Teleport to="body">
         <transition enter-active-class="ease-out duration-100" enter-from-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100" leave-active-class="ease-in duration-75" leave-from-class="opacity-100" leave-to-class="opacity-0">
             <div v-if="isProgramOpen" id="program-dropdown-menu" :style="programDropdownStyle" class="z-[9999] bg-white rounded-xl shadow-xl border border-slate-100 py-2 font-public-sans overflow-hidden">
-                <a @click="selectOption('program', '')" class="block px-5 py-3 text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': !selectedProgram}">Semua Program Studi</a>
-                <a v-for="p in studyPrograms" :key="p.id" @click="selectOption('program', String(p.id))" class="block px-5 py-3 text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': selectedProgram === String(p.id)}">{{ p.name }}</a>
+                <a @click.prevent="selectOption('program', '')" class="block px-5 py-3 text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': !selectedProgram}">Semua Program Studi</a>
+                <a v-for="p in studyPrograms" :key="p.id" @click.prevent="selectOption('program', String(p.id))" class="block px-5 py-3 text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': selectedProgram === String(p.id)}">{{ p.name }}</a>
             </div>
         </transition>
     </Teleport>
     <Teleport to="body">
         <transition enter-active-class="ease-out duration-100" enter-from-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100" leave-active-class="ease-in duration-75" leave-from-class="opacity-100" leave-to-class="opacity-0">
             <div v-if="isYearOpen" id="year-dropdown-menu" :style="yearDropdownStyle" class="z-[9999] bg-white rounded-xl shadow-xl border border-slate-100 py-2 font-public-sans overflow-hidden">
-                <a @click="selectOption('year', '')" class="block px-5 py-3 text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': !selectedYear}">Semua Tahun</a>
-                <a v-for="y in years" :key="y" @click="selectOption('year', y)" class="block px-5 py-3 text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': selectedYear === y}">Tahun {{ y }}</a>
+                <a @click.prevent="selectOption('year', '')" class="block px-5 py-3 text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': !selectedYear}">Semua Tahun</a>
+                <a v-for="y in years" :key="y" @click.prevent="selectOption('year', y)" class="block px-5 py-3 text-slate-700 font-medium hover:bg-blue-50 hover:text-primary cursor-pointer transition-colors" :class="{'bg-primary text-white hover:bg-primary hover:text-white': selectedYear === y}">Tahun {{ y }}</a>
             </div>
         </transition>
     </Teleport>

@@ -41,6 +41,11 @@ const validateForm = () => {
         hasError = true;
     }
 
+    if (!form.study_program_id) {
+        form.setError('study_program_id', 'Program Studi wajib dipilih.');
+        hasError = true;
+    }
+
     if (!form.tahun) {
         form.setError('tahun', 'Tahun wajib diisi.');
         hasError = true;
@@ -89,11 +94,12 @@ const submit = () => {
                         <InputError :message="form.errors.judul" />
                     </div>
 
-                    <label class="md:pt-3 text-sm font-bold text-gray-800">Program Studi</label>
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Program Studi <span class="text-red-600">*</span></label>
                     <div>
                         <select v-model="form.study_program_id" 
-                            class="block w-full rounded-lg transition-colors py-3 border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white">
-                            <option value="">-- Semua / Level Fakultas --</option>
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.study_program_id ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'">
+                            <option value="" disabled>-- Pilih Program Studi --</option>
                             <option v-for="prodi in studyPrograms" :key="prodi.id" :value="prodi.id">
                                 {{ prodi.name }}
                             </option>

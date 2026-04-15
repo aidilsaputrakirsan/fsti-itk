@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { router, Head } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
-import { Search, FileWarning, BookOpen, ChevronDown, LibraryBig, ListFilter, X, FlaskConical } from 'lucide-vue-next';
+import { Search, BookOpen, ChevronDown, LibraryBig, ListFilter, X, FlaskConical, FileX2 } from 'lucide-vue-next';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { debounce } from 'lodash';
@@ -20,6 +20,8 @@ const bannerImage = '/images/background-banner.png';
 const search = ref(props.filters.search || '');
 const selectedYear = ref(props.filters.year || '');
 const selectedProgram = ref(props.filters.program || '');
+
+const isFiltering = computed(() => search.value !== '' || selectedYear.value !== '' || selectedProgram.value !== '');
 
 watch(search, debounce(() => { applyFilters(); }, 500));
 watch([selectedYear, selectedProgram], () => { applyFilters(); });
@@ -90,7 +92,7 @@ const applyFilters = () => {
     router.get(route('research.index'), { search: search.value, year: selectedYear.value, program: selectedProgram.value }, { preserveState: true, replace: true });
 };
 
-const resetSearch = () => { search.value = ''; };
+const resetSearch = () => { search.value = ''; selectedYear.value = ''; selectedProgram.value = ''; };
 
 const currentPage = computed<number>(() => props.researchList?.current_page || 1);
 const totalPages = computed<number>(() => props.researchList?.last_page || 1);
@@ -145,7 +147,7 @@ const nextPage = () => changePage(currentPage.value + 1);
                     </div>
                 </div>
 
-                <div class="relative z-20 -mt-10 md:-mt-16 mx-2 sm:mx-4 md:mx-8 mb-12 md:mb-16 bg-white p-3 md:p-5 rounded-2xl shadow-[0_8px_30px_rgba(47,77,211,0.08)] border border-slate-100 flex flex-col md:flex-row gap-3 md:gap-4" data-aos="fade-down">
+                <div class="relative z-20 -mt-10 md:-mt-16 mx-2 sm:mx-4 md:mx-8 mb-12 md:mb-12 bg-white p-3 md:p-5 rounded-2xl shadow-[0_8px_30px_rgba(47,77,211,0.08)] border border-slate-100 flex flex-col md:flex-row gap-3 md:gap-4" data-aos="fade-down">
                     
                     <div class="relative flex-grow">
                         <input 
@@ -155,7 +157,7 @@ const nextPage = () => changePage(currentPage.value + 1);
                             v-model="search"
                         >
                         <Search class="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-primary/60" />
-                        <button v-if="search" @click="resetSearch" class="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-primary transition-colors">
+                        <button v-if="search" @click="search = ''" class="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-primary transition-colors">
                             <X class="w-4 h-4 md:w-5 md:h-5" />
                         </button>
                     </div>
@@ -183,10 +185,23 @@ const nextPage = () => changePage(currentPage.value + 1);
                         </button>
                         <ListFilter class="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-primary pointer-events-none" />
                     </div>
-
                 </div>
 
-                <div class="bg-white rounded-3xl shadow-[0_8px_30px_rgba(0,53,102,0.04)] border border-slate-100 overflow-hidden mx-2 md:mx-8 mb-16" data-aos="fade-up">
+                <div v-if="isFiltering" class="mb-8 mx-2 sm:mx-4 md:mx-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-aos="fade-up">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800 flex items-center">
+                        <div class="w-1.5 h-6 bg-primary mr-3 rounded-full hidden sm:block"></div>
+                        <span v-if="search && selectedProgram && selectedYear">Pencarian <span class="text-primary">"{{ search }}"</span> di Prodi <span class="text-primary">{{ selectedProgramName }}</span> Tahun <span class="text-primary">{{ selectedYear }}</span></span>
+                        <span v-else-if="search && selectedProgram">Pencarian <span class="text-primary">"{{ search }}"</span> di Program Studi <span class="text-primary">{{ selectedProgramName }}</span></span>
+                        <span v-else-if="search && selectedYear">Pencarian <span class="text-primary">"{{ search }}"</span> pada Tahun <span class="text-primary">{{ selectedYear }}</span></span>
+                        <span v-else-if="search">Hasil pencarian untuk <span class="text-primary">"{{ search }}"</span></span>
+                        <span v-else-if="selectedProgram && selectedYear">Semua penelitian Prodi <span class="text-primary">{{ selectedProgramName }}</span> Tahun <span class="text-primary">{{ selectedYear }}</span></span>
+                        <span v-else-if="selectedProgram">Semua penelitian Program Studi <span class="text-primary">{{ selectedProgramName }}</span></span>
+                        <span v-else-if="selectedYear">Semua penelitian Tahun <span class="text-primary">{{ selectedYear }}</span></span>
+                    </h3>
+                    <button @click="resetSearch" class="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl transition-colors self-start sm:self-auto">Reset Filter</button>
+                </div>
+
+                <div v-if="researchList.data.length > 0" class="bg-white rounded-3xl shadow-[0_8px_30px_rgba(0,53,102,0.04)] border border-slate-100 overflow-hidden mx-2 sm:mx-4 md:mx-8 mb-16" data-aos="fade-up">
                     <div class="overflow-x-auto">
                         <table class="w-full min-w-[900px] text-left border-collapse">
                             <thead>
@@ -209,7 +224,7 @@ const nextPage = () => changePage(currentPage.value + 1);
                                     </td>
                                     <td class="px-6 py-4 text-sm">
                                         <span class="px-3 py-1.5 bg-slate-50 border border-slate-100 text-slate-600 rounded-lg font-semibold group-hover:bg-blue-50 group-hover:text-primary group-hover:border-blue-100 transition-colors">
-                                            {{ item.studyProgram?.name || 'FSTI' }}
+                                            {{ item.study_program?.name || '-' }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-center">
@@ -218,22 +233,18 @@ const nextPage = () => changePage(currentPage.value + 1);
                                         </span>
                                     </td>
                                 </tr>
-                                
-                                <tr v-if="researchList.data.length === 0">
-                                    <td colspan="5" class="py-20 text-center bg-white hover:bg-white cursor-default">
-                                        <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100 shadow-sm">
-                                            <FileWarning class="w-8 h-8 text-slate-300" />
-                                        </div>
-                                        <h3 class="text-xl font-bold text-slate-800 mb-2 font-optimus">Penelitian Tidak Ditemukan</h3>
-                                        <p class="text-sm text-slate-500">Silakan sesuaikan kembali kata kunci pencarian atau filter yang Anda gunakan.</p>
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <div v-if="totalPages > 1" class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 bg-white py-4 px-4 md:px-10 rounded-3xl md:rounded-full shadow-[0_8px_30px_rgba(47,77,211,0.04)] border border-slate-100" data-aos="fade-in">
+                <div v-else class="bg-white border border-gray-100 rounded-3xl p-16 text-center shadow-sm mx-2 sm:mx-4 md:mx-8 mb-16" data-aos="zoom-in">
+                    <div class="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-4"><FileX2 class="h-10 w-10 text-primary" /></div>
+                    <h3 class="text-xl font-bold text-gray-900">Tidak Ditemukan</h3>
+                    <p class="mt-2 text-gray-500 font-medium max-w-md mx-auto">Data penelitian dengan kriteria pencarian atau filter tersebut tidak tersedia.</p>
+                </div>
+
+                <div v-if="totalPages > 1 && researchList.data.length > 0" class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 bg-white py-4 px-4 md:px-10 rounded-3xl md:rounded-full shadow-[0_8px_30px_rgba(47,77,211,0.04)] border border-slate-100 mx-2 sm:mx-4 md:mx-8" data-aos="fade-in">
                     <p class="text-xs md:text-sm font-medium text-slate-500 text-center md:text-left">
                         Menampilkan <span class="text-primary font-bold">{{ showingFrom }}</span> - <span class="text-primary font-bold">{{ showingTo }}</span> dari <span class="text-primary font-bold">{{ totalResearch }}</span> Penelitian
                     </p>

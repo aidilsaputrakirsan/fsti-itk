@@ -73,6 +73,19 @@ const formattedLinks = computed(() => {
     return result;
 });
 
+const page = usePage();
+const showNotification = ref(false);
+const notificationMessage = ref('');
+
+const flashSuccess = computed(() => (page.props as any).flash?.success);
+watch(flashSuccess, (msg) => { 
+    if (msg) { 
+        notificationMessage.value = msg as string; 
+        showNotification.value = true; 
+        setTimeout(() => { showNotification.value = false; }, 3000); 
+    } 
+}, { immediate: true });
+
 const isModalOpen = ref(false);
 const itemToDelete = ref<any | null>(null);
 
@@ -89,23 +102,18 @@ const closeDeleteModal = () => {
 const confirmDelete = () => { 
     if (itemToDelete.value) {
         router.delete(route('admin.announcements.destroy', itemToDelete.value.id), { 
-            onSuccess: () => closeDeleteModal() 
+            preserveScroll: true,
+            onSuccess: () => {
+                closeDeleteModal();
+                if((page.props as any).flash?.success) {
+                    notificationMessage.value = (page.props as any).flash.success as string;
+                    showNotification.value = true;
+                    setTimeout(() => { showNotification.value = false; }, 3000); 
+                }
+            }
         }); 
     }
 };
-
-const page = usePage();
-const showNotification = ref(false);
-const notificationMessage = ref('');
-const flashSuccess = computed(() => (page.props as any).flash?.success);
-
-watch(flashSuccess, (msg) => { 
-    if (msg) { 
-        notificationMessage.value = msg as string; 
-        showNotification.value = true; 
-        setTimeout(() => { showNotification.value = false; }, 3000); 
-    } 
-}, { immediate: true });
 
 const formatDate = (dateString: string) => {
     return dayjs(dateString).format('DD MMMM YYYY');

@@ -105,7 +105,7 @@ watch(flashSuccess, (msg) => { if (msg) { notificationMessage.value = msg; showN
                         <tr v-if="partners.data.length > 0" v-for="item in partners.data" :key="item.id">
                             <td>
                                 <div class="flex-shrink-0 h-12 w-20 flex items-center justify-center overflow-hidden bg-white rounded border border-gray-200 p-1">
-                                    <img v-if="item.logo" :src="`/storage/${item.logo}`" class="h-full w-full object-contain mix-blend-multiply" />
+                                    <img v-if="item.logo_url" :src="item.logo_url" class="h-full w-full object-contain mix-blend-multiply" />
                                     <span v-else class="text-[10px] text-gray-500 font-bold bg-gray-100 px-2 py-1 rounded">Tanpa Logo</span>
                                 </div>
                             </td>
