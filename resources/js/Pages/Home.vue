@@ -201,7 +201,7 @@ onMounted(() => {
   <PublicLayout>
     <div class="hidden bg-[#2F4DD3]"></div>
 
-<div class="relative bg-white lg:pb-24 font-public-sans">
+    <div class="relative bg-white lg:pb-24 font-public-sans">
         <section 
         ref="heroSectionRef"
         class="relative w-full h-[600px] bg-gray-500 overflow-hidden"
@@ -209,13 +209,14 @@ onMounted(() => {
       >
         <img src="/images/gambar-beranda-1.webp" alt="Suasana FSTI ITK" class="hero-image absolute inset-0 w-full h-full object-cover object-[center_68%]" fetchpriority="high" decoding="sync">
         <div class="absolute inset-0 bg-[#00509D] opacity-70"></div>
-<div class="relative container mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center items-center text-center -mt-32 lg:-mt-16">          
-<h1 ref="heroTitle1Ref" class="font-optimus uppercase text-2xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-reguler text-white text-shadow-custom tracking-normal md:tracking-wider mt-8 leading-snug md:leading-tight px-4 md:px-0 lg:whitespace-nowrap">  FAKULTAS SAINS DAN TEKNOLOGI INFORMASI
-</h1>
+        <div class="relative container mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center items-center text-center -mt-32 lg:-mt-16">          
+          <h1 ref="heroTitle1Ref" class="font-optimus uppercase text-2xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-reguler text-white text-shadow-custom tracking-normal md:tracking-wider mt-8 leading-snug md:leading-tight px-4 md:px-0 lg:whitespace-nowrap">
+            FAKULTAS SAINS DAN TEKNOLOGI INFORMASI
+          </h1>
 
-<h2 ref="heroTitle2Ref" class="mt-4 font-optimus uppercase text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-reguler text-white text-shadow-custom tracking-wider px-4 md:px-0 lg:whitespace-nowrap">
-  INSTITUT TEKNOLOGI KALIMANTAN
-</h2>
+          <h2 ref="heroTitle2Ref" class="mt-4 font-optimus uppercase text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-reguler text-white text-shadow-custom tracking-wider px-4 md:px-0 lg:whitespace-nowrap">
+            INSTITUT TEKNOLOGI KALIMANTAN
+          </h2>
           
           <div ref="heroButtonRef" class="mt-10">
             <Link :href="route('profiles.about')" class="inline-block bg-white text-black font-public-sans font-bold text-base px-6 py-2 rounded-lg shadow-md hover:bg-gray-100 transition-transform transform hover:scale-105 duration-300 -mt-16">
@@ -225,7 +226,8 @@ onMounted(() => {
         </div>
       </section>
 
-<div class="relative lg:absolute lg:bottom-0 lg:left-1/2 lg:-translate-x-1/2 w-full container mx-auto px-4 sm:px-6 lg:px-8 -mt-24 lg:mt-0 z-20 pb-12 lg:pb-0">        <div ref="heroCardsRef" class="flex justify-center items-start gap-8 flex-wrap">
+      <div class="relative lg:absolute lg:bottom-0 lg:left-1/2 lg:-translate-x-1/2 w-full container mx-auto px-4 sm:px-6 lg:px-8 -mt-24 lg:mt-0 z-20 pb-12 lg:pb-0">        
+        <div ref="heroCardsRef" class="flex justify-center items-start gap-8 flex-wrap">
           <Link :href="route('profiles.program-leaders')" class="w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
             <GraduationCap :size="80" class="mx-auto" />
             <h3 class="mt-4 text-xl font-bold font-public-sans">Program Studi</h3>
@@ -239,7 +241,6 @@ onMounted(() => {
             <CheckSquare :size="80" class="mx-auto" />
             <h3 class="mt-4 text-xl font-bold font-public-sans">Layanan Mahasiswa</h3>
           </Link>
-
         </div>
       </div>
     </div>
@@ -247,12 +248,12 @@ onMounted(() => {
     <section ref="aboutSectionRef" class="bg-white py-20 overflow-hidden font-public-sans">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-          <div class="lg:w-1/2 text-left">
-            <h2 class="text-4xl font-bold font-optimus text-[#2F4DD3] about-title">
+          <div class="lg:w-1/2 text-center lg:text-left mx-auto">
+            <h2 class="text-3xl sm:text-4xl font-bold font-optimus text-[#2F4DD3] about-title">
               Sekilas Tentang FSTI ITK
             </h2>
             
-            <p class="mt-6 text-black text-base font-normal leading-relaxed about-text">
+            <p class="mt-6 text-black text-sm sm:text-base font-normal leading-relaxed about-text mx-auto lg:mx-0">
               {{ deskripsiFakultas }}
             </p>
             
@@ -274,7 +275,7 @@ onMounted(() => {
 
           </div>
 
-          <div ref="aboutImageRef" class="lg:w-1/2 relative">
+          <div ref="aboutImageRef" class="lg:w-1/2 relative mt-8 lg:mt-0">
             <div class="bg-[#2F4DD3] p-2 rounded-xl shadow-xl relative overflow-hidden">
               <img src="/images/gambar-beranda-2.webp" alt="Pembekalan Wisuda FSTI" class="rounded-lg w-full scale-100 hover:scale-105 transition-transform duration-500 bg-gray-200" loading="lazy" decoding="async">
               <button @click="openModal" class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow hover:bg-white transition">
@@ -287,7 +288,7 @@ onMounted(() => {
     </section>
 
     <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 transition-opacity">
-      <div class="relative bg-white rounded-lg shadow-xl p-4 max-w-3xl w-full">
+      <div class="relative bg-white rounded-lg shadow-xl p-4 max-w-3xl w-full mx-4">
         <button @click="closeModal" class="absolute top-2 right-2 bg-gray-100 rounded-full p-1 hover:bg-gray-200 transition">
           <X :size="20" />
         </button>
@@ -298,16 +299,17 @@ onMounted(() => {
     <section ref="achievementSectionRef" v-if="latestAchievements.length > 0" class="relative py-20 overflow-hidden bg-white font-public-sans">
       <div class="achievement-background-pattern absolute top-[-50%] left-0 w-full h-[200%] z-0 css-achievement-pattern"></div>
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="flex justify-between items-center mb-12 achievement-header">
+        <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left mb-12 achievement-header gap-6 md:gap-0">
           <div>
-            <h2 class="text-5xl font-bold font-optimus text-[#2F4DD3]">Prestasi Terbaru</h2>
-            <p class="mt-2 text-black text-base font-normal">Capaian membanggakan dari Mahasiswa FSTI ITK</p>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold font-optimus text-[#2F4DD3]">Prestasi Terbaru</h2>
+            <p class="mt-2 text-black text-sm sm:text-base font-normal">Capaian membanggakan dari Mahasiswa FSTI ITK</p>
           </div>
           <Link :href="route('achievements.index')" class="inline-flex items-center font-bold font-public-sans text-white bg-[#2F4DD3] border border-transparent rounded-full px-5 py-2 hover:bg-blue-700 transition-colors duration-300 shadow-sm">
             Lihat Semua <ArrowRight class="ml-2 h-4 w-4" />
           </Link>
         </div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-20 mt-4">          <div v-for="(achievement, index) in latestAchievements" :key="achievement.id" class="relative z-20 bg-white rounded-lg h-full shadow-lg flex">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-20 mt-4">          
+          <div v-for="(achievement, index) in latestAchievements" :key="achievement.id" class="relative z-20 bg-white rounded-lg h-full shadow-lg flex">
             <AchievementCard :achievement="achievement" class="w-full h-full flex-grow" />
           </div>
         </div>
@@ -316,10 +318,10 @@ onMounted(() => {
 
     <section ref="newsSectionRef" v-if="latestPosts.length > 0" class="relative py-20 overflow-hidden bg-white font-public-sans">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="flex justify-between items-center mb-12 news-header">
+        <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left mb-12 news-header gap-6 md:gap-0">
           <div>
-            <h2 class="text-5xl font-bold font-optimus text-[#2F4DD3]">Berita Terbaru</h2>
-            <p class="mt-2 text-black text-base font-normal">Informasi terkini seputar FSTI</p>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold font-optimus text-[#2F4DD3]">Berita Terbaru</h2>
+            <p class="mt-2 text-black text-sm sm:text-base font-normal">Informasi terkini seputar FSTI</p>
           </div>
           <Link :href="route('posts.index')" class="inline-flex items-center font-bold font-public-sans text-black bg-white border border-gray-300 rounded-full px-5 py-2 hover:bg-gray-100 transition-colors duration-300 shadow-sm">
             Lihat Semua <ArrowRight class="ml-2 h-4 w-4" />

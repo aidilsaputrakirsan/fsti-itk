@@ -68,7 +68,9 @@ class FacultyProfileSeeder extends Seeder
                     ['huruf' => 'I', 'teks' => 'Internasionalisasi'],
                 ]
             ],
-            'bagan_organisasi' => $finalImagePath
+            'bagan_organisasi' => $finalImagePath,
+            'pmb_link' => 'https://pmb.itk.ac.id',
+            'tracer_study_link' => 'https://docs.google.com/forms/d/e/1FAIpQLSe09s1JB6Sm4005NakxU9uNVnLyGBEiIEv8oSO2EdLG81LIeA/viewform'
         ];
 
         FacultyProfile::updateOrCreate(

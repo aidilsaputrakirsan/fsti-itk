@@ -22,7 +22,9 @@ class FacultyProfileController extends Controller
                     'statistik' => ['deskripsi' => '', 'data' => []],
                     'tugas_fungsi' => ['tugas' => '', 'fungsi' => []],
                     'visi_misi' => ['visi' => '', 'misi_tagline' => '', 'misi' => []],
-                    'bagan_organisasi' => null
+                    'bagan_organisasi' => null,
+                    'pmb_link' => '',
+                    'tracer_study_link' => ''
                 ]
             ]
         );
@@ -32,15 +34,15 @@ class FacultyProfileController extends Controller
         $countDosen = Staff::where('type', 'Dosen')->where('is_active', true)->count();
         $countTendik = Staff::where('type', 'Tendik')->where('is_active', true)->count();
         $countAlumni = Alumni::count();
-        
+
         $allStudyPrograms = StudyProgram::all();
         $s1 = 0;
         $s2 = 0;
-        
+
         foreach ($allStudyPrograms as $p) {
             $degree = strtoupper($p->degree ?? '');
             $name = strtolower($p->name);
-            
+
             if ($degree === 'S2' || str_contains($name, 's2') || str_contains($name, 'magister')) {
                 $s2++;
             } else {
@@ -71,6 +73,8 @@ class FacultyProfileController extends Controller
     {
         $request->validate([
             'content' => 'required|array',
+            'content.pmb_link' => 'nullable|url',
+            'content.tracer_study_link' => 'nullable|url',
             'bagan_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 

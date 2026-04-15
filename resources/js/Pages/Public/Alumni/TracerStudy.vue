@@ -2,7 +2,7 @@
 import { onMounted, computed } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { 
     Users,
     Briefcase,
@@ -18,13 +18,20 @@ onMounted(() => {
     AOS.init({ duration: 800, once: true });
 });
 
-const surveyUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSe09s1JB6Sm4005NakxU9uNVnLyGBEiIEv8oSO2EdLG81LIeA/viewform';
+const page = usePage();
+
+const surveyUrl = computed(() => {
+    return page.props.faculty_settings?.tracer_study_link || 'https://docs.google.com/forms/d/e/1FAIpQLSe09s1JB6Sm4005NakxU9uNVnLyGBEiIEv8oSO2EdLG81LIeA/viewform';
+});
 
 const embedUrl = computed(() => {
-    if (surveyUrl.includes('docs.google.com/forms') && !surveyUrl.includes('embedded=true')) {
-        return surveyUrl.includes('?') ? `${surveyUrl}&embedded=true` : `${surveyUrl}?embedded=true`;
+    const url = surveyUrl.value;
+    if (!url) return '';
+    
+    if (url.includes('docs.google.com/forms') && !url.includes('embedded=true')) {
+        return url.includes('?') ? `${url}&embedded=true` : `${url}?embedded=true`;
     }
-    return surveyUrl;
+    return url;
 });
 
 const benefits = [

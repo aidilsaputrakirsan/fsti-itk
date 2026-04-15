@@ -149,7 +149,7 @@ const jalurMasuk = [
                         </p>
                         
                         <div class="flex flex-wrap justify-center md:justify-start gap-4">
-                            <a href="https://pmb.itk.ac.id/" target="_blank" class="px-6 py-3.5 md:px-8 md:py-4 bg-white hover:bg-[#D9FFFE] text-primary font-black rounded-tl-2xl rounded-br-2xl rounded-tr-md rounded-bl-md flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 group w-full sm:w-auto text-sm md:text-base">
+                            <a :href="$page.props.faculty_settings?.pmb_link || 'https://pmb.itk.ac.id/'" target="_blank" class="px-6 py-3.5 md:px-8 md:py-4 bg-white hover:bg-[#D9FFFE] text-primary font-black rounded-tl-2xl rounded-br-2xl rounded-tr-md rounded-bl-md flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 group w-full sm:w-auto text-sm md:text-base">
                                Lihat Selengkapnya <ExternalLink class="w-4 h-4 md:w-5 md:h-5 ml-2 md:ml-3 group-hover:translate-x-1 transition-transform" />
                             </a>
                         </div>

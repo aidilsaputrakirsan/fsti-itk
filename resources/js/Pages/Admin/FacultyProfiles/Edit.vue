@@ -4,7 +4,7 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { 
     ChartBarIcon, DocumentTextIcon, FlagIcon, 
-    PaperAirplaneIcon, CheckCircleIcon, PhotoIcon, PaperClipIcon, XMarkIcon
+    PaperAirplaneIcon, CheckCircleIcon, PhotoIcon, PaperClipIcon, XMarkIcon, LinkIcon
 } from '@heroicons/vue/24/outline';
 import InputError from '@/Components/InputError.vue';
 
@@ -30,17 +30,20 @@ const tabs = [
     { id: 'tugas', name: 'Tugas & Fungsi', icon: DocumentTextIcon },
     { id: 'visi', name: 'Visi & Misi', icon: FlagIcon },
     { id: 'bagan', name: 'Bagan Organisasi', icon: PhotoIcon },
+    { id: 'tautan', name: 'Tautan Sistem', icon: LinkIcon }, 
 ];
 
 const fileInput = ref(null);
 
 const form = useForm({
     _method: 'PUT', 
-    content: props.profile?.content || {
-        statistik: { deskripsi: '', data: [] },
-        tugas_fungsi: { tugas: '', fungsi: [] },
-        visi_misi: { visi: '', misi_tagline: '', misi: [] },
-        bagan_organisasi: 'images/bagan-organisasi.webp'
+    content: {
+        statistik: props.profile?.content?.statistik || { deskripsi: '', data: [] },
+        tugas_fungsi: props.profile?.content?.tugas_fungsi || { tugas: '', fungsi: [] },
+        visi_misi: props.profile?.content?.visi_misi || { visi: '', misi_tagline: '', misi: [] },
+        bagan_organisasi: props.profile?.content?.bagan_organisasi || 'images/bagan-organisasi.webp',
+        pmb_link: props.profile?.content?.pmb_link || '', 
+        tracer_study_link: props.profile?.content?.tracer_study_link || ''
     },
     bagan_image: null
 });
@@ -150,6 +153,15 @@ const submit = () => {
             form.setError('bagan_image', 'Ukuran file maksimal 2MB.');
             if (!firstErrorTab) firstErrorTab = 'bagan';
         }
+    }
+
+    if (form.content.pmb_link && !/^https?:\/\//i.test(form.content.pmb_link)) {
+        form.setError('content.pmb_link', 'Tautan harus diawali dengan http:// atau https://');
+        if (!firstErrorTab) firstErrorTab = 'tautan';
+    }
+    if (form.content.tracer_study_link && !/^https?:\/\//i.test(form.content.tracer_study_link)) {
+        form.setError('content.tracer_study_link', 'Tautan harus diawali dengan http:// atau https://');
+        if (!firstErrorTab) firstErrorTab = 'tautan';
     }
 
     if (firstErrorTab) {
@@ -389,7 +401,40 @@ const submit = () => {
                     </div>
                 </div>
 
-            </div>
+                <div v-show="activeTab === 'tautan'">
+                    <h2 class="text-2xl font-bold mb-6">Tautan Integrasi Sistem</h2>
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">Tautan PMB (Penerimaan Mahasiswa Baru)</label>
+                                    <input 
+                                        type="url" 
+                                        v-model="form.content.pmb_link" 
+                                        placeholder="https://pmb.itk.ac.id" 
+                                        class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
+                                        :class="form.errors['content.pmb_link'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                    >
+                                    <InputError :message="form.errors['content.pmb_link']" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">Tautan Tracer Study (Alumni)</label>
+                                    <input 
+                                        type="url" 
+                                        v-model="form.content.tracer_study_link" 
+                                        placeholder="https://tracerstudy.itk.ac.id" 
+                                        class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
+                                        :class="form.errors['content.tracer_study_link'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                    >
+                                    <InputError :message="form.errors['content.tracer_study_link']" />
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 italic mt-4">Tautan ini akan didistribusikan secara otomatis pada tombol di halaman publik seperti halaman informasi PMB dan penelusuran Alumni.</p>
+                        </div>
+                    </div>
+                </div>
+                </div>
 
             <div class="bg-gray-50 px-8 py-5 border-t border-gray-100 rounded-b-2xl flex items-center justify-end shrink-0">
                 <button type="submit" :disabled="form.processing" class="flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-white font-bold hover:bg-opacity-90 transition shadow-sm w-full sm:w-auto disabled:opacity-50">
