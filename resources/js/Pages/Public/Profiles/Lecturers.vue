@@ -169,7 +169,7 @@ const hasDetailedInfo = computed(() => {
                             <div v-for="(person, index) in lecturerList" :key="person.id" class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] hover:-translate-y-1.5 transition-all duration-500 flex flex-col group relative">
                                 
                                 <div class="h-64 w-full bg-gray-100 relative overflow-hidden">
-                                    <img v-if="person.display_image" :src="person.display_image" :alt="person.name" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 mix-blend-multiply">
+                                    <img v-if="person.display_image" :src="person.display_image" :alt="person.name" loading="lazy" decoding="async" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 mix-blend-multiply">
                                     
                                     <div v-else class="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-400 group-hover:scale-105 transition-transform duration-700">
                                         <ImageOff class="w-12 h-12 mb-3 opacity-40" />

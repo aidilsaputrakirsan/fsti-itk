@@ -4,11 +4,17 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Staff;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class StaffSeeder extends Seeder
 {
     public function run(): void
     {
+        if (!Storage::disk('public')->exists('staff')) {
+            Storage::disk('public')->makeDirectory('staff');
+        }
+
         $dataCivitas = [
 
             [
@@ -17,32 +23,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Koordinator Program Studi Bisnis Digital',
                 'functional_position' => 'Dosen Program Studi Bisnis Digital',
-                'image_url' => 'https://drive.google.com/file/d/1fcSC34fYPMNDO-hJn_Q2wOrh7O7R72vi/view?usp=sharing',
-
+                'image_url' => 'staff/deli-yansyah.webp',
                 'education_history' => [
                     'S1 Akuntansi Universitas Islam Indonesia',
                     'S2 Magister Akuntansi Universitas Gadjah Mada'
                 ],
-
                 'expertise' => [
                     'Auditing',
                     'Financial Accounting'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2021 - Sekarang : Digital Business Lecturer- ITK',
                     '2016 - 2019 : Accounting Supervisor. PT Aqieni',
                     '2013 - 2016 : Accounting Staf. PT Aqieni'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -52,32 +50,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Bisnis Digital',
-                'image_url' => 'https://drive.google.com/file/d/1NbeBK-Hz_3wqzY_rfc70sSzk1pPQP9bn/view?usp=sharing',
-
+                'image_url' => 'staff/agung-prabowo.webp',
                 'education_history' => [
                     'S1 Manajemen Universitas Sebelas Maret',
                     'S2 Magister Manajemen Universitas Sebelas Maret'
                 ],
-
                 'expertise' => [
                     'Manajemen',
                     'Pemasaran',
                     'Perilaku Konsumen',
                     'Investasi'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Mill Improvement Staff, PT. Indah Kiat Pulp and Paper, Tbk'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -87,28 +77,22 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Bisnis Digital',
-                'image_url' => 'https://drive.google.com/file/d/1eO0jki-zodaY6O2xNopKogSQwklgmGHu/view?usp=sharing',
-
+                'image_url' => 'staff/bayu-nur-abdallah.webp',
                 'education_history' => [
                     'S1 Teknik Industri, Universitas Brawijaya',
                     'S2 Teknik Industri, Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Digital Behaviour',
                     'Logistics Systems',
                     'Strategic Supply Chain Management',
                     'Market Research'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Consumer Behaviour'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2021 – Sekarang: Dosen Universitas (Full-time), Departemen Bisnis Digital',
                     '2019 – Sekarang: Business Analyst (Kontrak), Balikpapan, Kalimantan Timur, Indonesia',
@@ -118,9 +102,7 @@ class StaffSeeder extends Seeder
                     '2017 – 2017: Management Intern, PT ITS Tekno Sains',
                     '2010 – 2012: Marketing Communication, Korek Api Ads, Malang'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -130,13 +112,11 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Bisnis Digital',
-                'image_url' => 'https://drive.google.com/file/d/1vy1kGPyttz-tj0rS9JINzchQoJFJgL55/view?usp=sharing',
-
+                'image_url' => 'staff/eka-krisna-santoso.webp',
                 'education_history' => [
                     'S.Si - Mathematics Department, Gadjah Mada University',
                     'MBA - Ohio, The University of Akron'
                 ],
-
                 'expertise' => [
                     'UMKM / Small Medium Enterprise',
                     'Fair Value Analysis',
@@ -146,13 +126,9 @@ class StaffSeeder extends Seeder
                     'Design Thinking',
                     'Sales Management'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2025 – Sekarang: Dosen, Departemen Bisnis Digital, Fakultas Sains dan Teknologi Informasi, Institut Teknologi Kalimantan, Balikpapan, Indonesia',
                     '2024 – Sekarang: Equity Research Analyst, Freelance, Indonesia',
@@ -164,9 +140,7 @@ class StaffSeeder extends Seeder
                     '2013 – 2018: Senior Relationship Manager, Sub Branch Manager, Branch Change Agent Ambassador, Business Development Manager – Funding & Wealth Management, PT Bank Muamalat Indonesia Tbk, Balikpapan & Tanah Grogot, Indonesia',
                     '2010 – 2013: Business Development Representative, Customer Service Representative, PT Bank Mandiri (Persero) Tbk, Indonesia'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -176,27 +150,21 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Bisnis Digital',
-                'image_url' => 'https://drive.google.com/file/d/1g-cw7c_CYpCPtvyqLEa9EzoITFPDkuSu/view?usp=sharing',
-
+                'image_url' => 'staff/riovan-styx-roring.webp',
                 'education_history' => [
                     'S2 Teknik Informatika'
                 ],
-
                 'expertise' => [
                     'Software Engineering'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Implementasi Failover Di Layer 2 Dengan Spanning Tree Protokol Dalam Mengatasi Terputusnya Jaringan Informasi Ke Gardu Induk Pln Untuk Menghindari Pemadaman Listrik Masal',
                     'Implementasi Sistem Smart Attendance Berbasis Android Menggunakan Quick Response Code',
                     'Penerapan Aplikasi Android “Ojek Gt” Sebagai Startup Industri Kreatif Menuju Society 5.0',
                     'Implementasi Dan Evaluasi Algoritma C5.0 Pada Klasifikasi Emosi Teks Berita Berbahasa Indonesia.'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2025 – Sekarang: Dosen, Institut Teknologi Kalimantan',
                     '2024 – 2025: Dosen, Universitas Balikpapan',
@@ -210,9 +178,7 @@ class StaffSeeder extends Seeder
                     '2007 – 2008: Accounting Intern, Bank Pembangunan Daerah Suluttenggo Cabang Kawangkoan',
                     '2007 – 2008: Finance Intern, Sekretariat Daerah Pemprov Sulawesi Utara'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/riovan-roring/',
                     'https://scholar.google.com/citations?user=D6OC_TEAAAAJ',
@@ -226,30 +192,22 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Bisnis Digital',
-                'image_url' => 'https://drive.google.com/file/d/1kmBhGD44OsTzlZO5JQ65g7V5Z8YrIByE/view?usp=sharing',
-
+                'image_url' => 'staff/fegy-sukris.webp',
                 'education_history' => [
                     'S2 Akuntansi'
                 ],
-
                 'expertise' => [
                     'Akuntansi Pajak',
                     'Akuntansi Keuangan',
                     'Audit'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Auditor, Kantor Akuntan Publik'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -259,34 +217,26 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Bisnis Digital',
-                'image_url' => 'https://drive.google.com/file/d/1Td1n3tio23suC5zTx3zqwMPqzGI1aV2H/view?usp=sharing',
-
+                'image_url' => 'staff/khairunnisa-rahmah.webp',
                 'education_history' => [
                     'S1 Agribisnis - IPB University, Bogor',
                     'S2 Manajemen Bisnis - IPB University, Bogor'
                 ],
-
                 'expertise' => [
                     'Sales & Marketing',
                     'Management Strategic',
                     'Public Communication',
                     'Internet & Social Media Marketing Management'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2022 – Sekarang: Dosen, Department of Digital Business, Institut Teknologi Kalimantan (ITK)',
                     '2017 – 2019: Relationship Manager, PT Zurich Topas Life Indonesia, Bogor',
                     '2016: Financial Advisor, PT Manulife Indonesia, Bogor'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -296,21 +246,17 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Bisnis Digital',
-                'image_url' => 'https://drive.google.com/file/d/1PEzQpIc3ktHy2_a0h09_0OMaM3HImLMj/view?usp=sharing',
-
+                'image_url' => 'staff/luh-made.webp',
                 'education_history' => [
                     'S1 Sistem Informasi, Institut Teknologi Sepuluh November Surabaya',
                     'S2 Informatika Konsentrasi Sistem Informasi, Institut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Business Intelligence',
                     'UIUX Design',
                     'Database'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Rancang Bangun Sistem Stok Gudang Berbasis Web Untuk Industri Mikro Dan Kecil Di Kota Penyangga IKN',
                     'Dampak Kemampuan Manajemen Proses Bisnis Dan Adopsi Kecerdasan Buatan Terhadap Kinerja Proses: Studi Kasus UKM Di Kawasan IKN',
@@ -322,16 +268,12 @@ class StaffSeeder extends Seeder
                     'Perancangan Basis Data Wisata Kuliner Sebagai Sarana Promosi Dan Pemasaran Destinasi Kuliner Berbasis Digital Di Kota Penyangga Ibu Kota Negara (IKN)',
                     'Pengaruh Literasi Digital Dan Pengalaman Digital Terhadap Perilaku Digital UMKM Di Kota Penyangga IKN'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2022 – Sekarang: Institut Teknologi Kalimantan',
                     '2017 – 2022: PT Bank Negara Indonesia (Persero) Tbk'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -341,13 +283,11 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Bisnis Digital',
-                'image_url' => 'https://drive.google.com/file/d/1T1CHN-B3my-4GDIGQSQsZMcZoslUpcG1/view?usp=sharing',
-
+                'image_url' => 'staff/muhammad-ikhsan.webp',
                 'education_history' => [
                     'S1 Management, Universitas Islam Negeri Alauddin, Makassar',
                     'S2 Master Science in Management, Universitas Gadjah Mada, Yogyakarta'
                 ],
-
                 'expertise' => [
                     'Management and Organization',
                     'People Management',
@@ -356,16 +296,12 @@ class StaffSeeder extends Seeder
                     'Graphic Design',
                     'Design Thinking'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Tim Ahli Pemetaan Persepsi Pelaku Pengadaan Terhadap Barang/Jasa Pemerintah Yang Berkelanjutan (2021)',
                     'Research Assistant (2019)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2021 – Sekarang: Dosen, Department of Digital Business, Institut Teknologi Kalimantan (ITK)',
                     '2019 – 2020: Academic Assistant, Program Magister & Doktor Fakultas Ekonomi dan Bisnis, Universitas Gadjah Mada',
@@ -373,9 +309,7 @@ class StaffSeeder extends Seeder
                     '2018 – Sekarang: Trainer of Statistical Tools using Structural Equation Modelling (SEM)',
                     '2018 – 2019: Humanitarian Project, Indonesian Red Crescent di Palu, Lombok, & Sulawesi Selatan sebagai Chief Boards of Design Graphic & Content Video Creator'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -385,32 +319,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Bisnis Digital',
-                'image_url' => 'https://drive.google.com/file/d/1TvZup4Kx8yBcafh3FoCvLYCSROWxvnlP/view?usp=sharing',
-
+                'image_url' => 'staff/prasis-damai.webp',
                 'education_history' => [
                     'S1 Agroekoteknologi, Universitas Brawijaya',
                     'S2 Magister Manajemen, Universitas Brawijaya'
                 ],
-
                 'expertise' => [
                     'Strategic Operasional Management',
                     'Strategic Management'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2022 – Sekarang: Dosen, Department of Digital Business, Institut Teknologi Kalimantan',
                     '2015 – 2022: Foundation Supervisor, Yayasan Perjuangan Pendidikan Bela Negara',
                     '2010 – 2015: Agronomy Staff, PT Bumitama Gunajaya Agro'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -420,31 +346,23 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Ketua Jurusan Sains dan Analitika Data',
                 'functional_position' => 'Dosen Program Studi Fisika',
-                'image_url' => 'https://drive.google.com/file/d/19QS_9uRWB6eelgx_Pm8NKm4rP3QjIVnt/view?usp=sharing',
-
+                'image_url' => 'staff/swastya-rahastama.webp',
                 'education_history' => [
                     'S1 Fisika Institut Teknologi Bandung',
                     'S2 Fisika Institut Teknologi Bandung',
                     'S3 Fisika Institut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Fisika Nuklir',
                     'Fisika Komputasi'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Penelitian Dosen Pemula Ristek Dikti Tahun 2020'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://phy.itk.ac.id/profile/dosen/detail/a030a214157191538265',
                     'https://scholar.google.com/citations?hl=en&user=JNar1oMAAAAJ&view_op=list_works&sortby=pubdate',
@@ -458,32 +376,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Koordinator Program Studi Fisika',
                 'functional_position' => 'Dosen Program Studi Fisika',
-                'image_url' => 'https://drive.google.com/file/d/1-JZ27fd4tkafGB_uSx_fgZQV_EYCyeEg/view?usp=sharing',
-
+                'image_url' => 'staff/febrian-dedi.webp',
                 'education_history' => [
                     'S1 Fisika Universitas Tadulako',
                     'S2 Ilmu Fisika Universitas Gadjah Mada'
                 ],
-
                 'expertise' => [
                     'Geofisika'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Identifikasi Sebaran Limbah Cair TPA Manggar dengan Menggunakan Metode Geolistrik (2017)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2017 : Pengajar IKIP PGRI Jember',
                     '2014 : Staff Administrasi Himpuna Ahli Geofisika Indonesia'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -493,31 +403,23 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Kepala Laboratorium Fisika Lanjut',
                 'functional_position' => 'Dosen Program Studi Fisika',
-                'image_url' => 'https://drive.google.com/file/d/19v2I9p2myIkSEtJ2i5gQN-NsXTO4AKIL/view?usp=sharing',
-
+                'image_url' => 'staff/meidi-arisalwadi.webp',
                 'education_history' => [
                     'S1 Fisika Universitas Mataram',
                     'S2 Ilmu Fisika Universitas Brawijaya'
                 ],
-
                 'expertise' => [
                     'Geofisika'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Penerapan Metode Geofisika Terpadu Untuk Menentukan Potensi Geothermal di Kawasan Canggar (2016)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2018 : Universitas Muhammadiyah Mataram'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -527,22 +429,14 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Kepala Laboratorium Fisika Dasar',
                 'functional_position' => 'Dosen Program Studi Fisika',
-                'image_url' => 'https://drive.google.com/file/d/1T8o8lpTOuXckLP_FXx_QKtQTJo-Wie6s/view?usp=sharing',
-
+                'image_url' => 'staff/fadli-robiandi.webp',
                 'education_history' => null,
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -552,26 +446,18 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Fisika',
-                'image_url' => 'https://drive.google.com/file/d/12nhCa5pSy5rKytN1DfU0I8S96E1iFH7B/view?usp=sharing',
-
+                'image_url' => 'staff/agus-rifani.webp',
                 'education_history' => [
                     'S1 Fisika Universitas Brawijaya',
                     'S2 Ilmu Fisika Universitas Brawijaya',
                     'S2 Physics National Central University - Taiwan'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -581,29 +467,21 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Koordinator Kurikulum dan Pengajaran',
                 'functional_position' => 'Dosen Program Studi Fisika',
-                'image_url' => 'https://drive.google.com/file/d/1mkKDgBY8TliWawSEtUBA6SjQY4F2urqm/view?usp=sharing',
-
+                'image_url' => 'staff/atut-reni.webp',
                 'education_history' => [
                     'S1 Pendidikan Fisika Universitas Negeri Yogyakarta',
                     'S2 Fisika Institut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Fisika Material'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Sintesis dan Karakterisasi Nanopartikel ZnO untuk Aplikasi Sel Surya (2019)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -613,25 +491,17 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Fisika',
-                'image_url' => 'https://drive.google.com/file/d/1JMV8vBPVUrfsY57UqyiiiF6wjqctxqEw/view?usp=sharing',
-
+                'image_url' => 'staff/chairoh-ulfah.webp',
                 'education_history' => [
                     'S1 Fisika Universitas Gadjah Mada',
                     'S2 Fisika Universitas Gadjah Mada'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -641,31 +511,23 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Fisika',
-                'image_url' => 'https://drive.google.com/file/d/1ZeVuMT16dgvEBMn4ZJ3J2nGhdFBFJyBD/view?usp=sharing',
-
+                'image_url' => 'staff/dian-mart.webp',
                 'education_history' => [
                     'S1 Fisika Institut Teknologi Sepuluh Nopember',
                     'S2 Fisika Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Fisika'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Simple Conductive Glass (2015)',
                     'Composite RAMI (Natural Fiber)-Epoxy For Prosthesis (2016)',
                     'Utilization of Ulin wood (Eusideroxylon Zwageri) for Folding Boat Material (2018)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -675,27 +537,19 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Fisika',
-                'image_url' => 'https://drive.google.com/file/d/1YxlRl-BGH55BZhLbvP4_QLd3JDZY2gFY/view?usp=sharing',
-
+                'image_url' => 'staff/musyarofah.webp',
                 'education_history' => [
                     'S1 Fisika Universitas Gadjah Mada',
                     'S2 Fisika Universitas Gadjah Mada'
                 ],
-
                 'expertise' => [
                     'Fisika Bahan'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -705,30 +559,22 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Fisika',
-                'image_url' => 'https://drive.google.com/file/d/1-FT5emwlfzw25bUh9jGD2jKLEhBRReZY/view?usp=sharing',
-
+                'image_url' => 'staff/harrys-samosir.webp',
                 'education_history' => [
                     'S1 Fisika Universitas Negeri Medan',
                     'S2 Fisika National Chung Hsing University'
                 ],
-
                 'expertise' => [
                     'Quantum Dots',
                     'Dye Sensitized Solar Cells',
                     'Semiconductor Materials',
                     'Material Science'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -738,27 +584,19 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Fisika',
-                'image_url' => 'https://drive.google.com/file/d/1fSdU07vvmjHgWVA0x9WrlZUzgynj7lyX/view?usp=sharing',
-
+                'image_url' => 'staff/menasita-mayantasari.webp',
                 'education_history' => [
                     'S1 Fisika, Fakultas Matematika dan Ilmu Pengetahuan Alam, Institut Pertanian Bogor (IPB)',
                     'S2 Instrumentasi dan Kontrol, Fakultas Teknologi Industri, Institut Teknologi Bandung (ITB)'
                 ],
-
                 'expertise' => [
                     'Fisika Instrumentasi Medis'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -768,30 +606,22 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Fisika',
-                'image_url' => 'https://drive.google.com/file/d/1lzGGVvJevBKz7X64iRI5JatPj-ckpiBg/view?usp=sharing',
-
+                'image_url' => 'staff/rahmania.webp',
                 'education_history' => [
                     'S1 Pendidikan Fisika Universitas Negeri Makassar',
                     'S2 Fisika Universitas Gadjah Mada'
                 ],
-
                 'expertise' => [
                     'Geofisika'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2017-2018: Dosen LB di Universitas Andi Jemma Palopo',
                     '2013-2014:Guru Sains Fisika di ELC Education Makassar'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -801,32 +631,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Koordinator Program Studi Ilmu Aktuaria',
                 'functional_position' => 'Dosen Program Studi Ilmu Aktuaria',
-                'image_url' => 'https://drive.google.com/file/d/1IN49PufA_QB7IKtda-AqcT7uKgQRpQPR/view?usp=sharing',
-
+                'image_url' => 'staff/muhammad-azka.webp',
                 'education_history' => [
                     'S1 Matematika, Universitas Negeri Semarang (Unnes)',
                     'S2 Matematika, Universitas Gadjah Mada (UGM)'
                 ],
-
                 'expertise' => [
                     'Matematika Keuangan'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Analisis Kestabilan dan Kendali Optimal pada Model Penyebaran DBD di Kalimantam Timur dengan Memperhatikan Vector Tahap Aquatic (2017)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2020 - Sekarang : Dosen Ilmu Aktuaria, ITK',
                     '2015 - 2020 : Dosen Matematika, ITK'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -836,25 +658,17 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Ilmu Aktuaria',
-                'image_url' => 'https://drive.google.com/file/d/1C5ixFpKr5w9PaPcrnvdSmMqCHjm7ROC6/view?usp=sharing',
-
+                'image_url' => 'staff/alvianus-kristian.webp',
                 'education_history' => [
                     'S1 Manajemen, Fakultas Ekonomi dan Bisnis Universitas Sam Ratulangi Manado (UNSRAT)',
                     'S2 Ilmu Ekonomi, Universitas Sam Ratulangi Manado (UNSRAT)'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -865,21 +679,13 @@ class StaffSeeder extends Seeder
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Ilmu Aktuaria',
                 'image_url' => '',
-
                 'education_history' => null,
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -889,25 +695,17 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Ilmu Aktuaria',
-                'image_url' => 'https://drive.google.com/file/d/1ai0WnWzFJugGbCQeixYdD6u79g7NK15k/view?usp=sharing',
-
+                'image_url' => 'staff/indrawan.webp',
                 'education_history' => [
                     'S1 Pendidikan Matematika, Universitas Bung Hatta',
                     'S2 Matematika Terapan, Institut Pertanian Bogor'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -917,28 +715,20 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Ilmu Aktuaria',
-                'image_url' => 'https://drive.google.com/file/d/1B4EUXut2izsG4jbQhJATlC1dg3oN6lmJ/view?usp=sharing',
-
+                'image_url' => 'staff/isti-kamila.webp',
                 'education_history' => [
                     'S1 Pendidikan Matematika, Universitas Negeri Medan',
                     'S2 Matematika Terapan, Institut Pertanian Bogor'
                 ],
-
                 'expertise' => [
                     'Matematika Keuangan',
                     'Matematika Aktuaria'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -948,22 +738,14 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Ilmu Aktuaria',
-                'image_url' => 'https://drive.google.com/file/d/1Qk79GqfK3YdqTRLlPGrFKw6EGSJJqc0u/view?usp=sharing',
-
+                'image_url' => 'staff/lili-hernawati.webp',
                 'education_history' => null,
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -973,25 +755,17 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Ilmu Aktuaria',
-                'image_url' => 'https://drive.google.com/file/d/1jWElDca7fgLqtlxvc1_mIBHZ3MsRM1UK/view?usp=sharing',
-
+                'image_url' => 'staff/nurul-maqfirah.webp',
                 'education_history' => [
                     'S1 Pendidikan Matematika, Universitas Negeri Makassar',
                     'S2 Matematika Terapan, Institut Pertanian Bogor'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1001,28 +775,20 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Lektor',
                 'functional_position' => 'Dosen Program Studi Ilmu Aktuaria',
-                'image_url' => 'https://drive.google.com/file/d/16E5DpXx88v2yiz3BHuud5UElPyQAaX4l/view?usp=sharing',
-
+                'image_url' => 'staff/primadina-hasanah.webp',
                 'education_history' => [
                     'S1 Matematika, Universitas Diponegoro (Undip)',
                     'S2 Matematika, Universitas Gadjah Mada (UGM)'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2020-Sekarang: Dosen Ilmu Aktuaria, ITK',
                     '2016-2020: Dosen Matematika, ITK'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1032,22 +798,14 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Ilmu Aktuaria',
-                'image_url' => 'https://drive.google.com/file/d/1M7eYc_xX-kRSePVCKG2_ejbC9gqBpBsQ/view?usp=sharing',
-
+                'image_url' => 'staff/putri-amalia.webp',
                 'education_history' => null,
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1057,33 +815,25 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Ilmu Aktuaria',
-                'image_url' => 'https://drive.google.com/file/d/1tc87BL8IuDIean7KSv8om60PNDNVevb8/view?usp=sharing',
-
+                'image_url' => 'staff/wahyu-dwi.webp',
                 'education_history' => [
                     'S1 Matematika, Universitas Pakuan (UNPAK)',
                     'S2 Matematika, Universitas Indonesia (UI)'
                 ],
-
                 'expertise' => [
                     'Analisis Data',
                     'Statistika'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Perbedaan Rata-Rata Konsumsi Protein Pangan Hewani Indonesia di Wilayah Perkotaan dan Perdesaan dengan Metode Hotteling T2-Test (2022)',
                     'Formulasi Cemilan Sehat Berbasis Sediaan Bahan Alam dan Penerapan Uji Hedonik Dengan Metode Statistika Nonparametrik (2025)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2017-2025: Dosen Matematika dan Statistika, STTIF Bogor'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1093,33 +843,25 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Kepala Laboratorium Komputasi dan Data',
                 'functional_position' => 'Dosen Program Studi Matematika',
-                'image_url' => 'https://drive.google.com/file/d/1qspr-9wPXfVSMebiQ20eWUamvfHHYMp9/view?usp=sharing',
-
+                'image_url' => 'staff/januar-ismail.webp',
                 'education_history' => [
                     'S1 Matematika Universitas Padjadjaran',
                     'S2 Matematika Insitut Teknologi Bandung',
                     'S3 Matematika Institut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Matematika Analisis'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Analisis Dinamik model matematika pada Hutan Mangrove di Kota Balikpapan',
                     'Teorema Integral Cauchy Numerik',
                     'Analisis Permasalahan Infrastruktur Kota Balikpapan Menggunakan Metode Importance Performance Analysis (IPA) Dalam Menentukan Strategi Pemecahan Masalah',
                     'Pengembangan Ruang Norm-n Berdimensi berhingga'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1129,20 +871,16 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Koordinator Program Studi Matematika',
                 'functional_position' => 'Dosen Program Studi Matematika',
-                'image_url' => 'https://drive.google.com/file/d/1pSHS9WdMCblGbuSRO4ud7LVC85ppbNkH/view?usp=sharing',
-
+                'image_url' => 'staff/kartika-nugraheni.webp',
                 'education_history' => [
                     'S1 Matematika Universitas Brawijaya',
                     'S2 Matematika Universitas Brawijaya'
                 ],
-
                 'expertise' => [
                     'Dynamical Systems',
                     'Biomathics'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Dynamics of a Fractional Order Eco-Epidemiological Model (2017)',
                     'Stability Analysis of Mangrove Forest Resource Depletion Models due to the Opening of Fish Pond Land (2017-2018)',
@@ -1151,13 +889,9 @@ class StaffSeeder extends Seeder
                     'Model Kendali Optimal Pengaruh Pertumbuhan Pengangguran terhadap Perubahan Angka Kriminalitas untuk Menunjang Smart Governance (2020)',
                     'Optimalisasi Penjadwalan Sistem Produksi Industri Pangan Olahan Menggunakan Aljabar Max Plus (2021)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1167,27 +901,19 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Matematika',
-                'image_url' => 'https://drive.google.com/file/d/1wvBs08A7ONdT3GCJXCBZRgtzhpujI926/view?usp=sharing',
-
+                'image_url' => 'staff/adam.webp',
                 'education_history' => [
                     'S1 Matematika, Institut Teknologi Bandung',
                     'S2 Matematika, Institut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Analisis & Geometri'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1197,27 +923,19 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Matematika',
-                'image_url' => 'https://drive.google.com/file/d/1Fubo-YjHsznFoY0DMxwpRD1ZlH26o_Qh/view?usp=sharing',
-
+                'image_url' => 'staff/aditya-putra.webp',
                 'education_history' => [
                     'S1 Matematika, Institut Teknologi Sepuluh November',
                     'S2 Matematika, Institut Teknologi Sepuluh November'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Penerapan Kendali Optimal Pada Proses Penyebaran Penyakit Kolera Melalui Control Treatment, Edukasi, dan Klorinasi (2019)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1227,26 +945,18 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Matematika',
-                'image_url' => 'https://drive.google.com/file/d/1G7lN8aOjmZZXVNi3qcrZizJdzGSdKUbw/view?usp=sharing',
-
+                'image_url' => 'staff/retno-wahyu.webp',
                 'education_history' => [
                     'S1 Matematika, Universitas Brawijaya',
                     'S2 Matematika, Institut Teknologi Sepuluh November',
                     'S3 Matematika, Institut Teknologi Bandung'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1256,31 +966,23 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Matematika',
-                'image_url' => 'https://drive.google.com/file/d/1MsMicNa5pk6HYEnG-PZ_fa3s6jO4lKZe/view?usp=sharing',
-
+                'image_url' => 'staff/indira-anggriani.webp',
                 'education_history' => [
                     'S1 Matematika, Institut Teknologi Sepuluh Nopember',
                     'S2 Matematika, Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Pemodelan Matematika'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Simulasi Pergerakan Tumpahan Minyak di Laut dengan Pengaruh Angin (2019)',
                     'Pengembangan Integrasi Offshore Mariculture dan Wind Turbin di Selat Makassar: Desain dan Stabilitas Struktur (2019)',
                     'Model Kendali Optimal Terhadap Potensi Sumber Daya Hutan Melalui Reduksi CO2 dalam Mempersiapkan Ibukota Negara (2020)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1290,32 +992,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Matematika',
-                'image_url' => 'https://drive.google.com/file/d/1wm956Gquc7UtsvuOe9RTm5utFonF2BUo/view?usp=sharing',
-
+                'image_url' => 'staff/muliady-faisal.webp',
                 'education_history' => [
                     'S1 Fisika, Universitas Hasanuddin',
                     'S2 Sains Komputasi, Insitut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Computational Science & Engineering',
                     'Cyber Security Profesional',
                     'Quantum Computing'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Penentuan Orde Model SARIMA Terbaik untuk Peramalan Energi Listrik Jangka Pendek di Wilayah Balikpapan (2019)',
                     'Model Dispersi Pencemaran Udara Cerobong Dalam Menentukan Titik – Titik Pemantauan Kualitas Udara Ambien Kota Balikpapan Untuk Mendukung Pemantauan Kualitas Udara Dalam Smart Environment (2021)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1325,27 +1019,19 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Matematika',
-                'image_url' => 'https://drive.google.com/file/d/1aep1-SB29RgY64WBiUUqmQdpmGh--4bp/view?usp=sharing',
-
+                'image_url' => 'staff/nur-qadri.webp',
                 'education_history' => [
                     'S1 Matematika, Universitas Negeri Makassar',
                     'S2 Matematika, Universitas Negeri Makassar'
                 ],
-
                 'expertise' => [
                     'Pemodelan Matematika'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1355,17 +1041,13 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Matematika',
-                'image_url' => 'https://drive.google.com/file/d/1kVmhHSpVxF9JRnfnVdDyTbxWp2OaQHJe/view?usp=sharing',
-
+                'image_url' => 'staff/winarni.webp',
                 'education_history' => [
                     'S1 Matematika, Institut Teknologi Sepuluh Nopember',
                     'S2 Matematika, Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Desain Jaringan Busway Trans Balikpapan dan Penjadwalannya sebagai Upaya Antisipasi Kemacetan di Balikpapan',
                     'Penerapan Metode Predictive Control Pada Optimasi Portofolio untuk Menentukan Strategi dalam Manajemen Investasi Saham',
@@ -1374,13 +1056,9 @@ class StaffSeeder extends Seeder
                     'Rerouting Trayek Angkutan Kota Balikpapan Terintegrasi Dengan Jaringan Busway Trans Balikpapan Untuk Optimalisasi Layanan Transportasi Umum Di Balikpapan (2019)',
                     'Optimalisasi Penjadwalan Sistem Produksi Industri Pangan Olahan Menggunakan Aljabar Max Plus (2021)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1390,27 +1068,19 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Matematika',
-                'image_url' => 'https://drive.google.com/file/d/1SdDFrSTTsByc5A81n5O00RTmFVOtjo31/view?usp=sharing',
-
+                'image_url' => 'staff/yanuar-bhakti.webp',
                 'education_history' => [
                     'S1 Matematika, Institut Teknologi Bandung',
                     'S2 Matematika, Institut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Aljabar Terapan'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://scholar.google.com/citations?user=JvKKOlkAAAAJ&hl'
                 ]
@@ -1422,35 +1092,27 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Ketua Jurusan Teknik Elektro, Informatika, dan Bisnis',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/1HVsJB2CqoPhKRwnZa5jUanNHwEo_lwCE/view?usp=sharing',
-
+                'image_url' => 'staff/ihsan-alfani.webp',
                 'education_history' => [
                     'D3 Teknik Informatika Politeknik Negeri Banjarmasin',
                     'D4 Teknik Informatika Politeknik Elektronika Negeri Surabaya',
                     'S2 Teknik Informatika Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'UX Design',
                     'Smart Governance',
                     'Software Development'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Penelitian Dosen Pemula Ristek Dikti Tahun 2020'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2015 - Sekarang : Information Systems Lecturer ITK',
                     '2013 - 2015 : Junior Engineering, Lintasarta'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/ihsanalfani/',
                     'https://scholar.google.com/citations?user=UtyPlF4AAAAJ&hl=en',
@@ -1464,22 +1126,18 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Koordinator Program Studi Sistem Informasi',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/1WK_ifjhbAUIrlJ65zM32OJQaD55WLgXy/view?usp=sharing',
-
+                'image_url' => 'staff/sri-rahayu.webp',
                 'education_history' => [
                     'S1 Ilmu Komputer Institut Pertanian Bogor',
                     'S2 Sains Komputasi - Institut Teknologi Bandung, Computational Science - Kanazawa University'
                 ],
-
                 'expertise' => [
                     'Information System Development',
                     'IS/IT Evaluation',
                     'UI/UX Research',
                     'Machine Learning'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Pemanfaatan Sistem Informasi Kesehatan untuk Peningkatan Prestasi dan Kesejahteraan Siswa Sekolah Dasar di Balikpapan (2016)',
                     'Purwarupa Tempat Sampah Cerdas dengan Sistem Tertanam Berbasis Fuzzy Inference Sistem (2018)',
@@ -1507,9 +1165,7 @@ class StaffSeeder extends Seeder
                     'Analisis Penerimaan NUADU Sebagai Platform E-Learning Menggunakan Pendekatan Technology Acceptance Model (TAM) (2021)',
                     'Pengembangan SIMSIS sebagai Sistem Smart City Ranah Pendidikan untuk Menunjang Proses Pembelajaran (2021)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'January 2016 - Sekarang :  Information System Lecturer - ITK',
                     '2012 : Freelance PHP Programmer at Agency for the Assessment and Aplication of Technology (BPPT)',
@@ -1517,9 +1173,7 @@ class StaffSeeder extends Seeder
                     '2011 : Freelance teaching assistant of natural science for junior high school at Bintang Pelajar, Bogor',
                     'March 2010 - May 2010 : Internship at Center for Agricultural Library and Technology Dissemination, Bogor'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://id.linkedin.com/in/natasiaayu',
                     'https://scholar.google.co.id/citations?user=wCiwTCQAAAAJ&hl=id',
@@ -1533,13 +1187,11 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Kepala Laboratorium Inovasi Digital',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/1w_uVbZJZYkVPZnuoiBsZ8mXFCWqR2Os0/view?usp=sharing',
-
+                'image_url' => 'staff/aidil-saputra.webp',
                 'education_history' => [
                     'S1 Teknik Komputer dan Jaringan - Politeknik Negeri Ujung Pandang',
                     'S2 Teknik Informatika dan Komputer - Politeknik Elektronika Negeri Surabaya'
                 ],
-
                 'expertise' => [
                     'Full Stack Web & Mobile Development (Laravel, Next.js, Nuxt.js, React Native, Tailwind CSS, Node.js)',
                     'Cloud & VPS Infrastructure Management (VPS setup and optimization, Nginx, PM2, SSL configuration, domain management, and monitoring)',
@@ -1548,23 +1200,17 @@ class StaffSeeder extends Seeder
                     'Software Development & API Integration (JavaScript, PHP, Python, RESTful API, WebSocket, JSON)',
                     'System Architecture & Cloud Integration for Web and IoT Applications'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'IMPLEMENTASI SIAKAD BERBASIS WEBSITE DAN ANDROID MENGGUNAKAN FRAMEWORK CODEIGNITER DAN RESTFUL API UNTUK MENDUKUNG EKOSISTEM',
                     'PENDIDIKAN DI SEKOLAH ISLAM BALIKPAPAN'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2020 - Sekarang : Information Systems Lecturer, Institut Teknologi Kalimantan',
                     '2016 - Sekarang : Full Stack Developer'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/aidil-saputra-kirsan-0808911bb',
                     'https://scholar.google.com/citations?user=lzQbWuEAAAAJ&hl=id',
@@ -1578,13 +1224,11 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/1V6BhXU7nT0dFs5HkBnKI8a85CyEFdJmE/view?usp=sharing',
-
+                'image_url' => 'staff/arif-wicaksono.webp',
                 'education_history' => [
                     'S1 Sistem Informasi - STMIK Duta Bangsa',
                     'S2 Sistem Informasi - Universitas Diponegoro'
                 ],
-
                 'expertise' => [
                     'Front-End Development',
                     'Back-End Development',
@@ -1593,22 +1237,16 @@ class StaffSeeder extends Seeder
                     'Geographic Information System (GIS)',
                     'Data Mining'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2022 - Sekarang : Information Systems Lecturer, Institut Teknologi Kalimantan',
                     '2018 - 2021 : Information Systems Lecturer, Universitas Duta Bangsa Surakarta',
                     '2014 - 2015 : Developer - PT Kusuma Mulia Textile',
                     '2013 - 2014 : Developer - CV Saintek Software House'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://scholar.google.com/citations?user=fI1Db5oAAAAJ',
                     'https://www.scopus.com/authid/detail.uri?authorId=57210463395'
@@ -1621,10 +1259,8 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/1Lj5ATtxkNla1CzqnhvUX5IXp4czdUK72/view?usp=sharing',
-
+                'image_url' => 'staff/dwi-arief.webp',
                 'education_history' => null,
-
                 'expertise' => [
                     'Artificial Intelligence and Expert Systems',
                     'Information System Security and Evaluation',
@@ -1633,19 +1269,13 @@ class StaffSeeder extends Seeder
                     'Data Mining and Business Intelligence',
                     'Software Development and Agile Methodologies'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2018 - Sekarang : Information Systems Lecturer - ITK'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1655,32 +1285,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/1x17c64aGmr3b796tUqfe6sps2cupfAOp/view?usp=sharing',
-
+                'image_url' => 'staff/dwi-nur.webp',
                 'education_history' => [
                     'S1 Sistem Informasi - Institut Teknologi Kalimantan',
                     'S2 Sistem Informasi - Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Business Process Management',
                     'Information Systems Audit',
                     'IT Enterprise Architecture'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2020 - Sekarang: Information Systems Lecturer - ITK',
                     '2019 - 2020: Analis Sistem Pemerintahan Berbasis Elektronik Kota Madiun - PT Tati Surabaya'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1690,13 +1312,11 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/1CCYy7KFAzRugD2FX1TBBUUE89RVBhOOC/view?usp=sharing',
-
+                'image_url' => 'staff/hendy-indrawan.webp',
                 'education_history' => [
                     'S1 Teknik Informatika - Universitas Islam Indonesia',
                     'S2 Teknologi Informasi - Universitas Gadjah Mada'
                 ],
-
                 'expertise' => [
                     'Internet of Things (IoT) and Smart Home Systems',
                     'Information Systems Design and Development',
@@ -1705,19 +1325,13 @@ class StaffSeeder extends Seeder
                     'Network and Infrastructure Management',
                     'Systems Analysis and Evaluation'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2020 - Sekarang: Information Systems Lecturer - ITK'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1727,31 +1341,23 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/1zkkCUj-DuBRMqrvNPC_sJHQcmZhdPvDC/view?usp=sharing',
-
+                'image_url' => 'staff/henokh-lugo.webp',
                 'education_history' => [
                     'S1 Fisika - Universitas Gadjah Mada',
                     'S1 Computational Science - Kanazawa University'
                 ],
-
                 'expertise' => [
                     'Computational Mathematics',
                     'Numerical Analysis'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2020 - Sekarang: Information Systems Lecturer, Institut Teknologi Kalimantan',
                     '2021 - 2022: Researcher - LabMath Indonesia - Bandung'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/henokhlugo/',
                     'https://scholar.google.com/citations?user=0-iFtfUAAAAJ',
@@ -1765,10 +1371,8 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/1qIe7dxM4CrSIN3Rd8XeGyL4a-silDijW/view?usp=sharing',
-
+                'image_url' => 'staff/putu-deny.webp',
                 'education_history' => null,
-
                 'expertise' => [
                     'IT Service Management',
                     'E-Government',
@@ -1780,18 +1384,14 @@ class StaffSeeder extends Seeder
                     'Digital Infrastructure/ICT in MEPIT (MEP) System',
                     'Technology Acceptance and Evaluation'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Penyusunan Dokumen Proses Bisnis Tata Kelola dan Manajemen IT (termasuk ITSM) PT. Pos Indonesia (Head Office, Bandung) - Kolaborasi dengan PT. Sentra Data Persada (2022)',
                     'Ketua Penelitian/Proyek Rekayasa Keselamatan dalam Penyusunan Dokumen Justifikasi Teknis untuk Pengembangan Data Center di Bank Pembangunan Daerah Provinsi XYZ (2024)',
                     'Ketua Penelitian/Proyek Penyusunan Justifikasi Teknis dan Disaster Recovery Plan untuk Pengembangan Data Center UPA TIK ITK (2025)',
                     'Anggota/Tenaga Ahli (System Analyst) pada Proyek Pengembangan Sistem ABC Kementerian XYZ Republik Indonesia (2024)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Incident Management Team (IT Service Monitoring Unit, IT Service Delivery) - PT. XL Axiata, Tbk',
                     'ME Inspector - PT. Jaya CM',
@@ -1802,9 +1402,7 @@ class StaffSeeder extends Seeder
                     '2024:Tenaga Ahli (System Analyst) di PT. PBA (suatu perusahaan konsultan) dalam suatu Proyek Kementerian XYZ Republik Indonesia',
                     '2023-2024: Asesor Eksternal Sistem Pemerintahan Berbasis Elektronik (SPBE) Kementerian PAN-RB RI, Periode Evaluasi Nasional SPBE'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1814,31 +1412,25 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/1LguLELwe2EIhpdoDU3hBIP0I2swOOYU4/view?usp=sharing',
-
+                'image_url' => 'staff/lovinta-happy.webp',
                 'education_history' => [
                     'S1 Teknik Informatika - Institut Teknologi Bandung',
                     'S2 Teknik Informatika - Institut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Information System Audit',
                     'Knowledge Management',
                     'Enterprise Resource Planning',
                     'Business Process Management'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Knowledge Management System for BPLHD West Java, Teknik Informatika ITB (2009 - 2010)',
                     'Collaborative Multimedia System for Biodiversity Knowledge, Informatika ITB (2009 - 2010)',
                     'Implementation of Integrated Health Record System in Community Health Centers,Teknik Informatika ITB  (2009 - 2010)',
                     'Mobile Learning System, Institut Teknologi Kalimantan (2015)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2015 – Sekarang: Information System Lecturer, Institut Teknologi Kalimantan (ITK), Indonesia',
                     '2015 – 2015: Internal Audit Supervisor, PT Astra Graphia Tbk.',
@@ -1854,9 +1446,7 @@ class StaffSeeder extends Seeder
                     '2007 – 2010: Course Assistant, Teknik Informatika ITB, Bandung',
                     '2007 – 2010: Information System Laboratory Assistant, Teknik Informatika ITB, Bandung'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/lovinta/?originalSubdomain=id',
                     'https://scholar.google.co.id/citations?hl=en&user=hoRXNb0AAAAJ',
@@ -1870,13 +1460,11 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/1pYLi99pyDHFpLSyD20hc8Fh3VhLd5BzM/view?usp=sharing',
-
+                'image_url' => 'staff/gilvy-langgawan.webp',
                 'education_history' => [
                     'S1 Teknik Informatika - Universitas Brawijaya',
                     'S2 Manajemen Teknologi Informasi - Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Human Computer Interaction',
                     'E-Learning',
@@ -1884,19 +1472,13 @@ class StaffSeeder extends Seeder
                     'Gamification',
                     'Digital Transformation'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2018 - Sekarang: Information Systems Lecturer - ITK'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/muhammad-gilvy-langgawan-putra-65042a12b/',
                     'https://scholar.google.co.id/citations?user=6khCqswAAAAJ&hl=id',
@@ -1910,33 +1492,25 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/1arhxFKrgYfC33AjpKCLG7CNwO5hxeii3/view?usp=sharing',
-
+                'image_url' => 'staff/nursanti-novi.webp',
                 'education_history' => [
                     'S1 Pendidikan Informatika - Universitas Negeri Malang',
                     'S2 Teknik Informatika - Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'UI/UX Research',
                     'Information Systems Development',
                     'Machine Learning',
                     'Data Driven Decision Making'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2021 – Sekarang: Information Systems Lecturer, Institut Teknologi Kalimantan',
                     '2017 – 2018: Information Systems Lecturer, Universitas Gajayana'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -1946,35 +1520,27 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/18TojExlfmsRFG5AoeS-f3rpS2JHBzcwz/view?usp=sharing',
-
+                'image_url' => 'staff/rosa-eliviani.webp',
                 'education_history' => [
                     'S1 Sistem Informasi - Institut Teknologi Kalimantan',
                     'S2 Teknik Elektro - Institut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Internet of Things (IoT)',
                     'Wireless Sensor Network (WSN)',
                     'Software Development',
                     'Machine Learning'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2025 – Sekarang: Information Systems Lecturer, Institut Teknologi Kalimantan',
                     '2023 – 2025: Informatics Management Lecturer, Astra Polytechnic',
                     '2023: System Analyst, Artristik Bandung',
                     '2022: Standard Operating Procedure (SOP) Designer Intern, Institut Teknologi Bandung'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/rosaeliviani/',
                     'https://scholar.google.com/citations?user=Mf5WlWgAAAAJ',
@@ -1988,31 +1554,23 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/1-2wf8q8Rzjyy-FW89n24vm0ONrY1OZvo/view?usp=sharing',
-
+                'image_url' => 'staff/vika-fitratunnany.webp',
                 'education_history' => [
                     'S1 Teknik Informatika - Institut Teknologi Sepuluh Nopember',
                     'S2 Teknik Informatika - Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Software Engineering',
                     'Software Development',
                     'Game Development'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2020 - Sekarang: Information Systems Lecturer - ITK'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/vika-fitratunnany-insanittaqwa-47719b283/',
                     'https://scholar.google.com/citations?user=KSbR3ScAAAAJ&hl=id',
@@ -2026,33 +1584,25 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Sistem Informasi',
-                'image_url' => 'https://drive.google.com/file/d/1BTWFBqOL-mnY7b8sE0A_uq_K5xzEB9iN/view?usp=sharing',
-
+                'image_url' => 'staff/yuyun-tri.webp',
                 'education_history' => [
                     'S1 Teknik Informatika - Institut Teknologi Sepuluh Nopember',
                     'S2 Manajemen Teknologi Informasi - Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Software Developments',
                     'IS Strategic Planning',
                     'IT Enterprise Architecture',
                     'IT Project Management'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2015 – Sekarang: Information Systems Lecturer, Institut Teknologi Kalimantan',
                     '2014 – 2015: Department of Technology Lecturer, Universitas Muhammadiyah Gresik'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/yuyun-tri-wiranti-5ab11a11b/',
                     'https://scholar.google.co.id/citations?user=-_VrWf0AAAAJ&hl=id',
@@ -2066,26 +1616,20 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Wakil Dekan Bidang Akademik dan Kemahasiswaan Fakultas Sains dan Teknologi Informasi ITK',
                 'functional_position' => 'Dosen Program Studi Statistika',
-                'image_url' => 'https://drive.google.com/file/d/1kelyEom6HFkby_YelWvBSLyQ99pyjlsv/view?usp=sharing',
-
+                'image_url' => 'staff/irma-fitria.webp',
                 'education_history' => [
                     'S1 Sarjana Sains di Departemen Matematika Institut Teknologi Sepuluh Nopember (ITS)',
                     'S2 Magister Sains di Departemen Matematika Institut Teknologi Sepuluh Nopember (ITS)'
                 ],
-
                 'expertise' => [
                     'Pemodelan Matematika',
                     'Kontrol Optimal',
                     'Optimasi',
                     'Sistem Dinamik'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2025 - Sekarang : Wakil Dekan Bidang Akademik dan Kemahasiswaan Fakultas Sains dan Teknologi Informasi - ITK',
                     '2023 - 2025: Departemen Matematika dan Teknologi Informasi, ITK sebagai Ketua Departemen',
@@ -2097,7 +1641,6 @@ class StaffSeeder extends Seeder
                     '2014 – 2016: Guru Privat untuk Matematika dan Sains, Surabaya, Indonesia',
                     '2011 - September 2015: Asisten Dosen untuk Mata Kuliah Kalkulus di Institut Teknologi Sepuluh Nopember (ITS) Surabaya, Indonesia'
                 ],
-
                 'awards' => [
                     'Reviewer for National and International Journal (2016-present)',
                     'Certified by BNSP as Substantive Editing (2023-2026)',
@@ -2116,7 +1659,6 @@ class StaffSeeder extends Seeder
                     'Mathematics Department Outstanding Student in 2010-2014, ITS, Surabaya, Indonesia',
                     'The Best GPA in Bachelor Program since 2010-2014 and Master Program since 2014-2016 in ITS, Surabaya, Indonesia'
                 ],
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/irma-fitria-187a61133/',
                     'https://scholar.google.co.id/citations?user=esCFdocAAAAJ&hl=en',
@@ -2130,28 +1672,20 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Koordinator Program Studi Statistika',
                 'functional_position' => 'Dosen Program Studi Statistika',
-                'image_url' => 'https://drive.google.com/file/d/1pkyYStCR2bFcWu_xR_uaMosnGYhKUDaU/view?usp=sharing',
-
+                'image_url' => 'staff/diana-nurlaily.webp',
                 'education_history' => [
                     'S1 Statistika ITS',
                     'S2 Statistika ITS'
                 ],
-
                 'expertise' => [
                     'Data Mining',
                     'Klasifikasi'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -2161,29 +1695,21 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Statistika',
-                'image_url' => 'https://drive.google.com/file/d/1GSW4OOtXqLbWFAjKRINq0T95_TWPXxMZ/view?usp=sharing',
-
+                'image_url' => 'staff/farida-nur-hayati.webp',
                 'education_history' => [
                     'S1 Statistika ITS',
                     'S2 Statistika ITS'
                 ],
-
                 'expertise' => [
                     'Analisis Regresi',
                     'Time Series',
                     'Analisis Data'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -2193,25 +1719,17 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Statistika',
-                'image_url' => 'https://drive.google.com/file/d/14pX8kpzAZQjOtCPeSxRnnzV8AhvXcDW1/view?usp=sharing',
-
+                'image_url' => 'staff/farida-nur-hidayah.webp',
                 'education_history' => [
                     'S1 : Sarjana Studi Hukum Internasional Universitas Diponegoro',
                     'S2: Magister Studi Hukum Internasional Universitas Diponegoro'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -2221,25 +1739,17 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Statistika',
-                'image_url' => 'https://drive.google.com/file/d/1LMERS1igb9q2XLYoC7uipwJkEWIvWIRe/view?usp=sharing',
-
+                'image_url' => 'staff/kevin-agung.webp',
                 'education_history' => [
                     'S1 : Statistika, Institut Teknologi Sepuluh Nopember',
                     'S2 : Statistika, Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/kevin-agung-fernanda-rifki-800911170/',
                     'https://scholar.google.com/citations?user=lh8ohZQAAAAJ&hl=id&authuser=2',
@@ -2253,25 +1763,17 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Statistika',
-                'image_url' => 'https://drive.google.com/file/d/1hjMfu1tNL2KoyRIr8-kb4xlPU98YaVVM/view?usp=sharing',
-
+                'image_url' => 'staff/magdalena-effendi.webp',
                 'education_history' => [
                     'S1 : Statistika Institut Teknologi Sepuluh Nopember',
                     'S2 : Statistika Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -2281,30 +1783,22 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Statistika',
-                'image_url' => 'https://drive.google.com/file/d/1KKPucFkdpbZaQ8SfUcu1bxgQqx9KJpqK/view?usp=sharing',
-
+                'image_url' => 'staff/mega-silfiani.webp',
                 'education_history' => [
                     'S1 Statistika ITS',
                     'S2 Statistika ITS',
                     'S3 (Ongoing) Department of Econometrics, University of Gdansk'
                 ],
-
                 'expertise' => [
                     'Time Series',
                     'Ekonometrika',
                     'Optimasi'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -2314,35 +1808,27 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Statistika',
-                'image_url' => 'https://drive.google.com/file/d/1ST3Eosg5jZnAfAMziduQAYBb8vfIuGMV/view?usp=sharing',
-
+                'image_url' => 'staff/riki-herliansyah.webp',
                 'education_history' => [
                     'S1 Statistika UNMUL',
                     'S2 Statistika University of New South Wales (UNSW)',
                     'S3 The University of Edinburgh, UK'
                 ],
-
                 'expertise' => [
                     'Statistika Komputasi',
                     'Statistika Ekologi'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'DIPA ITK, Mobile Learning System for Higher Education (2015)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2015 – Sekarang: Lecturer, Department of Mathematics and Information Technology, Institut Teknologi Kalimantan, Indonesia',
                     '2010: Data Entry, Jawa Post Institute Pro Otonom, Samarinda, Indonesia',
                     '2009: IT Support, PT Trakindo Utama, Samarinda, Indonesia'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -2352,35 +1838,27 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Statistika',
-                'image_url' => 'https://drive.google.com/file/d/13hsjRRN7_dVotih6bqgDaaBMAM23tgSc/view?usp=sharing',
-
+                'image_url' => 'staff/sigit-pancahayani.webp',
                 'education_history' => [
                     'S1 Matematika ITS',
                     'S2 Matematika ITB',
                     'S3 (Ongoing) Matematika ITB'
                 ],
-
                 'expertise' => [
                     'Pemodelan Matematika',
                     'Teori Graf',
                     'Optimasi'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2015 – 2016: Tim Pembina Kemahasiswaan',
                     '2014: Dosen, Sekolah Tinggi Teknologi Nasional, Jambi',
                     '2013 – 2017: Koordinator Program Studi Matematika',
                     '2013 – 2014: Dosen Matematika, Universitas Jambi'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/sigit-pancahayani-4b699438/?originalSubdomain=id',
                     'https://scholar.google.com/citations?hl=en&user=fNTc4YoAAAAJ',
@@ -2394,31 +1872,23 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Statistika',
-                'image_url' => 'https://drive.google.com/file/d/1ZrbmIRSJ2nr9pYCCgGDsVH5g_uZS0w7J/view?usp=sharing',
-
+                'image_url' => 'staff/surya-puspita.webp',
                 'education_history' => [
                     'S1 Matematika Universitas Andalas',
                     'S2 Matematika Universitas Andalas'
                 ],
-
                 'expertise' => [
                     'Pengendalian Kualitas Statistik'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Asisten Laboratorium Statistika dan Komputasi Universitas Andalas',
                     'Desain Grafis dan Digital Marketing PT. Azhar Mitra Utama',
                     'IT Program dan Tentor Yayasan Pemimpin Patoka Indonesia'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -2428,32 +1898,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Statistika',
-                'image_url' => 'https://drive.google.com/file/d/1CA0siVzbY60TuOsycAG-qHWKB__DxF0f/view?usp=sharing',
-
+                'image_url' => 'staff/syalam-ali.webp',
                 'education_history' => [
                     'S1 Matematika UIN SUSKA',
                     'S2 Matematika Universitas Riau'
                 ],
-
                 'expertise' => [
                     'Time Series',
                     'Forecasting',
                     'Applied Multivariate'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2021 – 2022: Wakil Gubernur IndoMS Wilayah Kalimantan',
                     '2020: Ketua Dies Natalis ITK'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -2463,25 +1925,17 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Statistika',
-                'image_url' => 'https://drive.google.com/file/d/1mBeUwC_e_H7SrQcLWDMO_mSsNFO3IhSr/view?usp=sharing',
-
+                'image_url' => 'staff/yumna-aqila.webp',
                 'education_history' => [
                     'S1 : Sarjana Statistika Universitas Indonesia',
                     'S2 : Magister Statistika Universitas Brawijaya'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -2491,31 +1945,23 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Koordinator Bidang Kemahasiswaan',
                 'functional_position' => 'Dosen Program Studi Teknik Elektro',
-                'image_url' => 'https://drive.google.com/file/d/12_1jrWAUP4yy175S9DCSAxQgym2o8EgX/view?usp=sharing',
-
+                'image_url' => 'staff/amalia-rizqi.webp',
                 'education_history' => [
                     'S1-TelkomUniversity',
                     'S2-Institut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Computer System',
                     'Machine Learning',
                     'Algorithm'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2020 - Sekarang : Lecturer in Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/amalia-rizqi-utami/',
                     'https://scholar.google.com/citations?hl=en&user=Ix9lU8kAAAAJ&view_op=list_works&sortby=pubdate',
@@ -2529,32 +1975,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Koordinator Program Studi Teknik Elektro',
                 'functional_position' => 'Dosen Program Studi Teknik Elektro',
-                'image_url' => 'https://drive.google.com/file/d/1gioy9TOOyCTmqDF4ppFbID5ywZPpyN_c/view?usp=sharing',
-
+                'image_url' => 'staff/ridho-dewanto.webp',
                 'education_history' => [
                     'S1 Teknik Elektro Institut Teknologi Bandung',
                     'S2 Teknik Elektro Institut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Computer System',
                     'Machine Learning'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2022 - Sekarang : Lecturer in Institut Teknologi Kalimantan',
                     '2019-2022 : Senior Electrical Engineer PT. Basara Hydro Power',
                     '2016-2019 : Junior Electrical Engineer PT. Basara Hydro Power'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/muhammad-ridho-dewanto-1b9b7531/',
                     'https://scholar.google.com/citations?user=5bhZNUgAAAAJ&hl=id&authuser=1'
@@ -2567,31 +2005,25 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Dekan Fakultas Sains dan Teknologi Informasi ITK',
                 'functional_position' => 'Dosen Program Studi Teknik Elektro',
-                'image_url' => 'https://drive.google.com/file/d/1Atkd4WgMaqaiWBZLDqtWE6RT2uaji68n/view?usp=sharing',
-
+                'image_url' => 'staff/adi-mahmud.webp',
                 'education_history' => [
                     'S1 Teknik Elektro (Pengolahan Sinyal dan Elektronika) Universitas Gadjah Mada (UGM)',
                     'S2 Computer Engineering (Antennas and Propagation) King Mongkut’s Institute of Technology Ladkrabang (KMITL), Thailand',
                     'S3 Electrical and Electronic Engineering Newcastle University, United Kingdom'
                 ],
-
                 'expertise' => [
                     'Radio Frequency Identification (RFID)',
                     'Antennas and Propagation',
                     'Intelligent Sensing'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'INNOWAG: INNOvative monitoring and predictive maintenance solutions on lightweight WAGon 2016-2019 NewRail, Shift2Rail Joint Undertaking',
                     'Sistem Sensor Berbasis Radio Frequency Identification (RFID) untuk Pelacakan dan Monitoring Kualitas Produk Pangan Secara Non-invasif 2021. LPPM ITK',
                     'Project ARSS (Active Radial Suspension System) for rail vehicle 2019-2020 NewRail, LIEBHERR, RSSB (Rail Safety and Standards Board), UK',
                     'IoT-enabled fire detector 2020 KabelFree Ltd, ERDF (European Regional Development Fund)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2025 - Sekarang : Dekan Fakultas Sains dan Teknologi Informasi - ITK',
                     '2021 - 2025 : Kepala Unit Laboratorium Terpadu - ITK',
@@ -2599,7 +2031,6 @@ class StaffSeeder extends Seeder
                     '2015 - Sekarang : Lecturer in Institut Teknologi Kalimantan',
                     '2013 - 2015 : Research Assistant in Radio Frequency Electronics, Wireless Innovations and Security at National National Electronics and Computer Technology Center, Thailand'
                 ],
-
                 'awards' => [
                     'ISOC Best Poster Award - International SoC Design Conference 2024',
                     'Best paper Award on 4th Borneo International Conference (BICAME) 2022-Institut Teknologi Kalimantan',
@@ -2609,7 +2040,6 @@ class StaffSeeder extends Seeder
                     'First Place for Best Poster in the Communication, Sensors, Signal, and Information Processing Group-Newcastle University',
                     '2nd Position Award International Sensor and Measurements Student Contest-IEEE Instrumentation and Measurement Society'
                 ],
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/adi-mahmud-jaya-marindra/',
                     'https://scholar.google.com/citations?user=CiO0e0sAAAAJ&hl=id',
@@ -2623,36 +2053,28 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Wakil Dekan Bidang Keuangan dan Umum Fakultas Sains dan Teknologi Informasi ITK',
                 'functional_position' => 'Dosen Program Studi Teknik Elektro',
-                'image_url' => 'https://drive.google.com/file/d/1pHRiycTBPMuKy5dPMX0e9rtNk-EhwoC4/view?usp=sharing',
-
+                'image_url' => 'staff/yun-tonce.webp',
                 'education_history' => [
                     'S1 Sarjana Sains di Departemen Matematika Institut Teknologi Sepuluh Nopember (ITS)',
                     'S2 Magister Sains di Departemen Matematika Institut Teknologi Sepuluh Nopember (ITS)'
                 ],
-
                 'expertise' => [
                     'Simulasi Sistem Tenaga'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'IbM Charging Station Telepon Genggam Bertenaga Surya untuk Penumpang Kapal Klotok Penyeberangan Balikpapan-Penajam (2016-2017)',
                     'Rancang Bangun Gasifier Sebagai Pendukung Pembangkit Listrik Tenaga Sampah (2016-2017)',
                     'Smart Meter untuk Monitoring Sistem Tiga Fasa Menggunakan Komunikasi IEEE 802.15.4 (2017-2018)',
                     'Instalasi kelistrikan cerdas menggunakan mikrokontroller berbasis Internet of Things (IoT) pada rumah sakit (2017-2018)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2025 - Sekarang: Wakil Dekan Bidang Keuangan dan Umum Fakultas Sains dan Teknologi Informasi - ITK',
                     '2016 - 2018: Koordinator Program Studi Teknik Elektro - ITK',
                     '2015 - Sekarang : Lecturer in Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://id.linkedin.com/in/yun-tonce-1a92884b',
                     'https://scholar.google.co.id/citations?user=JSkj07UAAAAJ&hl=id',
@@ -2666,19 +2088,15 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Elektro',
-                'image_url' => 'https://drive.google.com/file/d/1wvvmCge212Wppm8FaeDnYRd1X1C-WOO2/view?usp=sharing',
-
+                'image_url' => 'staff/andhika-giyantara.webp',
                 'education_history' => [
                     'S1 Teknik Elektro – Sistem Pengaturan Institut Teknologi Sepuluh Nopember, Surabaya',
                     'S2 Teknik Elektro – Sistem Pengaturan Institut Teknologi Sepuluh Nopember, Surabaya'
                 ],
-
                 'expertise' => [
                     'Control System'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Rancang Bangun Single Conveyor (2016)',
                     'Analisis Perbandingan Kecepatan dan Torsi pada Pengaturan Kecepatan Motor Induksi (2017)',
@@ -2690,16 +2108,12 @@ class StaffSeeder extends Seeder
                     'Cooling Water Pump Control Systems, PT. PJB UBJOM PLTU Kaltim Teluk, Balikpapan & PT. Ruang Cipta Teknologi (2020)',
                     'Tank Level and Temperature Control Systems, PT. Kutai Refinery Nusantara (Apical Group), Balikpapan & PT. Ruang Cipta Teknologi (2020)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2016 – Sekarang: Dosen, Institut Teknologi Kalimantan',
                     '2009 – 2013: Electrical Engineer, PT Kaltim Prima Coal, Sangatta, Kalimantan Timur'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/andhika-giyantara-464b425b/?originalSubdomain=id',
                     'https://scholar.google.co.id/citations?user=zT-GacEAAAAJ&hl=en',
@@ -2713,19 +2127,15 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Elektro',
-                'image_url' => 'https://drive.google.com/file/d/17vT_LrkG69JNQ3vGZza70TR_FWH0avKz/view?usp=sharing',
-
+                'image_url' => 'staff/barokatun-hasanah.webp',
                 'education_history' => [
                     'S1 Teknik Elektro Universitas Lampung',
                     'S2 Teknik Elektro Institut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Telecommunication'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Simulasi Jaringan WiMax menggunakan Opnet Modeler (2012)',
                     'Pengolahan Sinyal Radar (2015)',
@@ -2734,17 +2144,13 @@ class StaffSeeder extends Seeder
                     'Rancang Bangun Antena Mikrostrip Menggunakan Material Dielektrik Buatan (2019)',
                     'Heart Beat Monitoring (2019)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2017 – Sekarang: Dosen Teknik Elektro, Institut Teknologi Kalimantan',
                     '2016 – 2017: Staf Pengajar, Universitas Komputer Indonesia',
                     '2013 – 2014: Staf Pengajar, Universitas Teknokrat'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/barokatun-hasanah-3829a8185/?originalSubdomain=id',
                     'https://scholar.google.co.id/citations?user=qKxwguwAAAAJ&hl=id',
@@ -2758,32 +2164,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Kepala Pusat TPB dan MKU',
                 'functional_position' => 'Dosen Program Studi Teknik Elektronika',
-                'image_url' => 'https://drive.google.com/file/d/10TAr7F7H0gQ-G9t3Ye7ZMp8tPV2Z0Gye/view?usp=sharing',
-
+                'image_url' => 'staff/firilia-filiana.webp',
                 'education_history' => [
                     'S1 Teknik Elektro Institut Teknologi Sepuluh Nopember',
                     'S2 Teknik Elektro Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Power System'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Implementasi Band Pass Filter Menggunakan Circular Waveguide berbasis Resonator Dielektrik Artifisial untuk Mode Propagasi Transfer Elektrik (2018)',
                     'Analisis Penggunaan Rele Proteksi sebagai Pengaman Peralatan dan Penentuan PPE pada Jaringan Distribusi Akibat Gangguan Hubung Singkat (2019)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2017 – Sekarang: Dosen Teknik Elektro, Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -2793,22 +2191,18 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Kepala Pusat Pengembangan Pendidikan',
                 'functional_position' => 'Dosen Program Studi Teknik Elektro',
-                'image_url' => 'https://drive.google.com/file/d/1lyu_i_IscO5QBhI-NvC90qAJ243Y0cKM/view?usp=sharing',
-
+                'image_url' => 'staff/happy-aprillia.webp',
                 'education_history' => [
                     'S1 Teknik Elektro Industri Institut Teknologi Sepuluh Nopember',
                     'S2 Teknik Sistem Tenaga Institut Teknologi Sepuluh Nopember - Energy Asian Institute of Technology, Thailand',
                     'S3 Electrical Engineering National Cheng Kung University'
                 ],
-
                 'expertise' => [
                     'Load Forecasting',
                     'Power Quality',
                     'Artificial Intelligent'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Sustainable Design of Electrical Installation at Campus of Institut Teknologi Kalimantan, PT. Duta Fuji Electric - PT. Pandu Persada (2020-2021)',
                     'Intelligent Forecast and Analysis Technique for Renewable Energy System Project, Ministry of Science and Technology (MOST), Taiwan, TWD (2019-2020)',
@@ -2816,17 +2210,13 @@ class StaffSeeder extends Seeder
                     'Power Quality Improvement of Transmission and Distribution System and Development and Operation Planning of Substituting Transmission Technology MOST, Taiwan - Delta Electronics (2016-2017)',
                     'Implementation of Wireless Sensor Infrastructure on Water Consumption and Quality in Monitoring System of Residence (2016-2017)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2016 – Sekarang: Adjunct Assistant (Asisten Tambahan), Energy and Power System Laboratory – Electrical Engineering NCKU',
                     '2015 – Sekarang: Dosen Tetap PNS, Institut Teknologi Kalimantan',
                     '2015: Dosen Kontrak, Jurusan Maritim, Politeknik Negeri Samarinda'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/happy-aprillia-505351112/',
                     'https://scholar.google.co.id/citations?user=OyXLb04AAAAJ&hl=en',
@@ -2840,34 +2230,26 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Kepala Inkubator Bisnis Teknologi',
                 'functional_position' => 'Dosen Program Studi Teknik Elektro',
-                'image_url' => 'https://drive.google.com/file/d/1oyaWa0JomREWftRgunfxP_-MqxnG8sNP/view?usp=sharing',
-
+                'image_url' => 'staff/himawan-wicaksono.webp',
                 'education_history' => [
                     'S1 Teknik Elektro - Politeknik Elektronik Negeri Surabaya',
                     'S2 Teknik Elektro - Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Computer System',
                     'Computer Vision'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Pengembangan Instrumen Perekam Penggunaan Kecepatan Dan Kemiringan Jalan Kendaraan Bermotor (2021)',
                     'Evaluasi Objektif Performa OpenBTS Blade RF XA-40 Dengan Metode PESQ (Perceptual Evaluation Of Speech Quality) (2021)',
                     'Pembuatan Kursi Roda Elektrik Untuk Penyandang Disabilitas Di RT.36 Kelurahan Telagasari (2021)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2015 – Sekarang: Lecturer, Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -2877,32 +2259,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Elektro',
-                'image_url' => 'https://drive.google.com/file/d/185UYSIE346TnrxymI_-cIM-QgTayK6zZ/view?usp=sharing',
-
+                'image_url' => 'staff/kharis-sugiarto.webp',
                 'education_history' => [
                     'D4 Teknik Elektronika, Politeknik Negeri Malang',
                     'S2 Teknik Elektro, Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Teknik Elektronika',
                     'Sensor dan Transduser Industri'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Utilization of Used Mineral Water Bottles as Hydroponic Vegetable Planting Media (Hidro-Bokas) in Damai Baru Village, (2020-2021)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2020 - Sekarang: Lecturer in Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -2912,35 +2286,27 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Elektronika',
-                'image_url' => 'https://drive.google.com/file/d/1SRN_ZGS56dkyH8u24Dpwywe3Fp_l4Cmz/view?usp=sharing',
-
+                'image_url' => 'staff/mifta-nur-farid.webp',
                 'education_history' => [
                     'S1 Teknik Fisika Institut Teknologi Sepuluh Nopember',
                     'S2 Teknik Fisika Rekayasa Instrumentasi Industri Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Signal Processing'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Railway Vibration and Noise Control at KRL-KFW (2016-2017)',
                     'Dereverberation Binaural Source Separation Using Deep Learning (2016-2018)',
                     'Spectrum Analysis of Horn (2018)',
                     'Noise Reduction and Speech Separation of Mixture Speech (2018-2019)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2018 – Sekarang: Lecturer, Institut Teknologi Kalimantan',
                     '2018: Audio Signal Processing Engineer, WarungPintar'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -2950,19 +2316,15 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Elektronika',
-                'image_url' => 'https://drive.google.com/file/d/1xRD4BROtSPRIMQMvnh0vdri6vp240iZ0/view?usp=sharing',
-
+                'image_url' => 'staff/vicky-vendy.webp',
                 'education_history' => [
                     'S1 Teknik Elektro Universitas Brawijaya',
                     'S2 Mechanical Engineering National Central University'
                 ],
-
                 'expertise' => [
                     'Teknik Elektronika'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Three Dimensional Diffuse Optical Imaging (2016-2017)',
                     'Continuous Wave Diffuse Optical Tomography for Agricultural ( 2018)',
@@ -2972,15 +2334,11 @@ class StaffSeeder extends Seeder
                     'Self Balancing Robot (2019)',
                     'Heart Beat Monitoring (2019)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2017 – Sekarang: Dosen Teknik Elektro, Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/vicky-mudeng-a6357a80/?originalSubdomain=id',
                     'https://scholar.google.co.id/citations?user=T4ZYOPUAAAAJ&hl=id',
@@ -2994,33 +2352,25 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Elektronika',
-                'image_url' => 'https://drive.google.com/file/d/1l5yoxG4IQyB5AIEzKaSJasaqZ1SYxjMJ/view?usp=sharing',
-
+                'image_url' => 'staff/agung-nursyeha.webp',
                 'education_history' => [
                     'S1 Teknik Elektro Institut Teknologi Sepuluh November',
                     'S2 Teknik Elektro Institut Teknologi Sepuluh November'
                 ],
-
                 'expertise' => [
                     'Neural Network',
                     'Robot'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Swarm Robot for Gas Leak Localization, Institut Teknologi Sepuluh Nopember',
                     'Spiking Neural Network, Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2020 – Sekarang: Lecturer in Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3030,31 +2380,23 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Elektronika',
-                'image_url' => 'https://drive.google.com/file/d/1KwFBk_jTRDdLKuG0nuZf-4wVzh0e58Kd/view?usp=sharing',
-
+                'image_url' => 'staff/risty-jayanti.webp',
                 'education_history' => [
                     'S1 Teknik Elektro Universitas Brawijaya',
                     'S2 Teknik Elektro Universitas Brawijaya'
                 ],
-
                 'expertise' => [
                     'Control System'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Rancang Bangun Sistem Pembangkit Listrik Tenaga Sampah Type Incenerator Dengan Kontroler PID Optimal'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2020 – Sekarang: Lecturer in Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3064,33 +2406,25 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Elektronika',
-                'image_url' => 'https://drive.google.com/file/d/1aSCEvJh1tWyimbAooq5ki02P-rLM8lz4/view?usp=sharing',
-
+                'image_url' => 'staff/riza-hadi.webp',
                 'education_history' => [
                     'S1 Teknik Fisika (Instrumentasi dan Kontrol) Universitas Telkom',
                     'S2 Teknik Fisika (Otomasi Proses Industri) Institut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Control System',
                     'Renewable Energy'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Estimasi State-Of-Charge Pada Baterai Lithium-Ion Menggunakan Metode Perhitungan Coulomb (2022)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2022 – Sekarang: Lecturer, Institut Teknologi Kalimantan',
                     '2017 – 2022: Lecturer, STT Migas Balikpapan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/riza-hadi-saputra-55684b105/',
                     'https://scholar.google.com/citations?user=SV4lVIsAAAAJ&hl=en',
@@ -3104,19 +2438,15 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Elektronika',
-                'image_url' => 'https://drive.google.com/file/d/1SNp132xJwGolWVORvh61EyTJSwmI19pY/view?usp=sharing',
-
+                'image_url' => 'staff/sena-sukmananda.webp',
                 'education_history' => [
                     'S1 Teknik Fisika Institut Teknologi Sepuluh Nopember',
                     'S2 Teknik Elektro Institut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Electronics'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Pengukuran Spesifikasi dari Linqstat (Pressure-Resistive Sensor) (2017)',
                     'Perancangan Eyesight Tracker untuk Optimazing Athlete Training (2018)',
@@ -3124,15 +2454,11 @@ class StaffSeeder extends Seeder
                     'Ekstraksi Terjemahan Murratal Al-Qur\'an menggunakan Fundamental Frequency Estimation (2019)',
                     'Low-cost Digital Payment Vending Machine, PT. Interaktif Internasional (2021-2022)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2017 – Sekarang: Lecturer, Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3142,19 +2468,15 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Elektronika',
-                'image_url' => 'https://drive.google.com/file/d/1BhFvopaiM3T2pZ2C-icWvRjT0YjnDwCS/view?usp=sharing',
-
+                'image_url' => 'staff/thorikul-huda.webp',
                 'education_history' => [
                     'S1 Teknik Elektro Institut Teknologi Sepuluh Nopember',
                     'S2 Teknik Elektro Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Control System'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Unmanned Aerial Vehicle (UAV) (2011)',
                     'Design of Radial Basis Function Network and State-Dependent LQT for Path Planning and Tracking of Autonomous Underwater Vehicle (AUV) to Intercept A Moving Target (2015)',
@@ -3162,9 +2484,7 @@ class StaffSeeder extends Seeder
                     'Desain and Implementation Surface Unmanned Vehicle (SUV) (2017)',
                     'Desain and Implementation Bionic Arm using open source (3D Printer) (2019)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2016 – Sekarang: Dosen Teknik Elektro, Institut Teknologi Kalimantan',
                     '2013 – 2016: PT Damar Putera Perkasa',
@@ -3172,9 +2492,7 @@ class StaffSeeder extends Seeder
                     '2010 – 2013: PT Sari Alun',
                     '2009 – 2010: PT Maxxima Innovative Engineering'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3184,32 +2502,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Elektronika',
-                'image_url' => 'https://drive.google.com/file/d/1ed8X3EQFW2YwJmkmZuG4S65yO72KexS3/view?usp=sharing',
-
+                'image_url' => 'staff/vicky-andria.webp',
                 'education_history' => [
                     'S1 Elektro Industri Politeknik Elektronika Negeri Surabaya (PENS)',
                     'S2 Power Sistem Tenaga Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Power System Analysis'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Rancang Bangun Vending Machine dengan Verifikasi Pembayaran Otomatis Berbasis Quick Response Code Indonesian Standard (QRIS) sebagai Inovasi di Bidang Smart Economy, QRIS Id (2021 - Sekarang)',
                     'Power to the People: An Integrated Approach for Governance Innovation Through Local Energy Initiatives for Urban Coastal Communities in Indonesia. Case studies Semarang and Balikpapan (2022 - Sekarang)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2017 – Sekarang: Dosen Teknik Elektro, Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3219,32 +2529,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Koordinator Program Studi Teknik Informatika',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/1hTIJwPOMOsrUuS6bLEjtXcCNF_6gXojz/view?usp=sharing',
-
+                'image_url' => 'staff/nisa-rizqiya.webp',
                 'education_history' => [
                     'S1 Ilmu Komputer, Universitas Mulawarman',
                     'S2 Jaringan Cerdas Multimedia (Game Technology), Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Human Computer Interaction'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Pengembangan Prototipe Smart Quail Coop Berbasis Microcontroller untuk Mengurangi Potensi Stress Pada Puyuh'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Lecturer on Politeknik Pertanian Negeri Samarinda (Dept. Software Engineering)',
                     'Lecturer on Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3254,37 +2556,29 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Kepala Laboratorium Sistem Cerdas',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/1MOUxBfaFNTE6nt_OhPYo-bxJZuTFIdCa/view?usp=sharing',
-
+                'image_url' => 'staff/boby-mugi.webp',
                 'education_history' => [
                     'S1 Fisika, Universitas Brawijaya',
                     'S2 Teknologi Penginderaan, Universitas Pertahanan'
                 ],
-
                 'expertise' => [
                     'Remote Sensing',
                     'Machine Learning'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Deep learning-based object detection and geographic coordinate estimation system for GeoTiff imagery',
                     'Sistem Sensor Berbasis Radio Frequency Identification (RFID) Untuk Pelacakan Dan Monitoring Kualitas Produk Pangan Secara Non-Invasif',
                     'Purwarupa Kapal Tanpa Awak Dengan Sistem Penghindar Rintangan Pada Siang Hari Berbasis Deteksi Saliensi Citra RGB',
                     'Prototipe Smart Relay Box Untuk Automatic Switching Pada Georesistivity Meter Naniura Nrd-300'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Physics Laboratory Staff on Institut Teknologi Kalimantan',
                     'Lecturer of Informatics on Institut Teknologi Kalimantan',
                     'Secretary of Quality Assurance Center on Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3294,23 +2588,19 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => 'Koordinator Program Studi Magister Manajemen Teknologi',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/1RkYf8JWlY83AoNQDpYfcxr4_ndxy9CSa/view?usp=sharing',
-
+                'image_url' => 'staff/bima-prihasto.webp',
                 'education_history' => [
                     'S1 Mathematics, Institut Teknologi Sepuluh Nopember, Indonesia',
                     'S2 Mathematics, Institut Teknologi Sepuluh Nopember, Indonesia',
                     'S3 Computer Science and Information Engineering, National Central University, Taiwan'
                 ],
-
                 'expertise' => [
                     'Machine Learning & Deep Learning',
                     'Audio and Speech Processing',
                     'Computer Vision',
                     'Data Science'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Real-time Voice Cloning using Long Short-term Memory for Stroke Patients with Symptoms of Speech Difficulty. 2021',
                     'Non-parallel Voice Conversion, Deep Learning Media System Laborator, National Central University, Taiwan, 2022',
@@ -3318,17 +2608,13 @@ class StaffSeeder extends Seeder
                     'Spoofing-aware speaker verification systems, 2022-2023',
                     'Optimization of Speech Synthesis Using Gated Recurrent Network and Generative Adversarial Network, 2020-2021'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2015 - Sekarang : Lecturer, Department of Informatics, Institut Teknologi Kalimantan, Indonesia',
                     '2022 - 2023 : Research Assistant, Academia Sinica, Taiwan',
                     '2012-2014 : Assistant Lecturer, Department of Mathematics, Institut Teknologi Sepuluh Nopember Surabaya, Indonesia'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => [
                     'https://www.linkedin.com/in/bima-prihasto-ph-d-575075a6/',
                     'https://scholar.google.com/citations?user=AAhL8J8AAAAJ&hl=en',
@@ -3342,22 +2628,14 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/1I741T4zMxns5IcMCpDHnu3y2Qn0oU3hY/view?usp=sharing',
-
+                'image_url' => 'staff/aninditya-anggari.webp',
                 'education_history' => null,
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3367,30 +2645,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/1jHUeFcmsNKYvCTsD-JOphdcL-IVUfTxO/view?usp=sharing',
-
+                'image_url' => 'staff/ariyadi.webp',
                 'education_history' => [
                     'S1 Teknik Informatika, Politeknik Elektronika Negeri Surabaya',
                     'S2 Jaringan Cerdas Multimedia, Institut Teknologi Sepuluh Nopember',
                     'S3 Computational Medicine Laboratory, Kumoh National Institute of Technology, South Korea'
                 ],
-
                 'expertise' => [
                     'Artificial Intelligence',
                     'Adaptive Agents',
                     'Game Technology',
                     'Immersive Environment'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'sentrAI: Visual Assistive for Visually Impaired People based on Object-to-Audio using Transfer Learning (2020-2021)',
                     'Pengembangan Prototipe Smart Quail Coop Berbasis Microcontroller Untuk Mengurangi Potensi Stress Pada Puyuh (Smart Quail Coop Development using Microcontroller for Stress Monitoring on Quail) (2020-2021)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2022-Sekarang: Faculty Secretary, School of Mathematics and Information Technology Institut Teknologi Kalimantan, Indonesia',
                     '2015-Sekarang: Lecturer, Department of Mathematics and Information Technology Institut Teknologi Kalimantan, Indonesia',
@@ -3398,9 +2670,7 @@ class StaffSeeder extends Seeder
                     '2010: Data Entry Jawa Post Institute Pro Otonom, Samarinda, Indonesia',
                     '2009: IT Support PT. Trakindo Utama, Samarinda, Indonesia'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3410,33 +2680,25 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/10rmJdaMZZREWFMjUZTuf3kz6--9HK0rd/view?usp=sharing',
-
+                'image_url' => 'staff/bowo-nugroho.webp',
                 'education_history' => [
                     'S1 Informatics Engineering, STMIK AMIKOM',
                     'S2 Electrical Engineering, Universitas Gadjah Mada'
                 ],
-
                 'expertise' => [
                     'Software Enginering',
                     'Computer Vision'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Prototipe Big Data Cluster Berbasis Mikrokontroler Untuk Edukasi'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Java Programmer at PT Gameloft Indonesia',
                     'Lecturer of Informatics on Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3446,33 +2708,25 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/1FkzJmHos28S2udFL_ePVd7tIl8bihdYo/view?usp=sharing',
-
+                'image_url' => 'staff/darmansyah.webp',
                 'education_history' => [
                     'S1 Fisika, Universitas Hasanuddin',
                     'S2 Ilmu Komputer, Universitas Bina Nusantara'
                 ],
-
                 'expertise' => [
                     'Data Mining'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Data Mining Performance of Toddler Nutrition Classification Based on Family Nutrition Awareness and Human Development Index'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Head Master of SMK Bina Prestasi Balikpapan',
                     'IT Support on STMIK Borneo International',
                     'Lecturer on Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3482,35 +2736,27 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/1nIUsmwEz1kxhOGPgOnfYutw3rZldso8y/view?usp=sharing',
-
+                'image_url' => 'staff/chandra-cahyo.webp',
                 'education_history' => [
                     'S1 Ilmu Komputer, Universitas Brawijaya',
                     'S2 Ilmu Komputer, Universitas Brawijaya'
                 ],
-
                 'expertise' => [
                     'Fuzzy Inference System',
                     'Fuzzy Neural Networks',
                     'Evolution Strategies'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Comparison and Develop A Quiz Platform for College'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Lecturer on Universitas Nahdlatul Ulama Sunan Giri Bojonegoro',
                     'Lecturer on Institut Teknologi Kalimantan',
                     'Elearning Center Coordinator on Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3520,20 +2766,16 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/1b7uXxyYuPNkQoDP7azWtIT0lQRdoDzSV/view?usp=sharing',
-
+                'image_url' => 'staff/nur-fajri.webp',
                 'education_history' => [
                     'S1 Ilmu Komputer, Universitas Muhammadiyah Malang',
                     'S2 Teknik Informatika, Institut Teknologi Sepuluh Nopember'
                 ],
-
                 'expertise' => [
                     'Software Engineering',
                     'Pemrograman Web'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Pembuatan Sistem Informasi Capaian Gotong Royong Masyarakat Kecamatan Balikpapan Utara (2020-2021)',
                     'Evolusi Sistem Informasi Penerimaan Mahasiswa Baru Jalur Mandiri (SUMMIT ITK) Institut Teknologi Kalimantan (2020-2021)',
@@ -3542,17 +2784,13 @@ class StaffSeeder extends Seeder
                     'Otomatisasi Diagnosa Penyakit Padi Berbasis Smartphone Menggunakan Metode Convolutional Neural Network (2019-2020)',
                     'Evolusi Sistem Informasi Penelitian Dan Pengabdian Masyarakat (SIMPAS LPPM) Institut Teknologi Kalimantan (2019-2020)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Wakil Kepala ICT Universitas Balikpapan',
                     'Kepala ICT Universitas Balikpapan',
                     'Lecturer on Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3562,32 +2800,24 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/1XuXGFyOpf1_Iq0QbnLM2zbW7irG085Q_/view?usp=sharing',
-
+                'image_url' => 'staff/ramadhan-paninggalih.webp',
                 'education_history' => [
                     'S1 Matematika, Universitas Brawijaya',
                     'S2 Ilmu Komputer Kanazawa & Ilmu Komputer Institut Teknologi Bandung'
                 ],
-
                 'expertise' => [
                     'Applied Science',
                     'Data Science'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Microcontroller Based Big Data Cluster Prototype For Education'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Lecturer of Informatics on Institut Teknologi Kalimantan'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3597,36 +2827,28 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/1DWpNdSZN5v8KAZSmjgNCwWglVICYbXOo/view?usp=sharing',
-
+                'image_url' => 'staff/riska-kurniyanto.webp',
                 'education_history' => [
                     'S1 Teknik Elektro, Institut Teknologi Sepuluh Nopember',
                     'S2 Informatika, Universitas AMIKOM Yogyakarta'
                 ],
-
                 'expertise' => [
                     'Internet of Things',
                     'Python Backend',
                     'DevOps',
                     'Software Engineering'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Prototipe Big Data Cluster Berbasis Mikrokontroler Untuk Edukasi (Microcontroller Based Big Data Cluster Prototype For Education) (2021)',
                     'iPorang - Pengembangan Artificial Intelligence of Things (AIoT) untuk pemantauan nutrisi tanaman porang (iPorang - Development of Artificial Intelligence of Things (AIoT) for monitoring porang plant nutrition) (2021)',
                     'sentrAI: Visual Asistif untuk Tunanetra berbasis Object-to-Audio dengan metode Transfer Learning (Visual Assistive for the Blind, Object-to-Audio-based with Transfer Learning method). (2021)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2014-2019: Dosen Teknik Elektro - Universitas Ichsan Gorontalo'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3636,36 +2858,28 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/1IYJmIMzSXqBcq6etz4Ej4HDuVAp0sQgf/view?usp=sharing',
-
+                'image_url' => 'staff/gusti-ahmad.webp',
                 'education_history' => [
                     'S1 Ilmu Komputer, Universitas Brawijaya',
                     'S2 Ilmu Komputer, Universitas Brawijaya',
                     'S3 Computer Science, Universiti Brunei Darussalam'
                 ],
-
                 'expertise' => [
                     'Optimasi',
                     'Jaringan Syaraf Tiruan',
                     'Kecerdasan Web',
                     'Sistem Cerdas'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Course Schedule Optimization using Modified Genetic Algorithms (2019-2020)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Developer',
                     'GEMSS Solution Indonesia'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3675,22 +2889,14 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/1aZkM_glhPDVaEGscNRlbLGB5Naf0XAJD/view?usp=sharing',
-
+                'image_url' => 'staff/rizal-kusuma.webp',
                 'education_history' => null,
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3700,33 +2906,25 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/18TC7r-65uAP4tPKkz5iRjV-nOJpupCTh/view?usp=sharing',
-
+                'image_url' => 'staff/rizky-amelia.webp',
                 'education_history' => [
                     'S1 Fisika, Institut Pertanian Bogor',
                     'S2 Teknologi Penginderaan, Universitas Pertahanan'
                 ],
-
                 'expertise' => [
                     'Remote Sensing',
                     'Machine Learning',
                     'Internet of Thing'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Improving The Implementation of Google Earth Engine (GEE) based of Multiresolution Satellite Image for Identification of Sea Surface Objects on Sunda Straits to Support National Defense',
                     'Flood-prone Area Modelling with Pairwase Comparison Method in South Sumatra',
                     'Pembuatan Nanokomposit Karbon-Mn02, Limbah Baterai untuk Aplikasi Elektroda Superkapasitor'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3736,34 +2934,26 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/1mnY_ZsF7ml9mq2dEQ81jSUw3BeWbZGqv/view?usp=sharing',
-
+                'image_url' => 'staff/syamsul-mujahidin.webp',
                 'education_history' => [
                     'S1 Teknik Informatika, Universitas Islam Indonesia',
                     'S2 Teknik Elektro dan Teknologi Informasi, Universitas Gadjah Mada',
                     'S3 Graduate School of Innovation and Practice for Smart Society, Hiroshima University, Japan'
                 ],
-
                 'expertise' => [
                     'Image Processing',
                     'Computer Vission'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Automation of Rice Disease Diagnosis based on Smartphone using Convolutional Neural Network',
                     'Visual Assistive for the Blind People based on Object-to-Audio using Transfer Learning'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2021: Anggota APTIKOM'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3773,38 +2963,30 @@ class StaffSeeder extends Seeder
                 'type' => 'Dosen',
                 'structural_position' => '',
                 'functional_position' => 'Dosen Program Studi Teknik Informatika',
-                'image_url' => 'https://drive.google.com/file/d/1IjZm8AoQeDjhRZS9F5y-m7gibJwB6LSS/view?usp=sharing',
-
+                'image_url' => 'staff/tegar-palyus.webp',
                 'education_history' => [
                     'S1 Teknik Elektro, Institut Teknologi Sepuluh Nopember',
                     'S2 Teknik Informatika, Institut Teknologi Sepuluh Nopember',
                     'S3 Graduate School of Innovation and Practice for Smart Society, Hiroshima University, Japan'
                 ],
-
                 'expertise' => [
                     'Image Processing',
                     'Computer Vision',
                     'Embedded System',
                     'Data Security'
                 ],
-
                 'competency_certification' => null,
-
                 'research_history' => [
                     'Pengembangan Metode Adaptif Payload Audio Data Hiding Berbasis Lagrange Intepolasi Polinomial dan Newton’s Divided-Difference Interpolasi Polinomial (2019)',
                     'Perancangan Arsitektur Sistem dan Teknologi Informasi untuk Organisasi Perangkat Daerah (OPD) Pemerintah Kota Balikpapan menggunakan TOGAF (The Open Group Architecture Framework) (2019)',
                     'Rancang Bangun Sistem Informasi Pencatatan, Pelaporan serta Monitoring Bulan imunisasi Anak Sekolah (BIAS) pada Dinas Kesehatan (2020)'
                 ],
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2013: Apps Developer, PT Niltava Teknologi Indonesia, Surabaya, Indonesia',
                     '2011: Internship, Pusat Robotika Institut Teknologi Sepuluh Nopember (ITS), Surabaya, Indonesia'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3814,22 +2996,14 @@ class StaffSeeder extends Seeder
                 'type' => 'Tendik',
                 'structural_position' => 'Kepala Subbagian Umum Fakultas Sains dan Teknologi Informasi ITK',
                 'functional_position' => '',
-                'image_url' => 'https://drive.google.com/file/d/1A9ciaHc8maTIRrEg-N4L0CGCbyH9m2Hv/view?usp=sharing',
-
+                'image_url' => 'staff/desy-ridho.webp',
                 'education_history' => null,
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3839,28 +3013,20 @@ class StaffSeeder extends Seeder
                 'type' => 'Tendik',
                 'structural_position' => '',
                 'functional_position' => 'Tenaga Kependidikan Akademik dan Kemahasiswaan',
-                'image_url' => 'https://drive.google.com/file/d/1c3E1LjgY-MafE1vrm7iIV30pG4y8cdJD/view?usp=drive_link',
-
+                'image_url' => 'staff/mufida-fatma.webp',
                 'education_history' => [
                     'D-III'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => [
                     'Sertifikat Pelayanan Prima'
                 ],
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Pada Tahun 2022-2024 Staff Kemahasiswaan dan Alumni'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3870,24 +3036,16 @@ class StaffSeeder extends Seeder
                 'type' => 'Tendik',
                 'structural_position' => '',
                 'functional_position' => 'Tenaga Kependidikan Akademik dan Kemahasiswaan',
-                'image_url' => 'https://drive.google.com/file/d/1HMy17Pzhv_LU8NpbScuzXq2mH1rQPxVJ/view?usp=drive_link',
-
+                'image_url' => 'staff/elvi-yuningsih.webp',
                 'education_history' => [
                     'S1 Manajemen'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3898,27 +3056,19 @@ class StaffSeeder extends Seeder
                 'structural_position' => '',
                 'functional_position' => 'Tenaga Kependidikan Perencanaan dan Keuangan',
                 'image_url' => '',
-
                 'education_history' => [
                     'S1 Administrasi Negara FISIP UNMUL'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => [
                     'Kewajiban Perpajakan Bagi Instansi Pemerintah Serta Pedoman Pengelolaan Perpajakan Bagi Bendahara Pemerintah'
                 ],
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     '2016-2017 tendik Teknik Perkapalan, 2017-2019 Tendik Teknik Perkapalan & Teknik Kelautan, 2019-2024 Tendik JSTPK, 2025-Sekarang Tendik FSTI'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3929,21 +3079,13 @@ class StaffSeeder extends Seeder
                 'structural_position' => '',
                 'functional_position' => 'Tenaga Kependidikan Perencanaan dan Keuangan',
                 'image_url' => '',
-
                 'education_history' => null,
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -3953,26 +3095,18 @@ class StaffSeeder extends Seeder
                 'type' => 'Tendik',
                 'structural_position' => '',
                 'functional_position' => 'Tenaga Kependidikan Umum dan Kepegawaian',
-                'image_url' => 'https://drive.google.com/file/d/1dHrpUUM4BrvyG8LAH-uJe3MBH9Ur9nOS/view',
-
+                'image_url' => 'staff/reza-nouryan.webp',
                 'education_history' => [
                     'Universitas Islam Indonesia - S1 Informatika (2016-2020)'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Staff Tendik Pusat Pengembangan Pendidikan ITK (2022-2024)'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null,
             ],
 
@@ -3982,28 +3116,20 @@ class StaffSeeder extends Seeder
                 'type' => 'Tendik',
                 'structural_position' => '',
                 'functional_position' => 'Tenaga Kependidikan Akademik dan Kemahasiswaan Program Magister',
-                'image_url' => 'https://drive.google.com/file/d/1efL42bm-RzF6hmpR39lr6XdqGx1mzFEL/view',
-
+                'image_url' => 'staff/luh-appucha.webp',
                 'education_history' => [
                     'S1 Ilmu Komunikasi (S.Ikom)'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => [
                     'Sertifikasi BNSP-Digital Markerting'
                 ],
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => [
                     'Staff Humas ITK'
                 ],
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -4013,24 +3139,16 @@ class StaffSeeder extends Seeder
                 'type' => 'Tendik',
                 'structural_position' => '',
                 'functional_position' => 'Tenaga Kependidikan Akademik dan Kemahasiswaan',
-                'image_url' => 'https://drive.google.com/file/d/1S0ir5erpP_TCE6q6k92y4bN6Ig3IR1kd/view?usp=sharing',
-
+                'image_url' => null,
                 'education_history' => [
                     'S1 Ekonomi'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => null,
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
@@ -4040,33 +3158,60 @@ class StaffSeeder extends Seeder
                 'type' => 'Tendik',
                 'structural_position' => '',
                 'functional_position' => 'Tenaga Kependidikan Perencanaan dan Keuangan',
-                'image_url' => 'https://drive.google.com/file/d/1NazPIJDkn4bMbeJ_pSRK65gb2srjQTjd/view?usp=sharing',
-
+                'image_url' => 'staff/hanna-novita.webp',
                 'education_history' => [
                     'D4 Akuntansi Perpajakan'
                 ],
-
                 'expertise' => null,
-
                 'competency_certification' => [
                     'Sertifikat BNSP_Digital Marketing & Operator Komputer Muda'
                 ],
-
                 'research_history' => null,
-
                 'community_service_history' => null,
-
                 'work_experience' => null,
-
                 'awards' => null,
-
                 'academic_profiles' => null
             ],
 
         ];
 
+        $successCount = 0;
+        $failedCount = 0;
+        $failedNames = [];
+        $totalPhotos = 0;
+
         foreach ($dataCivitas as $data) {
+
+            if (!empty($data['image_url']) && !str_starts_with($data['image_url'], 'http')) {
+                $totalPhotos++;
+                $imageName = basename($data['image_url']);
+                $assetPath = database_path('seeders/assets/' . $data['image_url']);
+
+                if (File::exists($assetPath)) {
+                    Storage::disk('public')->put($data['image_url'], File::get($assetPath));
+                    $successCount++;
+                } else {
+                    $failedCount++;
+                    $failedNames[] = "- " . $data['name'] . " (Dicari: {$imageName})";
+                    $data['image_url'] = null;
+                }
+            }
+
             Staff::create($data);
         }
+
+        $this->command->info("===========================================");
+        $this->command->info("Selesai! Data Civitas berhasil di-seed.");
+        $this->command->info("Statistik Foto: $successCount Berhasil disalin, $failedCount Gagal (Total $totalPhotos foto dibutuhkan).");
+
+        if ($failedCount > 0) {
+            $this->command->warn("-------------------------------------------");
+            $this->command->warn("Daftar Civitas yang fotonya GAGAL disalin (file tidak ditemukan / typo nama):");
+            foreach ($failedNames as $name) {
+                $this->command->warn($name);
+            }
+            $this->command->warn("Pastikan file berada di folder 'database/seeders/assets/staff/' dengan nama yang persis sama.");
+        }
+        $this->command->info("===========================================");
     }
 }
