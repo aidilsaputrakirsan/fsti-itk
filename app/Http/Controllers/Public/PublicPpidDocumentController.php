@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\PpidDocument;
 use App\Models\PpidCategory;
+use App\Models\FacultyProfile; 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -24,8 +25,20 @@ class PublicPpidDocumentController extends Controller
             ];
         })->values();
 
+        $facultyProfile = FacultyProfile::first();
+        
+        $permohonanLink = $facultyProfile && !empty($facultyProfile->content['ppid_permohonan_link']) 
+                            ? $facultyProfile->content['ppid_permohonan_link'] 
+                            : 'https://s.itk.ac.id/permintaanformfsti';
+                            
+        $keberatanLink = $facultyProfile && !empty($facultyProfile->content['ppid_keberatan_link']) 
+                            ? $facultyProfile->content['ppid_keberatan_link'] 
+                            : 'https://docs.google.com/forms/d/e/1FAIpQLSefIA7eJNmNHt0YXzWaWyLdp4zJUulojXUmh7xlVN-MQxZLlw/viewform';
+
         return Inertia::render('Public/PpidDocuments/Index', [
-            'informationTypes' => $informationTypes 
+            'informationTypes' => $informationTypes,
+            'permohonanLink' => $permohonanLink, 
+            'keberatanLink' => $keberatanLink   
         ]);
     }
 

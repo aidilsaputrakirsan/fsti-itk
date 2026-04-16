@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Staff;
 use App\Models\StudyProgram;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
@@ -59,32 +60,22 @@ class StaffController extends Controller
         }
 
         if (str_contains($jabStr, 'ketua jurusan')) {
-            $jurusans = ['sains', 'elektro'];
+            $jurusans = Department::pluck('name');
             foreach ($jurusans as $jurusan) {
-                if (str_contains($jabStr, $jurusan)) {
+                if (str_contains($jabStr, strtolower($jurusan))) {
                     if ((clone $query)->where('structural_position', 'LIKE', '%ketua jurusan%')
                         ->where('structural_position', 'LIKE', '%' . $jurusan . '%')->exists()
                     ) {
-                        return 'Jabatan Ketua Jurusan tersebut sudah terisi.';
+                        return 'Jabatan Ketua Jurusan ' . ucwords($jurusan) . ' sudah terisi.';
                     }
                 }
             }
         }
 
         if (str_contains($jabStr, 'koordinator program studi')) {
-            $prodis = [
-                'statistika',
-                'fisika',
-                'matematika',
-                'ilmu aktuaria',
-                'bisnis digital',
-                'teknik elektro',
-                'teknik informatika',
-                'sistem informasi',
-                'magister manajemen teknologi'
-            ];
+            $prodis = StudyProgram::pluck('name');
             foreach ($prodis as $prodi) {
-                if (str_contains($jabStr, $prodi)) {
+                if (str_contains($jabStr, strtolower($prodi))) {
                     if ((clone $query)->where('structural_position', 'LIKE', '%koordinator program studi%')
                         ->where('structural_position', 'LIKE', '%' . $prodi . '%')->exists()
                     ) {
@@ -147,11 +138,13 @@ class StaffController extends Controller
     public function create()
     {
         $studyPrograms = StudyProgram::orderBy('name', 'asc')->get();
+        $departments = Department::orderBy('name', 'asc')->pluck('name');
+
         return Inertia::render('Admin/Staff/Create', [
-            'studyPrograms' => $studyPrograms
+            'studyPrograms' => $studyPrograms,
+            'departments' => $departments
         ]);
     }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -200,9 +193,12 @@ class StaffController extends Controller
     public function edit(Staff $staff)
     {
         $studyPrograms = StudyProgram::orderBy('name', 'asc')->get();
+        $departments = Department::orderBy('name', 'asc')->pluck('name');
+
         return Inertia::render('Admin/Staff/Edit', [
             'staff' => $staff,
-            'studyPrograms' => $studyPrograms
+            'studyPrograms' => $studyPrograms,
+            'departments' => $departments
         ]);
     }
 

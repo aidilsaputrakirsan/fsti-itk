@@ -39,7 +39,13 @@ const navigation = computed(() => {
                 { name: 'Kelola Kontak', href: '/admin/contacts' },
             ]
         },
-        { name: 'Program Studi', href: '/admin/study-programs', icon: AcademicCapIcon, children: null }, 
+        { name: 'Program Studi', 
+        href: null,
+        icon: AcademicCapIcon, 
+        children: [
+              { name: 'Kelola Program Studi', href: '/admin/study-programs' },
+              { name: 'Kelola Jurusan', href: '/admin/departments'},
+        ]}, 
         { 
             name: 'Kemahasiswaan', 
             href: null,

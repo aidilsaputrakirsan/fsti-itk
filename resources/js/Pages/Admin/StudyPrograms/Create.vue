@@ -7,6 +7,10 @@ import { ref } from 'vue';
 
 defineOptions({ layout: AdminLayout });
 
+const props = defineProps<{
+    departments: string[];
+}>();
+
 const fileInput = ref<HTMLInputElement | null>(null);
 
 interface StudyProgramForm {
@@ -26,7 +30,7 @@ interface StudyProgramForm {
 
 const form = useForm<StudyProgramForm>({
     name: '',
-    department: 'Sains dan Analitika Data',
+    department: '',
     degree: 'S1',
     description: '',
     vision: '',
@@ -74,9 +78,7 @@ const submit = () => {
         form.setError('website_link', 'Tautan harus diawali dengan http:// atau https://'); hasError = true;
     }
 
-    if (!form.accreditation_pdf_link) {
-        form.setError('accreditation_pdf_link', 'Tautan PDF sertifikat akreditasi wajib diisi.'); hasError = true;
-    } else if (!urlPattern.test(form.accreditation_pdf_link)) {
+    if (form.accreditation_pdf_link && !urlPattern.test(form.accreditation_pdf_link)) {
         form.setError('accreditation_pdf_link', 'Tautan harus diawali dengan http:// atau https://'); hasError = true;
     }
 
@@ -136,8 +138,8 @@ const submit = () => {
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Jurusan Induk</label>
                     <select v-model="form.department" class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white py-3" required>
-                        <option value="Sains dan Analitika Data">Sains dan Analitika Data</option>
-                        <option value="Teknik Elektro, Informatika, dan Bisnis">Teknik Elektro, Informatika, dan Bisnis</option>
+                        <option value="" disabled>Pilih Jurusan</option>
+                        <option v-for="dept in departments" :key="dept" :value="dept">{{ dept }}</option>
                     </select>
                     <InputError :message="form.errors.department" />
                 </div>
@@ -211,7 +213,7 @@ const submit = () => {
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Link File PDF Akreditasi <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Link File PDF Akreditasi (Opsional)</label>
                     <input type="url" v-model="form.accreditation_pdf_link" placeholder="Cth: https://ult.itk.ac.id/.../sertifikat.pdf" 
                         class="block w-full rounded-lg transition-colors py-2.5 shadow-sm"
                         :class="form.errors.accreditation_pdf_link ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'">

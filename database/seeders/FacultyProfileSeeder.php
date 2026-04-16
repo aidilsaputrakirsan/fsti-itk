@@ -69,8 +69,12 @@ class FacultyProfileSeeder extends Seeder
                 ]
             ],
             'bagan_organisasi' => $finalImagePath,
+            
             'pmb_link' => 'https://pmb.itk.ac.id',
-            'tracer_study_link' => 'https://docs.google.com/forms/d/e/1FAIpQLSe09s1JB6Sm4005NakxU9uNVnLyGBEiIEv8oSO2EdLG81LIeA/viewform'
+            'tracer_study_link' => 'https://docs.google.com/forms/d/e/1FAIpQLSe09s1JB6Sm4005NakxU9uNVnLyGBEiIEv8oSO2EdLG81LIeA/viewform',
+            
+            'ppid_permohonan_link' => 'https://s.itk.ac.id/permintaanformfsti',
+            'ppid_keberatan_link' => 'https://docs.google.com/forms/d/e/1FAIpQLSefIA7eJNmNHt0YXzWaWyLdp4zJUulojXUmh7xlVN-MQxZLlw/viewform'
         ];
 
         FacultyProfile::updateOrCreate(

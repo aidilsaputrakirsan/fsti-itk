@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\StudyProgram;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
@@ -12,17 +13,23 @@ use Illuminate\Validation\Rule;
 
 class StudyProgramController extends Controller
 {
-    public function index()
+   public function index()
     {
         $studyPrograms = StudyProgram::orderBy('degree')->orderBy('name')->get();
+        $departments = Department::orderBy('name')->pluck('name'); 
+
         return Inertia::render('Admin/StudyPrograms/Index', [
-            'studyPrograms' => $studyPrograms
+            'studyPrograms' => $studyPrograms,
+            'departments' => $departments 
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('Admin/StudyPrograms/Create');
+        $departments = Department::orderBy('name')->pluck('name');
+        return Inertia::render('Admin/StudyPrograms/Create', [
+            'departments' => $departments
+        ]);
     }
 
     public function store(Request $request)
@@ -37,7 +44,7 @@ class StudyProgramController extends Controller
             'goals' => 'required|string',
             'graduate_profiles' => 'required|string',
             'accreditation_text' => 'required|string',
-            'accreditation_pdf_link' => 'required|url',
+            'accreditation_pdf_link' => 'nullable|url',
             'website_link' => 'required|url',
             'accreditation_certificate_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
         ], [
@@ -65,8 +72,10 @@ class StudyProgramController extends Controller
 
     public function edit(StudyProgram $studyProgram)
     {
+        $departments = Department::orderBy('name')->pluck('name');
         return Inertia::render('Admin/StudyPrograms/Edit', [
-            'studyProgram' => $studyProgram
+            'studyProgram' => $studyProgram,
+            'departments' => $departments
         ]);
     }
 
@@ -82,7 +91,7 @@ class StudyProgramController extends Controller
             'goals' => 'required|string',
             'graduate_profiles' => 'required|string',
             'accreditation_text' => 'required|string',
-            'accreditation_pdf_link' => 'required|url',
+            'accreditation_pdf_link' => 'nullable|url',
             'website_link' => 'required|url',
             'accreditation_certificate_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ], [

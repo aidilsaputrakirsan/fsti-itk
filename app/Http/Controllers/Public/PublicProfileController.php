@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\FacultyProfile;
 use App\Models\Staff;
 use App\Models\StudyProgram;
+use App\Models\Department; 
 use App\Models\Contact;
 use App\Models\Alumni;
 
@@ -37,11 +38,26 @@ class PublicProfileController extends Controller
             'prodi_s1' => $s1,
             'prodi_s2' => $s2,
             'prodi_total' => $allStudyPrograms->count(),
+            'jurusan' => Department::count(),
             'alumni' => Alumni::count(),
         ];
 
+        $profileContent = $profile ? $profile->content : null;
+        if ($profileContent && isset($profileContent['statistik']['data'])) {
+            foreach ($profileContent['statistik']['data'] as &$stat) {
+                $label = strtolower($stat['label']);
+                if (str_contains($label, 'dosen')) $stat['angka'] = (string)$statistics['dosen'];
+                if (str_contains($label, 'tendik') || str_contains($label, 'kependidikan')) $stat['angka'] = (string)$statistics['tendik'];
+                if (str_contains($label, 's1')) $stat['angka'] = (string)$statistics['prodi_s1'];
+                if (str_contains($label, 's2') || str_contains($label, 'magister')) $stat['angka'] = (string)$statistics['prodi_s2'];
+                if ($label === 'program studi' || $label === 'prodi') $stat['angka'] = (string)$statistics['prodi_total'];
+                if ($label === 'jurusan') $stat['angka'] = (string)$statistics['jurusan']; 
+                if (str_contains($label, 'alumni') || str_contains($label, 'lulusan')) $stat['angka'] = (string)$statistics['alumni'];
+            }
+        }
+
         return Inertia::render('Public/Profiles/About', [
-            'profile' => $profile ? $profile->content : null,
+            'profile' => $profileContent,
             'statistics' => $statistics
         ]);
     }

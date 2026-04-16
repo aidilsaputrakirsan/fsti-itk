@@ -4,6 +4,18 @@ import Banner from '@/Components/Banner.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
+const props = defineProps({
+    informationTypes: Array,
+    permohonanLink: {
+        type: String,
+        default: 'https://s.itk.ac.id/permintaanformfsti'
+    },
+    keberatanLink: {
+        type: String,
+        default: 'https://docs.google.com/forms/d/e/1FAIpQLSefIA7eJNmNHt0YXzWaWyLdp4zJUulojXUmh7xlVN-MQxZLlw/viewform'
+    }
+});
+
 const alurLayanan = ref([
     {
         id: 1,
@@ -28,7 +40,7 @@ const daftarLayanan = ref([
     title: 'Formulir Permohonan Informasi Publik',
     description: 'Ajukan permohonan informasi publik secara resmi kepada PPID Fakultas Sains dan Teknologi Informasi.',
     actionText: 'Isi Formulir',
-    actionLink: 'https://s.itk.ac.id/permintaanformfsti', 
+    actionLink: props.permohonanLink, 
     icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>'
   },
   {
@@ -36,7 +48,7 @@ const daftarLayanan = ref([
     title: 'Formulir Pengajuan Keberatan',
     description: 'Ajukan keberatan atas tanggapan layanan informasi publik yang telah diberikan sebelumnya.',
     actionText: 'Isi Formulir',
-    actionLink: 'https://docs.google.com/forms/d/e/1FAIpQLSefIA7eJNmNHt0YXzWaWyLdp4zJUulojXUmh7xlVN-MQxZLlw/viewform', 
+    actionLink: props.keberatanLink, 
     icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>'
   }
 ]);

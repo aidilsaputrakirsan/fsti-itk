@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\ResearchController;
 use App\Http\Controllers\Admin\ScholarshipController;
 use App\Http\Controllers\Admin\StudentActivityController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\DepartmentController;
 
 // ==============================================================================
 // CONTROLLER PUBLIK
@@ -81,6 +82,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // MODUL PROGRAM STUDI
     Route::resource('/study-programs', AdminStudyProgramController::class)->except(['show']);
+
+    // MODUL JURUSAN
+    Route::resource('/departments', DepartmentController::class)->only(['index', 'store', 'update', 'destroy']);
 
     // MODUL BERITA
     Route::resource('/posts', AdminPostController::class);
@@ -182,8 +186,6 @@ Route::get('/', function () {
             'certificate_url' => $item->certificate_path ? asset('storage/' . $item->certificate_path) : null,
         ]);
 
-    $profile = \App\Models\FacultyProfile::first();
-
     $allProdi = \App\Models\StudyProgram::all();
     $s1 = 0;
     $s2 = 0;
@@ -206,14 +208,32 @@ Route::get('/', function () {
         'prodi_s2' => $s2,
         'prodi_total' => $allProdi->count(),
         'kunjungan' => \App\Models\Visitor::count(),
+        'jurusan' => \App\Models\Department::count(),
+        'alumni' => \App\Models\Alumni::count(), 
     ];
+
+    $profile = \App\Models\FacultyProfile::first();
+    $profileContent = $profile ? $profile->content : null;
+
+    if ($profileContent && isset($profileContent['statistik']['data'])) {
+        foreach ($profileContent['statistik']['data'] as &$stat) {
+            $label = strtolower($stat['label']);
+            if (str_contains($label, 'dosen')) $stat['angka'] = (string)$statistics['dosen'];
+            if (str_contains($label, 'tendik') || str_contains($label, 'kependidikan')) $stat['angka'] = (string)$statistics['tendik'];
+            if (str_contains($label, 's1')) $stat['angka'] = (string)$statistics['prodi_s1'];
+            if (str_contains($label, 's2') || str_contains($label, 'magister')) $stat['angka'] = (string)$statistics['prodi_s2'];
+            if ($label === 'program studi' || $label === 'prodi') $stat['angka'] = (string)$statistics['prodi_total'];
+            if ($label === 'jurusan') $stat['angka'] = (string)$statistics['jurusan'];
+            if (str_contains($label, 'alumni') || str_contains($label, 'lulusan')) $stat['angka'] = (string)$statistics['alumni'];
+        }
+    }
 
     return Inertia::render('Home', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'latestPosts' => $latestPosts,
         'latestAchievements' => $latestAchievements,
-        'profile' => $profile ? $profile->content : null,
+        'profile' => $profileContent,
         'statistics' => $statistics,
     ]);
 })->name('home');

@@ -16,16 +16,13 @@ defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
     studyPrograms: Array<any>;
+    departments: Array<string>; 
 }>();
 
 const search = ref('');
 const statusFilter = ref(''); 
 const departmentFilter = ref(''); 
 
-const uniqueDepartments = computed(() => {
-    const deps = props.studyPrograms.map(p => p.department);
-    return [...new Set(deps)].filter(Boolean);
-});
 
 const filteredPrograms = computed(() => {
     return props.studyPrograms.filter(prodi => {
@@ -163,7 +160,7 @@ watch(flashSuccess, (message) => {
                     <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
                     <select v-model="departmentFilter" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors">
                         <option value="">Semua Jurusan</option>
-                        <option v-for="dep in uniqueDepartments" :key="dep" :value="dep">{{ dep }}</option>
+                        <option v-for="dep in departments" :key="dep" :value="dep">{{ dep }}</option>
                     </select>
                 </div>
 

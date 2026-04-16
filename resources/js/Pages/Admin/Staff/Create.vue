@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useForm, Link, Head } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import InputError from '@/Components/InputError.vue';
@@ -17,33 +17,31 @@ defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
     studyPrograms: any[];
+    departments: string[]; 
 }>();
 
 const fileInput = ref<HTMLInputElement | null>(null);
-
 const isCustomPosition = ref(false);
-const predefinedPositions = [
-    'Dekan Fakultas Sains dan Teknologi Informasi',
-    'Wakil Dekan Bidang Akademik dan Kemahasiswaan Fakultas Sains dan Teknologi Informasi',
-    'Wakil Dekan Bidang Keuangan dan Umum Fakultas Sains dan Teknologi Informasi',
-    'Kepala Subbagian Umum Fakultas Sains dan Teknologi Informasi',
-    'Ketua Jurusan Sains dan Analitika Data',
-    'Ketua Jurusan Teknik Elektro, Informatika, dan Bisnis',
-    'Koordinator Program Studi Statistika',
-    'Koordinator Program Studi Fisika',
-    'Koordinator Program Studi Matematika',
-    'Koordinator Program Studi Ilmu Aktuaria',
-    'Koordinator Program Studi Bisnis Digital',
-    'Koordinator Program Studi Teknik Elektro',
-    'Koordinator Program Studi Teknik Informatika',
-    'Koordinator Program Studi Sistem Informasi',
-    'Koordinator Program Studi Magister Manajemen Teknologi',
-    'Kepala Laboratorium Inovasi Digital',
-    'Kepala Laboratorium Sistem Cerdas',
-    'Kepala Laboratorium Komputasi dan Data',
-    'Kepala Laboratorium Fisika Dasar',
-    'Kepala Laboratorium Fisika Lanjut'
-];
+
+const predefinedPositions = computed(() => {
+    const basePositions = [
+        'Dekan Fakultas Sains dan Teknologi Informasi',
+        'Wakil Dekan Bidang Akademik dan Kemahasiswaan Fakultas Sains dan Teknologi Informasi',
+        'Wakil Dekan Bidang Keuangan dan Umum Fakultas Sains dan Teknologi Informasi',
+        'Kepala Subbagian Umum Fakultas Sains dan Teknologi Informasi',
+        'Kepala Laboratorium Inovasi Digital',
+        'Kepala Laboratorium Sistem Cerdas',
+        'Kepala Laboratorium Komputasi dan Data',
+        'Kepala Laboratorium Fisika Dasar',
+        'Kepala Laboratorium Fisika Lanjut'
+    ];
+
+    const kajurPositions = props.departments.map(dep => `Ketua Jurusan ${dep}`);
+
+    const koorProdiPositions = props.studyPrograms.map(prodi => `Koordinator Program Studi ${prodi.name}`);
+
+    return [...basePositions, ...kajurPositions, ...koorProdiPositions];
+});
 
 const form = useForm({
     name: '',
@@ -243,9 +241,9 @@ const submit = () => {
 
                         <InputError :message="form.errors.structural_position" />
                         <p class="mt-1.5 text-xs text-gray-500 font-medium">
-                            <span v-if="!isCustomPosition">Pilih dari opsi, atau pilih "Lainnya" untuk mengetik secara manual.</span>
+                            <span v-if="!isCustomPosition">Opsi pimpinan prodi dan jurusan diambil dari database. Pilih "Lainnya" untuk mengetik secara manual.</span>
                             <span v-else class="text-primary font-bold">Mode Ketik Manual.</span>
-                            Sistem akan otomatis menolak jika jabatan utama sudah terisi orang lain (contoh: Dekan, Kajur, Koordinator).
+                            Sistem akan otomatis menolak jika jabatan pimpinan sudah terisi orang lain.
                         </p>
                     </div>
 

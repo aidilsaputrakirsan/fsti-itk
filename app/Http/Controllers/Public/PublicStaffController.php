@@ -45,13 +45,17 @@ class PublicStaffController extends Controller
         $pimpinan = Staff::where('structural_position', 'like', '%Koordinator Program Studi%')
             ->where('is_active', true)->orderBy('name', 'asc')->get();
 
-        $pimpinan = $pimpinan->map(function ($item) {
-            $jabatan = strtolower($item->structural_position);
+        $studyPrograms = StudyProgram::all();
 
-            if (str_contains($jabatan, 'matematika') || str_contains($jabatan, 'fisika') || str_contains($jabatan, 'aktuaria') || str_contains($jabatan, 'statistika')) {
-                $jurusan = 'Sains dan Analitika Data';
-            } else {
-                $jurusan = 'Teknik Elektro, Informatika, dan Bisnis';
+        $pimpinan = $pimpinan->map(function ($item) use ($studyPrograms) {
+            $jabatan = strtolower($item->structural_position);
+            $jurusan = 'Umum / Lainnya';
+
+            foreach ($studyPrograms as $sp) {
+                if (str_contains($jabatan, strtolower($sp->name))) {
+                    $jurusan = $sp->department; 
+                    break;
+                }
             }
 
             $item->jurusan = $jurusan;
@@ -110,7 +114,6 @@ class PublicStaffController extends Controller
 
         return Inertia::render('Public/Profiles/Lecturers', [
             'groupedLecturers' => $groupedData,
-            // PERBAIKAN: Ubah 'prodi' menjadi 'program'
             'filters' => $request->only(['search', 'program']),
             'studyPrograms' => $prodiList
         ]);
