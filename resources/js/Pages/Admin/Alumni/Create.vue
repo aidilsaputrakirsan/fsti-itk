@@ -14,13 +14,15 @@ interface AlumniFormData {
     nim: string;
     name: string;
     study_program: string;
-    graduation_year: number;
+    entry_year: number | ''; 
+    graduation_year: number | ''; 
 }
 
 const form = useForm<AlumniFormData>({
     nim: '',
     name: '',
     study_program: '',
+    entry_year: new Date().getFullYear() - 4, 
     graduation_year: new Date().getFullYear(),
 });
 
@@ -40,6 +42,11 @@ const submit = () => {
 
     if (!form.study_program) {
         form.setError('study_program', 'Program studi wajib dipilih.');
+        hasError = true;
+    }
+
+    if (!form.entry_year) {
+        form.setError('entry_year', 'Tahun masuk wajib diisi.');
         hasError = true;
     }
 
@@ -100,6 +107,14 @@ const submit = () => {
                         <InputError :message="form.errors.study_program" />
                     </div>
 
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Tahun Masuk <span class="text-red-600">*</span></label>
+                    <div>
+                        <input v-model="form.entry_year" type="number" min="2012" :max="new Date().getFullYear()" placeholder="Contoh: 2020" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.entry_year ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            required>
+                        <InputError :message="form.errors.entry_year" />
+                    </div>
                     <label class="md:pt-3 text-sm font-bold text-gray-800">Tahun Kelulusan <span class="text-red-600">*</span></label>
                     <div>
                         <input v-model="form.graduation_year" type="number" min="2000" :max="new Date().getFullYear() + 1" placeholder="Contoh: 2024" 

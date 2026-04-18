@@ -99,7 +99,7 @@ const getIcon = (type) => {
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-10 md:mb-12">
                     <h2 class="text-2xl md:text-3xl font-bold font-optimus text-primary">Daftar Informasi Publik</h2>
-                    <p class="mt-2 md:mt-3 text-sm md:text-base text-gray-600 font-medium">Katalog informasi yang tersedia di Fakultas Sains dan Teknologi Informasi</p>
+                    <p class="mt-2 md:mt-3 text-sm md:text-base text-gray-600 font-medium">Daftar informasi yang tersedia di Fakultas Sains dan Teknologi Informasi</p>
                 </div>
 
                 <div class="flex flex-wrap justify-center gap-3 md:gap-8 max-w-6xl mx-auto px-1 md:px-4">

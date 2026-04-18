@@ -15,9 +15,9 @@ class AlumniController extends Controller
         $query = Alumni::query();
 
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('nim', 'like', '%' . $request->search . '%');
+                    ->orWhere('nim', 'like', '%' . $request->search . '%');
             });
         }
 
@@ -29,9 +29,9 @@ class AlumniController extends Controller
         }
 
         $alumni = $query->orderBy('graduation_year', 'desc')
-                        ->orderBy('name', 'asc')
-                        ->paginate(15)
-                        ->withQueryString();
+            ->orderBy('name', 'asc')
+            ->paginate(15)
+            ->withQueryString();
 
         $officialProdis = StudyProgram::orderBy('name')->pluck('name')->toArray();
         $alumniProdis = Alumni::select('study_program')->distinct()->pluck('study_program')->toArray();
@@ -59,6 +59,7 @@ class AlumniController extends Controller
             'nim' => 'required|string|unique:alumnis,nim|max:20',
             'name' => 'required|string|max:255',
             'study_program' => 'required|string|max:255',
+            'entry_year' => 'required|integer|min:2000|max:' . date('Y'),
             'graduation_year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ], [
             'nim.unique' => 'Data dengan NIM ini sudah terdaftar sebagai alumni.',
@@ -82,11 +83,12 @@ class AlumniController extends Controller
     public function update(Request $request, $id)
     {
         $alumnus = Alumni::findOrFail($id);
-        
+
         $validated = $request->validate([
             'nim' => 'required|string|max:20|unique:alumnis,nim,' . $alumnus->id,
             'name' => 'required|string|max:255',
             'study_program' => 'required|string|max:255',
+            'entry_year' => 'required|integer|min:2000|max:' . date('Y'),
             'graduation_year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ], [
             'nim.unique' => 'Data dengan NIM ini sudah terdaftar pada alumni lain.',

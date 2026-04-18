@@ -59,8 +59,7 @@ const closeFormModal = () => {
 
 const submitForm = () => {
     if (isEditing.value) {
-        form.put(route('admin.departments.update', editingId.value), {
-            onSuccess: () => closeFormModal(),
+form.put(route('admin.departments.update', editingId.value as number), {            onSuccess: () => closeFormModal(),
         });
     } else {
         form.post(route('admin.departments.store'), {

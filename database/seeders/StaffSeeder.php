@@ -2163,7 +2163,7 @@ class StaffSeeder extends Seeder
                 'nip' => '199404022019032031',
                 'type' => 'Dosen',
                 'structural_position' => 'Kepala Pusat TPB dan MKU',
-                'functional_position' => 'Dosen Program Studi Teknik Elektronika',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'staff/firilia-filiana.webp',
                 'education_history' => [
                     'S1 Teknik Elektro Institut Teknologi Sepuluh Nopember',
@@ -2285,7 +2285,7 @@ class StaffSeeder extends Seeder
                 'nip' => '199107152022031007',
                 'type' => 'Dosen',
                 'structural_position' => '',
-                'functional_position' => 'Dosen Program Studi Teknik Elektronika',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'staff/mifta-nur-farid.webp',
                 'education_history' => [
                     'S1 Teknik Fisika Institut Teknologi Sepuluh Nopember',
@@ -2315,7 +2315,7 @@ class StaffSeeder extends Seeder
                 'nip' => '199207302019031009',
                 'type' => 'Dosen',
                 'structural_position' => '',
-                'functional_position' => 'Dosen Program Studi Teknik Elektronika',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'staff/vicky-vendy.webp',
                 'education_history' => [
                     'S1 Teknik Elektro Universitas Brawijaya',
@@ -2351,7 +2351,7 @@ class StaffSeeder extends Seeder
                 'nip' => '199203282022031007',
                 'type' => 'Dosen',
                 'structural_position' => '',
-                'functional_position' => 'Dosen Program Studi Teknik Elektronika',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'staff/agung-nursyeha.webp',
                 'education_history' => [
                     'S1 Teknik Elektro Institut Teknologi Sepuluh November',
@@ -2379,7 +2379,7 @@ class StaffSeeder extends Seeder
                 'nip' => '198807282022032007',
                 'type' => 'Dosen',
                 'structural_position' => '',
-                'functional_position' => 'Dosen Program Studi Teknik Elektronika',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'staff/risty-jayanti.webp',
                 'education_history' => [
                     'S1 Teknik Elektro Universitas Brawijaya',
@@ -2405,7 +2405,7 @@ class StaffSeeder extends Seeder
                 'nip' => '199201142022031009',
                 'type' => 'Dosen',
                 'structural_position' => '',
-                'functional_position' => 'Dosen Program Studi Teknik Elektronika',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'staff/riza-hadi.webp',
                 'education_history' => [
                     'S1 Teknik Fisika (Instrumentasi dan Kontrol) Universitas Telkom',
@@ -2437,7 +2437,7 @@ class StaffSeeder extends Seeder
                 'nip' => '199209122019031021',
                 'type' => 'Dosen',
                 'structural_position' => '',
-                'functional_position' => 'Dosen Program Studi Teknik Elektronika',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'staff/sena-sukmananda.webp',
                 'education_history' => [
                     'S1 Teknik Fisika Institut Teknologi Sepuluh Nopember',
@@ -2467,7 +2467,7 @@ class StaffSeeder extends Seeder
                 'nip' => '198805152018031001',
                 'type' => 'Dosen',
                 'structural_position' => '',
-                'functional_position' => 'Dosen Program Studi Teknik Elektronika',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'staff/thorikul-huda.webp',
                 'education_history' => [
                     'S1 Teknik Elektro Institut Teknologi Sepuluh Nopember',
@@ -2501,7 +2501,7 @@ class StaffSeeder extends Seeder
                 'nip' => '100118153',
                 'type' => 'Dosen',
                 'structural_position' => '',
-                'functional_position' => 'Dosen Program Studi Teknik Elektronika',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'staff/vicky-andria.webp',
                 'education_history' => [
                     'S1 Elektro Industri Politeknik Elektronika Negeri Surabaya (PENS)',

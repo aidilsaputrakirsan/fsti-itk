@@ -281,6 +281,7 @@ const changePage = (page) => {
                                     <th class="px-6 py-5 font-bold text-sm text-white tracking-wider w-32">NIM</th>
                                     <th class="px-6 py-5 font-bold text-sm text-white tracking-wider">Nama Lengkap</th>
                                     <th class="px-6 py-5 font-bold text-sm text-white tracking-wider">Program Studi</th>
+                                    <th class="px-6 py-5 font-bold text-sm text-white tracking-wider text-center w-32">Tahun Masuk</th>
                                     <th class="px-6 py-5 font-bold text-sm text-white tracking-wider text-center w-32">Tahun Lulus</th>
                                 </tr>
                             </thead>
@@ -291,6 +292,11 @@ const changePage = (page) => {
                                     <td class="px-6 py-4 text-sm">
                                         <span class="px-3 py-1.5 bg-gray-50 border border-gray-100 text-gray-600 rounded-lg font-semibold group-hover:bg-blue-50 group-hover:text-primary group-hover:border-blue-100 transition-colors">
                                             {{ item.study_program }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span class="inline-flex items-center justify-center w-14 h-8 rounded-lg bg-gray-100 text-gray-600 font-bold text-sm group-hover:bg-blue-50 group-hover:text-blue-700 transition-colors">
+                                            {{ item.entry_year }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-center">

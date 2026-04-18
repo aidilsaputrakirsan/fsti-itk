@@ -158,6 +158,7 @@ watch(flashSuccess, (message) => {
                             <th scope="col" class="w-32">NIM</th>
                             <th scope="col">Nama Lengkap</th>
                             <th scope="col" class="w-48">Program Studi</th>
+                            <th scope="col" class="text-center w-32">Tahun Masuk</th>
                             <th scope="col" class="text-center w-32">Tahun Lulus</th>
                             <th scope="col" class="text-center w-32">Aksi</th>
                         </tr>
@@ -169,7 +170,9 @@ watch(flashSuccess, (message) => {
                             </td>
                             <td><div class="font-bold text-gray-900">{{ item.nim }}</div></td>
                             <td><div class="font-bold text-gray-900">{{ item.name }}</div></td>
+                            
                             <td><span class="rounded-full px-3 py-1 text-xs font-bold bg-blue-100 text-blue-800">{{ item.study_program }}</span></td>
+                              <td class="text-center"><div class="font-bold text-gray-900">{{ item.entry_year }}</div></td>
                             <td class="text-center"><div class="font-bold text-gray-900">{{ item.graduation_year }}</div></td>
                             <td>
                                 <div class="flex items-center justify-center gap-3">

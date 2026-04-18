@@ -13,6 +13,7 @@ class Alumni extends Model
         'nim',
         'name',
         'study_program',
+        'entry_year',
         'graduation_year',
     ];
 }

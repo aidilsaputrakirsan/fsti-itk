@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('nim')->unique();
             $table->string('name');
             $table->string('study_program');
+            $table->integer('entry_year');
             $table->integer('graduation_year');
             $table->timestamps();
         });

@@ -48,7 +48,9 @@ class AlumniSeeder extends Seeder
             $prodiRaw = trim($row[0] ?? '');
             $nim = trim($row[1] ?? '');
             $nama = trim($row[2] ?? '');
-            $keterangan = trim($row[3] ?? '');
+
+            $tahunMasuk = trim($row[3] ?? '');
+            $keterangan = trim($row[4] ?? '');
 
             $prodiClean = strtolower($prodiRaw);
 
@@ -68,11 +70,16 @@ class AlumniSeeder extends Seeder
                 continue;
             }
 
+            if (empty($tahunMasuk) || !is_numeric($tahunMasuk) || strlen($tahunMasuk) !== 4) {
+                $tahunMasuk = '20' . substr($nim, 2, 2);
+            }
+
             Alumni::updateOrCreate(
                 ['nim' => $nim],
                 [
                     'name' => $nama,
                     'study_program' => ucwords($prodiClean),
+                    'entry_year' => (int) $tahunMasuk,
                     'graduation_year' => $graduationYear,
                 ]
             );

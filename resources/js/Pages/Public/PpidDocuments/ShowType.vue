@@ -36,7 +36,7 @@ const props = defineProps({
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-10 relative overflow-hidden">
                     <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary"></div>
                     <div>
-                        <h2 class="text-2xl md:text-3xl font-optimus font-bold text-primary mb-2">Katalog Dokumen {{ information_type }}</h2>
+                        <h2 class="text-2xl md:text-3xl font-optimus font-bold text-primary mb-2">Daftar Dokumen {{ information_type }}</h2>
                         <p class="text-gray-900 font-medium text-sm md:text-[15px]">Informasi publik tingkat fakultas yang masuk dalam kategori {{ information_type }}.</p>
                     </div>
                 </div>

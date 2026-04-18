@@ -74,7 +74,7 @@ const navigation = computed(() => {
             href: null,
             icon: ArchiveBoxIcon, 
             children: [
-                { name: 'Kelola PPID', href: '/admin/ppid' },
+                { name: 'Kelola Dokumen PPID', href: '/admin/ppid' },
                 { name: 'Kelola Kategori PPID', href: '/admin/kategori-ppid' }
             ]
         },
