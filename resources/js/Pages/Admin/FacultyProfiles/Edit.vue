@@ -4,7 +4,8 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { 
     ChartBarIcon, DocumentTextIcon, FlagIcon, 
-    PaperAirplaneIcon, CheckCircleIcon, PhotoIcon, PaperClipIcon, XMarkIcon, LinkIcon
+    PaperAirplaneIcon, CheckCircleIcon, PhotoIcon, PaperClipIcon, XMarkIcon, LinkIcon,
+    BuildingLibraryIcon, PlusIcon, TrashIcon
 } from '@heroicons/vue/24/outline';
 import InputError from '@/Components/InputError.vue';
 
@@ -29,6 +30,7 @@ const tabs = [
     { id: 'statistik', name: 'Statistik Data', icon: ChartBarIcon },
     { id: 'tugas', name: 'Tugas & Fungsi', icon: DocumentTextIcon },
     { id: 'visi', name: 'Visi & Misi', icon: FlagIcon },
+    { id: 'fasilitas', name: 'Fasilitas Kampus', icon: BuildingLibraryIcon },
     { id: 'bagan', name: 'Bagan Organisasi', icon: PhotoIcon },
     { id: 'tautan', name: 'Tautan Eksternal', icon: LinkIcon }, 
 ];
@@ -44,8 +46,7 @@ const form = useForm({
         bagan_organisasi: props.profile?.content?.bagan_organisasi || 'images/bagan-organisasi.webp',
         pmb_link: props.profile?.content?.pmb_link || '', 
         tracer_study_link: props.profile?.content?.tracer_study_link || '',
-        ppid_permohonan_link: props.profile?.content?.ppid_permohonan_link || '', 
-        ppid_keberatan_link: props.profile?.content?.ppid_keberatan_link || ''   
+        fasilitas: props.profile?.content?.fasilitas || []
     },
     bagan_image: null
 });
@@ -66,8 +67,25 @@ const clearImage = () => {
     }
 };
 
+const addFasilitas = () => {
+    form.content.fasilitas.push({ nama: '', deskripsi: '', gambar: '' });
+};
+
+const removeFasilitas = (index) => {
+    form.content.fasilitas.splice(index, 1);
+};
+
+const handleFasilitasImageChange = (event, index) => {
+    const target = event.target;
+    if (target.files && target.files[0]) {
+        form.content.fasilitas[index].gambar = target.files[0];
+    }
+};
+
 const getImageUrl = (path) => {
     if (!path) return null;
+    if (typeof path === 'object') return URL.createObjectURL(path);
+    if (path.startsWith('http')) return path;
     if (path.startsWith('images/')) return `/${path}`; 
     return `/storage/${path}`; 
 };
@@ -147,6 +165,21 @@ const submit = () => {
         }
     });
 
+    form.content.fasilitas.forEach((f, index) => {
+        if (!f.nama) { 
+            form.setError(`content.fasilitas.${index}.nama`, 'Nama fasilitas wajib diisi.'); 
+            if (!firstErrorTab) firstErrorTab = 'fasilitas'; 
+        }
+        if (!f.deskripsi) { 
+            form.setError(`content.fasilitas.${index}.deskripsi`, 'Deskripsi fasilitas wajib diisi.'); 
+            if (!firstErrorTab) firstErrorTab = 'fasilitas'; 
+        }
+        if (!f.gambar) { 
+            form.setError(`content.fasilitas.${index}.gambar`, 'Gambar fasilitas wajib di-upload.'); 
+            if (!firstErrorTab) firstErrorTab = 'fasilitas'; 
+        }
+    });
+
     if (form.bagan_image) {
         const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
         if (!allowedTypes.includes(form.bagan_image.type)) {
@@ -176,24 +209,6 @@ const submit = () => {
         if (!firstErrorTab) firstErrorTab = 'tautan';
     }
 
-    // Validasi Tautan PPID
-    if (!form.content.ppid_permohonan_link) {
-        form.setError('content.ppid_permohonan_link', 'Tautan Formulir Permohonan PPID wajib diisi.');
-        if (!firstErrorTab) firstErrorTab = 'tautan';
-    } else if (!strictUrlPattern.test(form.content.ppid_permohonan_link)) {
-        form.setError('content.ppid_permohonan_link', 'Tautan tidak valid. Masukkan URL lengkap dengan domain (Contoh: https://docs.google.com/...).');
-        if (!firstErrorTab) firstErrorTab = 'tautan';
-    }
-
-    if (!form.content.ppid_keberatan_link) {
-        form.setError('content.ppid_keberatan_link', 'Tautan Formulir Keberatan PPID wajib diisi.');
-        if (!firstErrorTab) firstErrorTab = 'tautan';
-    } else if (!strictUrlPattern.test(form.content.ppid_keberatan_link)) {
-        form.setError('content.ppid_keberatan_link', 'Tautan tidak valid. Masukkan URL lengkap dengan domain (Contoh: https://docs.google.com/...).');
-        if (!firstErrorTab) firstErrorTab = 'tautan';
-    }
-
-
     if (firstErrorTab) {
         activeTab.value = firstErrorTab;
         return;
@@ -222,7 +237,7 @@ const submit = () => {
   <div>
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-gray-900">Kelola Tentang Fakultas</h1>
-      <p class="mt-2 text-gray-600">Perbarui redaksi data statistik, fungsi, visi misi, dan bagan yang tampil pada halaman publik.</p>
+      <p class="mt-2 text-gray-600">Perbarui redaksi data statistik, fungsi, visi misi, fasilitas, dan bagan yang tampil pada halaman publik.</p>
     </div>
 
     <div class="mb-6 border-b border-gray-200 bg-white px-4 pt-2 rounded-t-2xl shadow-sm">
@@ -403,6 +418,63 @@ const submit = () => {
                     </div>
                 </div>
 
+                <div v-show="activeTab === 'fasilitas'">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold">Fasilitas & Lingkungan Kampus</h2>
+                        <button type="button" @click="addFasilitas" class="flex items-center gap-2 px-4 py-2 bg-blue-50 text-primary font-bold rounded-xl hover:bg-blue-100 transition shadow-sm border border-blue-100">
+                            <PlusIcon class="w-5 h-5" /> Tambah Fasilitas
+                        </button>
+                    </div>
+                    <p class="text-gray-600 mb-6 bg-blue-50 p-4 rounded-xl text-sm border border-blue-100">Tambahkan fasilitas yang dimiliki oleh fakultas. Pada tampilan publik, urutan pertama dan urutan ke-6 ke atas akan otomatis ditampilkan dengan ukuran <i>card</i> yang lebih lebar agar tidak membosankan.</p>
+                    
+                    <div class="space-y-6">
+                        <div v-for="(item, index) in form.content.fasilitas" :key="index" class="bg-gray-50 p-6 rounded-2xl border border-gray-200 relative group shadow-sm transition-all hover:shadow-md hover:border-blue-200">
+                            
+                            <button type="button" @click="removeFasilitas(index)" class="absolute -top-3 -right-3 w-8 h-8 flex items-center justify-center bg-red-100 text-red-600 rounded-full hover:bg-red-500 hover:text-white transition shadow-md z-10" title="Hapus Fasilitas">
+                                <TrashIcon class="w-4 h-4" />
+                            </button>
+
+                            <div class="flex flex-col md:flex-row gap-6">
+                                <div class="w-full md:w-1/3 shrink-0">
+                                    <label class="block text-sm font-bold mb-2">Foto / Gambar <span class="text-red-500">*</span></label>
+                                    
+                                    <div v-if="getImageUrl(item.gambar)" class="mb-3">
+                                        <img :src="getImageUrl(item.gambar)" class="w-full h-32 object-cover rounded-xl border border-gray-300 shadow-sm" alt="Preview">
+                                    </div>
+                                    
+                                    <div class="relative flex items-center w-full rounded-xl border shadow-sm px-3 py-2 hover:bg-white transition"
+                                         :class="form.errors[`content.fasilitas.${index}.gambar`] ? 'border-red-500 bg-red-50 text-red-900' : 'border-gray-300 bg-white'">
+                                        <PaperClipIcon class="h-5 w-5 text-gray-400" />
+                                        <span class="ml-2 text-xs truncate flex-1 text-gray-500" :class="{'text-red-700 font-bold': form.errors[`content.fasilitas.${index}.gambar`]}">
+                                            {{ typeof item.gambar === 'object' && item.gambar !== null ? item.gambar.name : (item.gambar ? 'Gambar tersimpan...' : 'Pilih file...') }}
+                                        </span>
+                                        <input type="file" accept="image/*" @change="handleFasilitasImageChange($event, index)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                                    </div>
+                                    <InputError :message="form.errors[`content.fasilitas.${index}.gambar`]" class="mt-1" />
+                                </div>
+                                <div class="w-full space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-bold mb-1">Nama Fasilitas <span class="text-red-500">*</span></label>
+                                        <input type="text" v-model="item.nama" placeholder="Contoh: Co Learning Space" class="w-full rounded-xl py-2.5 transition-all duration-200 shadow-sm"
+                                               :class="form.errors[`content.fasilitas.${index}.nama`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'">
+                                        <InputError :message="form.errors[`content.fasilitas.${index}.nama`]" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-bold mb-1">Deskripsi Singkat <span class="text-red-500">*</span></label>
+                                        <textarea v-model="item.deskripsi" rows="2" placeholder="Ruang nyaman untuk belajar bersama..." class="w-full rounded-xl py-2.5 text-sm transition-all duration-200 shadow-sm"
+                                                  :class="form.errors[`content.fasilitas.${index}.deskripsi`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"></textarea>
+                                        <InputError :message="form.errors[`content.fasilitas.${index}.deskripsi`]" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div v-if="form.content.fasilitas.length === 0" class="text-center py-10 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300 text-gray-500">
+                            Belum ada data fasilitas. Klik tombol "Tambah Fasilitas" di atas.
+                        </div>
+                    </div>
+                </div>
+
                 <div v-show="activeTab === 'bagan'">
                     <h2 class="text-2xl font-bold mb-6">Bagan Organisasi</h2>
                     <div class="space-y-6">
@@ -435,8 +507,7 @@ const submit = () => {
                     <h2 class="text-2xl font-bold mb-6">Pengaturan Tautan Eksternal</h2>
                     <div class="space-y-6">
                         <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Tautan Umum</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-bold mb-2">Tautan PMB (Penerimaan Mahasiswa Baru) <span class="text-red-500">*</span></label>
                                     <input 
@@ -454,48 +525,22 @@ const submit = () => {
                                     <input 
                                         type="text" 
                                         v-model="form.content.tracer_study_link" 
-                                        placeholder="Cth: https://docs.google.com/forms/d/e/1FAIpQLSe09s1JB6Sm4005NakxU9uNVnLyGBEiIEv8oSO2EdLG81LIeA/viewform" 
+                                        placeholder="Cth: https://docs.google.com/forms/..." 
                                         class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
                                         :class="form.errors['content.tracer_study_link'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
                                     >
                                     <InputError :message="form.errors['content.tracer_study_link']" />
                                 </div>
                             </div>
-                            
-                            <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Tautan PPID</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold mb-2">Tautan Formulir Permohonan Informasi (PPID) <span class="text-red-500">*</span></label>
-                                    <input 
-                                        type="text" 
-                                        v-model="form.content.ppid_permohonan_link" 
-                                        placeholder="Cth: https://docs.google.com/forms/..." 
-                                        class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
-                                        :class="form.errors['content.ppid_permohonan_link'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                    >
-                                    <InputError :message="form.errors['content.ppid_permohonan_link']" />
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-bold mb-2">Tautan Formulir Keberatan Informasi (PPID) <span class="text-red-500">*</span></label>
-                                    <input 
-                                        type="text" 
-                                        v-model="form.content.ppid_keberatan_link" 
-                                        placeholder="Cth: https://docs.google.com/forms/..." 
-                                        class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
-                                        :class="form.errors['content.ppid_keberatan_link'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                    >
-                                    <InputError :message="form.errors['content.ppid_keberatan_link']" />
-                                </div>
-                            </div>
 
                             <p class="text-sm text-gray-600 mt-5 leading-relaxed">
-                                <span class="font-bold">Informasi:</span> Tautan yang Anda masukkan di atas akan menjadi tujuan (link) ketika pengunjung mengklik tombol pada halaman terkait (seperti PMB, Tracer Study, atau PPID). Pastikan tautan diawali dengan <code>http://</code> atau <code>https://</code>.
+                                <span class="font-bold">Informasi:</span> Tautan yang Anda masukkan di atas akan menjadi tujuan (link) ketika pengunjung mengklik tombol pada halaman terkait (seperti PMB atau Tracer Study). Pastikan tautan diawali dengan <code>http://</code> atau <code>https://</code>.
                             </p>
                         </div>
                     </div>
                 </div>
-                </div>
+
+            </div>
 
             <div class="bg-gray-50 px-8 py-5 border-t border-gray-100 rounded-b-2xl flex items-center justify-end shrink-0">
                 <button type="submit" :disabled="form.processing" class="flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-white font-bold hover:bg-opacity-90 transition shadow-sm w-full sm:w-auto disabled:opacity-50">

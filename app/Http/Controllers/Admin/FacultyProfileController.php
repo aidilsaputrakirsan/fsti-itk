@@ -25,12 +25,28 @@ class FacultyProfileController extends Controller
                     'visi_misi' => ['visi' => '', 'misi_tagline' => '', 'misi' => []],
                     'bagan_organisasi' => null,
                     'pmb_link' => '',
-                    'tracer_study_link' => ''
+                    'tracer_study_link' => '',
+                    'fasilitas' => [
+                        ['nama' => 'Co Learning Space', 'deskripsi' => 'Ruang nyaman untuk belajar bersama, berdiskusi, dan bertukar ide.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Co+Learning+Space'],
+                        ['nama' => 'English Speaking Zone', 'deskripsi' => 'Area khusus untuk melatih kemampuan berbahasa Inggris.', 'gambar' => 'https://placehold.co/600x600/2F4DD3/FFFFFF?text=English+Zone'],
+                        ['nama' => 'Ruang Kelas', 'deskripsi' => 'Ruang belajar tatap muka yang interaktif dan nyaman.', 'gambar' => 'https://placehold.co/600x600/2F4DD3/FFFFFF?text=Ruang+Kelas'],
+                        ['nama' => 'Lab Inovasi Digital', 'deskripsi' => 'Tempat mengembangkan kreativitas karya digital.', 'gambar' => 'https://placehold.co/600x600/2F4DD3/FFFFFF?text=Lab+Inovasi+Digital'],
+                        ['nama' => 'Lab Sistem Cerdas', 'deskripsi' => 'Fasilitas eksplorasi dan pengembangan kecerdasan buatan.', 'gambar' => 'https://placehold.co/600x600/2F4DD3/FFFFFF?text=Lab+Sistem+Cerdas'],
+                        ['nama' => 'Lab Komputasi dan Data', 'deskripsi' => 'Area praktik pendukung pemrograman dan komputasi pengolahan data.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Lab+Komputasi+%26+Data'],
+                        ['nama' => 'Lab Fisika Dasar', 'deskripsi' => 'Tempat pelaksanaan praktikum dan eksperimen fisika tingkat dasar.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Lab+Fisika+Dasar'],
+                        ['nama' => 'Lab Fisika Lanjut', 'deskripsi' => 'Fasilitas eksperimen dan analisis fisika untuk penerapan tingkat lanjut.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Lab+Fisika+Lanjut'],
+                        ['nama' => 'Masjid', 'deskripsi' => 'Fasilitas tempat ibadah yang tenang dan nyaman di lingkungan kampus.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Masjid+Kampus'],
+                        ['nama' => 'Perpustakaan', 'deskripsi' => 'Pusat pencarian referensi, buku, dan literatur pendukung studi mahasiswa.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Perpustakaan']
+                    ]
                 ]
             ]
         );
 
         $content = $page->content;
+
+        if (!isset($content['fasilitas'])) {
+            $content['fasilitas'] = [];
+        }
 
         $countDosen = Staff::where('type', 'Dosen')->where('is_active', true)->count();
         $countTendik = Staff::where('type', 'Tendik')->where('is_active', true)->count();
@@ -79,6 +95,7 @@ class FacultyProfileController extends Controller
             'content.pmb_link' => 'nullable|url',
             'content.tracer_study_link' => 'nullable|url',
             'bagan_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'content.fasilitas' => 'nullable|array',
         ]);
 
         $profile = FacultyProfile::first();
@@ -95,6 +112,26 @@ class FacultyProfileController extends Controller
                 $content['bagan_organisasi'] = $profile->content['bagan_organisasi'];
             }
         }
+
+        // Proses Fasilitas
+        $fasilitas = $request->input('content.fasilitas', []);
+        foreach ($fasilitas as $index => $item) {
+            if ($request->hasFile("content.fasilitas.{$index}.gambar")) {
+                $file = $request->file("content.fasilitas.{$index}.gambar");
+                
+                if (isset($profile->content['fasilitas'][$index]['gambar']) && 
+                    !str_starts_with($profile->content['fasilitas'][$index]['gambar'], 'images/') &&
+                    !str_starts_with($profile->content['fasilitas'][$index]['gambar'], 'http')) {
+                    Storage::disk('public')->delete($profile->content['fasilitas'][$index]['gambar']);
+                }
+                
+                $path = $file->store('fasilitas', 'public');
+                $fasilitas[$index]['gambar'] = $path;
+            } else {
+                $fasilitas[$index]['gambar'] = $item['gambar'] ?? ($profile->content['fasilitas'][$index]['gambar'] ?? null);
+            }
+        }
+        $content['fasilitas'] = $fasilitas;
 
         FacultyProfile::updateOrCreate(['id' => 1], ['content' => $content]);
 
