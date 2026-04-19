@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Partner;
+use App\Models\Post; 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\File;
@@ -12,33 +13,13 @@ use Illuminate\Support\Facades\Storage;
 class PartnerController extends Controller
 {
     private $protectedLogos = [
-        'bpsdm.png',
-        'terra-drone.png',
-        'jasindo.png',
-        'smk-cendekia.png',
-        'sma-7.png',
-        'sma-9.png',
-        'posyantek.png',
-        'dkumkmp.png',
-        'universitas-brawijaya.png',
-        'brida-kaltim.png',
-        'fsad-its.png',
-        'universitas-kristen.png',
-        'icdec.png',
-        'pertamedika.png',
-        'oikn.png',
-        'universitas-malang.png',
-        'unesa.png',
-        'universitas-hasanuddin.png',
-        'javan.png',
-        'matematika-its.png',
-        'fteic-its.png',
-        'astra.png',
-        'upn.png',
-        'inixindo.png',
-        'bps.png',
-        'cqut.png',
-        'kiet.png'
+        'bpsdm.png', 'terra-drone.png', 'jasindo.png', 'smk-cendekia.png',
+        'sma-7.png', 'sma-9.png', 'posyantek.png', 'dkumkmp.png',
+        'universitas-brawijaya.png', 'brida-kaltim.png', 'fsad-its.png',
+        'universitas-kristen.png', 'icdec.png', 'pertamedika.png', 'oikn.png',
+        'universitas-malang.png', 'unesa.png', 'universitas-hasanuddin.png',
+        'javan.png', 'matematika-its.png', 'fteic-its.png', 'astra.png',
+        'upn.png', 'inixindo.png', 'bps.png', 'cqut.png', 'kiet.png'
     ];
 
     public function index(Request $request)
@@ -73,22 +54,35 @@ class PartnerController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Partners/Create');
+        $posts = Post::select('id', 'title', 'slug')
+            ->where('status', 'Terbitkan')
+            ->latest()
+            ->get();
+
+        return Inertia::render('Admin/Partners/Create', compact('posts'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'activities_text' => 'nullable|string',
+            'activities' => 'nullable|array',
+            'activities.*.name' => 'required|string|max:255',
+            'activities.*.post_id' => 'nullable',
+            'activities.*.post_slug' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $activities = [];
-        if (!empty($validated['activities_text'])) {
-            $lines = explode("\n", str_replace("\r", "", $validated['activities_text']));
-            foreach ($lines as $line) {
-                if (trim($line) !== '') $activities[] = trim($line);
+        if ($request->has('activities') && is_array($request->activities)) {
+            foreach ($request->activities as $act) {
+                if (!empty(trim($act['name'] ?? ''))) {
+                    $activities[] = [
+                        'name' => trim($act['name']),
+                        'post_id' => $act['post_id'] ?? null,
+                        'post_slug' => $act['post_slug'] ?? null,
+                    ];
+                }
             }
         }
 
@@ -108,22 +102,35 @@ class PartnerController extends Controller
 
     public function edit(Partner $partner)
     {
-        return Inertia::render('Admin/Partners/Edit', compact('partner'));
+        $posts = Post::select('id', 'title', 'slug')
+            ->where('status', 'Terbitkan')
+            ->latest()
+            ->get();
+
+        return Inertia::render('Admin/Partners/Edit', compact('partner', 'posts'));
     }
 
     public function update(Request $request, Partner $partner)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'activities_text' => 'nullable|string',
+            'activities' => 'nullable|array',
+            'activities.*.name' => 'required|string|max:255',
+            'activities.*.post_id' => 'nullable',
+            'activities.*.post_slug' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $activities = [];
-        if (!empty($validated['activities_text'])) {
-            $lines = explode("\n", str_replace("\r", "", $validated['activities_text']));
-            foreach ($lines as $line) {
-                if (trim($line) !== '') $activities[] = trim($line);
+        if ($request->has('activities') && is_array($request->activities)) {
+            foreach ($request->activities as $act) {
+                if (!empty(trim($act['name'] ?? ''))) {
+                    $activities[] = [
+                        'name' => trim($act['name']),
+                        'post_id' => $act['post_id'] ?? null,
+                        'post_slug' => $act['post_slug'] ?? null,
+                    ];
+                }
             }
         }
         $partner->activities = $activities;

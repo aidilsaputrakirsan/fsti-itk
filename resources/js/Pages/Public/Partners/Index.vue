@@ -1,9 +1,9 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
-import { Head, router } from '@inertiajs/vue3';
-import { Search, Handshake, CheckCircle, X, FileX2 } from 'lucide-vue-next';
+import { Head, router, Link } from '@inertiajs/vue3';
+import { Search, Handshake, CheckCircle, X, FileX2, ExternalLink, Newspaper } from 'lucide-vue-next';
 import { throttle } from 'lodash';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -30,6 +30,30 @@ const changePage = (p) => {
     if (typeof p === 'number' && p >= 1 && p <= totalPages.value) {
         router.get(route('partners.index'), { search: searchQuery.value, page: p }, { preserveState: true, replace: true, onFinish: () => { window.scrollTo({ top: 350, behavior: 'smooth' }); AOS.refresh(); } });
     }
+};
+
+const isModalOpen = ref(false);
+const selectedPartner = ref(null);
+
+const openPartnerModal = (partner) => {
+    selectedPartner.value = partner;
+    isModalOpen.value = true;
+    document.body.style.overflow = 'hidden';
+};
+
+const closePartnerModal = () => {
+    isModalOpen.value = false;
+    setTimeout(() => { selectedPartner.value = null; }, 300);
+    document.body.style.overflow = 'auto';
+};
+
+onUnmounted(() => {
+    document.body.style.overflow = 'auto';
+});
+
+const formatDate = (dateString) => {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 </script>
 
@@ -97,10 +121,13 @@ const changePage = (p) => {
                 </div>
 
                 <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 mx-2 sm:mx-4 md:mx-8">
-                    <div v-for="(partner, index) in partners.data" :key="partner.id" class="bg-white rounded-[1rem] md:rounded-[1.5rem] border border-gray-200 shadow-sm hover:shadow-xl hover:border-primary/30 transform hover:-translate-y-1 transition-all duration-300 flex flex-col h-[300px] sm:h-[380px] md:h-[460px] group overflow-hidden" data-aos="fade-up" :data-aos-delay="(index % 10) * 50">
+                    <div v-for="(partner, index) in partners.data" :key="partner.id" 
+                        @click="openPartnerModal(partner)"
+                        class="cursor-pointer bg-white rounded-[1rem] md:rounded-[1.5rem] border border-gray-200 shadow-sm hover:shadow-xl hover:border-primary/30 transform hover:-translate-y-1 transition-all duration-300 flex flex-col h-auto sm:h-auto md:min-h-[460px] group overflow-hidden" 
+                        data-aos="fade-up" :data-aos-delay="(index % 10) * 50">
                         
                         <div class="h-28 sm:h-36 md:h-52 w-full bg-white border-b border-gray-100 p-3 sm:p-4 md:p-6 flex items-center justify-center shrink-0">
-                            <img v-if="partner.logo_url" :src="partner.logo_url" :alt="partner.name" class="w-full h-full object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-105" />
+                            <img v-if="partner.logo_url" :src="partner.logo_url" :alt="partner.name" class="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105" />
                             <div v-else class="text-gray-300 flex flex-col items-center">
                                 <Handshake class="w-6 h-6 md:w-10 md:h-10 mb-1 md:mb-2 opacity-50" />
                                 <span class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-center">No Logo</span>
@@ -108,19 +135,19 @@ const changePage = (p) => {
                         </div>
 
                         <div class="p-3 sm:p-4 md:p-6 flex flex-col flex-grow bg-gray-50/50 min-h-0">
-                            <div v-if="partner.activities && partner.activities.length > 0" class="mb-2 md:mb-3 shrink-0">
+                            <div v-if="partner.activities && partner.activities.length > 0" class="mb-2 md:mb-3 shrink-0 flex gap-2 flex-wrap">
                                 <span class="inline-flex items-center px-2 py-0.5 md:px-3 md:py-1 bg-blue-100 text-primary rounded-md text-[10px] sm:text-xs font-bold">
                                     {{ partner.activities.length }} Kegiatan
                                 </span>
                             </div>
 
-                            <h3 class="text-sm sm:text-base md:text-lg font-bold text-gray-800 group-hover:text-primary transition-colors leading-snug mb-2 md:mb-4 line-clamp-2 shrink-0">{{ partner.name }}</h3>
+                            <h3 class="text-sm sm:text-base md:text-lg font-bold text-gray-800 group-hover:text-primary transition-colors leading-snug mb-2 md:mb-4 shrink-0">{{ partner.name }}</h3>
                             
-                            <div v-if="partner.activities && partner.activities.length > 0" class="flex-grow overflow-y-auto min-h-0 pr-1 md:pr-2 space-y-2 md:space-y-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+                            <div v-if="partner.activities && partner.activities.length > 0" class="flex-grow overflow-y-auto min-h-0 pr-1 md:pr-2 space-y-2 md:space-y-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pointer-events-none">
                                 <ul class="space-y-1.5 md:space-y-3">
                                     <li v-for="(act, idx) in partner.activities" :key="idx" class="flex items-start gap-1.5 md:gap-2.5 text-[11px] sm:text-xs md:text-sm text-gray-600 font-medium">
                                         <CheckCircle class="w-3 h-3 md:w-4 md:h-4 text-primary shrink-0 mt-0.5 md:mt-0.5" />
-                                        <span class="leading-relaxed line-clamp-2 md:line-clamp-none">{{ act }}</span>
+                                        <span class="leading-relaxed line-clamp-2 md:line-clamp-none">{{ typeof act === 'string' ? act : act.name }}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -147,5 +174,72 @@ const changePage = (p) => {
 
             </div>
         </div>
+
+        <Teleport to="body">
+            <transition enter-active-class="transition ease-out duration-300" enter-from-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100" leave-active-class="transition ease-in duration-200" leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
+                <div v-if="isModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 sm:p-6 font-public-sans" @click.self="closePartnerModal">
+                    
+                    <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col transform transition-all relative" v-if="selectedPartner">
+                        
+                        <button @click="closePartnerModal" class="absolute top-4 md:top-6 right-4 md:right-6 p-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full transition-colors z-20">
+                            <X class="w-5 h-5 stroke-2" />
+                        </button>
+
+                        <div class="p-6 md:p-10 overflow-y-auto custom-scrollbar">
+                            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 text-primary text-xs font-bold mb-6 uppercase tracking-wider">
+                                <Handshake class="w-4 h-4" /> Detail Kerjasama
+                            </div>
+
+                            <div class="flex flex-col md:flex-row gap-8 md:gap-10 items-start">
+                                <div class="w-32 h-32 md:w-48 md:h-48 flex-shrink-0 rounded-2xl border border-gray-200 p-4 flex items-center justify-center bg-white shadow-sm">
+                                    <img v-if="selectedPartner.logo_url" :src="selectedPartner.logo_url" :alt="selectedPartner.name" class="w-full h-full object-contain mix-blend-multiply">
+                                    <Handshake v-else class="w-12 h-12 text-gray-300" />
+                                </div>
+
+                                <div class="flex-grow w-full">
+                                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-8">{{ selectedPartner.name }}</h2>
+
+                                    <div>
+                                        <h3 class="text-sm font-extrabold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                            <CheckCircle class="w-4 h-4 text-primary" /> Daftar Kegiatan
+                                        </h3>
+                                        
+                                        <div v-if="selectedPartner.activities && selectedPartner.activities.length > 0">
+                                            <ul class="space-y-3">
+                                                <li v-for="(act, idx) in selectedPartner.activities" :key="idx" 
+                                                    class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-50 hover:bg-blue-50/30 transition-colors p-4 rounded-xl border border-gray-100">
+                                                    
+                                                    <div class="flex items-start gap-3">
+                                                        <div class="mt-1.5 w-2 h-2 rounded-full bg-primary flex-shrink-0"></div>
+                                                        <span class="text-sm md:text-base font-medium text-gray-700 leading-relaxed">{{ typeof act === 'string' ? act : act.name }}</span>
+                                                    </div>
+
+                                                    <Link v-if="typeof act === 'object' && act.post_slug"
+                                                        :href="route('posts.show', act.post_slug)"
+                                                        @click.stop
+                                                        class="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-gray-200 hover:border-primary text-primary hover:bg-primary hover:text-white rounded-lg text-xs font-bold transition-all shadow-sm shrink-0 whitespace-nowrap self-start sm:self-auto">
+                                                        <Newspaper class="w-3.5 h-3.5" /> Lihat Berita
+                                                    </Link>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <p v-else class="text-sm text-gray-500 italic bg-gray-50 p-4 rounded-xl border border-gray-100">Belum ada rincian kegiatan tercatat.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </transition>
+        </Teleport>
+
     </PublicLayout>
 </template>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar { width: 8px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; border: 2px solid #f8fafc; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+</style>

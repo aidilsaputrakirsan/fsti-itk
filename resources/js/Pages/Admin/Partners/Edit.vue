@@ -3,19 +3,31 @@ import { ref } from 'vue';
 import { useForm, Link, Head } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import InputError from '@/Components/InputError.vue';
-import { ArrowLeftIcon, PencilSquareIcon, PaperClipIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { ArrowLeftIcon, PencilSquareIcon, PaperClipIcon, XMarkIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
 defineOptions({ layout: AdminLayout });
 
 const props = defineProps({
-    partner: Object
+    partner: Object,
+    posts: Array
 });
 
 const fileInput = ref(null);
 
+const initialActivities = (props.partner.activities || []).map(act => {
+    if (typeof act === 'string') {
+        return { name: act, post_id: '', post_slug: '' };
+    }
+    return {
+        name: act.name,
+        post_id: act.post_id || '',
+        post_slug: act.post_slug || ''
+    };
+});
+
 const form = useForm({
     name: props.partner.name,
-    activities_text: props.partner.activities ? props.partner.activities.join('\n') : '',
+    activities: initialActivities.length > 0 ? initialActivities : [{ name: '', post_id: '', post_slug: '' }],
     logo: null,
     _method: 'put', 
 });
@@ -32,6 +44,23 @@ const handleLogoChange = (event) => {
 const clearLogo = () => {
     form.logo = null;
     if (fileInput.value) fileInput.value.value = '';
+};
+
+const addActivity = () => {
+    form.activities.push({ name: '', post_id: '', post_slug: '' });
+};
+
+const removeActivity = (index) => {
+    form.activities.splice(index, 1);
+};
+
+const updateActivitySlug = (activity) => {
+    if (!activity.post_id) {
+        activity.post_slug = '';
+        return;
+    }
+    const selectedPost = props.posts.find(p => p.id === activity.post_id);
+    activity.post_slug = selectedPost ? selectedPost.slug : '';
 };
 
 const submit = () => {
@@ -113,12 +142,33 @@ const submit = () => {
 
                     <label class="md:pt-3 text-sm font-bold text-gray-800">Daftar Kegiatan</label>
                     <div>
-                        <p class="text-xs text-gray-500 mb-3 font-medium">Pisahkan setiap kegiatan dengan menekan tombol <strong>Enter</strong> (baris baru). Kosongkan jika tidak ada kegiatan aktif.</p>
-                        <textarea v-model="form.activities_text" rows="6" placeholder="Pendidikan&#10;Penelitian&#10;Pengabdian kepada Masyarakat"
-                            class="block w-full rounded-lg transition-colors py-3"
-                            :class="form.errors.activities_text ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"
-                        ></textarea>
-                        <InputError :message="form.errors.activities_text" />
+                        <p class="text-xs text-gray-500 mb-3 font-medium">Tambahkan rincian kegiatan. Jika ada berita yang berkaitan, Anda dapat memilihnya dari daftar dropdown (opsional).</p>
+                        
+                        <div class="space-y-3">
+                            <div v-for="(activity, index) in form.activities" :key="index" class="flex flex-col sm:flex-row gap-2 items-start bg-gray-50 p-3 rounded-xl border border-gray-200">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-grow w-full">
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-gray-600 mb-1 uppercase">Nama Kegiatan <span class="text-red-500">*</span></label>
+                                        <input v-model="activity.name" type="text" placeholder="Cth: Penelitian Bersama" class="block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary text-sm py-2" required>
+                                        <InputError v-if="form.errors[`activities.${index}.name`]" :message="form.errors[`activities.${index}.name`]" class="mt-1" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-gray-600 mb-1 uppercase">Tautkan ke Berita (Opsional)</label>
+                                        <select v-model="activity.post_id" @change="updateActivitySlug(activity)" class="block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary text-sm py-2 text-gray-700">
+                                            <option value="">-- Tidak Ada Berita Terkait --</option>
+                                            <option v-for="post in posts" :key="post.id" :value="post.id">{{ post.title }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="button" @click="removeActivity(index)" class="mt-5 p-2 text-red-500 hover:bg-red-100 rounded-lg border border-transparent hover:border-red-200 transition-colors shrink-0" title="Hapus Kegiatan">
+                                    <TrashIcon class="w-5 h-5" />
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="button" @click="addActivity" class="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:text-primary-hover bg-blue-50 px-4 py-2 rounded-lg transition-colors">
+                            <PlusIcon class="w-4 h-4" stroke-width="2.5" /> Tambah Kegiatan
+                        </button>
                     </div>
 
                 </div>
