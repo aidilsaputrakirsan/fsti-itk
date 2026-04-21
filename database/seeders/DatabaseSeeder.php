@@ -13,7 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Buat Akun Admin
         if (!User::where('email', 'admin@fsti.itk.ac.id')->exists()) {
             User::factory()->create([
                 'name' => 'Admin FSTI',
@@ -26,7 +25,6 @@ class DatabaseSeeder extends Seeder
             $this->command->info('Admin user already exists, skipping...');
         }
 
-        // 2. Buat Kategori Dasar Secara Otomatis
         $categories = [
             ['name' => 'Akademik', 'slug' => 'akademik'],
             ['name' => 'Non Akademik', 'slug' => 'non-akademik'],
@@ -38,7 +36,6 @@ class DatabaseSeeder extends Seeder
         }
         $this->command->info('Post Categories seeded successfully.');
 
-        // 3. Jalankan Seeder Lainnya
         $this->call([
             PostSeeder::class,
             AchievementSeeder::class,
@@ -47,17 +44,18 @@ class DatabaseSeeder extends Seeder
             SurveyCategorySeeder::class,
             InternalServiceSeeder::class,
             ContactSeeder::class,
-            TentangFakultasSeeder::class,
+            FacultyProfileSeeder::class,
             StudyProgramSeeder::class,
             StaffSeeder::class,
-            KegiatanMahasiswaSeeder::class,
-            AgendaFakultasSeeder::class,
-            BeasiswaSeeder::class,
+            StudentActivitySeeder::class,
+            AgendaSeeder::class,
+            ScholarshipSeeder::class,
             PartnerSeeder::class,
             AnnouncementSeeder::class,
-            PenelitianSeeder::class,
+            ResearchSeeder::class,
             AlumniSeeder::class,
-            PengabdianSeeder::class,
+            CommunityServiceSeeder::class,
+            DepartmentSeeder::class,
         ]);
     }
 }

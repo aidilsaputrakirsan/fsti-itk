@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
-    /**
-     * Menampilkan halaman utama daftar berita dengan filter.
-     */
     public function index(Request $request)
     {
         $query = Post::with('category');
@@ -35,9 +32,6 @@ class PostController extends Controller
         ]);
     }
 
-    /**
-     * Menampilkan form untuk membuat berita baru.
-     */
     public function create()
     {
         $categories = PostCategory::all();
@@ -47,9 +41,6 @@ class PostController extends Controller
         ]);
     }
 
-    /**
-     * Menyimpan berita baru ke database.
-     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -58,7 +49,9 @@ class PostController extends Controller
             'post_category_id' => 'required|exists:post_categories,id',
             'tags' => 'nullable|string',
             'status' => 'required|in:Draft,Terbitkan',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'title.unique' => 'Judul berita sudah digunakan, silakan gunakan judul lain.',
         ]);
 
         if ($request->hasFile('image')) {
@@ -68,7 +61,6 @@ class PostController extends Controller
 
         $validatedData['slug'] = Str::slug($request->title, '-');
         $validatedData['published_at'] = ($request->status === 'Terbitkan') ? now() : null;
-
         $validatedData['excerpt'] = Str::limit(strip_tags(html_entity_decode($request->content)), 150);
 
         Post::create($validatedData);
@@ -76,9 +68,6 @@ class PostController extends Controller
         return redirect()->route('admin.posts.index')->with('success', 'Berita berhasil ditambahkan.');
     }
 
-    /**
-     * Menampilkan form untuk mengedit berita.
-     */
     public function edit(Post $post)
     {
         $categories = PostCategory::all();
@@ -89,9 +78,6 @@ class PostController extends Controller
         ]);
     }
 
-    /**
-     * Memperbarui berita di database.
-     */
     public function update(Request $request, Post $post)
     {
         $validatedData = $request->validate([
@@ -100,7 +86,9 @@ class PostController extends Controller
             'post_category_id' => 'required|exists:post_categories,id',
             'tags' => 'nullable|string',
             'status' => 'required|in:Draft,Terbitkan',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'title.unique' => 'Judul berita sudah digunakan, silakan gunakan judul lain.',
         ]);
 
         if ($request->hasFile('image')) {
@@ -119,19 +107,14 @@ class PostController extends Controller
             $validatedData['published_at'] = null;
         }
 
-        // LOGIKA EXCERPT OTOMATIS
         $validatedData['excerpt'] = Str::limit(strip_tags(html_entity_decode($request->content)), 150);
 
-        $validatedData['views'] = 0;
 
         $post->update($validatedData);
 
         return redirect()->route('admin.posts.index')->with('success', 'Berita berhasil diperbarui.');
     }
 
-    /**
-     * Menghapus berita dari database.
-     */
     public function destroy(Post $post)
     {
         if ($post->image_path) {

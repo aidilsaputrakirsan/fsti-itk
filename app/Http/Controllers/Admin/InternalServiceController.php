@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\InternalService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Validation\Rule;
 
 class InternalServiceController extends Controller
 {
@@ -46,12 +47,30 @@ class InternalServiceController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'link_url' => 'required|url',
+            'link_url' => [
+                'required', 
+                'url', 
+                'unique:internal_services,link_url',
+                'regex:/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/'
+            ],
             'description' => 'required|string',
             'sort_order' => 'required|integer|min:1',
             'is_active' => 'required|boolean',
+        ], [
+            'name.required' => 'Nama layanan wajib diisi.',
+            'name.max' => 'Nama layanan maksimal 255 karakter.',
+            'link_url.required' => 'Tautan URL wajib diisi.',
+            'link_url.url' => 'Format tautan tidak valid.',
+            'link_url.unique' => 'Tautan URL ini sudah digunakan oleh layanan lain.',
+            'link_url.regex' => 'Format tautan tidak valid (harus mengandung nama domain lengkap seperti .com, .ac.id, dll).',
+            'description.required' => 'Deskripsi layanan wajib diisi.',
+            'sort_order.required' => 'Urutan tampil wajib diisi.',
+            'sort_order.integer' => 'Urutan tampil harus berupa angka.',
+            'sort_order.min' => 'Urutan tampil minimal adalah 1.',
         ]);
         
+        InternalService::where('sort_order', '>=', $validated['sort_order'])->increment('sort_order');
+
         InternalService::create($validated);
         return redirect()->route('admin.internal-services.index')->with('success', 'Layanan berhasil ditambahkan.');
     }
@@ -74,19 +93,51 @@ class InternalServiceController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'link_url' => 'required|url',
+            // PERBAIKAN: Tambah REGEX yang sama untuk Update
+            'link_url' => [
+                'required', 
+                'url', 
+                Rule::unique('internal_services')->ignore($internalService->id),
+                'regex:/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/'
+            ],
             'description' => 'required|string',
             'sort_order' => 'required|integer|min:1',
             'is_active' => 'required|boolean',
+        ], [
+            'name.required' => 'Nama layanan wajib diisi.',
+            'name.max' => 'Nama layanan maksimal 255 karakter.',
+            'link_url.required' => 'Tautan URL wajib diisi.',
+            'link_url.url' => 'Format tautan tidak valid.',
+            'link_url.unique' => 'Tautan URL ini sudah digunakan oleh layanan lain.',
+            'link_url.regex' => 'Format tautan tidak valid (harus mengandung nama domain lengkap seperti .com, .ac.id, dll).',
+            'description.required' => 'Deskripsi layanan wajib diisi.',
+            'sort_order.required' => 'Urutan tampil wajib diisi.',
+            'sort_order.integer' => 'Urutan tampil harus berupa angka.',
+            'sort_order.min' => 'Urutan tampil minimal adalah 1.',
         ]);
         
+        $oldOrder = $internalService->sort_order;
+        $newOrder = $validated['sort_order'];
+
+        if ($oldOrder !== $newOrder) {
+            if ($oldOrder < $newOrder) {
+                InternalService::whereBetween('sort_order', [$oldOrder + 1, $newOrder])->decrement('sort_order');
+            } else {
+                InternalService::whereBetween('sort_order', [$newOrder, $oldOrder - 1])->increment('sort_order');
+            }
+        }
+
         $internalService->update($validated);
         return redirect()->route('admin.internal-services.index')->with('success', 'Layanan berhasil diperbarui.');
     }
 
     public function destroy(InternalService $internalService)
     {
+        $deletedOrder = $internalService->sort_order;
         $internalService->delete();
+
+        InternalService::where('sort_order', '>', $deletedOrder)->decrement('sort_order');
+
         return redirect()->route('admin.internal-services.index')->with('success', 'Layanan berhasil dihapus.');
     }
 }

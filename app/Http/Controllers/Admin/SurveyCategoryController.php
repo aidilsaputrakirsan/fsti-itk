@@ -12,7 +12,7 @@ class SurveyCategoryController extends Controller
     public function index()
     {
         $categories = SurveyCategory::latest()->get();
-        return Inertia::render('Admin/SatisfactionSurveys/Categories', [
+        return Inertia::render('Admin/SurveyCategories/Index', [
             'categories' => $categories
         ]);
     }
@@ -20,21 +20,22 @@ class SurveyCategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate(['name' => 'required|string|max:255']);
+
         SurveyCategory::create([
-            'name' => $request->name,
-            'is_active' => true
+            'name' => $request->name
         ]);
+
         return back()->with('success', 'Aspek penilaian berhasil ditambahkan!');
     }
 
     public function update(Request $request, SurveyCategory $surveyCategory)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'is_active' => 'required|boolean'
+            'name' => 'required|string|max:255'
         ]);
-        
-        $surveyCategory->update($request->only('name', 'is_active'));
+
+        $surveyCategory->update($request->only('name'));
+
         return back()->with('success', 'Aspek penilaian berhasil diperbarui!');
     }
 

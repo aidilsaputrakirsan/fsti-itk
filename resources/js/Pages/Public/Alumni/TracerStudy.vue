@@ -2,7 +2,7 @@
 import { onMounted, computed } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { 
     Users,
     Briefcase,
@@ -18,13 +18,20 @@ onMounted(() => {
     AOS.init({ duration: 800, once: true });
 });
 
-const surveyUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSe09s1JB6Sm4005NakxU9uNVnLyGBEiIEv8oSO2EdLG81LIeA/viewform';
+const page = usePage();
+
+const surveyUrl = computed(() => {
+    return page.props.faculty_settings?.tracer_study_link || 'https://docs.google.com/forms/d/e/1FAIpQLSe09s1JB6Sm4005NakxU9uNVnLyGBEiIEv8oSO2EdLG81LIeA/viewform';
+});
 
 const embedUrl = computed(() => {
-    if (surveyUrl.includes('docs.google.com/forms') && !surveyUrl.includes('embedded=true')) {
-        return surveyUrl.includes('?') ? `${surveyUrl}&embedded=true` : `${surveyUrl}?embedded=true`;
+    const url = surveyUrl.value;
+    if (!url) return '';
+    
+    if (url.includes('docs.google.com/forms') && !url.includes('embedded=true')) {
+        return url.includes('?') ? `${url}&embedded=true` : `${url}?embedded=true`;
     }
-    return surveyUrl;
+    return url;
 });
 
 const benefits = [
@@ -53,7 +60,7 @@ const benefits = [
         <Banner
             title="TRACER STUDY ALUMNI"
             subtitle="Bantu Kami Meningkatkan Kualitas Pendidikan FSTI ITK"
-            background-image="/images/background-banner.png"
+            background-image="/images/background-banner.webp"
         />
 
         <div class="bg-white py-16 md:py-24 font-public-sans min-h-screen overflow-hidden">
@@ -86,7 +93,7 @@ const benefits = [
                             <div class="absolute inset-0 bg-transparent border-[3px] border-[#D9FFFE] rotate-6 rounded-tl-[60px] rounded-br-[60px] rounded-tr-2xl rounded-bl-2xl transform group-hover:rotate-12 transition-transform duration-700"></div>
                             
                             <div class="absolute inset-0 bg-gradient-to-tl from-[#003566] to-[#00509D] -rotate-3 rounded-tl-[60px] rounded-br-[60px] rounded-tr-2xl rounded-bl-2xl shadow-2xl flex items-center justify-center transform group-hover:rotate-0 transition-transform duration-700 overflow-hidden">
-                                <div class="absolute inset-0 bg-[url('/images/pattern-prestasi.png')] opacity-10"></div>
+                                <div class="absolute inset-0 bg-[url('/images/pattern-prestasi.webp')] opacity-10"></div>
                                 <Briefcase class="w-32 h-32 md:w-40 md:h-40 text-[#D9FFFE] drop-shadow-xl group-hover:scale-110 transition-transform duration-500 relative z-10" stroke-width="1.2" />
                             </div>
                             

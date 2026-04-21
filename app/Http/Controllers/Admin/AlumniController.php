@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Alumni;
+use App\Models\StudyProgram;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,42 +14,43 @@ class AlumniController extends Controller
     {
         $query = Alumni::query();
 
-        // Fitur Pencarian
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('nim', 'like', '%' . $request->search . '%');
+                    ->orWhere('nim', 'like', '%' . $request->search . '%');
             });
         }
 
-        // Fitur Filter Prodi & Tahun
-        if ($request->filled('prodi')) {
-            $query->where('study_program', $request->prodi);
+        if ($request->filled('program')) {
+            $query->where('study_program', $request->program);
         }
         if ($request->filled('year')) {
             $query->where('graduation_year', $request->year);
         }
 
-        $alumnis = $query->orderBy('graduation_year', 'desc')
-                         ->orderBy('name', 'asc')
-                         ->paginate(15)
-                         ->withQueryString();
+        $alumni = $query->orderBy('graduation_year', 'desc')
+            ->orderBy('name', 'asc')
+            ->paginate(15)
+            ->withQueryString();
 
-        // Data untuk Dropdown Filter di Admin
-        $prodis = Alumni::select('study_program')->distinct()->orderBy('study_program')->pluck('study_program');
+        $officialProdis = StudyProgram::orderBy('name')->pluck('name')->toArray();
+        $alumniProdis = Alumni::select('study_program')->distinct()->pluck('study_program')->toArray();
+        $studyPrograms = collect(array_merge($officialProdis, $alumniProdis))->filter()->unique()->sort()->values();
+
         $years = Alumni::select('graduation_year')->distinct()->orderBy('graduation_year', 'desc')->pluck('graduation_year');
 
         return Inertia::render('Admin/Alumni/Index', [
-            'alumnis' => $alumnis,
-            'filters' => $request->only(['search', 'prodi', 'year']),
-            'prodis' => $prodis,
+            'alumni' => $alumni,
+            'filters' => $request->only(['search', 'program', 'year']),
+            'studyPrograms' => $studyPrograms,
             'years' => $years
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('Admin/Alumni/Create');
+        $studyPrograms = StudyProgram::orderBy('name')->pluck('name');
+        return Inertia::render('Admin/Alumni/Create', compact('studyPrograms'));
     }
 
     public function store(Request $request)
@@ -57,7 +59,10 @@ class AlumniController extends Controller
             'nim' => 'required|string|unique:alumnis,nim|max:20',
             'name' => 'required|string|max:255',
             'study_program' => 'required|string|max:255',
+            'entry_year' => 'required|integer|min:2000|max:' . date('Y'),
             'graduation_year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+        ], [
+            'nim.unique' => 'Data dengan NIM ini sudah terdaftar sebagai alumni.',
         ]);
 
         Alumni::create($validated);
@@ -65,20 +70,28 @@ class AlumniController extends Controller
         return redirect()->route('admin.alumni.index')->with('success', 'Data Alumni berhasil ditambahkan.');
     }
 
-    public function edit(Alumni $alumnus)
+    public function edit($id)
     {
+        $alumnus = Alumni::findOrFail($id);
+        $studyPrograms = StudyProgram::orderBy('name')->pluck('name');
         return Inertia::render('Admin/Alumni/Edit', [
-            'alumni' => $alumnus
+            'alumni' => $alumnus,
+            'studyPrograms' => $studyPrograms
         ]);
     }
 
-    public function update(Request $request, Alumni $alumnus)
+    public function update(Request $request, $id)
     {
+        $alumnus = Alumni::findOrFail($id);
+
         $validated = $request->validate([
             'nim' => 'required|string|max:20|unique:alumnis,nim,' . $alumnus->id,
             'name' => 'required|string|max:255',
             'study_program' => 'required|string|max:255',
+            'entry_year' => 'required|integer|min:2000|max:' . date('Y'),
             'graduation_year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+        ], [
+            'nim.unique' => 'Data dengan NIM ini sudah terdaftar pada alumni lain.',
         ]);
 
         $alumnus->update($validated);
@@ -86,8 +99,9 @@ class AlumniController extends Controller
         return redirect()->route('admin.alumni.index')->with('success', 'Data Alumni berhasil diperbarui.');
     }
 
-    public function destroy(Alumni $alumnus)
+    public function destroy($id)
     {
+        $alumnus = Alumni::findOrFail($id);
         $alumnus->delete();
 
         return redirect()->route('admin.alumni.index')->with('success', 'Data Alumni berhasil dihapus.');

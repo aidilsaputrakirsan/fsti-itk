@@ -9,11 +9,25 @@ defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
     studyProgram: any;
+    departments: string[];
 }>();
 
 const fileInput = ref<HTMLInputElement | null>(null);
 
-const formatArrayToText = (arr: any): string => Array.isArray(arr) ? arr.join('\n') : '';
+const formatArrayToText = (arr: any): string => {
+    if (!arr) return '';
+    if (Array.isArray(arr)) return arr.join('\n');
+    if (typeof arr === 'string') {
+        try {
+            const parsed = JSON.parse(arr);
+            if (Array.isArray(parsed)) return parsed.join('\n');
+        } catch {
+            return arr;
+        }
+        return arr;
+    }
+    return '';
+};
 
 interface StudyProgramForm {
     _method: string;
@@ -39,7 +53,7 @@ const form = useForm<StudyProgramForm>({
     description: props.studyProgram.description || '',
     vision: props.studyProgram.vision || '',
     mission: formatArrayToText(props.studyProgram.mission),
-    goals: props.studyProgram.goals || '',
+    goals: formatArrayToText(props.studyProgram.goals),
     graduate_profiles: formatArrayToText(props.studyProgram.graduate_profiles),
     accreditation_text: props.studyProgram.accreditation_text || '',
     accreditation_pdf_link: props.studyProgram.accreditation_pdf_link || '',
@@ -65,7 +79,6 @@ const submit = () => {
     form.clearErrors();
     let hasError = false;
 
-    // Validasi Teks
     if (!form.name) { form.setError('name', 'Nama Program Studi wajib diisi.'); hasError = true; }
     if (!form.degree) { form.setError('degree', 'Jenjang wajib dipilih.'); hasError = true; }
     if (!form.department) { form.setError('department', 'Jurusan wajib dipilih.'); hasError = true; }
@@ -76,7 +89,6 @@ const submit = () => {
     if (!form.graduate_profiles) { form.setError('graduate_profiles', 'Profil lulusan wajib diisi.'); hasError = true; }
     if (!form.accreditation_text) { form.setError('accreditation_text', 'Teks akreditasi wajib diisi.'); hasError = true; }
 
-    // Validasi URL (Kini Wajib Isi)
     const urlPattern = /^https?:\/\/.+/;
     if (!form.website_link) {
         form.setError('website_link', 'Tautan website resmi prodi wajib diisi.'); hasError = true;
@@ -84,13 +96,10 @@ const submit = () => {
         form.setError('website_link', 'Tautan harus diawali dengan http:// atau https://'); hasError = true;
     }
 
-    if (!form.accreditation_pdf_link) {
-        form.setError('accreditation_pdf_link', 'Tautan PDF sertifikat akreditasi wajib diisi.'); hasError = true;
-    } else if (!urlPattern.test(form.accreditation_pdf_link)) {
+    if (form.accreditation_pdf_link && !urlPattern.test(form.accreditation_pdf_link)) {
         form.setError('accreditation_pdf_link', 'Tautan harus diawali dengan http:// atau https://'); hasError = true;
     }
 
-    // Validasi Gambar (Opsional di halaman Edit, tapi tetap dicek ukurannya jika ada file masuk)
     if (form.accreditation_certificate_image) {
         const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
         if (!allowedTypes.includes(form.accreditation_certificate_image.type)) {
@@ -144,8 +153,8 @@ const submit = () => {
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Jurusan Induk</label>
                     <select v-model="form.department" class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white py-3" required>
-                        <option value="Sains dan Analitika Data">Sains dan Analitika Data</option>
-                        <option value="Teknik Elektro, Informatika, dan Bisnis">Teknik Elektro, Informatika, dan Bisnis</option>
+                        <option value="" disabled>Pilih Jurusan</option>
+                        <option v-for="dept in departments" :key="dept" :value="dept">{{ dept }}</option>
                     </select>
                     <InputError :message="form.errors.department" />
                 </div>
@@ -219,7 +228,7 @@ const submit = () => {
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Link File PDF Akreditasi <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Link File PDF Akreditasi (Opsional)</label>
                     <input type="url" v-model="form.accreditation_pdf_link" 
                         class="block w-full rounded-lg transition-colors py-2.5 shadow-sm"
                         :class="form.errors.accreditation_pdf_link ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'">

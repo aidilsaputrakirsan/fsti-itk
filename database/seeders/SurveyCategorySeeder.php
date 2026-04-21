@@ -21,8 +21,7 @@ class SurveyCategorySeeder extends Seeder
 
         foreach ($categories as $category) {
             SurveyCategory::firstOrCreate(
-                ['name' => $category], // Cek agar tidak duplikat jika seeder dijalankan 2x
-                ['is_active' => true]
+                ['name' => $category], 
             );
         }
     }

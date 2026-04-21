@@ -15,8 +15,25 @@ class PublicPartnerController extends Controller
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
-        return Inertia::render('Public/Kerjasama/Index', [
-            'partners' => $query->orderBy('name', 'asc')->paginate(12)->withQueryString(),
+
+        $partners = $query->orderBy('name', 'asc')->paginate(12)->withQueryString()->through(function ($item) {
+            $logoUrl = null;
+            if ($item->logo) {
+                $logoUrl = str_contains($item->logo, '/') 
+                    ? asset('storage/' . $item->logo) 
+                    : asset('images/mitra/' . $item->logo);
+            }
+
+            return [
+                'id' => $item->id,
+                'name' => $item->name,
+                'activities' => $item->activities,
+                'logo_url' => $logoUrl,
+            ];
+        });
+
+        return Inertia::render('Public/Partners/Index', [
+            'partners' => $partners,
             'filters' => $request->only(['search'])
         ]);
     }

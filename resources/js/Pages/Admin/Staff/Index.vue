@@ -4,12 +4,12 @@ import {
     MagnifyingGlassIcon, 
     PlusIcon, 
     FunnelIcon,
-    PencilSquareIcon,
-    TrashIcon,
-    ExclamationTriangleIcon,
+    PencilSquareIcon, 
+    TrashIcon, 
+    ExclamationTriangleIcon, 
     CheckCircleIcon,
 } from '@heroicons/vue/24/outline';
-import { Link, router, usePage } from '@inertiajs/vue3';
+import { Link, router, usePage, Head } from '@inertiajs/vue3';
 import { ref, watch, computed } from 'vue';
 import { throttle } from 'lodash';
 
@@ -133,6 +133,7 @@ watch(flashSuccess, (message) => {
 
 <template>
     <div>
+        <Head title="Kelola Civitas" />
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Kelola Civitas</h1>

@@ -9,10 +9,10 @@ defineProps<{
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl overflow-hidden border-t-4 border-primary border-x border-b border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group font-public-sans h-full">
+  <div class="bg-white rounded-2xl overflow-hidden border-t-4 border-primary border-x border-b shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group font-public-sans h-full">
     
     <div class="relative aspect-video overflow-hidden bg-gray-100">
-      <Link :href="route('berita.show', post.slug)" class="block w-full h-full">
+      <Link :href="route('posts.show', post.slug)" class="block w-full h-full">
         <img 
           v-if="post.image_url" 
           class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
@@ -42,7 +42,7 @@ defineProps<{
       </div>
 
       <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-3 leading-snug group-hover:text-primary transition-colors line-clamp-2">
-        <Link :href="route('berita.show', post.slug)">
+        <Link :href="route('posts.show', post.slug)">
           {{ post.title }}
         </Link>
       </h3>
@@ -53,7 +53,7 @@ defineProps<{
 
       <div class="mt-auto border-t border-gray-100 pt-4">
         <Link 
-            :href="route('berita.show', post.slug)" 
+            :href="route('posts.show', post.slug)" 
             class="inline-flex items-center text-sm font-bold text-primary hover:text-primary-hover transition-colors"
         >
           Baca Selengkapnya

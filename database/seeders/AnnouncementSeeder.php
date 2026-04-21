@@ -5,33 +5,31 @@ namespace Database\Seeders;
 use App\Models\Announcement;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class AnnouncementSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Kosongkan database
         Announcement::truncate();
 
-        // 2. Siapkan folder Storage (Tujuan) dan Folder Assets (Sumber)
-        $storagePdfPath = storage_path('app/public/pengumuman');
-        $storagePosterPath = storage_path('app/public/pengumuman/poster');
+        $assetPath = database_path('seeders' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'announcements');
 
-        $assetPdfPath = database_path('seeders/assets/pengumuman');
-        $assetPosterPath = database_path('seeders/assets/pengumuman/poster');
+        if (!Storage::disk('public')->exists('announcements')) {
+            Storage::disk('public')->makeDirectory('announcements');
+        }
 
-        if (!File::exists($storagePdfPath)) File::makeDirectory($storagePdfPath, 0755, true);
-        if (!File::exists($storagePosterPath)) File::makeDirectory($storagePosterPath, 0755, true);
-
-        foreach (File::files($storagePdfPath) as $file) File::delete($file);
-        foreach (File::files($storagePosterPath) as $file) File::delete($file);
+        $existingFiles = Storage::disk('public')->files('announcements');
+        foreach ($existingFiles as $file) {
+            Storage::disk('public')->delete($file);
+        }
 
         $announcements = [
             [
                 'title' => 'Pengumuman PILMAPRES FSTI 2026',
                 'description' => "PENGUMUMAN PILMAPRES FSTI 2026\n\nHalo Sobat FSTI! 👋✨\nDalam rangka Pemilihan Mahasiswa Berprestasi (PILMAPRES) Tahun 2026, FSTI membuka pendaftaran Mahasiswa Berprestasi (Mawapres) tingkat Fakultas 🏆\n\nIni saatnya kamu menunjukkan potensi terbaikmu dan menjadi perwakilan FSTI di tingkat Institut! 💫\n\n📅 Pendaftaran: 17 – 27 Maret 2026\n📌 Syarat utama:\n✔️ IPK minimal 3,00\n✔️ Maksimal semester 6\n✔️ Melengkapi berkas sesuai ketentuan\n\n🔗 Daftar sekarang melalui:\ns.itk.ac.id/mawapresfsti2026\n\n📞 Info lebih lanjut: Chairon Ulfah (0822-3453-9861)\n\nYuk, jadi bagian dari mahasiswa berprestasi FSTI dan ukir prestasimu! 🚀✨",
                 'document' => null,
-                'poster' => 'pengumuman-pilmapres.png',
+                'poster' => 'pengumuman-pilmapres.webp',
                 'created_at' => '2026-03-17 09:00:00'
             ],
             ['title' => 'Pengumuman Himbauan Pengisian Tracer Study bagi Alumni FSTI', 'description' => null, 'document' => 'pengumuman-tracer-study.pdf', 'poster' => null, 'created_at' => now()->subDays(rand(1, 30))],
@@ -50,26 +48,24 @@ class AnnouncementSeeder extends Seeder
             $posPath = null;
 
             if ($data['document']) {
-                $sourceFile = $assetPdfPath . '/' . $data['document'];
-                $destinationFile = $storagePdfPath . '/' . $data['document'];
+                $sourceFile = $assetPath . DIRECTORY_SEPARATOR . $data['document'];
                 if (File::exists($sourceFile)) {
-                    File::copy($sourceFile, $destinationFile);
+                    Storage::disk('public')->put('announcements/' . $data['document'], File::get($sourceFile));
                     $copiedCount++;
-                    $docPath = 'pengumuman/' . $data['document'];
+                    $docPath = 'announcements/' . $data['document'];
                 } else {
-                    $this->command->warn("Peringatan: File PDF '{$data['document']}' tidak ditemukan di assets/pengumuman!");
+                    $this->command->warn("Peringatan: File PDF '{$data['document']}' tidak ditemukan di assets/announcements!");
                 }
             }
 
             if ($data['poster']) {
-                $sourceFile = $assetPosterPath . '/' . $data['poster'];
-                $destinationFile = $storagePosterPath . '/' . $data['poster'];
+                $sourceFile = $assetPath . DIRECTORY_SEPARATOR . $data['poster'];
                 if (File::exists($sourceFile)) {
-                    File::copy($sourceFile, $destinationFile);
+                    Storage::disk('public')->put('announcements/' . $data['poster'], File::get($sourceFile));
                     $copiedCount++;
-                    $posPath = 'pengumuman/poster/' . $data['poster'];
+                    $posPath = 'announcements/' . $data['poster'];
                 } else {
-                    $this->command->warn("Peringatan: File Poster '{$data['poster']}' tidak ditemukan di assets/pengumuman/poster!");
+                    $this->command->warn("Peringatan: File Poster '{$data['poster']}' tidak ditemukan di assets/announcements!");
                 }
             }
 

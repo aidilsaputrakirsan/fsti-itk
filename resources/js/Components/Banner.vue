@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { Head } from '@inertiajs/vue3';
 
 const props = defineProps({
   title: {
@@ -20,6 +21,10 @@ const bannerStyle = computed(() => {
 </script>
 
 <template>
+  <Head>
+    <link rel="preload" as="image" :href="backgroundImage" />
+  </Head>
+
   <div
     class="relative w-full bg-cover bg-center flex items-center justify-center shadow-sm mt-2 transition-all duration-300 h-56 sm:h-64 md:h-72 lg:h-80"
     :style="bannerStyle"

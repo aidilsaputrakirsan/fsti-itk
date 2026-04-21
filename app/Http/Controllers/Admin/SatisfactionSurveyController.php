@@ -32,27 +32,22 @@ class SatisfactionSurveyController extends Controller
 
     public function create()
     {
-        // Not needed - data comes from public form
     }
 
     public function store(Request $request)
     {
-        // Not needed - data comes from public form
     }
 
     public function show(string $id)
     {
-        //
     }
 
     public function edit(string $id)
     {
-        // Not needed - read-only
     }
 
     public function update(Request $request, string $id)
     {
-        // Not needed - read-only
     }
 
     public function destroy(string $id)

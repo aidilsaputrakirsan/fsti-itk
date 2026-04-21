@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('post_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique(); // Contoh: Akademik, Non Akademik
+            $table->string('name')->unique(); 
             $table->string('slug')->unique();
             $table->timestamps();
         });

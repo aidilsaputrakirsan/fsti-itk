@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { GraduationCap, Award, Calendar, Trophy, Medal } from 'lucide-vue-next';
-import type { Achievement } from '@/types'; // Import dari tipe global agar sinkron!
+import type { Achievement } from '@/types'; 
 
 const props = defineProps<{
   achievement: Achievement;
@@ -10,14 +10,15 @@ const props = defineProps<{
 <template>
   <div 
     class="bg-gradient-to-br from-[#4361EE] via-[#2F4DD3] to-[#1E338A] rounded-lg overflow-hidden transition-all duration-300 ease-in-out 
-           hover:scale-105 hover:shadow-xl hover:shadow-blue-900/20 border border-blue-600/30 flex flex-col h-full"
+            hover:scale-105 hover:shadow-xl hover:shadow-blue-900/20 border border-blue-600/30 flex flex-col h-full"
   >
     <div class="aspect-[3/2] relative shrink-0 overflow-hidden border-b border-blue-400/30">
       <img 
         :src="achievement.image_url || 'https://placehold.co/600x400/cccccc/FFFFFF?text=Image+Not+Found'" 
         :alt="'Foto ' + achievement.student_name" 
-        class="w-full h-full object-cover"
+        class="w-full h-full object-cover bg-gray-200"
         loading="lazy"
+        decoding="async"
         onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/FFFFFF?text=Image+Not+Found';"
       >
       <div class="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-[#2F4DD3]/50 to-transparent"></div>

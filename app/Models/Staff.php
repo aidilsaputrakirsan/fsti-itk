@@ -45,12 +45,10 @@ class Staff extends Model
     {
         $url = $this->image_url;
 
-        // 1. Jika URL foto kosong atau data seeder berisi teks "Belum tersedia"
         if (empty($url) || trim($url) === 'Belum tersedia pada website') {
-            return null; // Memicu Placeholder Abu-abu "Foto Belum Tersedia" di Frontend
+            return null; 
         }
 
-        // 2. JIKA FOTO DARI GOOGLE DRIVE (Bypass Pemblokiran Google Terbaru)
         if (str_contains($url, 'drive.google.com')) {
             preg_match('/\/d\/([a-zA-Z0-9_-]+)/', $url, $matches);
             if (isset($matches[1])) {
@@ -58,18 +56,14 @@ class Staff extends Model
             }
         }
 
-        // 3. JIKA URL ADALAH LINK INTERNET EKSTERNAL BIASA
         if (str_starts_with($url, 'http')) {
             return $url;
         }
 
-        // 4. JIKA FOTO HASIL UPLOAD DARI ADMIN (Otomatis masuk ke folder staff/)
         if (str_starts_with($url, 'staff/')) {
             return asset('storage/' . $url);
         }
 
-        // 5. JIKA FOTO DARI SEEDER BAWAAN (Contoh: '/images/dosen/dosen-1.png')
-        // Menggunakan ltrim agar slash tidak dobel (http://localhost//images/...)
         return asset('/' . ltrim($url, '/'));
     }
 }

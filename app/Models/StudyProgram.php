@@ -29,4 +29,17 @@ class StudyProgram extends Model
         'mission' => 'array',
         'graduate_profiles' => 'array',
     ];
+
+    public function getAccreditationCertificateImageAttribute($value): ?string
+    {
+        if (!$value) {
+            return null;
+        }
+
+        if (str_starts_with($value, '/storage/')) {
+            return $value;
+        }
+
+        return '/storage/' . $value;
+    }
 }

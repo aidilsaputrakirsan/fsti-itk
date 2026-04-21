@@ -12,27 +12,26 @@ import {
     ShieldCheckIcon,
     UserGroupIcon, 
     BookOpenIcon,
-    GlobeAltIcon
+    GlobeAltIcon,
+    BriefcaseIcon, 
+    BeakerIcon,    
 } from '@heroicons/vue/24/outline';
 import { ref, onMounted, computed } from 'vue';
 
 const page = usePage();
 const openMenu = ref<string | null>(null);
 
-// Memantau perubahan URL secara reaktif
 const currentUrl = computed(() => page.url);
 
-// [PERBAIKAN 1]: Mengambil data user yang sedang login saat ini
 const currentUser = computed(() => page.props.auth.user as any);
 
-// [PERBAIKAN 2]: Mengubah navigation menjadi computed agar bisa difilter
 const navigation = computed(() => {
     const menus = [
         { name: 'Dashboard', href: '/admin/dashboard', icon: ChartBarSquareIcon, children: null },
         {
             name: 'Profil Fakultas',
             href: null,
-            icon: AcademicCapIcon,
+            icon: InformationCircleIcon, 
             children: [
                 { name: 'Kelola Tentang Fakultas', href: '/admin/tentang-fakultas' },
                 { name: 'Kelola Civitas Akademika', href: '/admin/staff' },
@@ -40,11 +39,17 @@ const navigation = computed(() => {
                 { name: 'Kelola Kontak', href: '/admin/contacts' },
             ]
         },
-        { name: 'Program Studi', href: '/admin/study-programs', icon: BookOpenIcon, children: null },
+        { name: 'Program Studi', 
+        href: null,
+        icon: AcademicCapIcon, 
+        children: [
+              { name: 'Kelola Program Studi', href: '/admin/study-programs' },
+              { name: 'Kelola Jurusan', href: '/admin/departments'},
+        ]}, 
         { 
             name: 'Kemahasiswaan', 
             href: null,
-            icon: UserGroupIcon,
+            icon: UserGroupIcon, 
             children: [
                 { name: 'Kelola Daftar Prestasi', href: '/admin/achievements' },
                 { name: 'Kelola Portal Layanan', href: '/admin/internal-services' },
@@ -52,7 +57,7 @@ const navigation = computed(() => {
                 { name: 'Kelola Beasiswa', href: '/admin/beasiswa' },
             ]
         },
-        { name: 'Data Alumni', href: '/admin/alumni', icon: BookOpenIcon, children: null },
+        { name: 'Data Alumni', href: '/admin/alumni', icon: BriefcaseIcon, children: null }, 
         { 
             name: 'Informasi', 
             href: null,
@@ -67,9 +72,9 @@ const navigation = computed(() => {
         {
             name: 'PPID',
             href: null,
-            icon: ArchiveBoxIcon,
+            icon: ArchiveBoxIcon, 
             children: [
-                { name: 'Kelola PPID', href: '/admin/ppid' },
+                { name: 'Kelola Dokumen PPID', href: '/admin/ppid' },
                 { name: 'Kelola Kategori PPID', href: '/admin/kategori-ppid' }
             ]
         },
@@ -86,7 +91,7 @@ const navigation = computed(() => {
         {
             name: 'Riset', 
             href: null,
-            icon: NewspaperIcon, 
+            icon: BeakerIcon, 
             children: [
                 { name: 'Kelola Penelitian', href: '/admin/penelitian' },
                 { name: 'Kelola Pengabdian kepada Masyarakat', href: '/admin/pengabdian' },
@@ -94,7 +99,6 @@ const navigation = computed(() => {
         },
     ];
 
-    // [PERBAIKAN 3]: HANYA tambahkan menu Kelola Akun Admin JIKA user adalah superadmin!
     if (currentUser.value?.is_superadmin) {
         menus.push({ name: 'Kelola Akun Admin', href: '/admin/users', icon: UsersIcon, children: null });
     }
@@ -127,8 +131,14 @@ onMounted(() => {
     <div class="flex h-screen bg-slate-50 text-black font-public-sans">
         <aside class="flex w-72 flex-col flex-shrink-0 bg-white px-5 pt-6 pb-4 border-r border-gray-200 shadow-xl z-20">
             <div class="px-4 mb-4">
-                <img src="/images/logofsti.png" alt="Logo FSTI" width="192" height="69" />
-            </div>
+<img 
+    src="/images/logofsti.webp" 
+    alt="Logo FSTI" 
+    width="192" 
+    height="69" 
+    fetchpriority="high" 
+    decoding="sync" 
+/>            </div>
 
             <a href="/" target="_blank" rel="noopener noreferrer" 
                class="flex items-center justify-center w-full p-2.5 mb-6 text-sm transition-colors duration-200 rounded-lg bg-primary/10 text-primary font-bold hover:bg-primary hover:text-white">
@@ -145,8 +155,8 @@ onMounted(() => {
                             :class="[
                                 'flex items-center w-full p-3 transition-colors duration-200 rounded-lg group',
                                 currentUrl.startsWith(item.href)
-                                    ? 'bg-primary text-white shadow-md' // Aktif
-                                    : 'bg-primary/5 text-gray-700 hover:bg-primary/15 hover:text-primary-hover', // Inaktif jadi sangat tipis
+                                    ? 'bg-primary text-white shadow-md' 
+                                    : 'bg-primary/5 text-gray-700 hover:bg-primary/15 hover:text-primary-hover', 
                             ]"
                         >
                             <span class="flex items-center justify-center h-8 w-8 bg-white rounded-full shadow-sm">

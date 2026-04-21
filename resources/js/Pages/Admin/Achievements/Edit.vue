@@ -4,38 +4,54 @@ import { useForm, Link, Head } from '@inertiajs/vue3';
 import { ArrowLeftIcon, PaperAirplaneIcon, PaperClipIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import InputError from '@/Components/InputError.vue';
 import { ref } from 'vue';
-import type { Achievement } from '@/types'; 
 
 defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
-    achievement: Achievement;
+    achievement: any; 
     studyPrograms: Array<any>;
 }>();
 
 const imageInput = ref<HTMLInputElement | null>(null);
 const certificateInput = ref<HTMLInputElement | null>(null);
+const imagePreview = ref<string | null>(null);
 
-const form = useForm({
-  _method: 'patch', 
-  student_name: props.achievement.student_name,
-  student_nim: props.achievement.student_nim || '',
-  study_program: props.achievement.study_program || '',
-  title: props.achievement.title, 
-  category: props.achievement.category,
-  level: props.achievement.level,
-  organizer: props.achievement.organizer || '',
-  year: props.achievement.year,
-  image: null as File | null, 
-  certificate: null as File | null,
+interface AchievementForm {
+    _method: string;
+    student_name: string;
+    student_nim: string;
+    study_program: string;
+    title: string;
+    category: string;
+    level: string;
+    organizer: string;
+    year: number | string;
+    image: File | null;
+    certificate: File | null;
+}
+
+const form = useForm<AchievementForm>({
+    _method: 'PUT', 
+    student_name: props.achievement.student_name || '',
+    student_nim: props.achievement.student_nim || '',
+    study_program: props.achievement.study_program || '',
+    title: props.achievement.title || '', 
+    category: props.achievement.category || '',
+    level: props.achievement.level || '',
+    organizer: props.achievement.organizer || '',
+    year: props.achievement.year || new Date().getFullYear(),
+    image: null, 
+    certificate: null,
 });
 
 const handleImageChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files[0]) {
         form.image = target.files[0];
+        imagePreview.value = URL.createObjectURL(target.files[0]);
     } else {
         form.image = null;
+        imagePreview.value = null;
     }
 };
 
@@ -50,6 +66,7 @@ const handleCertificateChange = (event: Event) => {
 
 const clearImage = () => {
     form.image = null;
+    imagePreview.value = null;
     if (imageInput.value) imageInput.value.value = '';
 };
 
@@ -191,12 +208,13 @@ const submit = () => {
           <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 space-y-5">
               
               <div class="flex flex-col lg:flex-row gap-6 items-start border-b border-gray-200 pb-5">
-                  <div v-if="achievement.image_url" class="shrink-0 flex flex-col items-center">
+                  <div v-if="imagePreview || achievement.image_path" class="shrink-0 flex flex-col items-center">
                       <p class="text-[10px] font-extrabold text-primary mb-1.5 uppercase tracking-widest text-center">Foto Saat Ini</p>
                       <div class="h-24 w-24 bg-white rounded border border-gray-200 flex items-center justify-center p-1 shadow-sm">
-                          <img :src="achievement.image_url" class="h-full w-full object-cover rounded-sm" />
+                          <img :src="imagePreview || '/storage/' + achievement.image_path" class="h-full w-full object-cover rounded-sm" />
                       </div>
                   </div>
+                  
                   <div class="w-full space-y-3 min-w-0">
                       <label class="block text-[10px] font-extrabold text-primary mb-1.5 uppercase tracking-widest">Ganti Foto Mahasiswa / Tim</label>
                       <div class="relative flex items-center w-full rounded-lg border bg-white shadow-sm px-4 py-2.5 hover:bg-gray-50 transition" :class="form.errors.image ? 'border-red-500 bg-red-50' : 'border-gray-300'">
@@ -214,9 +232,9 @@ const submit = () => {
               </div>
 
               <div class="flex flex-col lg:flex-row gap-6 items-start">
-                  <div v-if="achievement.certificate_url" class="shrink-0 flex flex-col items-center">
+                  <div v-if="achievement.certificate_path" class="shrink-0 flex flex-col items-center">
                       <p class="text-[10px] font-extrabold text-primary mb-1.5 uppercase tracking-widest text-center">Bukti Saat Ini</p>
-                      <a :href="achievement.certificate_url" target="_blank" class="h-10 px-4 bg-white rounded border border-gray-300 flex items-center justify-center shadow-sm text-sm font-bold text-primary hover:bg-gray-50">
+                      <a :href="'/storage/' + achievement.certificate_path" target="_blank" class="h-10 px-4 bg-white rounded border border-gray-300 flex items-center justify-center shadow-sm text-sm font-bold text-primary hover:bg-gray-50">
                           Lihat Bukti
                       </a>
                   </div>

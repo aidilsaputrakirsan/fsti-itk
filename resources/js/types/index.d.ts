@@ -13,7 +13,6 @@ export type PageProps<
     };
 };
 
-// --- TIPE UNTUK HALAMAN BERITA ---
 
 export interface Post {
   id: number;
@@ -21,7 +20,7 @@ export interface Post {
   slug: string;
   excerpt: string;
   content: string;
-  image_url: string | null; // Sesuai dengan accessor yang Anda buat
+  image_url: string | null; 
   category: 'Prestasi' | 'Liputan Kegiatan' | 'Kerjasama';
   tags: string | null;
   status: 'Draft' | 'Terbitkan';
@@ -46,12 +45,11 @@ export interface PaginatedPosts {
   total: number;
 }
 
-// Tipe untuk menampung filter yang dikirim dari controller
 export interface Filters {
     search: string | null;
     category: string | null;
-    level?: string; // Tambahkan ini
-    year?: string;   // Tambahkan ini
+    level?: string; 
+    year?: string;   
 }
 
 export interface Achievement {

@@ -27,7 +27,7 @@ const props = defineProps<{
 const search = ref(props.filters?.search || '');
 
 watch(search, debounce((value: string) => {
-    router.get((route as Function)('admin.announcements.index'), { 
+    router.get(route('admin.announcements.index'), { 
         search: value 
     }, { 
         preserveState: true, 
@@ -73,6 +73,19 @@ const formattedLinks = computed(() => {
     return result;
 });
 
+const page = usePage();
+const showNotification = ref(false);
+const notificationMessage = ref('');
+
+const flashSuccess = computed(() => (page.props as any).flash?.success);
+watch(flashSuccess, (msg) => { 
+    if (msg) { 
+        notificationMessage.value = msg as string; 
+        showNotification.value = true; 
+        setTimeout(() => { showNotification.value = false; }, 3000); 
+    } 
+}, { immediate: true });
+
 const isModalOpen = ref(false);
 const itemToDelete = ref<any | null>(null);
 
@@ -88,24 +101,19 @@ const closeDeleteModal = () => {
 
 const confirmDelete = () => { 
     if (itemToDelete.value) {
-        router.delete((route as Function)('admin.announcements.destroy', itemToDelete.value.id), { 
-            onSuccess: () => closeDeleteModal() 
+        router.delete(route('admin.announcements.destroy', itemToDelete.value.id), { 
+            preserveScroll: true,
+            onSuccess: () => {
+                closeDeleteModal();
+                if((page.props as any).flash?.success) {
+                    notificationMessage.value = (page.props as any).flash.success as string;
+                    showNotification.value = true;
+                    setTimeout(() => { showNotification.value = false; }, 3000); 
+                }
+            }
         }); 
     }
 };
-
-const page = usePage();
-const showNotification = ref(false);
-const notificationMessage = ref('');
-const flashSuccess = computed(() => (page.props as any).flash?.success);
-
-watch(flashSuccess, (msg) => { 
-    if (msg) { 
-        notificationMessage.value = msg as string; 
-        showNotification.value = true; 
-        setTimeout(() => { showNotification.value = false; }, 3000); 
-    } 
-}, { immediate: true });
 
 const formatDate = (dateString: string) => {
     return dayjs(dateString).format('DD MMMM YYYY');
@@ -121,7 +129,7 @@ const formatDate = (dateString: string) => {
                 <h1 class="text-3xl font-bold text-gray-900">Kelola Pengumuman Resmi</h1>
                 <p class="mt-1 text-gray-600">Manajemen surat edaran, poster acara, dan informasi publik FSTI.</p>
             </div>
-            <Link :href="(route as Function)('admin.announcements.create')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
+            <Link :href="route('admin.announcements.create')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
                 <PlusIcon class="h-5 w-5 stroke-2" />
                 Tambah Pengumuman
             </Link>
@@ -178,7 +186,7 @@ const formatDate = (dateString: string) => {
                             </td>
                             <td>
                                 <div class="flex items-center justify-center gap-3">
-                                    <Link :href="(route as Function)('admin.announcements.edit', item.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
+                                    <Link :href="route('admin.announcements.edit', item.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
                                         <PencilSquareIcon class="h-4 w-4" /> Edit
                                     </Link>
                                     <span class="text-gray-300">|</span>
@@ -199,8 +207,6 @@ const formatDate = (dateString: string) => {
                 <p v-if="announcements.total > 0" class="text-sm text-gray-600 text-center sm:text-left">
                     Menampilkan <span class="font-bold text-gray-900">{{ announcements.from }}</span> sampai <span class="font-bold text-gray-900">{{ announcements.to }}</span> dari <span class="font-bold text-gray-900">{{ announcements.total }}</span> hasil
                 </p>
-                <p v-else></p>
-
                 <div v-if="formattedLinks.length > 0" class="flex flex-wrap justify-center items-center gap-1.5">
                     <Link 
                         v-for="(link, index) in formattedLinks" 

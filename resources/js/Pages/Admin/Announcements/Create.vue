@@ -70,7 +70,7 @@ const validateForm = () => {
 
 const submit = () => {
     if (!validateForm()) return;
-    form.post((route as Function)('admin.announcements.store'));
+    form.post(route('admin.announcements.store'));
 };
 </script>
 
@@ -79,7 +79,7 @@ const submit = () => {
         <Head title="Buat Pengumuman Baru" />
 
         <div class="mb-8">
-            <Link :href="(route as Function)('admin.announcements.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
+            <Link :href="route('admin.announcements.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
                 <ArrowLeftIcon class="h-4 w-4 stroke-2" /> Kembali ke Daftar
             </Link>
             <h1 class="text-3xl font-bold text-gray-900">Buat Pengumuman Baru</h1>
@@ -146,7 +146,7 @@ const submit = () => {
                 </div>
 
                 <div class="mt-12 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 border-t border-gray-100 pt-6">
-                    <Link :href="(route as Function)('admin.announcements.index')" class="w-full sm:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                    <Link :href="route('admin.announcements.index')" class="w-full sm:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
                         Batal
                     </Link>
                     <button type="submit" :disabled="form.processing" class="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-8 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors disabled:opacity-50">

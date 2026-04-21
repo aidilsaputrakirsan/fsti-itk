@@ -8,31 +8,47 @@ import { ref } from 'vue';
 defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
-  studyPrograms: Array<any>;
+    studyPrograms: Array<any>;
 }>();
 
 const imageInput = ref<HTMLInputElement | null>(null);
 const certificateInput = ref<HTMLInputElement | null>(null);
+const imagePreview = ref<string | null>(null);
 
-const form = useForm({
-  student_name: '',
-  student_nim: '',    
-  study_program: '',  
-  title: '',
-  category: '', 
-  level: '', 
-  organizer: '',
-  year: new Date().getFullYear(),
-  image: null as File | null, 
-  certificate: null as File | null,
+interface AchievementCreateForm {
+    student_name: string;
+    student_nim: string;
+    study_program: string;
+    title: string;
+    category: string;
+    level: string;
+    organizer: string;
+    year: number | string;
+    image: File | null;
+    certificate: File | null;
+}
+
+const form = useForm<AchievementCreateForm>({
+    student_name: '',
+    student_nim: '',    
+    study_program: '',  
+    title: '',
+    category: '', 
+    level: '', 
+    organizer: '',
+    year: new Date().getFullYear(),
+    image: null, 
+    certificate: null,
 });
 
 const handleImageChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files[0]) {
         form.image = target.files[0];
+        imagePreview.value = URL.createObjectURL(target.files[0]);
     } else {
         form.image = null;
+        imagePreview.value = null;
     }
 };
 
@@ -47,6 +63,7 @@ const handleCertificateChange = (event: Event) => {
 
 const clearImage = () => {
     form.image = null;
+    imagePreview.value = null;
     if (imageInput.value) imageInput.value.value = '';
 };
 
@@ -189,20 +206,30 @@ const submit = () => {
 
           <label class="md:pt-3 text-sm font-bold text-gray-800">Berkas Pendukung</label>
           <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 space-y-5">
-              <div>
-                  <label class="block text-xs font-bold text-gray-700 mb-1.5">Foto Mahasiswa / Tim <span class="text-red-500">*</span></label>
-                  <p class="text-[10px] text-gray-500 mb-2 font-medium uppercase tracking-wider">Maksimal 2MB. Format JPG/PNG/WEBP.</p>
-                  <div class="relative flex items-center w-full rounded-lg border bg-white shadow-sm px-4 py-2 hover:bg-gray-50 transition" :class="form.errors.image ? 'border-red-500 bg-red-50' : 'border-gray-300'">
-                      <PaperClipIcon :class="form.errors.image ? 'text-red-400' : 'text-gray-400'" class="h-5 w-5 flex-shrink-0" />
-                      <span class="ml-3 text-sm truncate flex-1 font-medium" :class="form.errors.image ? 'text-red-700' : 'text-gray-500'">
-                          {{ form.image ? form.image.name : 'Pilih file gambar...' }}
-                      </span>
-                      <button v-if="form.image" type="button" @click.prevent="clearImage" class="ml-2 p-1 text-red-500 hover:bg-red-50 rounded-md relative z-10 flex-shrink-0" title="Batal Pilih File">
-                          <XMarkIcon class="w-5 h-5"/>
-                      </button>
-                      <input ref="imageInput" type="file" @change="handleImageChange" accept="image/jpeg, image/png, image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" :class="{'hidden': form.image}" />
+              
+              <div class="flex flex-col lg:flex-row gap-6 items-start border-b border-gray-200 pb-5">
+                  <div v-if="imagePreview" class="shrink-0 flex flex-col items-center">
+                      <p class="text-[10px] font-extrabold text-primary mb-1.5 uppercase tracking-widest text-center">Preview Foto</p>
+                      <div class="h-24 w-24 bg-white rounded border border-gray-200 flex items-center justify-center p-1 shadow-sm">
+                          <img :src="imagePreview" class="h-full w-full object-cover rounded-sm" />
+                      </div>
                   </div>
-                  <InputError :message="form.errors.image" />
+
+                  <div class="w-full space-y-3 min-w-0">
+                      <label class="block text-xs font-bold text-gray-700 mb-1.5">Foto Mahasiswa / Tim <span class="text-red-500">*</span></label>
+                      <p class="text-[10px] text-gray-500 mb-2 font-medium uppercase tracking-wider">Maksimal 2MB. Format JPG/PNG/WEBP.</p>
+                      <div class="relative flex items-center w-full rounded-lg border bg-white shadow-sm px-4 py-2 hover:bg-gray-50 transition" :class="form.errors.image ? 'border-red-500 bg-red-50' : 'border-gray-300'">
+                          <PaperClipIcon :class="form.errors.image ? 'text-red-400' : 'text-gray-400'" class="h-5 w-5 flex-shrink-0" />
+                          <span class="ml-3 text-sm truncate flex-1 font-medium" :class="form.errors.image ? 'text-red-700' : 'text-gray-500'">
+                              {{ form.image ? form.image.name : 'Pilih file gambar...' }}
+                          </span>
+                          <button v-if="form.image" type="button" @click.prevent="clearImage" class="ml-2 p-1 text-red-500 hover:bg-red-50 rounded-md relative z-10 flex-shrink-0" title="Batal Pilih File">
+                              <XMarkIcon class="w-5 h-5"/>
+                          </button>
+                          <input ref="imageInput" type="file" @change="handleImageChange" accept="image/jpeg, image/png, image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" :class="{'hidden': form.image}" />
+                      </div>
+                      <InputError :message="form.errors.image" />
+                  </div>
               </div>
 
               <div>

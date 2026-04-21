@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
 import { ref, onMounted, onUnmounted, computed } from 'vue';
-// Import icon yang dibutuhkan
 import { Users, Calendar, Activity } from 'lucide-vue-next';
 
-// Definisi interface untuk TypeScript
 interface VisitorStats {
     today: number;
     month: number;
@@ -14,12 +12,10 @@ interface VisitorStats {
 const page = usePage();
 const contact = computed(() => (page.props.contact_global as Record<string, any>) || {});
 
-// Ambil data visitor dari shared props (HandleInertiaRequests)
 const visitors = computed<VisitorStats>(() => {
     return (page.props.visitorStats as VisitorStats) || { today: 0, month: 0, total: 0 };
 });
 
-// State untuk tombol "Back to Top"
 const showScrollTop = ref(false);
 
 const scrollToTop = () => {
@@ -74,7 +70,7 @@ onUnmounted(() => {
                 <div class="space-y-4 lg:col-span-1">
                     <div class="flex items-center space-x-3">
                          <div class="bg-white p-1 rounded shadow-sm">
-                            <img src="/images/logofsti.png" alt="Logo FSTI" class="h-10">
+                            <img src="/images/logofsti.webp" alt="Logo FSTI" class="h-10">
                          </div>
                          <div>
                             <p class="font-bold leading-tight">Fakultas Sains dan Teknologi Informasi</p>

@@ -6,7 +6,7 @@ import { Link } from '@inertiajs/vue3';
     <div class="flex min-h-screen items-center justify-center relative bg-slate-100 font-public-sans">
         <div class="absolute inset-0 z-0">
             <img 
-                src="/images/background-banner.png" 
+                src="/images/background-banner.webp" 
                 alt="Background FSTI ITK" 
                 class="w-full h-full object-cover opacity-20" 
             />
@@ -17,7 +17,7 @@ import { Link } from '@inertiajs/vue3';
             <div class="mb-8 text-center flex flex-col items-center">
                 <Link href="/" class="block mb-4">
                     <img 
-                        src="/images/logofsti.png" 
+                        src="/images/logofsti.webp" 
                         alt="Logo FSTI ITK" 
                         class="h-24 w-auto object-contain transition-transform duration-300 hover:scale-105 drop-shadow-sm" 
                     />

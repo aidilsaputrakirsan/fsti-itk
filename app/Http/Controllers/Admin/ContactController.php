@@ -24,18 +24,13 @@ class ContactController extends Controller
             'address' => 'required|string',
             'operating_hours' => 'required|string',
             'google_maps_iframe' => 'nullable|string',
-
             'email' => 'required|email',
-
-            'academic_wa_number' => 'required|string|max:50',
+            'academic_wa_number' => 'required|string|min:5|max:50',
             'academic_wa_link' => 'required|url',
-
-            'finance_wa_number' => 'required|string|max:50',
+            'finance_wa_number' => 'required|string|min:5|max:50',
             'finance_wa_link' => 'required|url',
-
             'instagram_username' => 'required|string|max:100',
             'instagram_link' => 'required|url',
-
             'tiktok_username' => 'required|string|max:100',
             'tiktok_link' => 'required|url',
         ]);
@@ -45,15 +40,15 @@ class ContactController extends Controller
             $validated
         );
 
-        $pesan = 'Informasi kontak berhasil diperbarui.';
+        $message = 'Informasi kontak berhasil diperbarui.';
         if ($request->active_tab === 'lokasi') {
-            $pesan = 'Lokasi & Jam Operasional berhasil diperbarui!';
+            $message = 'Lokasi & Jam Operasional berhasil diperbarui!';
         } elseif ($request->active_tab === 'komunikasi') {
-            $pesan = 'Layanan Komunikasi berhasil diperbarui!';
+            $message = 'Layanan Komunikasi berhasil diperbarui!';
         } elseif ($request->active_tab === 'sosmed') {
-            $pesan = 'Tautan Media Sosial berhasil diperbarui!';
+            $message = 'Tautan Media Sosial berhasil diperbarui!';
         }
 
-        return redirect()->back()->with('success', $pesan);
+        return redirect()->back()->with('success', $message);
     }
 }

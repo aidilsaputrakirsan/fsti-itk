@@ -9,10 +9,10 @@ class AlumniSeeder extends Seeder
 {
     public function run(): void
     {
-        $csvFile = database_path('seeders/data_alumni.csv');
+        $csvFile = database_path('seeders/assets/alumni/data_alumni.csv');
 
         if (!file_exists($csvFile)) {
-            $this->command->error("File data_alumni.csv tidak ditemukan di database/seeders/");
+            $this->command->error("File data_alumni.csv tidak ditemukan di database/seeders/assets/alumni/");
             return;
         }
 
@@ -48,11 +48,12 @@ class AlumniSeeder extends Seeder
             $prodiRaw = trim($row[0] ?? '');
             $nim = trim($row[1] ?? '');
             $nama = trim($row[2] ?? '');
-            $keterangan = trim($row[3] ?? '');
+
+            $tahunMasuk = trim($row[3] ?? '');
+            $keterangan = trim($row[4] ?? '');
 
             $prodiClean = strtolower($prodiRaw);
 
-            // 1. Lewati jika prodi bukan milik FSTI
             if (empty($prodiClean) || !in_array($prodiClean, $allowedProdis)) {
                 continue;
             }
@@ -61,7 +62,6 @@ class AlumniSeeder extends Seeder
                 $nim = '0' . $nim;
             }
 
-            // 3. Ekstrak Tahun dari keterangan lulus
             $graduationYear = null;
             if (preg_match('/(20[1-2][0-9])/', $keterangan, $matches)) {
                 $graduationYear = $matches[1];
@@ -70,12 +70,16 @@ class AlumniSeeder extends Seeder
                 continue;
             }
 
-            // 4. Simpan ke Database
+            if (empty($tahunMasuk) || !is_numeric($tahunMasuk) || strlen($tahunMasuk) !== 4) {
+                $tahunMasuk = '20' . substr($nim, 2, 2);
+            }
+
             Alumni::updateOrCreate(
                 ['nim' => $nim],
                 [
                     'name' => $nama,
                     'study_program' => ucwords($prodiClean),
+                    'entry_year' => (int) $tahunMasuk,
                     'graduation_year' => $graduationYear,
                 ]
             );

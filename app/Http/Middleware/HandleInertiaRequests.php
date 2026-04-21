@@ -49,6 +49,8 @@ class HandleInertiaRequests extends Middleware
 
             'contact_global' => fn() => $request->is('admin*') ? null : Contact::first(),
 
+            'faculty_settings' => fn() => \App\Models\FacultyProfile::first()?->content,
+
             'visitorStats' => fn() => $request->is('admin*') ? null : [
                 'today' => Visitor::where('visit_date', Carbon::today()->toDateString())->count(),
                 'month' => Visitor::where('visit_date', '>=', Carbon::now()->startOfMonth()->toDateString())->count(),

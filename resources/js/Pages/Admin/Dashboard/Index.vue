@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import VueApexCharts from 'vue3-apexcharts';
 import type { ApexOptions } from 'apexcharts';
 import {
@@ -16,7 +16,8 @@ import {
     Award,
     BarChart3,
     Calendar,
-    Activity
+    Activity,
+    MousePointerClick 
 } from 'lucide-vue-next';
 
 defineOptions({ layout: AdminLayout });
@@ -27,9 +28,10 @@ interface Props {
         publishedPosts: number;
         totalAchievements: number;
         avgRating: number;
-        totalVisitors: number;
-        visitorsToday: number;
-        visitorsMonth: number;
+        totalKunjungan: number;
+        kunjunganHariIni: number;
+        kunjunganBulanIni: number;
+        totalHits: number;
     };
     charts: {
         achievementsTrend: Array<{ year: string; total: number }>;
@@ -72,14 +74,13 @@ const colors = {
     teal: '#14B8A6',
 };
 
-// Grafik Tren Prestasi
 const achievementsTrendOptions = computed((): ApexOptions => ({
     chart: { type: 'area', toolbar: { show: false }, fontFamily: 'inherit' },
     stroke: { curve: 'smooth', width: 3 }, 
     markers: { size: 5, colors: ['#ffffff'], strokeColors: colors.primary, strokeWidth: 2 },
     fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05 } },
     colors: [colors.primary],
-    xaxis: { categories: props.charts.achievementsTrend.map(i => i.year) },
+    xaxis: { categories: props.charts?.achievementsTrend?.map(i => i.year) || [] },
     yaxis: { min: 0, tickAmount: 4 },
     dataLabels: { enabled: false },
     tooltip: { theme: 'light' },
@@ -87,13 +88,12 @@ const achievementsTrendOptions = computed((): ApexOptions => ({
 
 const achievementsTrendSeries = computed(() => [{
     name: 'Total Prestasi',
-    data: props.charts.achievementsTrend.map(i => i.total),
+    data: props.charts?.achievementsTrend?.map(i => i.total) || [],
 }]);
 
-// Grafik Donut Berita
 const postsByCategoryOptions = computed((): ApexOptions => ({
     chart: { type: 'donut', fontFamily: 'inherit' },
-    labels: props.charts.postsByCategory.map(i => i.name),
+    labels: props.charts?.postsByCategory?.map(i => i.name) || [],
     colors: [colors.primary, colors.success, colors.warning, colors.purple, colors.teal],
     legend: { position: 'bottom', fontSize: '12px' },
     plotOptions: {
@@ -108,7 +108,7 @@ const postsByCategoryOptions = computed((): ApexOptions => ({
     dataLabels: { enabled: false },
 }));
 
-const postsByCategorySeries = computed(() => props.charts.postsByCategory.map(i => i.total));
+const postsByCategorySeries = computed(() => props.charts?.postsByCategory?.map(i => i.total) || []);
 
 const getTimeAgo = (dateString: string) => {
     if (!dateString) return '-';
@@ -123,7 +123,7 @@ const getTimeAgo = (dateString: string) => {
     return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
 };
 
-const getRatingStars = (rating: number) => '★'.repeat(rating) + '☆'.repeat(5 - rating);
+const getRatingStars = (rating: number) => '★'.repeat(rating || 0) + '☆'.repeat(5 - (rating || 0));
 
 const getLevelBadgeClass = (level: string) => {
     const classes: Record<string, string> = {
@@ -135,9 +135,14 @@ const getLevelBadgeClass = (level: string) => {
     };
     return classes[level] || 'bg-gray-50 text-gray-700 border-gray-200';
 };
+
+const formatNumber = (num: number | undefined | null) => {
+    return (num ?? 0).toLocaleString('id-ID');
+};
 </script>
 
 <template>
+        <Head title="Dashboard" />
     <div class="space-y-6 max-w-7xl mx-auto pb-10">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 px-1">
             <div>
@@ -151,8 +156,8 @@ const getLevelBadgeClass = (level: string) => {
                 <div class="space-y-1">
                     <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Berita Terbit</p>
                     <div class="flex items-baseline gap-2">
-                        <span class="text-3xl font-extrabold text-gray-900">{{ stats.publishedPosts }}</span>
-                        <span class="text-sm text-gray-400 font-medium">/ {{ stats.totalPosts }}</span>
+                        <span class="text-3xl font-extrabold text-gray-900">{{ stats?.publishedPosts ?? 0 }}</span>
+                        <span class="text-sm text-gray-400 font-medium">/ {{ stats?.totalPosts ?? 0 }}</span>
                     </div>
                 </div>
                 <div class="p-4 bg-blue-50 rounded-2xl text-blue-600"><Newspaper class="w-8 h-8" /></div>
@@ -161,7 +166,7 @@ const getLevelBadgeClass = (level: string) => {
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md">
                 <div class="space-y-1">
                     <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Total Prestasi</p>
-                    <span class="text-3xl font-extrabold text-gray-900">{{ stats.totalAchievements }}</span>
+                    <span class="text-3xl font-extrabold text-gray-900">{{ stats?.totalAchievements ?? 0 }}</span>
                 </div>
                 <div class="p-4 bg-emerald-50 rounded-2xl text-emerald-600"><Trophy class="w-8 h-8" /></div>
             </div>
@@ -170,7 +175,7 @@ const getLevelBadgeClass = (level: string) => {
                 <div class="space-y-1">
                     <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Indeks Kepuasan</p>
                     <div class="flex items-center gap-2">
-                        <span class="text-3xl font-extrabold text-gray-900">{{ stats.avgRating || '0.0' }}</span>
+                        <span class="text-3xl font-extrabold text-gray-900">{{ stats?.avgRating || '0.0' }}</span>
                         <Star class="w-6 h-6 text-amber-400 fill-current" />
                     </div>
                 </div>
@@ -182,30 +187,36 @@ const getLevelBadgeClass = (level: string) => {
             <div class="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <div class="p-2 bg-indigo-100 rounded-lg text-indigo-600"><BarChart3 class="w-5 h-5" /></div>
-                    <h2 class="font-bold text-gray-800 uppercase tracking-wide text-sm">Statistik Pengunjung</h2>
+                    <h2 class="font-bold text-gray-800 uppercase tracking-wide text-sm">Statistik Kunjungan & Tayangan</h2>
                 </div>
-                
             </div>
-            <div class="p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="flex items-center gap-5 border-r border-gray-100 last:border-0">
+            <div class="p-6 lg:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                <div class="flex items-center gap-5 sm:border-r border-gray-100 pb-4 sm:pb-0">
                     <div class="p-4 bg-blue-50 rounded-xl text-blue-600"><Users class="w-7 h-7" /></div>
                     <div>
                         <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Hari Ini</p>
-                        <p class="text-3xl font-black text-gray-900 mt-1.5">{{ stats.visitorsToday.toLocaleString() }}</p>
+                        <p class="text-3xl font-black text-gray-900 mt-1.5">{{ formatNumber(stats?.kunjunganHariIni) }}</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-5 border-r border-gray-100 last:border-0">
+                <div class="flex items-center gap-5 lg:border-r border-gray-100 pb-4 sm:pb-0">
                     <div class="p-4 bg-emerald-50 rounded-xl text-emerald-600"><Calendar class="w-7 h-7" /></div>
                     <div>
                         <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Bulan Ini</p>
-                        <p class="text-3xl font-black text-emerald-600 mt-1.5">{{ stats.visitorsMonth.toLocaleString() }}</p>
+                        <p class="text-3xl font-black text-emerald-600 mt-1.5">{{ formatNumber(stats?.kunjunganBulanIni) }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-5 sm:border-r border-gray-100 pb-4 sm:pb-0">
+                    <div class="p-4 bg-purple-50 rounded-xl text-purple-600"><Activity class="w-7 h-7" /></div>
+                    <div>
+                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Total Kunjungan</p>
+                        <p class="text-3xl font-black text-purple-600 mt-1.5">{{ formatNumber(stats?.totalKunjungan) }}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-5">
-                    <div class="p-4 bg-purple-50 rounded-xl text-purple-600"><Activity class="w-7 h-7" /></div>
+                    <div class="p-4 bg-amber-50 rounded-xl text-amber-600"><MousePointerClick class="w-7 h-7" /></div>
                     <div>
-                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Total Pengunjung</p>
-                        <p class="text-3xl font-black text-purple-600 mt-1.5">{{ stats.totalVisitors.toLocaleString() }}</p>
+                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Tayangan (Hits)</p>
+                        <p class="text-3xl font-black text-amber-600 mt-1.5">{{ formatNumber(stats?.totalHits) }}</p>
                     </div>
                 </div>
             </div>
@@ -216,7 +227,7 @@ const getLevelBadgeClass = (level: string) => {
                 <h3 class="text-base font-bold text-gray-800 mb-6 flex items-center gap-2">
                     <TrendingUp class="w-5 h-5 text-blue-500" /> Tren Prestasi Mahasiswa
                 </h3>
-                <VueApexCharts v-if="charts.achievementsTrend.length > 0" type="area" height="300" :options="achievementsTrendOptions" :series="achievementsTrendSeries" />
+                <VueApexCharts v-if="charts?.achievementsTrend?.length > 0" type="area" height="300" :options="achievementsTrendOptions" :series="achievementsTrendSeries" />
                 <div v-else class="h-[300px] flex items-center justify-center text-sm text-gray-400">Data belum tersedia</div>
             </div>
 
@@ -224,7 +235,7 @@ const getLevelBadgeClass = (level: string) => {
                 <h3 class="text-base font-bold text-gray-800 mb-6 flex items-center gap-2">
                     <PieChart class="w-5 h-5 text-purple-500" /> Sebaran Informasi Berita
                 </h3>
-                <VueApexCharts v-if="charts.postsByCategory.length > 0" type="donut" height="300" :options="postsByCategoryOptions" :series="postsByCategorySeries" />
+                <VueApexCharts v-if="charts?.postsByCategory?.length > 0" type="donut" height="300" :options="postsByCategoryOptions" :series="postsByCategorySeries" />
                 <div v-else class="h-[300px] flex items-center justify-center text-sm text-gray-400">Data belum tersedia</div>
             </div>
         </div>
@@ -233,7 +244,7 @@ const getLevelBadgeClass = (level: string) => {
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="font-bold text-gray-800">Berita Populer</h3>
-                    <Link href="/admin/posts" class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-tighter">Semua</Link>
+                    <Link :href="route('admin.posts.index')" class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-tighter">Semua</Link>
                 </div>
                 <div class="space-y-4 flex-1">
                     <div v-for="(post, index) in recent.topViewedPosts" :key="post.id" class="flex items-start gap-3 group">
@@ -253,7 +264,7 @@ const getLevelBadgeClass = (level: string) => {
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="font-bold text-gray-800">Feedback Terakhir</h3>
-                    <Link href="/admin/satisfaction-surveys" class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-tighter">Semua</Link>
+                    <Link :href="route('admin.satisfaction-surveys.index')" class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-tighter">Semua</Link>
                 </div>
                 <div class="space-y-5 flex-1">
                     <div v-for="survey in recent.surveys" :key="survey.id" class="border-b border-gray-50 pb-3 last:border-0 last:pb-0">
@@ -271,16 +282,14 @@ const getLevelBadgeClass = (level: string) => {
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="font-bold text-gray-800">Prestasi Terbaru</h3>
-                    <Link href="/admin/achievements" class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-tighter">Semua</Link>
+                    <Link :href="route('admin.achievements.index')" class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-tighter">Semua</Link>
                 </div>
                 <div class="space-y-4 flex-1">
                     <div v-for="achievement in recent.achievements" :key="achievement.id" class="flex items-start gap-3">
                         <div class="mt-1 p-1.5 bg-gray-50 rounded-lg"><Award class="w-4 h-4 text-emerald-500" /></div>
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-semibold text-gray-900 line-clamp-1" :title="achievement.title">{{ achievement.title }}</p>
-                            
                             <p class="text-xs text-gray-500 mt-0.5 truncate">{{ achievement.student_name }}</p>
-                            
                             <div class="flex items-center gap-2 mt-1.5">
                                 <span :class="['text-[9px] px-1.5 py-0.5 rounded-md border font-bold uppercase tracking-tighter', getLevelBadgeClass(achievement.level)]">
                                     {{ achievement.level }}
@@ -294,3 +303,7 @@ const getLevelBadgeClass = (level: string) => {
         </div>
     </div>
 </template>
+
+<style scoped>
+.text-shadow-custom { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); }
+</style>

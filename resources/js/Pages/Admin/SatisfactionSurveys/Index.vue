@@ -32,7 +32,7 @@ const respondentTypes = [
 ];
 
 watch([search, respondentType], debounce(() => {
-    router.get((route as Function)('admin.satisfaction-surveys.index'), {
+    router.get(route('admin.satisfaction-surveys.index'), {
         search: search.value,
         respondent_type: respondentType.value === '' ? null : respondentType.value,
     }, {
@@ -104,7 +104,7 @@ const closeDeleteModal = () => {
 };
 const confirmDelete = () => {
     if (surveyToDelete.value) {
-        router.delete((route as Function)('admin.satisfaction-surveys.destroy', surveyToDelete.value.id), {
+        router.delete(route('admin.satisfaction-surveys.destroy', surveyToDelete.value.id), {
             onSuccess: () => closeDeleteModal(),
         });
     }
@@ -142,7 +142,7 @@ const getRatingStars = (rating: number) => {
                 <p class="mt-1 text-gray-600">Manajemen data respons survei layanan Informasi Publik dan Zona Integritas FSTI.</p>
             </div>
             
-            <Link :href="(route as Function)('admin.survey-categories.index')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
+            <Link :href="route('admin.survey-categories.index')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
                 <Cog6ToothIcon class="h-5 w-5 stroke-2" />
                 Kelola Aspek Penilaian
             </Link>

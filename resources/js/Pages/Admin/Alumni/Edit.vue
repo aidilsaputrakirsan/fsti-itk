@@ -9,21 +9,18 @@ defineOptions({ layout: AdminLayout });
 const props = defineProps<{
     alumni?: any;
     data?: any;
+    studyPrograms: string[]; 
 }>();
 
 const dataAlumni = props.alumni || props.data || {};
-
-const prodis = [
-    'Matematika', 'Ilmu Aktuaria', 'Statistika', 'Fisika', 
-    'Informatika', 'Sistem Informasi', 'Bisnis Digital', 'Teknik Elektro'
-];
 
 interface AlumniFormData {
     _method: string;
     nim: string;
     name: string;
     study_program: string;
-    graduation_year: number;
+    entry_year: number | ''; 
+    graduation_year: number | '';
 }
 
 const form = useForm<AlumniFormData>({
@@ -31,6 +28,7 @@ const form = useForm<AlumniFormData>({
     nim: dataAlumni.nim || '',
     name: dataAlumni.name || '',
     study_program: dataAlumni.study_program || '',
+    entry_year: dataAlumni.entry_year || '', 
     graduation_year: dataAlumni.graduation_year || new Date().getFullYear(),
 });
 
@@ -53,6 +51,11 @@ const submit = () => {
         hasError = true;
     }
 
+    if (!form.entry_year) {
+        form.setError('entry_year', 'Tahun masuk wajib diisi.');
+        hasError = true;
+    }
+
     if (!form.graduation_year) {
         form.setError('graduation_year', 'Tahun kelulusan wajib diisi.');
         hasError = true;
@@ -60,8 +63,7 @@ const submit = () => {
 
     if (hasError) return;
 
-    const targetUrl: string = (route as Function)('admin.alumni.update', dataAlumni.id);
-    form.post(targetUrl);
+    form.post(route('admin.alumni.update', dataAlumni.id));
 };
 </script>
 
@@ -70,7 +72,7 @@ const submit = () => {
         <Head :title="'Edit Alumni: ' + (dataAlumni.name || '')" />
 
         <div class="mb-8">
-            <Link :href="(route as Function)('admin.alumni.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
+            <Link :href="route('admin.alumni.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
                 <ArrowLeftIcon class="h-4 w-4 stroke-2" /> Kembali ke Daftar
             </Link>
             <h1 class="text-3xl font-bold text-gray-900">Edit Data Alumni</h1>
@@ -106,11 +108,19 @@ const submit = () => {
                             :class="form.errors.study_program ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
                             required>
                             <option value="" disabled>Pilih Program Studi</option>
-                            <option v-for="prodi in prodis" :key="prodi" :value="prodi">{{ prodi }}</option>
+                            <option v-for="prodi in studyPrograms" :key="prodi" :value="prodi">{{ prodi }}</option>
                         </select>
                         <InputError :message="form.errors.study_program" />
                     </div>
 
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Tahun Masuk <span class="text-red-600">*</span></label>
+                    <div>
+                        <input v-model="form.entry_year" type="number" min="2012" :max="new Date().getFullYear()" 
+                            class="block w-full rounded-lg transition-colors py-3"
+                            :class="form.errors.entry_year ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
+                            required>
+                        <InputError :message="form.errors.entry_year" />
+                    </div>
                     <label class="md:pt-3 text-sm font-bold text-gray-800">Tahun Kelulusan <span class="text-red-600">*</span></label>
                     <div>
                         <input v-model="form.graduation_year" type="number" min="2000" :max="new Date().getFullYear() + 1" 
@@ -123,7 +133,7 @@ const submit = () => {
                 </div>
 
                 <div class="mt-12 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 border-t border-gray-100 pt-6">
-                    <Link :href="(route as Function)('admin.alumni.index')" class="w-full sm:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                    <Link :href="route('admin.alumni.index')" class="w-full sm:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
                         Batal
                     </Link>
                     <button type="submit" :disabled="form.processing" class="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-8 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors disabled:opacity-50">

@@ -3,7 +3,6 @@ import { onBeforeUnmount, onUnmounted, ref, computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useForm, Link, Head } from '@inertiajs/vue3';
 import { 
-    BookmarkIcon,
     PaperClipIcon,
     ArrowUturnLeftIcon,
     ArrowUturnRightIcon,
@@ -48,12 +47,22 @@ const form = useForm<PostFormData>({
     image: null,
 });
 
+const showLinkModal = ref(false);
+const linkUrlInput = ref('');
+
 const editor = useEditor({
     content: form.content,
     extensions: [
         StarterKit,
         Underline,
-        TiptapLink.configure({ openOnClick: false }),
+        TiptapLink.configure({ 
+            openOnClick: false,
+            HTMLAttributes: {
+                target: '_blank',
+                rel: 'noopener noreferrer',
+                class: 'text-blue-600 underline hover:text-blue-800 break-words'
+            },
+        }),
         TextAlign.configure({ types: ['heading', 'paragraph'] }),
     ],
     onUpdate: ({ editor }) => {
@@ -99,16 +108,36 @@ const applyFormat = (format: string, options?: any) => {
     (chain as any)[format](options).run();
 };
 
-const setLink = () => {
+const openLinkModal = () => {
     if (!editor.value) return;
-    const previousUrl = editor.value.getAttributes('link').href;
-    const url = window.prompt('URL', previousUrl);
-    if (url === null) return;
-    if (url === '') {
+    linkUrlInput.value = editor.value.getAttributes('link').href || '';
+    showLinkModal.value = true;
+};
+
+const closeLinkModal = () => {
+    showLinkModal.value = false;
+    linkUrlInput.value = '';
+};
+
+const applyLink = () => {
+    if (!editor.value) return;
+
+    if (linkUrlInput.value === '') {
         editor.value.chain().focus().extendMarkRange('link').unsetLink().run();
-        return;
+    } else {
+        let finalUrl = linkUrlInput.value;
+        if (!/^https?:\/\//i.test(finalUrl)) {
+            finalUrl = 'https://' + finalUrl;
+        }
+
+        const { from, to } = editor.value.state.selection;
+        if (from === to) {
+            editor.value.chain().focus().insertContent(`<a href="${finalUrl}">${finalUrl}</a>`).run();
+        } else {
+            editor.value.chain().focus().extendMarkRange('link').setLink({ href: finalUrl }).run();
+        }
     }
-    editor.value.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    closeLinkModal();
 };
 
 const openImageModal = () => {
@@ -164,17 +193,9 @@ const validateForm = () => {
     return !hasError;
 };
 
-const saveAsDraft = () => {
+const submit = () => {
     if (!validateForm()) return;
-    form.status = 'Draft';
-    const targetUrl: string = (route as Function)('admin.posts.update', dataPost.id);
-    form.post(targetUrl);
-};
-
-const publishPost = () => {
-    if (!validateForm()) return;
-    form.status = 'Terbitkan';
-    const targetUrl: string = (route as Function)('admin.posts.update', dataPost.id);
+    const targetUrl: string = route('admin.posts.update', dataPost.id);
     form.post(targetUrl);
 };
 </script>
@@ -184,7 +205,7 @@ const publishPost = () => {
         <Head :title="'Edit Berita: ' + (dataPost.title || '')" />
 
         <div class="mb-8">
-            <Link :href="(route as Function)('admin.posts.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
+            <Link :href="route('admin.posts.index')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors shadow-sm w-fit mb-6">
                 <ArrowLeftIcon class="h-4 w-4 stroke-2" /> Kembali ke Daftar
             </Link>
             <h1 class="text-3xl font-bold text-gray-900">Edit Berita</h1>
@@ -219,9 +240,11 @@ const publishPost = () => {
                             <button @click="applyFormat('toggleStrike')" type="button" :class="{ 'bg-gray-300 text-gray-900': editor.isActive('strike') }" class="toolbar-button">
                                 <span class="line-through">S</span>
                             </button>
-                            <button @click="setLink" type="button" :class="{ 'bg-gray-300 text-gray-900': editor.isActive('link') }" class="toolbar-button">
+                            
+                            <button @click="openLinkModal" type="button" :class="{ 'bg-gray-300 text-gray-900': editor.isActive('link') }" class="toolbar-button">
                                 <LinkIcon class="h-4 w-4" />
                             </button>
+
                             <div class="toolbar-divider"></div>
                             <button @click="applyFormat('toggleHeading', { level: 2 })" type="button" :class="{ 'bg-gray-300 text-gray-900': editor.isActive('heading', { level: 2 }) }" class="toolbar-button">
                                 <span class="text-xs font-bold">H2</span>
@@ -286,10 +309,9 @@ const publishPost = () => {
                             <option value="Draft">Draft</option>
                             <option value="Terbitkan">Terbitkan</option>
                         </select>
-                        <InputError :message="form.errors.status" />
                     </div>
 
-                    <label class="md:pt-3 text-sm font-bold text-gray-800">Gambar Cover</label>
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Gambar Cover <span class="text-red-600">*</span></label>
                     <div>
                         <div v-if="imagePreview" class="mb-4">
                             <img 
@@ -318,23 +340,39 @@ const publishPost = () => {
                 </div>
 
                 <div class="mt-12 flex flex-col-reverse md:flex-row items-center justify-between gap-4 border-t border-gray-100 pt-6">
-                    <Link :href="(route as Function)('admin.posts.index')" class="w-full md:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                    <Link :href="route('admin.posts.index')" class="w-full md:w-auto text-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
                         Batal
                     </Link>
                     <div class="flex flex-col sm:flex-row w-full md:w-auto gap-3">
-                        <button @click="saveAsDraft" type="button" :disabled="form.processing" class="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-gray-50 px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-100 transition-colors disabled:opacity-50">
-                            <BookmarkIcon class="h-5 w-5 stroke-2" />
-                            {{ dataPost.status === 'Terbitkan' ? 'Jadikan Draf' : 'Simpan Draf' }}
-                        </button>
-                        <button @click="publishPost" type="button" :disabled="form.processing" class="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg bg-primary px-8 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors disabled:opacity-50">
+                        <button @click="submit" type="button" :disabled="form.processing" class="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg bg-primary px-8 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors disabled:opacity-50">
                             <PaperAirplaneIcon class="h-5 w-5 stroke-2" />
-                            {{ dataPost.status === 'Terbitkan' ? 'Perbarui Berita' : 'Terbitkan Berita' }}
+                            Perbarui Berita
                         </button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+
+    <Teleport to="body">
+        <div v-if="showLinkModal" @keydown.escape="closeLinkModal" class="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm transition-opacity">
+            <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative" @click.stop>
+                <button @click="closeLinkModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+                    <XMarkIcon class="h-5 w-5 stroke-2" />
+                </button>
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Tambahkan Tautan (Link)</h3>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Alamat URL</label>
+                    <input v-model="linkUrlInput" @keyup.enter="applyLink" type="url" placeholder="https://itk.ac.id" 
+                        class="block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary py-2.5 shadow-sm">
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button @click="closeLinkModal" type="button" class="px-5 py-2.5 text-sm font-bold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Batal</button>
+                    <button @click="applyLink" type="button" class="px-5 py-2.5 text-sm font-bold text-white bg-primary rounded-lg hover:bg-primary-hover transition-colors">Terapkan</button>
+                </div>
+            </div>
+        </div>
+    </Teleport>
 
     <Teleport to="body">
         <div v-if="showImageModal" @keydown.escape="closeImageModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/80 backdrop-blur-sm transition-opacity">
@@ -348,10 +386,20 @@ const publishPost = () => {
     </Teleport>
 </template>
 
-<style>
+<style scoped>
 .ProseMirror { outline: none; }
 .toolbar-button { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 4px; transition: background-color 0.2s; }
 .toolbar-button:hover { background-color: #e5e7eb; }
 .toolbar-button.is-active { background-color: #d1d5db; color: #111827; }
 .toolbar-divider { width: 1px; background-color: #d1d5db; margin-left: 4px; margin-right: 4px; align-self: stretch; height: 24px; }
+
+:deep(.prose) {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+:deep(.prose a) {
+    color: #2563eb !important;
+    text-decoration: underline !important;
+    word-break: break-word;
+}
 </style>

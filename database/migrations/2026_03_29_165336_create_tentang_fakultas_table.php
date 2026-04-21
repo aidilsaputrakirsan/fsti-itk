@@ -8,15 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('tentang_fakultas', function (Blueprint $table) {
+        Schema::create('faculty_profiles', function (Blueprint $table) {
             $table->id();
-            $table->json('content')->nullable(); 
+            $table->json('content')->nullable();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('tentang_fakultas');
+        Schema::dropIfExists('faculty_profiles');
     }
 };

@@ -18,7 +18,6 @@ onMounted(() => {
     AOS.init({ duration: 800, once: true });
 });
 
-// Data Jalur Masuk (Rangkuman Pmb.itk.ac.id)
 const jalurMasuk = [
     {
         title: 'SNBP',
@@ -57,7 +56,7 @@ const jalurMasuk = [
         <Banner
             title="PENERIMAAN MAHASISWA BARU"
             subtitle="Jadilah Bagian dari Inovator Masa Depan di FSTI ITK"
-            background-image="/images/background-banner.png"
+            background-image="/images/background-banner.webp"
         />
 
         <div class="bg-white py-12 md:py-24 font-public-sans min-h-screen overflow-hidden">
@@ -90,7 +89,7 @@ const jalurMasuk = [
                         <div class="absolute inset-0 bg-gradient-to-br from-[#D9FFFE] to-[#00509D]/10 border border-white rotate-12 rounded-tl-[40px] md:rounded-tl-[60px] rounded-br-[40px] md:rounded-br-[60px] rounded-tr-xl md:rounded-tr-2xl rounded-bl-xl md:rounded-bl-2xl shadow-lg transform group-hover:rotate-6 transition-transform duration-700"></div>
                         
                         <div class="absolute inset-0 bg-gradient-to-tl from-[#003566] to-[#00509D] -rotate-6 rounded-tl-[40px] md:rounded-tl-[60px] rounded-br-[40px] md:rounded-br-[60px] rounded-tr-xl md:rounded-tr-2xl rounded-bl-xl md:rounded-bl-2xl shadow-2xl flex items-center justify-center transform group-hover:rotate-0 transition-transform duration-700 overflow-hidden">
-                            <div class="absolute inset-0 bg-[url('/images/pattern-prestasi.png')] opacity-10"></div>
+                            <div class="absolute inset-0 bg-[url('/images/pattern-prestasi.webp')] opacity-10"></div>
                             <GraduationCap class="w-24 h-24 sm:w-32 sm:h-32 text-[#D9FFFE] drop-shadow-xl group-hover:scale-110 transition-transform duration-500 relative z-10" stroke-width="1.2" />
                         </div>
                         
@@ -135,7 +134,7 @@ const jalurMasuk = [
 
                 <div class="bg-gradient-to-br from-[#003566] via-[#00509D] to-[#003566] rounded-tl-[40px] md:rounded-tl-[80px] rounded-br-[40px] md:rounded-br-[80px] rounded-tr-xl md:rounded-tr-2xl rounded-bl-xl md:rounded-bl-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,53,102,0.2)] flex flex-col md:flex-row items-center border border-white/10 relative" data-aos="zoom-in">
                     
-                    <div class="absolute inset-0 bg-[url('/images/pattern-prestasi.png')] opacity-10 pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-[url('/images/pattern-prestasi.webp')] opacity-10 pointer-events-none"></div>
                     <div class="absolute top-0 right-0 w-48 h-48 md:w-64 md:h-64 bg-[#D9FFFE]/10 rounded-full blur-3xl pointer-events-none"></div>
 
                     <div class="p-8 sm:p-10 md:p-16 text-white w-full md:w-3/5 flex flex-col justify-center relative z-10 text-center md:text-left">
@@ -150,7 +149,7 @@ const jalurMasuk = [
                         </p>
                         
                         <div class="flex flex-wrap justify-center md:justify-start gap-4">
-                            <a href="https://pmb.itk.ac.id/" target="_blank" class="px-6 py-3.5 md:px-8 md:py-4 bg-white hover:bg-[#D9FFFE] text-primary font-black rounded-tl-2xl rounded-br-2xl rounded-tr-md rounded-bl-md flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 group w-full sm:w-auto text-sm md:text-base">
+                            <a :href="$page.props.faculty_settings?.pmb_link || 'https://pmb.itk.ac.id/'" target="_blank" class="px-6 py-3.5 md:px-8 md:py-4 bg-white hover:bg-[#D9FFFE] text-primary font-black rounded-tl-2xl rounded-br-2xl rounded-tr-md rounded-bl-md flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 group w-full sm:w-auto text-sm md:text-base">
                                Lihat Selengkapnya <ExternalLink class="w-4 h-4 md:w-5 md:h-5 ml-2 md:ml-3 group-hover:translate-x-1 transition-transform" />
                             </a>
                         </div>

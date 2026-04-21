@@ -17,38 +17,45 @@ const visitors = computed<VisitorStats>(() => {
 </script>
 
 <template>
-    <footer class="bg-gray-900 border-t border-gray-800 text-gray-300 py-10">
+    <footer class="bg-gray-900 border-t border-gray-800 text-gray-300 py-8 lg:py-10 font-public-sans">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-6">
+            
+            <div class="flex flex-col-reverse lg:flex-row justify-between items-center gap-6 lg:gap-0 text-center lg:text-left">
                 
-                <div class="text-sm text-gray-500">
+                <div class="text-xs sm:text-sm text-gray-500 w-full lg:w-auto mt-2 lg:mt-0">
                     &copy; {{ new Date().getFullYear() }} Fakultas Sains dan Teknologi Informasi ITK.
                 </div>
 
-                <div class="flex items-center gap-6 bg-gray-800/50 px-6 py-3 rounded-xl border border-gray-700">
-                    <div class="flex items-center gap-2">
-                        <Users class="w-4 h-4 text-blue-400" />
-                        <div class="text-xs">
-                            <p class="text-gray-400">Hari Ini</p>
-                            <p class="font-bold text-gray-200">{{ visitors.today.toLocaleString() }}</p>
+                <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-6 bg-gray-800/50 px-4 sm:px-6 py-3.5 rounded-xl border border-gray-700 w-full md:w-fit shadow-sm mx-auto lg:mx-0">
+                    
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <Users class="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 shrink-0" />
+                        <div class="text-left">
+                            <p class="text-[9px] sm:text-xs text-gray-400 uppercase tracking-wider mb-0.5 leading-none">Hari Ini</p>
+                            <p class="text-sm sm:text-base font-bold text-gray-200 leading-none">{{ visitors.today.toLocaleString('id-ID') }}</p>
                         </div>
                     </div>
-                    <div class="w-px h-8 bg-gray-700"></div>
-                    <div class="flex items-center gap-2">
-                        <Calendar class="w-4 h-4 text-emerald-400" />
-                        <div class="text-xs">
-                            <p class="text-gray-400">Bulan Ini</p>
-                            <p class="font-bold text-gray-200">{{ visitors.month.toLocaleString() }}</p>
+                    
+                    <div class="w-px h-8 bg-gray-700 shrink-0 hidden min-[360px]:block"></div>
+                    
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <Calendar class="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400 shrink-0" />
+                        <div class="text-left">
+                            <p class="text-[9px] sm:text-xs text-gray-400 uppercase tracking-wider mb-0.5 leading-none">Bulan Ini</p>
+                            <p class="text-sm sm:text-base font-bold text-gray-200 leading-none">{{ visitors.month.toLocaleString('id-ID') }}</p>
                         </div>
                     </div>
-                    <div class="w-px h-8 bg-gray-700"></div>
-                    <div class="flex items-center gap-2">
-                        <Activity class="w-4 h-4 text-purple-400" />
-                        <div class="text-xs">
-                            <p class="text-gray-400">Total</p>
-                            <p class="font-bold text-gray-200">{{ visitors.total.toLocaleString() }}</p>
+                    
+                    <div class="w-px h-8 bg-gray-700 shrink-0 hidden min-[360px]:block"></div>
+                    
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <Activity class="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 shrink-0" />
+                        <div class="text-left">
+                            <p class="text-[9px] sm:text-xs text-gray-400 uppercase tracking-wider mb-0.5 leading-none">Total</p>
+                            <p class="text-sm sm:text-base font-bold text-gray-200 leading-none">{{ visitors.total.toLocaleString('id-ID') }}</p>
                         </div>
                     </div>
+
                 </div>
 
             </div>

@@ -9,24 +9,20 @@ import {
     ExclamationTriangleIcon,
     CheckCircleIcon,
 } from '@heroicons/vue/24/outline';
-import { Link, router, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, watch } from 'vue';
 
 defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
     studyPrograms: Array<any>;
+    departments: Array<string>; 
 }>();
 
-// --- Logika Filter & Search Lokal ---
 const search = ref('');
-const statusFilter = ref(''); // Untuk Jenjang (S1/S2)
-const departmentFilter = ref(''); // Untuk Jurusan
+const statusFilter = ref(''); 
+const departmentFilter = ref(''); 
 
-const uniqueDepartments = computed(() => {
-    const deps = props.studyPrograms.map(p => p.department);
-    return [...new Set(deps)].filter(Boolean);
-});
 
 const filteredPrograms = computed(() => {
     return props.studyPrograms.filter(prodi => {
@@ -39,11 +35,9 @@ const filteredPrograms = computed(() => {
     });
 });
 
-// --- Logika Pagination Client-Side (Konsisten dengan Civitas) ---
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-// Reset halaman ke 1 jika filter berubah
 watch([search, statusFilter, departmentFilter], () => {
     currentPage.value = 1;
 });
@@ -61,7 +55,6 @@ const formattedLinks = computed(() => {
     
     const links = [];
     
-    // Tombol Sebelumnya
     links.push({
         url: currentPage.value > 1 ? '#' : null,
         label: 'Sebelumnya',
@@ -69,7 +62,6 @@ const formattedLinks = computed(() => {
         page: currentPage.value - 1
     });
 
-    // Logika Sliding Window
     for (let i = 1; i <= totalPages.value; i++) {
         if (i === 1 || i === totalPages.value || (i >= currentPage.value - 1 && i <= currentPage.value + 1)) {
             links.push({
@@ -83,7 +75,6 @@ const formattedLinks = computed(() => {
         }
     }
 
-    // Tombol Selanjutnya
     links.push({
         url: currentPage.value < totalPages.value ? '#' : null,
         label: 'Selanjutnya',
@@ -101,7 +92,6 @@ const changePage = (pageNumber: number | null, event: Event) => {
     }
 };
 
-// --- Logika Modal Delete ---
 const isModalOpen = ref(false);
 const itemToDelete = ref<any | null>(null);
 
@@ -124,7 +114,6 @@ const confirmDelete = () => {
     }
 };
 
-// --- Logika Notifikasi Flash ---
 const page = usePage();
 const showNotification = ref(false);
 const notificationMessage = ref('');
@@ -142,6 +131,7 @@ watch(flashSuccess, (message) => {
 </script>
 
 <template>
+          <Head title="Kelola Program Studi" />
     <div>
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
@@ -170,7 +160,7 @@ watch(flashSuccess, (message) => {
                     <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
                     <select v-model="departmentFilter" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors">
                         <option value="">Semua Jurusan</option>
-                        <option v-for="dep in uniqueDepartments" :key="dep" :value="dep">{{ dep }}</option>
+                        <option v-for="dep in departments" :key="dep" :value="dep">{{ dep }}</option>
                     </select>
                 </div>
 
@@ -200,38 +190,40 @@ watch(flashSuccess, (message) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-if="paginatedPrograms.length > 0" v-for="prodi in paginatedPrograms" :key="prodi.id">
-                            <td>
-                                <span class="inline-flex rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider mb-1.5 bg-blue-100 text-blue-800">
-                                    {{ prodi.degree }}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="font-bold text-gray-900">{{ prodi.name }}</div>
-                            </td>
-                            <td>
-                                <div class="text-sm text-gray-700 font-medium">{{ prodi.department || '-' }}</div>
-                            </td>
-                            <td class="text-center">
-                                <span v-if="prodi.accreditation_certificate_image" class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-800">
-                                    Tersedia
-                                </span>
-                                <span v-else class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-800">
-                                    Kosong
-                                </span>
-                            </td>
-                            <td>
-                                <div class="flex items-center justify-center gap-3">
-                                    <Link :href="route('admin.study-programs.edit', prodi.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
-                                        <PencilSquareIcon class="h-4 w-4" /> Edit
-                                    </Link>
-                                    <span class="text-gray-300">|</span>
-                                    <button @click="openDeleteModal(prodi)" type="button" class="flex items-center gap-1 text-red-600 hover:text-red-800 font-semibold transition-colors">
-                                        <TrashIcon class="h-4 w-4" /> Hapus
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                        <template v-if="paginatedPrograms.length > 0">
+                            <tr v-for="prodi in paginatedPrograms" :key="prodi.id">
+                                <td>
+                                    <span class="inline-flex rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider mb-1.5 bg-blue-100 text-blue-800">
+                                        {{ prodi.degree }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="font-bold text-gray-900">{{ prodi.name }}</div>
+                                </td>
+                                <td>
+                                    <div class="text-sm text-gray-700 font-medium">{{ prodi.department || '-' }}</div>
+                                </td>
+                                <td class="text-center">
+                                    <span v-if="prodi.accreditation_certificate_image" class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-800">
+                                        Tersedia
+                                    </span>
+                                    <span v-else class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-800">
+                                        Kosong
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="flex items-center justify-center gap-3">
+                                        <Link :href="route('admin.study-programs.edit', prodi.id)" class="flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors">
+                                            <PencilSquareIcon class="h-4 w-4" /> Edit
+                                        </Link>
+                                        <span class="text-gray-300">|</span>
+                                        <button @click="openDeleteModal(prodi)" type="button" class="flex items-center gap-1 text-red-600 hover:text-red-800 font-semibold transition-colors">
+                                            <TrashIcon class="h-4 w-4" /> Hapus
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
                         <tr v-else>
                             <td colspan="5" class="py-8 text-center text-gray-500 font-medium">Tidak ada program studi yang cocok dengan pencarian Anda.</td>
                         </tr>

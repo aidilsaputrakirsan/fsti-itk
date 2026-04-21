@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('partners', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->json('activities')->nullable(); // Disimpan sebagai array JSON
+            $table->json('activities')->nullable(); 
             $table->string('logo')->nullable();
             $table->timestamps();
         });

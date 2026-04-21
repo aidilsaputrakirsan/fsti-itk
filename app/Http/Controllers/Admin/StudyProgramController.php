@@ -4,30 +4,38 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\StudyProgram;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class StudyProgramController extends Controller
 {
-    public function index()
+   public function index()
     {
         $studyPrograms = StudyProgram::orderBy('degree')->orderBy('name')->get();
+        $departments = Department::orderBy('name')->pluck('name'); 
+
         return Inertia::render('Admin/StudyPrograms/Index', [
-            'studyPrograms' => $studyPrograms
+            'studyPrograms' => $studyPrograms,
+            'departments' => $departments 
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('Admin/StudyPrograms/Create');
+        $departments = Department::orderBy('name')->pluck('name');
+        return Inertia::render('Admin/StudyPrograms/Create', [
+            'departments' => $departments
+        ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:study_programs,name',
             'department' => 'required|string|max:255',
             'degree' => 'required|string|max:10',
             'description' => 'required|string',
@@ -36,24 +44,25 @@ class StudyProgramController extends Controller
             'goals' => 'required|string',
             'graduate_profiles' => 'required|string',
             'accreditation_text' => 'required|string',
-            'accreditation_pdf_link' => 'required|url',
+            'accreditation_pdf_link' => 'nullable|url',
             'website_link' => 'required|url',
             'accreditation_certificate_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'name.unique' => 'Program Studi dengan nama ini sudah terdaftar.',
+            'accreditation_pdf_link.url' => 'Tautan PDF harus berupa URL yang valid.',
+            'website_link.url' => 'Tautan website harus berupa URL yang valid.',
         ]);
 
         $data = $request->except(['accreditation_certificate_image', 'mission', 'graduate_profiles']);
 
-        // Buat slug otomatis dari Jenjang + Nama (Contoh: S1 Matematika -> s1-matematika)
         $data['slug'] = Str::slug($request->degree . ' ' . $request->name);
 
-        // Ubah teks baris baru (Enter) menjadi Array untuk JSON
         $data['mission'] = $request->mission ? array_values(array_filter(array_map('trim', explode("\n", $request->mission)))) : null;
         $data['graduate_profiles'] = $request->graduate_profiles ? array_values(array_filter(array_map('trim', explode("\n", $request->graduate_profiles)))) : null;
 
-        // Proses Upload Gambar
         if ($request->hasFile('accreditation_certificate_image')) {
-            $path = $request->file('accreditation_certificate_image')->store('prodi', 'public');
-            $data['accreditation_certificate_image'] = '/storage/' . $path;
+            $path = $request->file('accreditation_certificate_image')->store('study_programs', 'public');
+            $data['accreditation_certificate_image'] = $path;
         }
 
         StudyProgram::create($data);
@@ -63,16 +72,17 @@ class StudyProgramController extends Controller
 
     public function edit(StudyProgram $studyProgram)
     {
+        $departments = Department::orderBy('name')->pluck('name');
         return Inertia::render('Admin/StudyPrograms/Edit', [
-            'studyProgram' => $studyProgram
+            'studyProgram' => $studyProgram,
+            'departments' => $departments
         ]);
     }
 
     public function update(Request $request, StudyProgram $studyProgram)
     {
-        // PERBAIKAN: Semua kolom text & link WAJIB (required)
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => ['required', 'string', 'max:255', Rule::unique('study_programs')->ignore($studyProgram->id)],
             'department' => 'required|string|max:255',
             'degree' => 'required|string|max:10',
             'description' => 'required|string',
@@ -81,27 +91,27 @@ class StudyProgramController extends Controller
             'goals' => 'required|string',
             'graduate_profiles' => 'required|string',
             'accreditation_text' => 'required|string',
-            'accreditation_pdf_link' => 'required|url',
+            'accreditation_pdf_link' => 'nullable|url',
             'website_link' => 'required|url',
-            // Gambar nullable saat update agar admin tidak harus upload ulang gambar lama
             'accreditation_certificate_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'name.unique' => 'Program Studi dengan nama ini sudah terdaftar.',
+            'accreditation_pdf_link.url' => 'Tautan PDF harus berupa URL yang valid.',
+            'website_link.url' => 'Tautan website harus berupa URL yang valid.',
         ]);
 
         $data = $request->except(['accreditation_certificate_image', 'mission', 'graduate_profiles']);
         $data['slug'] = Str::slug($request->degree . ' ' . $request->name);
 
-        // Ubah teks baris baru menjadi Array
         $data['mission'] = $request->mission ? array_values(array_filter(array_map('trim', explode("\n", $request->mission)))) : null;
         $data['graduate_profiles'] = $request->graduate_profiles ? array_values(array_filter(array_map('trim', explode("\n", $request->graduate_profiles)))) : null;
 
-        // Proses Upload Gambar Baru & Hapus Gambar Lama
         if ($request->hasFile('accreditation_certificate_image')) {
-            // Hapus file lama jika ada dan bukan gambar bawaan seeder
-            if ($studyProgram->accreditation_certificate_image && str_starts_with($studyProgram->accreditation_certificate_image, '/storage/')) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $studyProgram->accreditation_certificate_image));
+            if ($studyProgram->accreditation_certificate_image) {
+                Storage::disk('public')->delete($studyProgram->accreditation_certificate_image);
             }
-            $path = $request->file('accreditation_certificate_image')->store('prodi', 'public');
-            $data['accreditation_certificate_image'] = '/storage/' . $path;
+            $path = $request->file('accreditation_certificate_image')->store('study_programs', 'public');
+            $data['accreditation_certificate_image'] = $path;
         }
 
         $studyProgram->update($data);
@@ -111,9 +121,8 @@ class StudyProgramController extends Controller
 
     public function destroy(StudyProgram $studyProgram)
     {
-        // Hapus gambar jika ada
-        if ($studyProgram->accreditation_certificate_image && str_starts_with($studyProgram->accreditation_certificate_image, '/storage/')) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $studyProgram->accreditation_certificate_image));
+        if ($studyProgram->accreditation_certificate_image) {
+            Storage::disk('public')->delete($studyProgram->accreditation_certificate_image);
         }
 
         $studyProgram->delete();

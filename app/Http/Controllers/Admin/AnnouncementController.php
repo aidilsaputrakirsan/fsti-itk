@@ -22,19 +22,22 @@ class AnnouncementController extends Controller
         ]);
     }
 
-    public function create() { return Inertia::render('Admin/Announcements/Create'); }
+    public function create()
+    {
+        return Inertia::render('Admin/Announcements/Create');
+    }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'document' => 'nullable|mimes:pdf|max:5120', // Maksimal 5MB untuk PDF
-            'poster' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // Maksimal 2MB untuk Poster
+            'document' => 'nullable|mimes:pdf|max:5120',
+            'poster' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $documentPath = $request->hasFile('document') ? $request->file('document')->store('pengumuman', 'public') : null;
-        $posterPath = $request->hasFile('poster') ? $request->file('poster')->store('pengumuman/poster', 'public') : null;
+        $documentPath = $request->hasFile('document') ? $request->file('document')->store('announcements', 'public') : null;
+        $posterPath = $request->hasFile('poster') ? $request->file('poster')->store('announcements', 'public') : null;
 
         Announcement::create([
             'title' => $validated['title'],
@@ -46,7 +49,10 @@ class AnnouncementController extends Controller
         return redirect()->route('admin.announcements.index')->with('success', 'Pengumuman berhasil diterbitkan.');
     }
 
-    public function edit(Announcement $announcement) { return Inertia::render('Admin/Announcements/Edit', compact('announcement')); }
+    public function edit(Announcement $announcement)
+    {
+        return Inertia::render('Admin/Announcements/Edit', compact('announcement'));
+    }
 
     public function update(Request $request, Announcement $announcement)
     {
@@ -59,12 +65,12 @@ class AnnouncementController extends Controller
 
         if ($request->hasFile('document')) {
             if ($announcement->document_path) Storage::disk('public')->delete($announcement->document_path);
-            $announcement->document_path = $request->file('document')->store('pengumuman', 'public');
-        }
+            $announcement->document_path = $request->file('document')->store('announcements', 'public');
 
-        if ($request->hasFile('poster')) {
-            if ($announcement->poster_path) Storage::disk('public')->delete($announcement->poster_path);
-            $announcement->poster_path = $request->file('poster')->store('pengumuman/poster', 'public');
+            if ($request->hasFile('poster')) {
+                if ($announcement->poster_path) Storage::disk('public')->delete($announcement->poster_path);
+                $announcement->poster_path = $request->file('poster')->store('announcements', 'public');
+            }
         }
 
         $announcement->title = $validated['title'];
@@ -78,7 +84,7 @@ class AnnouncementController extends Controller
     {
         if ($announcement->document_path) Storage::disk('public')->delete($announcement->document_path);
         if ($announcement->poster_path) Storage::disk('public')->delete($announcement->poster_path);
-        
+
         $announcement->delete();
         return redirect()->route('admin.announcements.index')->with('success', 'Pengumuman beserta dokumennya berhasil dihapus.');
     }

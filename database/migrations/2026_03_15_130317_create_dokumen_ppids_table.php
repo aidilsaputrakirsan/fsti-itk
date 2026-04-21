@@ -11,18 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('dokumen_ppids', function (Blueprint $table) {
+        Schema::create('ppid_documents', function (Blueprint $table) {
             $table->id();
 
-            // Foreign Key yang menyambungkan dokumen ke kategorinya
-            $table->foreignId('kategori_ppid_id')->constrained('kategori_ppids')->onDelete('cascade');
+            $table->foreignId('ppid_category_id')->constrained('ppid_categories')->onDelete('cascade');
 
-            // Nama/Judul dokumennya
             $table->string('judul_dokumen');
-
-            // Link PDF atau Link Google Form (Nullable jika dokumen belum ada file-nya)
             $table->text('file_url')->nullable();
-
             $table->timestamps();
         });
     }
@@ -32,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('dokumen_ppids');
+        Schema::dropIfExists('ppid_documents');
     }
 };
