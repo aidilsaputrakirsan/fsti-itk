@@ -152,7 +152,7 @@ const submit = () => {
 </script>
 
 <template>
-          <Head title="Kelola Kontak Fakultas" />
+  <Head title="Kelola Kontak Fakultas" />
   <div>
     <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -209,13 +209,13 @@ const submit = () => {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
                                 <label class="block text-sm font-bold text-gray-800 mb-2">Jam Operasional Pelayanan <span class="text-red-500">*</span></label>
-                                <input 
-                                    type="text" 
+                                <textarea 
                                     v-model="form.operating_hours" 
-                                    placeholder="Cth: Senin - Jumat: 07:30 - 16:30 WITA" 
+                                    rows="3"
+                                    placeholder="Cth: Senin - Kamis: 07:30 - 16:00 WITA&#10;Jumat: 07:30 - 16:30 WITA" 
                                     class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
                                     :class="form.errors.operating_hours ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                >
+                                ></textarea>
                                 <InputError :message="form.errors.operating_hours" />
                             </div>
                             <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
@@ -226,7 +226,7 @@ const submit = () => {
                                     placeholder="Cth: http://googleusercontent.com/maps..." 
                                     class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
                                     :class="form.errors.google_maps_iframe ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                >
+                                />
                                 <InputError :message="form.errors.google_maps_iframe" />
                                 <p class="text-xs text-gray-500 mt-2 font-medium">Panduan: Salin URL dari atribut <code class="bg-blue-50 text-primary px-1.5 py-0.5 rounded">src="..."</code> pada sematan peta.</p>
                             </div>
@@ -246,12 +246,12 @@ const submit = () => {
                                 placeholder="Cth: fsti@itk.ac.id" 
                                 class="w-full md:w-1/2 rounded-xl py-3 transition-all duration-200 shadow-sm"
                                 :class="form.errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                            >
+                            />
                             <InputError :message="form.errors.email" />
                             <p class="text-xs text-gray-500 mt-2">Email ini akan digunakan sebagai tombol langsung ("Mailto") pada halaman publik.</p>
                         </div>
 
-                        <hr class="border-gray-200">
+                        <hr class="border-gray-200" />
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-5">
@@ -265,7 +265,7 @@ const submit = () => {
                                         placeholder="Cth: 0851-7230-2157" 
                                         class="w-full rounded-xl py-2.5 transition-all duration-200 text-sm shadow-sm"
                                         :class="form.errors.academic_wa_number ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                    >
+                                    />
                                     <InputError :message="form.errors.academic_wa_number" />
                                 </div>
                                 <div>
@@ -276,7 +276,7 @@ const submit = () => {
                                         placeholder="Cth: https://wa.me/62851..." 
                                         class="w-full rounded-xl py-2.5 transition-all duration-200 text-sm shadow-sm"
                                         :class="form.errors.academic_wa_link ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                    >
+                                    />
                                     <InputError :message="form.errors.academic_wa_link" />
                                 </div>
                             </div>
@@ -292,7 +292,7 @@ const submit = () => {
                                         placeholder="Cth: 0851-7231-2157" 
                                         class="w-full rounded-xl py-2.5 transition-all duration-200 text-sm shadow-sm"
                                         :class="form.errors.finance_wa_number ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                    >
+                                    />
                                     <InputError :message="form.errors.finance_wa_number" />
                                 </div>
                                 <div>
@@ -303,7 +303,7 @@ const submit = () => {
                                         placeholder="Cth: https://wa.me/62851..." 
                                         class="w-full rounded-xl py-2.5 transition-all duration-200 text-sm shadow-sm"
                                         :class="form.errors.finance_wa_link ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                    >
+                                    />
                                     <InputError :message="form.errors.finance_wa_link" />
                                 </div>
                             </div>
@@ -331,7 +331,7 @@ const submit = () => {
                                     placeholder="Cth: @fsti.itk" 
                                     class="w-full rounded-xl py-2.5 transition-all duration-200 text-sm shadow-sm"
                                     :class="form.errors.instagram_username ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                >
+                                />
                                 <InputError :message="form.errors.instagram_username" />
                             </div>
                             <div>
@@ -342,7 +342,7 @@ const submit = () => {
                                     placeholder="Cth: https://instagram.com/..." 
                                     class="w-full rounded-xl py-2.5 transition-all duration-200 text-sm shadow-sm"
                                     :class="form.errors.instagram_link ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                >
+                                />
                                 <InputError :message="form.errors.instagram_link" />
                             </div>
                         </div>
@@ -364,7 +364,7 @@ const submit = () => {
                                     placeholder="Cth: @fsti.itk" 
                                     class="w-full rounded-xl py-2.5 border-gray-300 focus:ring-primary focus:border-primary text-sm shadow-sm"
                                     :class="form.errors.tiktok_username ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                >
+                                />
                                 <InputError :message="form.errors.tiktok_username" />
                             </div>
                             <div>
@@ -375,7 +375,7 @@ const submit = () => {
                                     placeholder="Cth: https://tiktok.com/..." 
                                     class="w-full rounded-xl py-2.5 transition-all duration-200 text-sm shadow-sm"
                                     :class="form.errors.tiktok_link ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                >
+                                />
                                 <InputError :message="form.errors.tiktok_link" />
                             </div>
                         </div>

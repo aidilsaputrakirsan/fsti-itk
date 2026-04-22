@@ -56,9 +56,9 @@ defineProps({
                             <div class="w-full">
                                 <h3 class="text-gray-900 text-2xl font-bold mb-2">Jam Operasional</h3>
                                 <hr class="border-t-2 border-primary w-12 mb-4">
-                                <p class="text-gray-600 leading-relaxed">
-                                    {{ contact?.operating_hours || 'Jam operasional belum diatur.' }}
-                                </p>
+                                <p class="text-gray-600 leading-relaxed whitespace-pre-line">
+    {{ contact?.operating_hours || 'Jam operasional belum diatur.' }}
+</p>
                             </div>
                         </div>
                     </div>

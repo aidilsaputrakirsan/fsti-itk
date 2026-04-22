@@ -2,7 +2,7 @@
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import { Head } from '@inertiajs/vue3';
-import { ImageOff } from 'lucide-vue-next';
+import { User } from 'lucide-vue-next';
 
 const props = defineProps({
     leaders: Array
@@ -50,9 +50,8 @@ const props = defineProps({
                             <div class="w-40 h-40 rounded-full border-[5px] border-white/20 p-1.5 mb-6 flex-shrink-0 relative overflow-hidden bg-white/10 group-hover:border-white/40 transition-colors duration-500 shadow-inner z-10">
                                 <img v-if="p.display_image" :src="p.display_image" :alt="p.name" class="w-full h-full object-cover rounded-full bg-white">
                                 
-                                <div v-else class="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-400 rounded-full">
-                                    <ImageOff class="w-10 h-10 mb-1 opacity-40" />
-                                    <span class="text-[10px] font-semibold text-gray-500">Belum Tersedia</span>
+                                <div v-else class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 rounded-full">
+                                    <User class="w-20 h-20 opacity-60 text-gray-400" />
                                 </div>
                             </div>
                             

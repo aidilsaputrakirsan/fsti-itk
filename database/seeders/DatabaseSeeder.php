@@ -56,6 +56,7 @@ class DatabaseSeeder extends Seeder
             AlumniSeeder::class,
             CommunityServiceSeeder::class,
             DepartmentSeeder::class,
+            InternalServiceSeeder::class,
         ]);
     }
 }

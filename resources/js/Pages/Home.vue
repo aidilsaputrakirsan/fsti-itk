@@ -228,7 +228,7 @@ onMounted(() => {
 
       <div class="relative lg:absolute lg:bottom-0 lg:left-1/2 lg:-translate-x-1/2 w-full container mx-auto px-4 sm:px-6 lg:px-8 -mt-24 lg:mt-0 z-20 pb-12 lg:pb-0">        
         <div ref="heroCardsRef" class="flex justify-center items-start gap-8 flex-wrap">
-          <Link :href="route('profiles.program-leaders')" class="w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
+          <Link :href="route('profiles.structure') + '#prodi'" class="w-[255px] h-[237px] bg-[#2F4DD3] text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center shadow-xl">
             <GraduationCap :size="80" class="mx-auto" />
             <h3 class="mt-4 text-xl font-bold font-public-sans">Program Studi</h3>
           </Link>

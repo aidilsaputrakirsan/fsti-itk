@@ -16,7 +16,7 @@ class InternalServiceController extends Controller
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+                ->orWhere('description', 'like', '%' . $request->search . '%');
         }
 
         if ($request->filled('status')) {
@@ -47,29 +47,13 @@ class InternalServiceController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'link_url' => [
-                'required', 
-                'url', 
-                'unique:internal_services,link_url',
-                'regex:/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/'
-            ],
+            'link_url' => 'required|url|unique:internal_services,link_url|regex:/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/',
             'description' => 'required|string',
             'sort_order' => 'required|integer|min:1',
             'is_active' => 'required|boolean',
-        ], [
-            'name.required' => 'Nama layanan wajib diisi.',
-            'name.max' => 'Nama layanan maksimal 255 karakter.',
-            'link_url.required' => 'Tautan URL wajib diisi.',
-            'link_url.url' => 'Format tautan tidak valid.',
-            'link_url.unique' => 'Tautan URL ini sudah digunakan oleh layanan lain.',
-            'link_url.regex' => 'Format tautan tidak valid (harus mengandung nama domain lengkap seperti .com, .ac.id, dll).',
-            'description.required' => 'Deskripsi layanan wajib diisi.',
-            'sort_order.required' => 'Urutan tampil wajib diisi.',
-            'sort_order.integer' => 'Urutan tampil harus berupa angka.',
-            'sort_order.min' => 'Urutan tampil minimal adalah 1.',
         ]);
-        
-        InternalService::where('sort_order', '>=', $validated['sort_order'])->increment('sort_order');
+
+        InternalService::where('sort_order', '>=', (int) $validated['sort_order'])->increment('sort_order');
 
         InternalService::create($validated);
         return redirect()->route('admin.internal-services.index')->with('success', 'Layanan berhasil ditambahkan.');
@@ -93,10 +77,9 @@ class InternalServiceController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            // PERBAIKAN: Tambah REGEX yang sama untuk Update
             'link_url' => [
-                'required', 
-                'url', 
+                'required',
+                'url',
                 Rule::unique('internal_services')->ignore($internalService->id),
                 'regex:/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/'
             ],
@@ -109,18 +92,20 @@ class InternalServiceController extends Controller
             'link_url.required' => 'Tautan URL wajib diisi.',
             'link_url.url' => 'Format tautan tidak valid.',
             'link_url.unique' => 'Tautan URL ini sudah digunakan oleh layanan lain.',
-            'link_url.regex' => 'Format tautan tidak valid (harus mengandung nama domain lengkap seperti .com, .ac.id, dll).',
+            'link_url.regex' => 'Format tautan tidak valid (harus mengandung nama domain lengkap).',
             'description.required' => 'Deskripsi layanan wajib diisi.',
             'sort_order.required' => 'Urutan tampil wajib diisi.',
             'sort_order.integer' => 'Urutan tampil harus berupa angka.',
             'sort_order.min' => 'Urutan tampil minimal adalah 1.',
         ]);
-        
-        $oldOrder = $internalService->sort_order;
-        $newOrder = $validated['sort_order'];
+
+        $oldOrder = (int) $internalService->sort_order;
+        $newOrder = (int) $validated['sort_order'];
 
         if ($oldOrder !== $newOrder) {
-            if ($oldOrder < $newOrder) {
+            if ($oldOrder === 0) {
+                InternalService::where('sort_order', '>=', $newOrder)->increment('sort_order');
+            } elseif ($oldOrder < $newOrder) {
                 InternalService::whereBetween('sort_order', [$oldOrder + 1, $newOrder])->decrement('sort_order');
             } else {
                 InternalService::whereBetween('sort_order', [$newOrder, $oldOrder - 1])->increment('sort_order');

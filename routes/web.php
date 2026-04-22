@@ -209,7 +209,7 @@ Route::get('/', function () {
         'prodi_total' => $allProdi->count(),
         'kunjungan' => \App\Models\Visitor::count(),
         'jurusan' => \App\Models\Department::count(),
-        'alumni' => \App\Models\Alumni::count(), 
+        'alumni' => \App\Models\Alumni::count(),
     ];
 
     $profile = \App\Models\FacultyProfile::first();
@@ -248,9 +248,6 @@ Route::get('/prestasi', [PublicAchievementController::class, 'index'])->name('ac
 // HALAMAN TENTANG FAKULTAS
 Route::get('/profil/tentang', [PublicProfileController::class, 'tentang'])->name('profiles.about');
 
-// HALAMAN BAGAN ORGANISASI
-Route::get('/profil/bagan-organisasi', [PublicProfileController::class, 'baganOrganisasi'])->name('profiles.organizational-chart');
-
 // HALAMAN KONTAK
 Route::get('/kontak', [PublicProfileController::class, 'kontak'])->name('profiles.contact');
 
@@ -259,17 +256,8 @@ Route::get('/profil/kerjasama', function () {
     return "Halaman Kerjasama Segera Hadir";
 })->name('profil.kerjasama');
 
-// HALAMAN PIMPINAN FAKULTAS
-Route::get('/profil/pimpinan-fakultas', [PublicStaffController::class, 'pimpinanFakultas'])->name('profiles.faculty-leaders');
-
-// HALAMAN PIMPINAN JURUSAN
-Route::get('/profil/pimpinan-jurusan', [PublicStaffController::class, 'pimpinanJurusan'])->name('profiles.department-leaders');
-
-// HALAMAN PIMPINAN PROGRAM STUDI
-Route::get('/profil/pimpinan-prodi', [PublicStaffController::class, 'pimpinanProdi'])->name('profiles.program-leaders');
-
-// HALAMAN PIMPINAN LABORATORIUM
-Route::get('/profil/pimpinan-laboratorium', [PublicStaffController::class, 'pimpinanLaboratorium'])->name('profiles.lab-leaders');
+// HALAMAN STRUKTUR ORGANISASI GABUNGAN
+Route::get('/profil/struktur-organisasi', [PublicProfileController::class, 'strukturOrganisasi'])->name('profiles.structure');
 
 // HALAMAN DOSEN
 Route::get('/profil/dosen', [PublicStaffController::class, 'dosen'])->name('profiles.lecturers');

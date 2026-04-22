@@ -42,13 +42,13 @@ const navigationMenu = computed<NavLink[]>(() => [
             { name: 'Tentang FSTI', href: route('profiles.about') },            
             {
                 name: 'Struktur Organisasi',
-                href: '#',
+                href: route('profiles.structure'), 
                 sublinks: [
-                    { name: 'Bagan Organisasi', href: route('profiles.organizational-chart') },
-                    { name: 'Pimpinan Fakultas', href: route('profiles.faculty-leaders') },
-                    { name: 'Pimpinan Jurusan', href: route('profiles.department-leaders') },
-                    { name: 'Pimpinan Prodi', href: route('profiles.program-leaders') },
-                    { name: 'Pimpinan Laboratorium', href: route('profiles.lab-leaders') },
+                    { name: 'Bagan Organisasi', href: route('profiles.structure') + '#bagan' },
+                    { name: 'Pimpinan Fakultas', href: route('profiles.structure') + '#fakultas' },
+                    { name: 'Pimpinan Jurusan', href: route('profiles.structure') + '#jurusan' },
+                    { name: 'Pimpinan Prodi', href: route('profiles.structure') + '#prodi' },
+                    { name: 'Pimpinan Laboratorium', href: route('profiles.structure') + '#lab' },
                 ],
             },
             {
@@ -195,10 +195,10 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
                                 <div class="py-1">
                                     <template v-for="sublink in item.sublinks" :key="sublink.name">
                                         <div v-if="'sublinks' in sublink && sublink.sublinks" class="relative group">
-                                            <button class="w-full text-left flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#133E87] font-medium">
-                                                {{ sublink.name }}
-                                                <ChevronDown class="h-4 w-4 transform -rotate-90" />
-                                            </button>
+                                           <Link :href="sublink.href" class="w-full text-left flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#133E87] font-medium">
+    {{ sublink.name }}
+    <ChevronDown class="h-4 w-4 transform -rotate-90" />
+</Link>
                                             <div class="absolute left-full top-0 mt-0 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden group-hover:block">
                                                 <div class="py-1">
                                                     <Link v-for="subsublink in sublink.sublinks" :key="subsublink.name" :href="subsublink.href" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium">{{ subsublink.name }}</Link>
