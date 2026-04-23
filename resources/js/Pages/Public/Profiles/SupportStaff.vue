@@ -8,7 +8,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { 
     Briefcase, Award, BookOpen, UserCircle, X, 
-    GraduationCap, Link as LinkIcon, Search, BookMarked, Linkedin, FileX2, Users, ImageOff
+    GraduationCap, Link as LinkIcon, Search, BookMarked, Linkedin, FileX2, Users, ImageOff, User
 } from 'lucide-vue-next';
 
 interface PaginatedStaff { data: any[]; links: any[]; }
@@ -53,6 +53,12 @@ const hasDetailedInfo = computed(() => {
            (p.competency_certification?.length > 0) ||
            (p.community_service_history?.length > 0);
 });
+
+const maskNip = (nip: string | null) => {
+    if (!nip) return '';
+    if (nip.length <= 4) return nip + '***';
+    return nip.substring(0, 4) + '***';
+};
 </script>
 
 <template>
@@ -106,9 +112,8 @@ const hasDetailedInfo = computed(() => {
                             <div class="h-64 w-full bg-gray-100 relative overflow-hidden">
                                 <img v-if="person.display_image" :src="person.display_image" :alt="person.name" loading="lazy" decoding="async" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 mix-blend-multiply">
                                 
-                                <div v-else class="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-400 group-hover:scale-105 transition-transform duration-700">
-                                    <ImageOff class="w-12 h-12 mb-3 opacity-40" />
-                                    <span class="text-sm font-semibold text-gray-500">Foto Belum Tersedia</span>
+                                <div v-else class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 group-hover:scale-105 transition-transform duration-700">
+                                    <User class="w-24 h-24 opacity-60 text-gray-400" />
                                 </div>
 
                                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
@@ -120,7 +125,7 @@ const hasDetailedInfo = computed(() => {
                             <div class="p-6 flex flex-col flex-grow text-center relative bg-white z-10 border-t border-gray-100">
                                 <h3 class="font-bold text-[17px] text-gray-900 mb-1.5 leading-snug line-clamp-2 group-hover:text-primary transition-colors">{{ person.name }}</h3>
                                 <p class="text-sm font-semibold text-primary/80 mb-4 line-clamp-2">{{ person.functional_position || person.structural_position || 'Tenaga Kependidikan ITK' }}</p>
-                                <p class="text-xs text-gray-400 font-medium mt-auto">{{ person.nip ? 'NIP. ' + person.nip : '-' }}</p>
+                                <p class="text-xs text-gray-400 font-medium mt-auto">{{ person.nip ? 'NIP. ' + maskNip(person.nip) : '-' }}</p>
                             </div>
                         </div>
                     </div>
@@ -158,14 +163,13 @@ const hasDetailedInfo = computed(() => {
                             <div class="flex-shrink-0" :class="hasDetailedInfo ? 'lg:w-[32%] text-center' : 'w-full'">
                                 <div class="w-48 h-48 mx-auto rounded-full border-[8px] border-white shadow-xl p-1 mb-6 bg-gradient-to-b from-gray-100 to-gray-200 relative overflow-hidden">
                                     <img v-if="selectedPerson.display_image" :src="selectedPerson.display_image" :alt="selectedPerson.name" class="w-full h-full object-cover object-center mix-blend-multiply rounded-full">
-                                    <div v-else class="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-400 rounded-full">
-                                        <ImageOff class="w-10 h-10 mb-2 opacity-40" />
-                                        <span class="text-xs font-semibold text-gray-500">Belum Tersedia</span>
+                                    <div v-else class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 rounded-full">
+                                        <User class="w-20 h-20 opacity-60 text-gray-400" />
                                     </div>
                                     <div class="absolute bottom-2 right-2 bg-green-500 w-6 h-6 border-4 border-white rounded-full" title="Aktif"></div>
                                 </div>
                                 <h2 class="text-2xl font-bold text-gray-900 leading-snug mb-2">{{ selectedPerson.name }}</h2>
-                                <p v-if="selectedPerson.nip" class="text-sm text-gray-500 font-semibold mb-6">NIP. {{ selectedPerson.nip }}</p>
+                                <p v-if="selectedPerson.nip" class="text-sm text-gray-500 font-semibold mb-6">NIP. {{ maskNip(selectedPerson.nip) }}</p>
                                 
                                 <div class="space-y-4 p-6 rounded-3xl bg-white border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]" :class="hasDetailedInfo ? 'text-left' : 'inline-block text-left w-full'">
                                     <div v-if="selectedPerson.structural_position" class="flex items-start gap-4">

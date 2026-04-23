@@ -10,7 +10,8 @@ import {
     PhotoIcon, 
     DocumentTextIcon, 
     CheckCircleIcon,
-    ExclamationTriangleIcon
+    ExclamationTriangleIcon,
+    GlobeAltIcon
 } from '@heroicons/vue/24/outline';
 import InputError from '@/Components/InputError.vue';
 
@@ -21,17 +22,20 @@ const props = defineProps<{
         id?: number | null;
         description: string | null;
         service_declaration_image_path: string | null;
+        external_website_url: string | null;
     } | null
 }>();
 
 interface ProfileFormData {
     description: string;
     service_declaration_image: File | null;
+    external_website_url: string;
 }
 
 const form = useForm<ProfileFormData>({
     description: props.profile?.description || '',
     service_declaration_image: null,
+    external_website_url: props.profile?.external_website_url || '',
 });
 
 const fileNameDisplay = computed(() => {
@@ -46,26 +50,11 @@ const handleMaklumatUpload = (e: Event) => {
     form.service_declaration_image = target.files?.[0] || null;
 };
 
-const validateForm = () => {
-    form.clearErrors();
-    let hasError = false;
-
-    if (form.service_declaration_image) {
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
-        if (!allowedTypes.includes(form.service_declaration_image.type)) {
-            form.setError('service_declaration_image', 'Format file gambar harus JPG, PNG, atau WEBP.');
-            hasError = true;
-        } else if (form.service_declaration_image.size > 5 * 1024 * 1024) {
-            form.setError('service_declaration_image', 'Ukuran file gambar maksimal 5 MB.');
-            hasError = true;
-        }
+const submit = () => {
+    if (form.external_website_url) {
+        form.external_website_url = form.external_website_url.trim();
     }
 
-    return !hasError;
-};
-
-const submit = () => {
-    if (!validateForm()) return;
     form.post(route('admin.zi.profile.update'), {
         preserveScroll: true,
         forceFormData: true,
@@ -184,6 +173,29 @@ watch(flashSuccess, (message) => {
                             </div>
                             <InputError :message="form.errors.service_declaration_image" class="mt-3" />
                         </div>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8">
+                    <div class="md:col-span-4">
+                        <label class="text-base font-bold text-gray-900 mb-1 flex items-center">
+                            <GlobeAltIcon class="w-5 h-5 mr-2 text-gray-500" />
+                            3. Tautan Website ZI
+                        </label>
+                        <p class="text-sm text-gray-500 mb-4 leading-relaxed">Tautan ke portal Zona Integritas terpisah (opsional).</p>
+                    </div>
+                    <div class="md:col-span-8">
+                        <input 
+                            type="text" 
+                            v-model="form.external_website_url" 
+                            placeholder="Contoh: https://zi-fsti.itk.ac.id" 
+                            class="w-full rounded-xl transition-all duration-200 py-3"
+                            :class="form.errors.external_website_url ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 shadow-sm focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'"
+                        />
+                        <p class="text-[11px] text-gray-500 mt-2 font-medium">Gunakan URL lengkap dengan awalan http:// atau https://</p>
+                        <InputError :message="form.errors.external_website_url" class="mt-2" />
                     </div>
                 </div>
 

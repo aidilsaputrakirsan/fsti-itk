@@ -60,7 +60,6 @@ const navigationMenu = computed<NavLink[]>(() => [
                 ],
             },
             { name: 'Kerjasama', href: route('partners.index') },
-            { name: 'Kontak', href: route('profiles.contact') },
         ],
     },
     {
@@ -121,7 +120,8 @@ const navigationMenu = computed<NavLink[]>(() => [
             { name: 'Penelitian', href: route('research.index') },
             { name: 'Pengabdian kepada Masyarakat', href: route('community-services.index') },
         ],
-    },    
+    },
+    { name: 'Kontak', href: route('profiles.contact') },
 ]);
 
 const activeDropdown = ref<string | null>(null);

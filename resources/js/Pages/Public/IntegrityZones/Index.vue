@@ -11,7 +11,9 @@ import {
     UserGroupIcon,              
     ChartBarIcon,               
     MagnifyingGlassCircleIcon,  
-    StarIcon                    
+    StarIcon,
+    GlobeAltIcon,
+    ArrowTopRightOnSquareIcon
 } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
@@ -162,7 +164,38 @@ const displayDocuments = props.documents || [];
                     <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-2">Belum Ada Dokumen Publikasi</h3>
                     <p class="text-xs md:text-sm text-gray-500 font-medium">Dokumen pendukung Zona Integritas FSTI sedang dalam tahap penyusunan dan akan segera dipublikasikan di sini.</p>
                 </div>
+            </div>
+        </section>
 
+        <section class="py-16 md:py-24 relative overflow-hidden bg-white font-public-sans">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 max-w-5xl">
+                <div class="bg-gradient-to-br from-primary to-blue-700 rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-12 lg:p-16 text-center text-white shadow-2xl relative overflow-hidden" data-aos="zoom-in">
+                    
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-400/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none"></div>
+                    <ShieldCheckIcon class="absolute -right-10 top-1/2 -translate-y-1/2 w-64 h-64 text-white opacity-[0.03] pointer-events-none" />
+                    
+                    <div class="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-white/10 border border-white/20 backdrop-blur-md text-white rounded-full shadow-lg mb-6 relative z-10">
+                        <GlobeAltIcon class="w-8 h-8 md:w-10 md:h-10" />
+                    </div>
+                    
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-optimus font-bold mb-6 leading-tight relative z-10">Portal Zona Integritas</h2>
+                    
+                    <p class="text-blue-100 text-base md:text-lg mb-10 max-w-3xl mx-auto relative z-10 font-medium leading-relaxed">
+                        Untuk mengakses informasi yang lebih komprehensif, layanan pengaduan, survei, serta inovasi pelayanan publik terkait Zona Integritas, silakan kunjungi website terpisah khusus ZI FSTI ITK.
+                    </p>
+                    
+                    <div class="flex justify-center relative z-10">
+                        <a 
+                            :href="profile?.external_website_url || '#'" 
+                            :target="profile?.external_website_url ? '_blank' : null" 
+                            :rel="profile?.external_website_url ? 'noopener noreferrer' : null"
+                            class="px-8 py-4 bg-white text-primary font-bold rounded-xl hover:bg-gray-50 hover:-translate-y-1 hover:shadow-[0_10px_20px_-10px_rgba(255,255,255,0.5)] transition-all duration-300 flex items-center justify-center gap-2"
+                        >
+                            Kunjungi Website ZI FSTI <ArrowTopRightOnSquareIcon class="w-5 h-5" />
+                        </a>
+                    </div>
+                </div>
             </div>
         </section>
 
