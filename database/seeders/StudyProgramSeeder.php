@@ -253,7 +253,30 @@ class StudyProgramSeeder extends Seeder
                 'accreditation_pdf_link' => null,
                 'accreditation_text' => 'Telah terakreditasi oleh Lembaga Akreditasi Mandiri Program Studi Keteknikan (LAM Teknik) dengan peringkat Baik.',
                 'website_link' => null
+            ],
+            [
+                'name' => 'Teknik Biomedis',
+                'department' => 'Teknik Elektro, Informatika, dan Bisnis',
+                'degree' => 'S1',
+                'slug' => 's1-teknik-biomedis',
+                'description' => 'Program Studi Teknik Biomedis ITK berfokus pada pengembangan teknologi kesehatan yang sesuai dengan kondisi wilayah, khususnya daerah terpencil. Mahasiswa mempelajari dasar medis dan teknik untuk merancang alat kesehatan yang inovatif, sehingga lulusan mampu menciptakan solusi teknologi yang bermanfaat bagi pelayanan kesehatan masyarakat.',
+                'vision' => null,
+                'mission' => null,
+                'goals' => null,
+                'graduate_profiles' => [
+                    'Engineer Biomedis',
+                    'Engineer Telemedicine',
+                    'Analisis Data Kesehatan',
+                    'Engineer Rehabilitasi',
+                    'Wirausaha di Bidang Teknologi Biomedis',
+                    'Birokrat di Bidang Layanan Kesehatan'
+                ],
+                'accreditation_certificate_image' => null,
+                'accreditation_pdf_link' => null,
+                'accreditation_text' => null,
+                'website_link' => null
             ]
+
         ];
 
         $copiedCount = 0;

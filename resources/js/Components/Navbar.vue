@@ -161,16 +161,15 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
             <div class="flex items-center justify-between h-20">
                 
                 <div class="flex-1 flex justify-start items-center">
-                    <Link href="/" class="flex items-center space-x-2" @click="closeMobileMenu">
-<img 
-    src="/images/logofsti.webp" 
-    alt="Logo FSTI ITK" 
-    width="192" 
-    height="69" 
-    fetchpriority="high"
-    decoding="sync"
-    class="h-10 w-auto" 
->                    </Link>
+                    <Link href="/" class="flex items-center" @click="closeMobileMenu">
+                        <img 
+                            src="/images/logofsti.webp" 
+                            alt="Logo FSTI ITK" 
+                            fetchpriority="high"
+                            decoding="sync"
+                            class="h-9 sm:h-10 w-auto object-contain" 
+                        >
+                    </Link>
                 </div>
 
                 <nav class="hidden xl:flex items-center justify-center space-x-8">
@@ -231,7 +230,15 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
                     </div>
                 </nav>
 
-                <div class="flex-1 flex justify-end items-center">
+                <div class="flex-1 flex justify-end items-center gap-4 sm:gap-6">
+                    <Link href="/" class="hidden sm:flex items-center" @click="closeMobileMenu">
+                        <img 
+                            src="/images/lambang-itk.webp" 
+                            alt="Logo ITK" 
+                            class="h-10 sm:h-12 w-auto object-contain" 
+                        >
+                    </Link>
+
                     <div class="xl:hidden">
                         <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="p-2 rounded-md transition-colors text-[#00509D] hover:bg-blue-50">
                             <Menu v-if="!isMobileMenuOpen" class="h-6 w-6 stroke-2" />
