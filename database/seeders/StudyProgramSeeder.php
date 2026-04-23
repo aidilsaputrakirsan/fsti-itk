@@ -139,7 +139,7 @@ class StudyProgramSeeder extends Seeder
                 'website_link' => 'https://phy.itk.ac.id/'
             ],
             [
-                'name' => 'Teknik Informatika',
+                'name' => 'Informatika',
                 'department' => 'Teknik Elektro, Informatika, dan Bisnis',
                 'degree' => 'S1',
                 'slug' => 's1-teknik-informatika',
