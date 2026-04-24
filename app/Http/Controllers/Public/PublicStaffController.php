@@ -53,7 +53,7 @@ class PublicStaffController extends Controller
 
             foreach ($studyPrograms as $sp) {
                 if (str_contains($jabatan, strtolower($sp->name))) {
-                    $jurusan = $sp->department; 
+                    $jurusan = $sp->department;
                     break;
                 }
             }
@@ -96,21 +96,29 @@ class PublicStaffController extends Controller
         }
 
         $dosenRaw = $query->orderBy('name', 'asc')->get();
+        $prodiList = StudyProgram::orderBy('name', 'asc')->pluck('name')->toArray();
 
         $groupedDosen = [];
+
         foreach ($dosenRaw as $dosen) {
             $jabatan = $dosen->functional_position ?? '';
-            $prodiName = 'Umum / Lainnya';
-            if (str_contains($jabatan, 'Program Studi')) {
-                $prodiName = trim(str_replace('Dosen Program Studi', '', $jabatan));
+            $foundProdi = false;
+
+            foreach ($prodiList as $prodi) {
+                if (stripos($jabatan, $prodi) !== false) {
+                    $groupedDosen[$prodi][] = $dosen;
+                    $foundProdi = true;
+                }
             }
-            $groupedDosen[$prodiName][] = $dosen;
+
+            if (!$foundProdi) {
+                $groupedDosen['Umum / Lainnya'][] = $dosen;
+            }
         }
 
         ksort($groupedDosen);
 
         $groupedData = empty($groupedDosen) ? new \stdClass() : (object) $groupedDosen;
-        $prodiList = StudyProgram::orderBy('name', 'asc')->pluck('name')->toArray();
 
         return Inertia::render('Public/Profiles/Lecturers', [
             'groupedLecturers' => $groupedData,
