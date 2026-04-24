@@ -14,7 +14,6 @@ import {
     StarIcon,
     GlobeAltIcon,
     ArrowTopRightOnSquareIcon,
-    /* Ikon Tambahan untuk Trik Stack Anti Korupsi */
     BanknotesIcon, 
     HandRaisedIcon, 
     GiftIcon, 

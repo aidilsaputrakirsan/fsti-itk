@@ -5,7 +5,7 @@ import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { 
     ChartBarIcon, DocumentTextIcon, FlagIcon, 
     PaperAirplaneIcon, CheckCircleIcon, PhotoIcon, PaperClipIcon, XMarkIcon, LinkIcon,
-    BuildingLibraryIcon, PlusIcon, TrashIcon
+    BuildingLibraryIcon, PlusIcon, TrashIcon, ChatBubbleBottomCenterTextIcon
 } from '@heroicons/vue/24/outline';
 import InputError from '@/Components/InputError.vue';
 
@@ -30,6 +30,7 @@ const tabs = [
     { id: 'statistik', name: 'Statistik Data', icon: ChartBarIcon },
     { id: 'tugas', name: 'Tugas & Fungsi', icon: DocumentTextIcon },
     { id: 'visi', name: 'Visi & Misi', icon: FlagIcon },
+    { id: 'sambutan', name: 'Sambutan Dekan', icon: ChatBubbleBottomCenterTextIcon },
     { id: 'fasilitas', name: 'Fasilitas Kampus', icon: BuildingLibraryIcon },
     { id: 'bagan', name: 'Bagan Organisasi', icon: PhotoIcon },
     { id: 'tautan', name: 'Tautan Eksternal', icon: LinkIcon }, 
@@ -43,6 +44,8 @@ const form = useForm({
         statistik: props.profile?.content?.statistik || { deskripsi: '', data: [] },
         tugas_fungsi: props.profile?.content?.tugas_fungsi || { tugas: '', fungsi: [] },
         visi_misi: props.profile?.content?.visi_misi || { visi: '', misi_tagline: '', misi: [] },
+        sambutan_dekan: props.profile?.content?.sambutan_dekan || '', 
+        sambutan_dekan_paragraf_2: props.profile?.content?.sambutan_dekan_paragraf_2 || '', 
         bagan_organisasi: props.profile?.content?.bagan_organisasi || 'images/bagan-organisasi.webp',
         pmb_link: props.profile?.content?.pmb_link || '', 
         tracer_study_link: props.profile?.content?.tracer_study_link || '',
@@ -164,6 +167,11 @@ const submit = () => {
             if (!firstErrorTab) firstErrorTab = 'visi';
         }
     });
+
+    if (!form.content.sambutan_dekan || form.content.sambutan_dekan.trim().length < 10) {
+        form.setError('content.sambutan_dekan', 'Sambutan Paragraf 1 wajib diisi (minimal 10 karakter).');
+        if (!firstErrorTab) firstErrorTab = 'sambutan';
+    }
 
     form.content.fasilitas.forEach((f, index) => {
         if (!f.nama) { 
@@ -414,6 +422,36 @@ const submit = () => {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-show="activeTab === 'sambutan'">
+                    <h2 class="text-2xl font-bold mb-6">Sambutan Dekan</h2>
+                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-6">
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Sambutan Paragraf 1 <span class="text-red-500">*</span></label>
+                            <textarea
+                                v-model="form.content.sambutan_dekan"
+                                rows="4"
+                                class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
+                                :class="form.errors['content.sambutan_dekan'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                placeholder="Masukkan kalimat sambutan pembuka..."
+                            ></textarea>
+                            <InputError :message="form.errors['content.sambutan_dekan']" class="mt-1" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Sambutan Paragraf 2 (Opsional)</label>
+                            <textarea
+                                v-model="form.content.sambutan_dekan_paragraf_2"
+                                rows="4"
+                                class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm border-gray-300 focus:border-primary focus:ring-primary bg-white"
+                                placeholder="Masukkan kalimat tambahan atau harapan..."
+                            ></textarea>
+                            <InputError :message="form.errors['content.sambutan_dekan_paragraf_2']" class="mt-1" />
+                        </div>
+                        <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl text-sm text-gray-700">
+                            <strong>Penting:</strong> Foto, Nama, dan Jabatan Dekan pada halaman publik akan otomatis diambil dari menu Kelola Civitas Akademika berdasarkan data staf yang memiliki nama jabatan <b>"Dekan"</b> (tidak termasuk Wakil Dekan). Pastikan data Dekan di menu tersebut sudah aktif dan fotonya sudah diunggah.
                         </div>
                     </div>
                 </div>

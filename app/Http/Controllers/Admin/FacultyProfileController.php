@@ -7,7 +7,7 @@ use App\Models\FacultyProfile;
 use App\Models\Staff;
 use App\Models\StudyProgram;
 use App\Models\Alumni;
-use App\Models\Department; 
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
@@ -26,6 +26,8 @@ class FacultyProfileController extends Controller
                     'bagan_organisasi' => null,
                     'pmb_link' => '',
                     'tracer_study_link' => '',
+                    'sambutan_dekan' => '',
+                    'sambutan_dekan_paragraf_2' => '',
                     'fasilitas' => [
                         ['nama' => 'Co Learning Space', 'deskripsi' => 'Ruang nyaman untuk belajar bersama, berdiskusi, dan bertukar ide.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Co+Learning+Space'],
                         ['nama' => 'English Speaking Zone', 'deskripsi' => 'Area khusus untuk melatih kemampuan berbahasa Inggris.', 'gambar' => 'https://placehold.co/600x600/2F4DD3/FFFFFF?text=English+Zone'],
@@ -94,6 +96,8 @@ class FacultyProfileController extends Controller
             'content' => 'required|array',
             'content.pmb_link' => 'nullable|url',
             'content.tracer_study_link' => 'nullable|url',
+            'content.sambutan_dekan' => 'required|string|min:10',
+            'content.sambutan_dekan_paragraf_2' => 'nullable|string',
             'bagan_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'content.fasilitas' => 'nullable|array',
         ]);
@@ -113,18 +117,19 @@ class FacultyProfileController extends Controller
             }
         }
 
-        // Proses Fasilitas
         $fasilitas = $request->input('content.fasilitas', []);
         foreach ($fasilitas as $index => $item) {
             if ($request->hasFile("content.fasilitas.{$index}.gambar")) {
                 $file = $request->file("content.fasilitas.{$index}.gambar");
-                
-                if (isset($profile->content['fasilitas'][$index]['gambar']) && 
+
+                if (
+                    isset($profile->content['fasilitas'][$index]['gambar']) &&
                     !str_starts_with($profile->content['fasilitas'][$index]['gambar'], 'images/') &&
-                    !str_starts_with($profile->content['fasilitas'][$index]['gambar'], 'http')) {
+                    !str_starts_with($profile->content['fasilitas'][$index]['gambar'], 'http')
+                ) {
                     Storage::disk('public')->delete($profile->content['fasilitas'][$index]['gambar']);
                 }
-                
+
                 $path = $file->store('fasilitas', 'public');
                 $fasilitas[$index]['gambar'] = $path;
             } else {

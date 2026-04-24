@@ -31,6 +31,10 @@ class FacultyProfileSeeder extends Seeder
         }
 
         $contentData = [
+
+            'sambutan_dekan' => 'Selamat datang di laman resmi Fakultas Sains dan Teknologi Informasi (FSTI) Institut Teknologi Kalimantan. FSTI hadir sebagai pusat keunggulan dalam pengembangan sains dan teknologi informasi yang adaptif, inovatif, dan berwawasan lingkungan. Kami berkomitmen kuat untuk menghasilkan lulusan yang tidak hanya unggul secara akademis, tetapi juga memiliki karakter yang kokoh dan siap bersaing di era digital, baik di tingkat nasional maupun internasional.',
+            'sambutan_dekan_paragraf_2' => 'Melalui fasilitas yang terus dikembangkan, kurikulum yang adaptif dengan kebutuhan industri, serta dukungan tenaga pendidik yang kompeten, kami berupaya memberikan pengalaman belajar terbaik. Mari bersama-sama membangun masa depan gemilang melalui riset, inovasi, dan kolaborasi yang berkelanjutan. #FSTIPrestasi!',
+
             'statistik' => [
                 'deskripsi' => 'FSTI terus berkembang sebagai pusat pendidikan dan inovasi di bidang sains dan teknologi, dengan berbagai jurusan, program studi, dan civitas akademika yang mendukung perjalanan belajar, kreativitas, dan prestasi mahasiswa kami.',
                 'data' => [
@@ -69,13 +73,13 @@ class FacultyProfileSeeder extends Seeder
                 ]
             ],
             'bagan_organisasi' => $finalImagePath,
-            
+
             'pmb_link' => 'https://pmb.itk.ac.id',
             'tracer_study_link' => 'https://docs.google.com/forms/d/e/1FAIpQLSe09s1JB6Sm4005NakxU9uNVnLyGBEiIEv8oSO2EdLG81LIeA/viewform',
-            
+
             'ppid_permohonan_link' => 'https://s.itk.ac.id/permintaanformfsti',
             'ppid_keberatan_link' => 'https://docs.google.com/forms/d/e/1FAIpQLSefIA7eJNmNHt0YXzWaWyLdp4zJUulojXUmh7xlVN-MQxZLlw/viewform',
-            
+
             'fasilitas' => [
                 ['nama' => 'Co Learning Space', 'deskripsi' => 'Ruang nyaman untuk belajar bersama, berdiskusi, dan bertukar ide.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Co+Learning+Space'],
                 ['nama' => 'English Speaking Zone', 'deskripsi' => 'Area khusus untuk melatih kemampuan berbahasa Inggris.', 'gambar' => 'https://placehold.co/600x600/2F4DD3/FFFFFF?text=English+Zone'],
@@ -88,6 +92,8 @@ class FacultyProfileSeeder extends Seeder
                 ['nama' => 'Masjid', 'deskripsi' => 'Fasilitas tempat ibadah yang tenang dan nyaman di lingkungan kampus.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Masjid+Kampus'],
                 ['nama' => 'Perpustakaan', 'deskripsi' => 'Pusat pencarian referensi, buku, dan literatur pendukung studi mahasiswa.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Perpustakaan']
             ]
+
+
         ];
 
         FacultyProfile::updateOrCreate(

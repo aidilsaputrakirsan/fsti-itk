@@ -12,7 +12,8 @@ import {
 
 const props = defineProps({ 
     profile: Object,
-    statistics: Object 
+    statistics: Object,
+    dekan: Object 
 });
 
 const displayStats = computed(() => {
@@ -56,8 +57,10 @@ const getFasilitasIcon = (index) => {
 
 const getImageUrl = (path) => {
     if (!path) return '';
-    if (path.startsWith('http')) return path;
-    if (path.startsWith('images/')) return `/${path}`; 
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    if (path.startsWith('/')) return path; 
+    if (path.startsWith('images/') || path.startsWith('assets/')) return `/${path}`; 
+    if (path.startsWith('storage/')) return `/${path}`;
     return `/storage/${path}`; 
 };
 
@@ -106,7 +109,70 @@ onMounted(() => {
 
         <Banner title="TENTANG FAKULTAS" subtitle="PROFIL, TUGAS, FUNGSI, SERTA VISI & MISI FSTI ITK" background-image="/images/background-banner.webp" />
 
-        <section class="bg-white py-16 md:py-24 font-public-sans border-b border-gray-100 relative overflow-hidden">
+        <section class="bg-white pt-16 md:pt-24 pb-12 font-public-sans relative overflow-hidden">
+            <GraduationCap aria-hidden="true" class="absolute -right-32 top-0 w-[45rem] h-[45rem] text-primary/[0.03] -rotate-12 pointer-events-none" />
+            <div aria-hidden="true" class="absolute top-0 right-0 w-[40rem] h-[40rem] bg-blue-50/50 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+
+            <div class="container mx-auto px-6 lg:px-8 max-w-7xl relative z-10">
+                <div class="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+                    
+                    <div class="lg:col-span-5 relative order-2 lg:order-1" data-aos="fade-right">
+                        <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-gradient-to-b from-slate-50 to-slate-200 w-full">
+                            <img 
+                                :src="dekan?.display_image ? dekan.display_image : '/images/lambang-itk.webp'" 
+                                :alt="dekan?.name || 'Dekan FSTI ITK'" 
+                                class="w-full h-auto object-cover object-bottom hover:scale-105 transition-transform duration-700"
+                                @error="(e) => e.target.src = '/images/lambang-itk.webp'"
+                            >
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent pointer-events-none"></div>
+                            <div class="absolute bottom-0 left-0 p-6 md:p-8 w-full z-10">
+                                <h3 class="text-white font-bold text-xl md:text-2xl drop-shadow-md mb-1">{{ dekan?.name || 'Nama Dekan' }}</h3>
+                                <p class="text-blue-300 font-bold text-sm md:text-base drop-shadow uppercase tracking-wide">{{ dekan?.structural_position || 'Dekan FSTI ITK' }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute top-6 -left-6 w-full h-full border-2 border-primary rounded-2xl z-0 rounded-bl-[4rem]"></div>
+                        <div class="absolute -bottom-8 -right-8 w-32 h-32 bg-yellow-400 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-pulse"></div>
+                    </div>
+
+                    <div class="lg:col-span-7 order-1 lg:order-2" data-aos="fade-left">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-1 bg-primary rounded-full"></div>
+                            <span class="text-primary font-bold tracking-widest uppercase text-sm font-optimus shadow-sm">Sambutan Pimpinan</span>
+                        </div>
+                        
+                        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold font-optimus text-gray-900 mb-8 leading-tight">
+                            Selamat Datang di <br><span class="text-primary">FSTI ITK</span>
+                        </h2>
+                        
+                        <div class="relative pl-6 md:pl-10">
+                            <Quote aria-hidden="true" class="absolute -top-4 -left-2 w-12 h-12 text-blue-400/30 rotate-180 z-0" />
+                            <div class="relative z-10 text-[#0A2A5E] font-medium text-base md:text-lg leading-relaxed space-y-5 text-justify">
+                                <p>
+                                    {{ profile?.sambutan_dekan || 'Selamat datang di Fakultas Sains dan Teknologi Informasi (FSTI) Institut Teknologi Kalimantan. FSTI hadir sebagai pusat keunggulan dalam pengembangan sains dan teknologi informasi yang adaptif, inovatif, dan berwawasan lingkungan. Kami berkomitmen untuk menghasilkan lulusan yang tidak hanya unggul secara akademis, tetapi juga memiliki karakter yang kuat dan siap bersaing di tingkat nasional maupun internasional.' }}
+                                </p>
+                                <p v-if="profile?.sambutan_dekan_paragraf_2">
+                                    {{ profile.sambutan_dekan_paragraf_2 }}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-10 pt-8 border-t border-gray-100 flex items-center gap-5">
+                            <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                <UserCheck aria-hidden="true" class="w-7 h-7" />
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-900 text-lg">{{ dekan?.name || 'Pimpinan Fakultas' }}</p>
+                                <p class="text-sm text-gray-500">{{ dekan?.structural_position || 'Fakultas Sains dan Teknologi Informasi' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white py-12 md:py-24 font-public-sans border-b border-gray-100 relative overflow-hidden">
             <Globe aria-hidden="true" class="absolute -top-16 -left-16 w-64 h-64 text-primary/5 -rotate-12 pointer-events-none" />
             <Cpu aria-hidden="true" class="absolute -bottom-10 -right-10 w-48 h-48 text-primary/5 rotate-12 pointer-events-none" />
             <div aria-hidden="true" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-primary/5 rounded-full blur-3xl opacity-40 pointer-events-none"></div>
@@ -246,7 +312,14 @@ onMounted(() => {
                         </div>
                         <div aria-hidden="true" class="absolute inset-0 bg-primary/20 mix-blend-multiply z-10 group-hover:opacity-0 transition-opacity duration-700"></div>
                         
-                        <img :src="getImageUrl(item.gambar)" :alt="item.nama" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-in-out">
+                        <img 
+                            :src="getImageUrl(item.gambar)" 
+                            :alt="item.nama" 
+                            loading="lazy" 
+                            decoding="async" 
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-in-out"
+                            @error="(e) => e.target.src = '/images/gambar-beranda-1.webp'"
+                        >
                         
                         <div class="absolute inset-0 z-10 bg-gradient-to-t from-gray-900/90 via-gray-900/30 to-transparent flex flex-col justify-end p-6 md:p-8">
                             <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">

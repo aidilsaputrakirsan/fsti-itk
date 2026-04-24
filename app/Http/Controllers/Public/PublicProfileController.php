@@ -56,9 +56,15 @@ class PublicProfileController extends Controller
             }
         }
 
+        $dekan = Staff::where('structural_position', 'like', '%Dekan%')
+            ->where('structural_position', 'not like', '%Wakil%')
+            ->where('is_active', true)
+            ->first();
+
         return Inertia::render('Public/Profiles/About', [
             'profile' => $profileContent,
-            'statistics' => $statistics
+            'statistics' => $statistics,
+            'dekan' => $dekan
         ]);
     }
 
@@ -128,7 +134,7 @@ class PublicProfileController extends Controller
                 $jurusanStr = 'Umum / Lainnya';
                 foreach ($studyPrograms as $sp) {
                     if (str_contains($jabatan, strtolower($sp->name))) {
-                        $jurusanStr = $sp->department; 
+                        $jurusanStr = $sp->department;
                         break;
                     }
                 }
