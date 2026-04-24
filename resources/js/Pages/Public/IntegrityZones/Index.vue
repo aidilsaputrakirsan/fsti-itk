@@ -13,7 +13,13 @@ import {
     MagnifyingGlassCircleIcon,  
     StarIcon,
     GlobeAltIcon,
-    ArrowTopRightOnSquareIcon
+    ArrowTopRightOnSquareIcon,
+    /* Ikon Tambahan untuk Trik Stack Anti Korupsi */
+    BanknotesIcon, 
+    HandRaisedIcon, 
+    GiftIcon, 
+    BriefcaseIcon, 
+    NoSymbolIcon
 } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
@@ -120,6 +126,71 @@ const displayDocuments = props.documents || [];
                             
                             <p class="text-[10px] sm:text-xs md:text-sm text-gray-700 leading-relaxed font-medium flex-grow">{{ area.desc }}</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white py-8 md:py-12 font-public-sans">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="relative overflow-hidden bg-gradient-to-r from-primary to-blue-900 rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(47,77,211,0.4)] p-8 md:p-12 lg:p-16 border border-blue-700/50">
+                    
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none"></div>
+                    <ShieldCheckIcon class="absolute right-8 md:right-24 top-1/2 -translate-y-1/2 w-40 h-40 md:w-64 md:h-64 text-white opacity-5 transform rotate-12 pointer-events-none" />
+
+                    <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16">
+                        
+                        <div class="flex-1 text-center lg:text-left">
+                            <span class="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-[10px] md:text-xs font-bold uppercase tracking-widest text-white mb-4 backdrop-blur-sm">
+                                Kawasan Wilayah Bebas dari Korupsi (WBK)
+                            </span>
+                            <h3 class="text-4xl md:text-5xl lg:text-6xl font-optimus font-bold text-white mb-4 leading-tight drop-shadow-md">
+                                BERANI JUJUR,<br/> <span class="text-yellow-400">HEBAT!</span>
+                            </h3>
+                            <p class="text-blue-100 text-sm md:text-lg font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                                Seluruh pimpinan, sivitas akademika, dan tenaga kependidikan FSTI ITK berkomitmen memberikan pelayanan prima yang transparan, akuntabel, dan terbebas dari segala bentuk penyimpangan.
+                            </p>
+                        </div>
+
+                        <div class="shrink-0 w-full lg:w-auto">
+                            <div class="grid grid-cols-2 gap-4 md:gap-5">
+                                
+                                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 flex flex-col items-center justify-center text-center hover:bg-white/20 transition-all duration-300 shadow-sm hover:shadow-md">
+                                    <div class="relative w-12 h-12 md:w-14 md:h-14 mb-3 mx-auto">
+                                        <BanknotesIcon class="absolute inset-0 w-full h-full text-white p-2.5" stroke-width="1.5" />
+                                        <NoSymbolIcon class="absolute inset-0 w-full h-full text-red-500 drop-shadow-md" stroke-width="2.5" />
+                                    </div>
+                                    <span class="font-black text-white tracking-widest text-sm md:text-base">NO SUAP</span>
+                                </div>
+
+                                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 flex flex-col items-center justify-center text-center hover:bg-white/20 transition-all duration-300 shadow-sm hover:shadow-md">
+                                    <div class="relative w-12 h-12 md:w-14 md:h-14 mb-3 mx-auto">
+                                        <HandRaisedIcon class="absolute inset-0 w-full h-full text-white p-2.5" stroke-width="1.5" />
+                                        <NoSymbolIcon class="absolute inset-0 w-full h-full text-red-500 drop-shadow-md" stroke-width="2.5" />
+                                    </div>
+                                    <span class="font-black text-white tracking-widest text-sm md:text-base">NO PUNGLI</span>
+                                </div>
+
+                                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 flex flex-col items-center justify-center text-center hover:bg-white/20 transition-all duration-300 shadow-sm hover:shadow-md">
+                                    <div class="relative w-12 h-12 md:w-14 md:h-14 mb-3 mx-auto">
+                                        <GiftIcon class="absolute inset-0 w-full h-full text-white p-2.5" stroke-width="1.5" />
+                                        <NoSymbolIcon class="absolute inset-0 w-full h-full text-red-500 drop-shadow-md" stroke-width="2.5" />
+                                    </div>
+                                    <span class="font-black text-white tracking-widest text-sm md:text-base">NO GRATIFIKASI</span>
+                                </div>
+
+                                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 flex flex-col items-center justify-center text-center hover:bg-white/20 transition-all duration-300 shadow-sm hover:shadow-md">
+                                    <div class="relative w-12 h-12 md:w-14 md:h-14 mb-3 mx-auto">
+                                        <BriefcaseIcon class="absolute inset-0 w-full h-full text-white p-2.5" stroke-width="1.5" />
+                                        <NoSymbolIcon class="absolute inset-0 w-full h-full text-red-500 drop-shadow-md" stroke-width="2.5" />
+                                    </div>
+                                    <span class="font-black text-white tracking-widest text-sm md:text-base">NO KORUPSI</span>
+                                </div>
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

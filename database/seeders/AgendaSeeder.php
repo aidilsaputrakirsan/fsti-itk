@@ -117,6 +117,16 @@ class AgendaSeeder extends Seeder
             // --- DESEMBER ---
             ['title' => 'Rapat Kerja Manajemen Fakultas Sains dan Teknologi Informasi', 'start_date' => '2025-12-01', 'end_date' => null, 'organizer' => 'FSTI ITK'],
             ['title' => 'Germas FSTI', 'start_date' => '2025-12-05', 'end_date' => null, 'organizer' => 'FSTI ITK'],
+
+            // --- ULANG TAHUN PRODI (2026) ---
+            ['title' => 'Ulang Tahun FSTI', 'start_date' => '2026-01-08', 'end_date' => null, 'organizer' => 'FSTI ITK'],
+            ['title' => 'Ulang Tahun Magister Manajemen Teknologi', 'start_date' => '2026-01-30', 'end_date' => null, 'organizer' => 'Prodi MMT'],
+            ['title' => 'Ulang Tahun Teknik Elektro', 'start_date' => '2026-02-14', 'end_date' => null, 'organizer' => 'Prodi Teknik Elektro'],
+            ['title' => 'Ulang Tahun Fisika, Matematika, Sistem Informasi', 'start_date' => '2026-03-20', 'end_date' => null, 'organizer' => 'FSTI ITK'],
+            ['title' => 'Ulang Tahun Prodi Informatika', 'start_date' => '2026-04-04', 'end_date' => null, 'organizer' => 'Prodi Informatika'],
+            ['title' => 'Ulang Tahun Prodi Bisnis Digital', 'start_date' => '2026-04-16', 'end_date' => null, 'organizer' => 'Prodi Bisnis Digital'],
+            ['title' => 'Ulang Tahun Prodi Ilmu Aktuaria dan Statistika', 'start_date' => '2026-06-30', 'end_date' => null, 'organizer' => 'FSTI ITK'],
+
         ];
 
         Agenda::truncate();

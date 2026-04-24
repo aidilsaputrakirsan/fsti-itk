@@ -320,7 +320,7 @@ const isToday = (date) => {
             <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
                 <div class="absolute top-[-10%] left-[-5%] w-[40rem] h-[40rem] bg-primary/5 rounded-full blur-[100px]"></div>
                 <div class="absolute top-[20%] right-[-10%] w-[35rem] h-[35rem] bg-blue-400/5 rounded-full blur-[100px]"></div>
-                <CalendarDays class="absolute top-[15%] left-[8%] w-32 h-32 text-primary/10 transform -rotate-12" />
+                <CalendarDays class="absolute top-[15%] left-[5%] w-32 h-32 text-primary/10 transform -rotate-12" />
                 <ClockIcon class="absolute top-[45%] right-[5%] w-40 h-40 text-blue-500/10 transform rotate-12" />
                 <MapPinIcon class="absolute bottom-[10%] left-[15%] w-24 h-24 text-indigo-400/10 transform -rotate-6" />
                 <CalendarIcon class="absolute bottom-[25%] right-[20%] w-28 h-28 text-primary/5 transform rotate-6" />

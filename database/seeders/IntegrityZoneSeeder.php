@@ -47,7 +47,7 @@ class IntegrityZoneSeeder extends Seeder
 
         $documents = [
             [
-                'title' => 'SK Tim Zona Integritas FSTI Tahun 2025',
+                'title' => 'SK Tim Zona Integritas FSTI Tahun 2026',
                 'file_name' => 'sk-tim-zi-fsti.pdf',
             ],
             [
