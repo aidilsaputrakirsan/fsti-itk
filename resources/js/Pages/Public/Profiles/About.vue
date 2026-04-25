@@ -300,11 +300,10 @@ onMounted(() => {
                     </div>
                 </div>
 
-                <div v-if="profile?.fasilitas && profile.fasilitas.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-6">
+                <div v-if="profile?.fasilitas && profile.fasilitas.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                     
                     <div v-for="(item, index) in profile.fasilitas" :key="index" 
-                         class="group relative overflow-hidden rounded-[2rem] shadow-sm hover:shadow-xl transition-all duration-500 border border-white bg-white min-h-[16rem] md:min-h-[18rem]" 
-                         :class="(index === 0 || index >= 5) ? 'md:col-span-2 lg:col-span-2' : 'md:col-span-1 lg:col-span-1'"
+                         class="group relative overflow-hidden rounded-[2rem] shadow-sm hover:shadow-xl transition-all duration-500 border border-white bg-white h-64 md:h-72" 
                          data-aos="fade-up" :data-aos-delay="(index % 3) * 100">
                         
                         <div class="absolute top-4 right-4 z-20 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/30 shadow-lg group-hover:bg-primary transition-all duration-300">

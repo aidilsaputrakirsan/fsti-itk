@@ -25,17 +25,6 @@ class DatabaseSeeder extends Seeder
             $this->command->info('Admin user already exists, skipping...');
         }
 
-        $categories = [
-            ['name' => 'Akademik', 'slug' => 'akademik'],
-            ['name' => 'Non Akademik', 'slug' => 'non-akademik'],
-            ['name' => 'Kerjasama', 'slug' => 'kerjasama'],
-        ];
-
-        foreach ($categories as $cat) {
-            PostCategory::firstOrCreate(['slug' => $cat['slug']], $cat);
-        }
-        $this->command->info('Post Categories seeded successfully.');
-
         $this->call([
             PostSeeder::class,
             AchievementSeeder::class,

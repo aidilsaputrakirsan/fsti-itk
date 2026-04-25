@@ -140,7 +140,37 @@ class PostSeeder extends Seeder
                 'kategori' => 'Pengabdian Masyarakat',
                 'isi_berita' => 'Serah terima Modul Edukit yang memuat materi Matematika tingkat SMA/SMK/MA dan Pojok Literasi yang berisi berbagai buku bacaan bermanfaat serta sebagai media ekspresi bagi siswa/i telah berlangsung dengan lancar pada Rabu, 12 November 2025 di SMK Cendekia Balikpapan. Kegiatan ini diharapkan dapat menjadi sarana belajar yang lebih lengkap sekaligus ruang tumbuh bagi kreativitas siswa.',
                 'gambar' => 'inovasi-sosial-edukit.webp'
-            ]
+            ],
+            [
+                'judul' => 'FSTI ITK Resmi Gelar Kelas Perdana Program Studi Magister Manajemen Teknologi (MMT)',
+                'kategori' => 'Akademik',
+                'isi_berita' => 'Balikpapan, 25 Agustus 2025 – Fakultas Sains dan Teknologi Informasi (FSTI) Institut Teknologi Kalimantan (ITK) mencatat sejarah baru dengan dimulainya kelas perdana Program Studi Magister Manajemen Teknologi (MMT). Pembukaan kelas ini menjadi langkah strategis FSTI dalam memenuhi kebutuhan akan sumber daya manusia yang kompeten di bidang manajemen teknologi. Kegiatan peresmian dibuka oleh Irma Fitria, S.Si., M.Si., selaku Wakil Dekan Bidang Akademik dan Kemahasiswaan FSTI. Dengan dibukanya kelas perdana ini, FSTI ITK optimis Program Studi Magister Manajemen Teknologi akan menjadi program unggulan yang memperkuat posisi ITK dalam mencetak lulusan berdaya saing tinggi di kancah nasional dan internasional.',
+                'gambar' => 'berita-kelas-perdana-mmt.webp'
+            ],
+            [
+                'judul' => 'FSTI ITK Gelar Temu Akbar Alumni, Resmi Bentuk Ikatan "Octagon"',
+                'kategori' => 'Kegiatan Mahasiswa',
+                'isi_berita' => 'Balikpapan, 30 November 2025 – Fakultas Sains dan Teknologi Informasi (FSTI) Institut Teknologi Kalimantan (ITK) menyelenggarakan temu alumni akbar perdana yang diikuti oleh puluhan alumni dari delapan program studi. Kegiatan yang berlangsung di Kampus ITK ini menjadi tonggak penting dengan terbentuknya ikatan alumni resmi FSTI ITK bernama Octagon. Acara tersebut dihadiri oleh pimpinan fakultas dan universitas, di antaranya Dekan FSTI ITK Adi Mahmud Jaya Marindra, S.T., M.Eng., Ph.D. Melalui terbentuknya Ikatan Alumni Octagon, FSTI ITK berharap jejaring alumni dapat berkontribusi nyata dalam pengembangan pendidikan, riset, dan inovasi.',
+                'gambar' => 'berita-temu-alumni.webp'
+            ],
+            [
+                'judul' => 'FSTI Gelar Workshop Strategi Penerapan Good Governance dalam Tata Kelola dan Manajemen Teknologi',
+                'kategori' => 'Kuliah Tamu & Seminar',
+                'isi_berita' => 'Balikpapan, 21 Agustus 2025 – Fakultas Sains dan Teknologi Informasi (FSTI) Institut Teknologi Kalimantan (ITK) sukses menyelenggarakan Workshop Strategi Penerapan Good Governance dalam Tata Kelola dan Manajemen Teknologi. Acara ini dihadiri oleh sivitas akademika sebagai wujud komitmen FSTI sebagai Unit Pengelola Program Studi (UPPS) dalam meningkatkan kualitas tata kelola. Penandatanganan IA antara FSTI ITK dan narasumber, Dr. Dra. Kartika Fithriasari, M.Si., dari ITS menjadi simbol kerja sama strategis untuk memperkuat tata kelola akademik.',
+                'gambar' => 'berita-workshop-good-governance.webp'
+            ],
+            [
+                'judul' => 'Peresmian FSTI Co-Learning Space dan English Speaking Zone Kolaborasi ITK dan PT Telkom',
+                'kategori' => 'Kerja Sama & Kemitraan',
+                'isi_berita' => 'Balikpapan, 27 Oktober 2025 – Acara peresmian Co-Learning Space dan English Speaking Zone dibuka dengan sambutan hangat dari Wakil Rektor Bidang Perencanaan, Keuangan, dan Umum, Ir. Khakim Ghozali, S.T., M.T. Beliau menekankan pentingnya kehadiran fasilitas ini sebagai bentuk nyata komitmen ITK dalam menciptakan lingkungan kampus yang inovatif. Kolaborasi antara ITK dan PT Telkom ini diharapkan mampu mendukung ekosistem pembelajaran yang aktif, modern, serta ramah terhadap kebutuhan mahasiswa dan civitas akademika ITK.',
+                'gambar' => 'berita-peresmian-co-learning.webp'
+            ],
+            [
+                'judul' => 'FSTI Gelar Orientasi Akademik untuk Sambut Mahasiswa Baru Magister Manajemen Teknologi',
+                'kategori' => 'Akademik',
+                'isi_berita' => 'Balikpapan, 22 Agustus 2025 – FSTI menggelar Orientasi Akademik untuk menyambut Mahasiswa Baru Magister Manajemen Teknologi. Acara ini memberikan pengenalan komprehensif mengenai layanan laboratorium terpadu dan fasilitas perpustakaan, yang berfungsi sebagai sumber daya penting untuk riset dan kegiatan akademik. Dengan pemahaman yang lebih baik tentang sistem dan layanan yang ada, para mahasiswa diharapkan dapat memanfaatkan fasilitas di ITK secara optimal dan meraih kesuksesan akademik di Program Magister Manajemen Teknologi.',
+                'gambar' => 'berita-orientasi-mmt.webp'
+            ],
         ];
 
         $copiedCount = 0;
@@ -183,6 +213,6 @@ class PostSeeder extends Seeder
             ]);
         }
 
-        $this->command->info("Selesai! 19 Berita FSTI berhasil di-seed. Total {$copiedCount} gambar disalin ke Storage.");
+        $this->command->info("Selesai! 24 Berita FSTI berhasil di-seed. Total {$copiedCount} gambar disalin ke Storage.");
     }
 }

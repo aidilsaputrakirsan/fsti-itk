@@ -15,6 +15,32 @@ class FacultyProfileSeeder extends Seeder
             Storage::disk('public')->makeDirectory('profiles');
         }
 
+        if (!Storage::disk('public')->exists('fasilitas')) {
+            Storage::disk('public')->makeDirectory('fasilitas');
+        }
+
+        $fasilitasImages = [
+            'gedung-b.webp',
+            'taman-b.webp',
+            'co-learning-space.webp',
+            'lapangan-olahraga.webp',
+            'ruang-kelas.webp',
+            'fisika.webp',
+            'perpustakaan.webp',
+            'taman-alumni.webp',
+            'klinik.webp',
+            'masjid.webp',
+            'asrama.webp',
+            'ult.webp'
+        ];
+
+        foreach ($fasilitasImages as $fImg) {
+            $fPath = database_path('seeders' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'fasilitas' . DIRECTORY_SEPARATOR . $fImg);
+            if (File::exists($fPath)) {
+                Storage::disk('public')->put('fasilitas/' . $fImg, File::get($fPath));
+            }
+        }
+
         $imageName = 'bagan-organisasi.webp';
         $assetPath = database_path('seeders' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'profiles' . DIRECTORY_SEPARATOR . $imageName);
         $finalImagePath = null;
@@ -81,18 +107,19 @@ class FacultyProfileSeeder extends Seeder
             'ppid_keberatan_link' => 'https://docs.google.com/forms/d/e/1FAIpQLSefIA7eJNmNHt0YXzWaWyLdp4zJUulojXUmh7xlVN-MQxZLlw/viewform',
 
             'fasilitas' => [
-                ['nama' => 'Co Learning Space', 'deskripsi' => 'Ruang nyaman untuk belajar bersama, berdiskusi, dan bertukar ide.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Co+Learning+Space'],
-                ['nama' => 'English Speaking Zone', 'deskripsi' => 'Area khusus untuk melatih kemampuan berbahasa Inggris.', 'gambar' => 'https://placehold.co/600x600/2F4DD3/FFFFFF?text=English+Zone'],
-                ['nama' => 'Ruang Kelas', 'deskripsi' => 'Ruang belajar tatap muka yang interaktif dan nyaman.', 'gambar' => 'https://placehold.co/600x600/2F4DD3/FFFFFF?text=Ruang+Kelas'],
-                ['nama' => 'Lab Inovasi Digital', 'deskripsi' => 'Tempat mengembangkan kreativitas karya digital.', 'gambar' => 'https://placehold.co/600x600/2F4DD3/FFFFFF?text=Lab+Inovasi+Digital'],
-                ['nama' => 'Lab Sistem Cerdas', 'deskripsi' => 'Fasilitas eksplorasi dan pengembangan kecerdasan buatan.', 'gambar' => 'https://placehold.co/600x600/2F4DD3/FFFFFF?text=Lab+Sistem+Cerdas'],
-                ['nama' => 'Lab Komputasi dan Data', 'deskripsi' => 'Area praktik pendukung pemrograman dan komputasi pengolahan data.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Lab+Komputasi+%26+Data'],
-                ['nama' => 'Lab Fisika Dasar', 'deskripsi' => 'Tempat pelaksanaan praktikum dan eksperimen fisika tingkat dasar.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Lab+Fisika+Dasar'],
-                ['nama' => 'Lab Fisika Lanjut', 'deskripsi' => 'Fasilitas eksperimen dan analisis fisika untuk penerapan tingkat lanjut.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Lab+Fisika+Lanjut'],
-                ['nama' => 'Masjid', 'deskripsi' => 'Fasilitas tempat ibadah yang tenang dan nyaman di lingkungan kampus.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Masjid+Kampus'],
-                ['nama' => 'Perpustakaan', 'deskripsi' => 'Pusat pencarian referensi, buku, dan literatur pendukung studi mahasiswa.', 'gambar' => 'https://placehold.co/800x600/2F4DD3/FFFFFF?text=Perpustakaan']
+                ['nama' => 'Gedung B ITK', 'deskripsi' => 'Pusat administrasi dan akademik utama yang mendukung berbagai kegiatan perkuliahan.', 'gambar' => 'fasilitas/gedung-b.webp'],
+                ['nama' => 'Taman Gedung B ITK', 'deskripsi' => 'Area terbuka hijau di sekitar Gedung B untuk tempat istirahat dan diskusi santai civitas akademika.', 'gambar' => 'fasilitas/taman-b.webp'],
+                ['nama' => 'Co Learning Space', 'deskripsi' => 'Ruang komunal modern yang dirancang untuk mendukung diskusi, kolaborasi, dan belajar bersama.', 'gambar' => 'fasilitas/co-learning-space.webp'],
+                ['nama' => 'Lapangan Basket', 'deskripsi' => 'Fasilitas olahraga luar ruangan untuk mendukung kesehatan dan kegiatan ekstrakurikuler mahasiswa.', 'gambar' => 'fasilitas/lapangan-olahraga.webp'],
+                ['nama' => 'Ruang Kelas', 'deskripsi' => 'Ruang belajar yang nyaman dan dilengkapi dengan fasilitas multimedia untuk menunjang perkuliahan.', 'gambar' => 'fasilitas/ruang-kelas.webp'],
+                ['nama' => 'Laboratorium', 'deskripsi' => 'Pusat riset dan praktikum yang dilengkapi dengan peralatan modern untuk pengembangan sains dan teknologi.', 'gambar' => 'fasilitas/fisika.webp'],
+                ['nama' => 'Perpustakaan', 'deskripsi' => 'Pusat literatur dan referensi akademik lengkap guna mendukung kebutuhan studi dan penelitian mahasiswa.', 'gambar' => 'fasilitas/perpustakaan.webp'],
+                ['nama' => 'Unit Layanan Terpadu', 'deskripsi' => 'Pusat layanan administrasi satu pintu bagi mahasiswa dan civitas akademika.', 'gambar' => 'fasilitas/ult.webp'],
+                ['nama' => 'Taman Alumni', 'deskripsi' => 'Ruang publik terbuka hijau sebagai tempat berkumpul dan menjalin jejaring antar alumni.', 'gambar' => 'fasilitas/taman-alumni.webp'],
+                ['nama' => 'Klinik', 'deskripsi' => 'Fasilitas kesehatan dasar bagi civitas akademika yang siap melayani di lingkungan kampus.', 'gambar' => 'fasilitas/klinik.webp'],
+                ['nama' => 'Masjid', 'deskripsi' => 'Tempat ibadah yang representatif, tenang, dan nyaman di dalam lingkungan kampus ITK.', 'gambar' => 'fasilitas/masjid.webp'],
+                ['nama' => 'Asrama', 'deskripsi' => 'Hunian mahasiswa yang aman dan terintegrasi langsung dengan lingkungan kampus.', 'gambar' => 'fasilitas/asrama.webp']
             ]
-
 
         ];
 
