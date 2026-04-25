@@ -7,6 +7,7 @@ use App\Models\Alumni;
 use App\Models\StudyProgram;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 class PublicAlumniController extends Controller
 {
@@ -40,11 +41,17 @@ class PublicAlumniController extends Controller
 
         $years = Alumni::select('graduation_year')->distinct()->orderBy('graduation_year', 'desc')->pluck('graduation_year');
 
+        $distribution = Alumni::select('study_program', DB::raw('count(*) as total'))
+            ->groupBy('study_program')
+            ->orderBy('total', 'desc')
+            ->get();
+
         return Inertia::render('Public/Alumni/Index', [
             'alumni' => $alumni,
             'filters' => $request->only(['search', 'program', 'year']),
             'studyPrograms' => $studyPrograms,
-            'years' => $years
+            'years' => $years,
+            'distribution' => $distribution
         ]);
     }
 }
