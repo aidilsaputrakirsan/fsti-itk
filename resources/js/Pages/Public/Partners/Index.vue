@@ -18,17 +18,30 @@ watch(searchQuery, throttle((newSearch) => {
 
 onMounted(() => { AOS.init({ duration: 800, once: true }); });
 
-const currentPage = computed(() => props.partners.links.find(l => l.active) ? parseInt(props.partners.links.find(l => l.active).label) : 1);
-const totalPages = computed(() => props.partners.links.length > 2 ? props.partners.links.length - 2 : 1);
+const currentPage = computed(() => props.partners.current_page || 1);
+const totalPages = computed(() => props.partners.last_page || 1);
+
 const visiblePages = computed(() => {
-    if (totalPages.value <= 5) return Array.from({ length: totalPages.value }, (_, i) => i + 1);
-    if (currentPage.value <= 3) return [1, 2, 3, 4, '...', totalPages.value];
-    if (currentPage.value >= totalPages.value - 2) return [1, '...', totalPages.value - 3, totalPages.value - 2, totalPages.value - 1, totalPages.value];
-    return [1, '...', currentPage.value - 1, currentPage.value, currentPage.value + 1, '...', totalPages.value];
+    const total = totalPages.value;
+    const current = currentPage.value;
+
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    if (current <= 4) return [1, 2, 3, 4, 5, '...', total];
+    if (current >= total - 3) return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+    return [1, '...', current - 1, current, current + 1, '...', total];
 });
+
 const changePage = (p) => {
     if (typeof p === 'number' && p >= 1 && p <= totalPages.value) {
-        router.get(route('partners.index'), { search: searchQuery.value, page: p }, { preserveState: true, replace: true, onFinish: () => { window.scrollTo({ top: 350, behavior: 'smooth' }); AOS.refresh(); } });
+        router.get(route('partners.index'), { search: searchQuery.value, page: p }, { 
+            preserveState: true, 
+            preserveScroll: true,
+            replace: true, 
+            onFinish: () => { 
+                window.scrollTo({ top: 350, behavior: 'smooth' }); 
+                AOS.refresh(); 
+            } 
+        });
     }
 };
 
@@ -71,7 +84,7 @@ const formatDate = (dateString) => {
 
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
 
-                <div class="relative w-full bg-gradient-to-br from-primary to-primary-hover rounded-[2rem] p-6 sm:p-8 md:p-12 mb-8 overflow-hidden shadow-xl flex items-center justify-between border border-primary/50" data-aos="fade-up">
+                <div class="relative w-full bg-gradient-to-br from-primary to-primary-hover rounded-[2rem] p-6 sm:p-8 md:p-12 mb-8 overflow-hidden shadow-xl flex items-center justify-between border border-primary-hover/50" data-aos="fade-up">
                     <div class="absolute -top-[20%] -right-[10%] w-[60%] h-[140%] bg-blue-400/20 rounded-[100%] blur-[100px] pointer-events-none transform -rotate-12"></div>
                     <div class="absolute -bottom-[30%] -left-[10%] w-[60%] h-[120%] bg-white/10 rounded-[100%] blur-[120px] pointer-events-none transform rotate-12"></div>
                     
@@ -94,7 +107,7 @@ const formatDate = (dateString) => {
                         <input 
                             type="text" 
                             placeholder="Cari nama institusi atau mitra..." 
-                            class="w-full pl-10 md:pl-12 pr-10 py-3 md:py-3.5 text-sm md:text-base border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50 text-gray-800 font-medium hover:bg-white transition-colors"
+                            class="w-full pl-10 md:pl-12 pr-10 py-3 md:py-3.5 text-sm md:text-base border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-slate-50 text-slate-800 font-medium hover:bg-white transition-colors"
                             v-model="searchQuery"
                         >
                         <Search class="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 md:w-5 h-4 md:h-5 text-gray-400" />
@@ -120,55 +133,75 @@ const formatDate = (dateString) => {
                     <p class="mt-2 text-gray-500 font-medium max-w-md mx-auto">Mitra kerjasama dengan nama tersebut tidak ditemukan.</p>
                 </div>
 
-                <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 mx-2 sm:mx-4 md:mx-8">
-                    <div v-for="(partner, index) in partners.data" :key="partner.id" 
-                        @click="openPartnerModal(partner)"
-                        class="cursor-pointer bg-white rounded-[1rem] md:rounded-[1.5rem] border border-gray-200 shadow-sm hover:shadow-xl hover:border-primary/30 transform hover:-translate-y-1 transition-all duration-300 flex flex-col h-auto sm:h-auto md:min-h-[460px] group overflow-hidden" 
-                        data-aos="fade-up" :data-aos-delay="(index % 10) * 50">
-                        
-                        <div class="h-28 sm:h-36 md:h-52 w-full bg-white border-b border-gray-100 p-3 sm:p-4 md:p-6 flex items-center justify-center shrink-0">
-                            <img v-if="partner.logo_url" :src="partner.logo_url" :alt="partner.name" class="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105" />
-                            <div v-else class="text-gray-300 flex flex-col items-center">
-                                <Handshake class="w-6 h-6 md:w-10 md:h-10 mb-1 md:mb-2 opacity-50" />
-                                <span class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-center">No Logo</span>
-                            </div>
-                        </div>
-
-                        <div class="p-3 sm:p-4 md:p-6 flex flex-col flex-grow bg-gray-50/50 min-h-0">
-                            <div v-if="partner.activities && partner.activities.length > 0" class="mb-2 md:mb-3 shrink-0 flex gap-2 flex-wrap">
-                                <span class="inline-flex items-center px-2 py-0.5 md:px-3 md:py-1 bg-blue-100 text-primary rounded-md text-[10px] sm:text-xs font-bold">
-                                    {{ partner.activities.length }} Kegiatan
-                                </span>
-                            </div>
-
-                            <h3 class="text-sm sm:text-base md:text-lg font-bold text-gray-800 group-hover:text-primary transition-colors leading-snug mb-2 md:mb-4 shrink-0">{{ partner.name }}</h3>
+                <div v-else>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 mx-2 sm:mx-4 md:mx-8">
+                        <div v-for="(partner, index) in partners.data" :key="partner.id" 
+                            @click="openPartnerModal(partner)"
+                            class="cursor-pointer bg-white rounded-[1rem] md:rounded-[1.5rem] border border-gray-200 shadow-sm hover:shadow-xl hover:border-primary/30 transform hover:-translate-y-1 transition-all duration-300 flex flex-col h-auto sm:h-auto md:min-h-[460px] group overflow-hidden" 
+                            data-aos="fade-up" :data-aos-delay="(index % 10) * 50">
                             
-                            <div v-if="partner.activities && partner.activities.length > 0" class="flex-grow overflow-y-auto min-h-0 pr-1 md:pr-2 space-y-2 md:space-y-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pointer-events-none">
-                                <ul class="space-y-1.5 md:space-y-3">
-                                    <li v-for="(act, idx) in partner.activities" :key="idx" class="flex items-start gap-1.5 md:gap-2.5 text-[11px] sm:text-xs md:text-sm text-gray-600 font-medium">
-                                        <CheckCircle class="w-3 h-3 md:w-4 md:h-4 text-primary shrink-0 mt-0.5 md:mt-0.5" />
-                                        <span class="leading-relaxed line-clamp-2 md:line-clamp-none">{{ typeof act === 'string' ? act : act.name }}</span>
-                                    </li>
-                                </ul>
+                            <div class="h-28 sm:h-36 md:h-52 w-full bg-white border-b border-gray-100 p-3 sm:p-4 md:p-6 flex items-center justify-center shrink-0">
+                                <img v-if="partner.logo_url" :src="partner.logo_url" :alt="partner.name" class="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105" />
+                                <div v-else class="text-gray-300 flex flex-col items-center">
+                                    <Handshake class="w-6 h-6 md:w-10 md:h-10 mb-1 md:mb-2 opacity-50" />
+                                    <span class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-center">No Logo</span>
+                                </div>
+                            </div>
+
+                            <div class="p-3 sm:p-4 md:p-6 flex flex-col flex-grow bg-gray-50/50 min-h-0">
+                                <div v-if="partner.activities && partner.activities.length > 0" class="mb-2 md:mb-3 shrink-0 flex gap-2 flex-wrap">
+                                    <span class="inline-flex items-center px-2 py-0.5 md:px-3 md:py-1 bg-blue-100 text-primary rounded-md text-[10px] sm:text-xs font-bold">
+                                        {{ partner.activities.length }} Kegiatan
+                                    </span>
+                                </div>
+
+                                <h3 class="text-sm sm:text-base md:text-lg font-bold text-gray-800 group-hover:text-primary transition-colors leading-snug mb-2 md:mb-4 shrink-0">{{ partner.name }}</h3>
+                                
+                                <div v-if="partner.activities && partner.activities.length > 0" class="flex-grow overflow-y-auto min-h-0 pr-1 md:pr-2 space-y-2 md:space-y-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pointer-events-none">
+                                    <ul class="space-y-1.5 md:space-y-3">
+                                        <li v-for="(act, idx) in partner.activities" :key="idx" class="flex items-start gap-1.5 md:gap-2.5 text-[11px] sm:text-xs md:text-sm text-gray-600 font-medium">
+                                            <CheckCircle class="w-3 h-3 md:w-4 md:h-4 text-primary shrink-0 mt-0.5 md:mt-0.5" />
+                                            <span class="leading-relaxed line-clamp-2 md:line-clamp-none">{{ typeof act === 'string' ? act : act.name }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div v-if="totalPages > 1 && partners.data.length > 0" class="mt-12 md:mt-16 mx-2 sm:mx-4 md:mx-8 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 bg-white py-4 px-4 md:px-10 rounded-3xl md:rounded-full shadow-sm border border-gray-100" data-aos="fade-in">
-                    <p class="text-xs md:text-sm font-medium text-gray-500 text-center md:text-left">
-                        Menampilkan <span class="text-primary font-bold">{{ partners.from }}</span> - <span class="text-primary font-bold">{{ partners.to }}</span> dari <span class="text-primary font-bold">{{ partners.total }}</span> Mitra
-                    </p>
-                    
-                    <div class="flex flex-wrap justify-center items-center gap-1.5 md:gap-2">
-                        <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300" :class="currentPage === 1 ? 'text-gray-300 bg-gray-50 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'">&laquo; Sebelumnya</button>
+                    <div v-if="totalPages > 1" class="mt-12 md:mt-16 mx-2 sm:mx-4 md:mx-8 flex flex-col items-center justify-center gap-4 w-full relative z-20" data-aos="fade-in">
+                        <div class="flex flex-wrap justify-center items-center gap-2">
+                            <button 
+                                @click="changePage(currentPage - 1)"
+                                :disabled="currentPage === 1"
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                :class="currentPage === 1 ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                            >Sebelumnya</button>
 
-                        <template v-for="page in visiblePages" :key="page">
-                            <span v-if="page === '...'" class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full text-gray-300 bg-gray-50 cursor-not-allowed">...</span>
-                            <button v-else @click="changePage(page)" class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300" :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'">{{ page }}</button>
-                        </template>
+                            <template v-for="(page, index) in visiblePages" :key="index">
+                                <span 
+                                    v-if="page === '...'"
+                                    class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl text-gray-300 bg-white border border-gray-100 cursor-not-allowed whitespace-nowrap"
+                                >...</span>
+                                <button 
+                                    v-else
+                                    @click="changePage(page)"
+                                    class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                    :class="currentPage === page ? 'bg-primary text-white border-primary shadow-md shadow-primary/20' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary hover:bg-slate-50 shadow-sm'"
+                                >{{ page }}</button>
+                            </template>
 
-                        <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages" class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300" :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'">Selanjutnya &raquo;</button>
+                            <button 
+                                @click="changePage(currentPage + 1)"
+                                :disabled="currentPage === totalPages"
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                            >Selanjutnya</button>
+                        </div>
+
+                        <p class="text-sm font-medium text-gray-400 mt-2 text-center">
+                            Menampilkan <span class="text-slate-700 font-bold">{{ partners.from }}</span> - <span class="text-slate-700 font-bold">{{ partners.to }}</span> dari <span class="text-slate-700 font-bold">{{ partners.total }}</span> mitra
+                        </p>
                     </div>
                 </div>
 

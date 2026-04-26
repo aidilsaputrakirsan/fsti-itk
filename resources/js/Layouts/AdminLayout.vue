@@ -14,15 +14,17 @@ import {
     BookOpenIcon,
     GlobeAltIcon,
     BriefcaseIcon, 
-    BeakerIcon,    
+    BeakerIcon,
+    Bars3Icon, 
+    XMarkIcon  
 } from '@heroicons/vue/24/outline';
 import { ref, onMounted, computed } from 'vue';
 
 const page = usePage();
 const openMenu = ref<string | null>(null);
+const isMobileMenuOpen = ref(false); 
 
 const currentUrl = computed(() => page.url);
-
 const currentUser = computed(() => page.props.auth.user as any);
 
 const navigation = computed(() => {
@@ -128,17 +130,30 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex h-screen bg-slate-50 text-black font-public-sans">
-        <aside class="flex w-72 flex-col flex-shrink-0 bg-white px-5 pt-6 pb-4 border-r border-gray-200 shadow-xl z-20">
-            <div class="px-4 mb-4">
-<img 
-    src="/images/logofsti.webp" 
-    alt="Logo FSTI" 
-    width="192" 
-    height="69" 
-    fetchpriority="high" 
-    decoding="sync" 
-/>            </div>
+    <div class="flex h-screen bg-slate-50 text-black font-public-sans overflow-hidden">
+        
+        <div 
+            v-show="isMobileMenuOpen" 
+            class="fixed inset-0 bg-gray-800/50 z-40 md:hidden transition-opacity" 
+            @click="isMobileMenuOpen = false"
+        ></div>
+
+        <aside :class="[
+            'fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-white px-5 pt-6 pb-4 border-r border-gray-200 shadow-xl transition-transform duration-300 ease-in-out md:relative md:translate-x-0',
+            isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        ]">
+            <div class="flex items-center justify-between px-2 mb-4">
+                <img 
+                    src="/images/logofsti.webp" 
+                    alt="Logo FSTI" 
+                    class="w-40 h-auto" 
+                    fetchpriority="high" 
+                    decoding="sync" 
+                />
+                <button @click="isMobileMenuOpen = false" class="md:hidden p-1.5 rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none">
+                    <XMarkIcon class="h-6 w-6" />
+                </button>
+            </div>
 
             <a href="/" target="_blank" rel="noopener noreferrer" 
                class="flex items-center justify-center w-full p-2.5 mb-6 text-sm transition-colors duration-200 rounded-lg bg-primary/10 text-primary font-bold hover:bg-primary hover:text-white">
@@ -146,12 +161,13 @@ onMounted(() => {
                 Lihat Halaman Publik
             </a>
 
-            <nav class="flex-1 space-y-3 overflow-y-auto pr-1">
+            <nav class="flex-1 space-y-3 overflow-y-auto pr-1 pb-4 scrollbar-thin scrollbar-thumb-gray-200">
                 <template v-for="item in navigation" :key="item.name">
                     <div>
                         <Link
                             v-if="!item.children"
                             :href="item.href"
+                            @click="isMobileMenuOpen = false"
                             :class="[
                                 'flex items-center w-full p-3 transition-colors duration-200 rounded-lg group',
                                 currentUrl.startsWith(item.href)
@@ -159,7 +175,7 @@ onMounted(() => {
                                     : 'bg-primary/5 text-gray-700 hover:bg-primary/15 hover:text-primary-hover', 
                             ]"
                         >
-                            <span class="flex items-center justify-center h-8 w-8 bg-white rounded-full shadow-sm">
+                            <span class="flex items-center justify-center h-8 w-8 bg-white rounded-full shadow-sm shrink-0">
                                 <component :is="item.icon" :class="['h-5 w-5 transition-colors', currentUrl.startsWith(item.href) ? 'text-primary' : 'text-gray-500 group-hover:text-primary-hover']" />
                             </span>
                             <span class="ml-4 font-semibold">{{ item.name }}</span>
@@ -174,17 +190,18 @@ onMounted(() => {
                                     'hover:bg-primary/15 hover:text-primary-hover',
                                 ]"
                             >
-                                <span class="flex items-center justify-center h-8 w-8 bg-white rounded-full shadow-sm">
+                                <span class="flex items-center justify-center h-8 w-8 bg-white rounded-full shadow-sm shrink-0">
                                     <component :is="item.icon" :class="['h-5 w-5 transition-colors', isParentUrlActive(item) || openMenu === item.name ? 'text-primary' : 'text-gray-500 group-hover:text-primary-hover']" />
                                 </span>
                                 <span class="ml-4 font-semibold flex-1">{{ item.name }}</span>
-                                <ChevronRightIcon :class="['h-4 w-4 transition-transform duration-200', openMenu === item.name ? 'rotate-90' : '']" />
+                                <ChevronRightIcon :class="['h-4 w-4 shrink-0 transition-transform duration-200', openMenu === item.name ? 'rotate-90' : '']" />
                             </button>
                             
                             <div v-show="openMenu === item.name" class="bg-gray-50 rounded-b-lg border-x border-b border-gray-200 overflow-hidden mt-1 shadow-inner">
                                 <Link v-for="child in item.children" :key="child.name" :href="child.href"
+                                    @click="isMobileMenuOpen = false"
                                     :class="[
-                                        'block w-full px-12 py-3 text-sm font-semibold transition-colors duration-200',
+                                        'block w-full px-12 py-3 text-sm font-semibold transition-colors duration-200 leading-tight',
                                         currentUrl.startsWith(child.href) 
                                             ? 'bg-primary text-white border-l-4 border-primary-hover' 
                                             : 'text-gray-600 hover:bg-primary/10 hover:text-primary-hover border-l-4 border-transparent'
@@ -198,7 +215,7 @@ onMounted(() => {
                 </template>
             </nav>
             
-            <div class="mt-auto pt-5 border-t border-gray-200">
+            <div class="mt-auto pt-4 border-t border-gray-200">
                 <Link 
                     href="/logout" 
                     method="post" 
@@ -206,15 +223,23 @@ onMounted(() => {
                     class="flex items-center justify-between w-full p-3 transition-colors duration-200 rounded-lg bg-red-50 text-red-700 hover:bg-red-600 hover:text-white border border-red-200 group shadow-sm"
                 >
                     <span class="font-bold">Keluar Sistem</span>
-                    <span class="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow-sm">
+                    <span class="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow-sm shrink-0">
                         <ArrowLeftOnRectangleIcon class="h-5 w-5 text-red-600 group-hover:text-red-700" />
                     </span>
                 </Link>
             </div>
         </aside>
 
-        <div class="flex flex-1 flex-col overflow-x-hidden relative">
-            <main class="flex-1 overflow-auto bg-slate-50 p-8 pt-10">
+        <div class="flex flex-1 flex-col overflow-x-hidden relative h-screen">
+            
+            <header class="md:hidden flex items-center justify-between bg-white px-4 py-3 border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+                <img src="/images/logofsti.webp" alt="Logo FSTI" class="h-8 w-auto" />
+                <button @click="isMobileMenuOpen = true" class="p-2 rounded-md text-gray-600 hover:text-primary hover:bg-primary/10 transition-colors focus:outline-none">
+                    <Bars3Icon class="h-6 w-6" />
+                </button>
+            </header>
+
+            <main class="flex-1 overflow-y-auto bg-slate-50 p-4 sm:p-6 md:p-8 md:pt-10">
                 <slot />
             </main>
         </div>
