@@ -789,7 +789,7 @@ class StaffSeeder extends Seeder
                 'name' => 'Rahmania, S.Pd., M.Sc.',
                 'nip' => '199002152019032019',
                 'type' => 'Dosen',
-                'structural_position' => 'Lektor (Penata - III/c)',
+                'structural_position' => null,
                 'functional_position' => 'Dosen Program Studi Fisika',
                 'image_url' => 'https://drive.google.com/file/d/1G9pkKkaTAMwjVvjpScVuPVDMze0CDrCo/view?usp=sharing',
                 'education_history' => [
@@ -1087,7 +1087,7 @@ class StaffSeeder extends Seeder
                 'name' => 'Primadina Hasanah, S.Si., M.Sc.',
                 'nip' => '198907172018032001',
                 'type' => 'Dosen',
-                'structural_position' => 'Lektor',
+                'structural_position' => null,
                 'functional_position' => 'Dosen Program Studi Ilmu Aktuaria',
                 'image_url' => 'https://drive.google.com/file/d/16E5DpXx88v2yiz3BHuud5UElPyQAaX4l/view?usp=sharing',
                 'education_history' => [
@@ -1430,7 +1430,7 @@ class StaffSeeder extends Seeder
                 'name' => 'Ramadhan Paninggalih S.Si., M.Si., M.Sc.',
                 'nip' => '199502272020121006',
                 'type' => 'Dosen',
-                'structural_position' => 'Asisten Ahli',
+                'structural_position' => null,
                 'functional_position' => 'Dosen Program Studi Informatika',
                 'image_url' => 'https://drive.google.com/file/d/1M7FebQDlfo-0hxAV7Mbxc8ADLlfXV5pO/view?usp=sharing',
                 'education_history' => [
@@ -1735,7 +1735,7 @@ class StaffSeeder extends Seeder
                 'name' => 'Adam, S.Si., M.Si',
                 'nip' => '199807242022031009',
                 'type' => 'Dosen',
-                'structural_position' => 'Asisten Ahli',
+                'structural_position' => null,
                 'functional_position' => 'Dosen Program Studi Matematika',
                 'image_url' => 'https://drive.google.com/file/d/1wvBs08A7ONdT3GCJXCBZRgtzhpujI926/view?usp=sharing',
                 'education_history' => [
@@ -3310,7 +3310,7 @@ class StaffSeeder extends Seeder
                 'nip' => '198907102022031005',
                 'type' => 'Dosen',
                 'structural_position' => 'Dekan Fakultas Sains dan Teknologi Informasi ITK',
-                'functional_position' => 'Dosen Program Studi Teknik Elektro dan Magister Manajemen Teknologi',
+                'functional_position' => 'Dosen Program Studi Teknik Elektro, Dosen Program Studi Magister Manajemen Teknologi',
                 'image_url' => 'https://drive.google.com/file/d/1vkSr_MuvdOzycWrNBKDH03HOh5OOlDpd/view?usp=sharing',
                 'education_history' => [
                     'S1 Teknik Elektro, Universitas Gadjah Mada (UGM)',

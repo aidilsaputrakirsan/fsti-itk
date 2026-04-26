@@ -78,6 +78,28 @@ const removeFasilitas = (index) => {
     form.content.fasilitas.splice(index, 1);
 };
 
+const addFungsi = () => {
+    if (!form.content.tugas_fungsi.fungsi) {
+        form.content.tugas_fungsi.fungsi = [];
+    }
+    form.content.tugas_fungsi.fungsi.push({ judul: '', deskripsi: '' });
+};
+
+const removeFungsi = (index) => {
+    form.content.tugas_fungsi.fungsi.splice(index, 1);
+};
+
+const addMisi = () => {
+    if (!form.content.visi_misi.misi) {
+        form.content.visi_misi.misi = [];
+    }
+    form.content.visi_misi.misi.push({ huruf: '', teks: '' });
+};
+
+const removeMisi = (index) => {
+    form.content.visi_misi.misi.splice(index, 1);
+};
+
 const handleFasilitasImageChange = (event, index) => {
     const target = event.target;
     if (target.files && target.files[0]) {
@@ -157,8 +179,8 @@ const submit = () => {
         if (!m.huruf) {
             form.setError(`content.visi_misi.misi.${index}.huruf`, 'Wajib.');
             if (!firstErrorTab) firstErrorTab = 'visi';
-        } else if (!/^[A-Za-z]$/.test(m.huruf)) {
-            form.setError(`content.visi_misi.misi.${index}.huruf`, 'Harus 1 Huruf.');
+        } else if (!/^[A-Za-z0-9]$/.test(m.huruf)) {
+            form.setError(`content.visi_misi.misi.${index}.huruf`, 'Harus 1 karakter.');
             if (!firstErrorTab) firstErrorTab = 'visi';
         }
 
@@ -341,8 +363,19 @@ const submit = () => {
                         <hr class="border-gray-200">
 
                         <div class="space-y-5">
-                            <h3 class="font-bold text-gray-700 bg-gray-50 p-4 rounded-xl border border-gray-200">Daftar Fungsi Fakultas</h3>
-                            <div v-for="(func, index) in form.content.tugas_fungsi.fungsi" :key="index" class="bg-white p-5 border border-gray-200 rounded-2xl shadow-sm flex gap-5 items-start">
+                            <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-200">
+                                <h3 class="font-bold text-gray-700">Daftar Fungsi Fakultas</h3>
+                                <button type="button" @click="addFungsi" class="flex items-center gap-2 px-4 py-2 bg-blue-50 text-primary font-bold rounded-xl hover:bg-blue-100 transition shadow-sm border border-blue-100 text-sm">
+                                    <PlusIcon class="w-4 h-4 stroke-2" /> Tambah Fungsi
+                                </button>
+                            </div>
+
+                            <div v-for="(func, index) in form.content.tugas_fungsi.fungsi" :key="index" class="relative bg-white p-5 border border-gray-200 rounded-2xl shadow-sm flex gap-5 items-start hover:border-blue-200 transition-all group">
+                                
+                                <button type="button" @click="removeFungsi(index)" class="absolute -top-3 -right-3 w-8 h-8 flex items-center justify-center bg-red-100 text-red-600 rounded-full hover:bg-red-500 hover:text-white transition shadow-md z-10" title="Hapus Fungsi">
+                                    <TrashIcon class="w-4 h-4" />
+                                </button>
+
                                 <div class="shrink-0 w-10 h-10 flex items-center justify-center bg-blue-50 text-primary font-bold rounded-xl text-lg">{{ index + 1 }}</div>
                                 <div class="w-full space-y-4">
                                     <div>
@@ -367,6 +400,10 @@ const submit = () => {
                                     </div>
                                 </div>
                             </div>
+
+                            <div v-if="!form.content.tugas_fungsi.fungsi || form.content.tugas_fungsi.fungsi.length === 0" class="text-center py-10 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300 text-gray-500">
+                                Belum ada data fungsi. Klik tombol "Tambah Fungsi" di atas.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -386,19 +423,29 @@ const submit = () => {
                         </div>
 
                         <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                            <div class="mb-6">
-                                <label class="block text-sm font-bold mb-1">Misi Tagline / Akronim <span class="text-red-500">*</span></label>
-                                <input 
-                                    type="text" 
-                                    v-model="form.content.visi_misi.misi_tagline" 
-                                    class="mt-1 py-3 text-sm rounded-xl w-72 transition-all duration-200 shadow-sm"
-                                    :class="form.errors['content.visi_misi.misi_tagline'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                >
-                                <InputError :message="form.errors['content.visi_misi.misi_tagline']" />
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+                                <div>
+                                    <label class="block text-sm font-bold mb-1">Misi Tagline / Akronim <span class="text-red-500">*</span></label>
+                                    <input 
+                                        type="text" 
+                                        v-model="form.content.visi_misi.misi_tagline" 
+                                        class="mt-1 py-3 text-sm rounded-xl w-full sm:w-72 transition-all duration-200 shadow-sm"
+                                        :class="form.errors['content.visi_misi.misi_tagline'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                    >
+                                    <InputError :message="form.errors['content.visi_misi.misi_tagline']" />
+                                </div>
+                                <button type="button" @click="addMisi" class="flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-50 text-primary font-bold rounded-xl hover:bg-blue-100 transition shadow-sm border border-blue-100 text-sm h-fit">
+                                    <PlusIcon class="w-4 h-4 stroke-2" /> Tambah Misi
+                                </button>
                             </div>
                             
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                                <div v-for="(m, index) in form.content.visi_misi.misi" :key="index" class="flex gap-4 items-start bg-white p-4 border border-gray-200 rounded-2xl shadow-sm">
+                                <div v-for="(m, index) in form.content.visi_misi.misi" :key="index" class="relative flex gap-4 items-start bg-white p-4 border border-gray-200 rounded-2xl shadow-sm hover:border-blue-200 transition-all group">
+                                    
+                                    <button type="button" @click="removeMisi(index)" class="absolute -top-3 -right-3 w-7 h-7 flex items-center justify-center bg-red-100 text-red-600 rounded-full hover:bg-red-500 hover:text-white transition shadow-md z-10" title="Hapus Misi">
+                                        <TrashIcon class="w-3.5 h-3.5" />
+                                    </button>
+
                                     <div class="flex-shrink-0">
                                         <input 
                                             type="text" 
@@ -421,6 +468,10 @@ const submit = () => {
                                         <InputError :message="form.errors[`content.visi_misi.misi.${index}.teks`]" />
                                     </div>
                                 </div>
+                            </div>
+                            
+                            <div v-if="!form.content.visi_misi.misi || form.content.visi_misi.misi.length === 0" class="text-center py-8 bg-gray-100 rounded-2xl border-2 border-dashed border-gray-300 text-gray-500 mt-4">
+                                Belum ada rincian poin misi. Klik tombol "Tambah Misi".
                             </div>
                         </div>
                     </div>
@@ -460,7 +511,7 @@ const submit = () => {
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-2xl font-bold">Fasilitas & Lingkungan Kampus</h2>
                         <button type="button" @click="addFasilitas" class="flex items-center gap-2 px-4 py-2 bg-blue-50 text-primary font-bold rounded-xl hover:bg-blue-100 transition shadow-sm border border-blue-100">
-                            <PlusIcon class="w-5 h-5" /> Tambah Fasilitas
+                            <PlusIcon class="w-5 h-5 stroke-2" /> Tambah Fasilitas
                         </button>
                     </div>
                     <p class="text-gray-600 mb-6 bg-blue-50 p-4 rounded-xl text-sm border border-blue-100">Tambahkan fasilitas yang dimiliki oleh fakultas. Pada tampilan publik, urutan pertama dan urutan ke-6 ke atas akan otomatis ditampilkan dengan ukuran <i>card</i> yang lebih lebar agar tidak membosankan.</p>

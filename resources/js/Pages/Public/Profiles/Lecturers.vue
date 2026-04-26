@@ -6,10 +6,11 @@ import Banner from '@/Components/Banner.vue';
 import { debounce } from 'lodash';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+
 import { 
     Briefcase, Award, BookOpen, UserCircle, X, ChevronDown, 
     GraduationCap, Link as LinkIcon, Search, ListFilter, BookMarked, Linkedin, FileX2, Users, User,
-    CheckCircle2
+    CheckCircle2, TrendingUp, Globe
 } from 'lucide-vue-next';
 
 const props = defineProps<{
@@ -110,6 +111,18 @@ const maskNip = (nip: string | null) => {
     if (!nip) return '-';
     if (nip.length <= 4) return nip + '***';
     return nip.substring(0, 4) + '***';
+};
+
+const getProfileName = (url: string) => {
+    const lowerUrl = url.toLowerCase();
+    if (lowerUrl.includes('linkedin.com')) return 'LinkedIn';
+    if (lowerUrl.includes('scholar.google')) return 'Google Scholar';
+    if (lowerUrl.includes('scopus.com')) return 'Scopus';
+    if (lowerUrl.includes('orcid.org')) return 'ORCID';
+    if (lowerUrl.includes('researchgate.net')) return 'ResearchGate';
+    if (lowerUrl.includes('sinta.kemdikbud.go.id')) return 'SINTA';
+    if (lowerUrl.includes('webofscience.com')) return 'Web of Science';
+    return 'Tautan Eksternal';
 };
 </script>
 
@@ -249,10 +262,14 @@ const maskNip = (nip: string | null) => {
                                 <p class="text-sm text-gray-500 font-medium">NIP. {{ maskNip(selectedPerson.nip) }}</p>
 
                                 <div v-if="selectedPerson.academic_profiles?.length > 0" class="mt-6 flex flex-wrap justify-center gap-3">
-                                    <a v-for="(link, i) in selectedPerson.academic_profiles" :key="i" :href="link" target="_blank" class="w-10 h-10 flex items-center justify-center bg-gray-50 border border-gray-200 text-gray-600 rounded-full hover:bg-primary hover:text-white hover:border-primary hover:-translate-y-1 transition-all duration-300 shadow-sm">
+                                    <a v-for="(link, i) in selectedPerson.academic_profiles" :key="i" :href="link" target="_blank" :title="getProfileName(link)" class="w-10 h-10 flex items-center justify-center bg-gray-50 border border-gray-200 text-gray-600 rounded-full hover:bg-primary hover:text-white hover:border-primary hover:-translate-y-1 transition-all duration-300 shadow-sm">
                                         <Linkedin v-if="link.toLowerCase().includes('linkedin.com')" class="w-4 h-4" />
                                         <GraduationCap v-else-if="link.toLowerCase().includes('scholar.google')" class="w-4 h-4" />
                                         <BookMarked v-else-if="link.toLowerCase().includes('scopus.com')" class="w-4 h-4" />
+                                        <TrendingUp v-else-if="link.toLowerCase().includes('sinta.kemdikbud.go.id')" class="w-4 h-4" />
+                                        <Globe v-else-if="link.toLowerCase().includes('webofscience.com')" class="w-4 h-4" />
+                                        <span v-else-if="link.toLowerCase().includes('orcid.org')" class="font-extrabold text-[13px] tracking-tighter">iD</span>
+                                        <span v-else-if="link.toLowerCase().includes('researchgate.net')" class="font-extrabold text-[12px]">RG</span>
                                         <LinkIcon v-else class="w-4 h-4" />
                                     </a>
                                 </div>

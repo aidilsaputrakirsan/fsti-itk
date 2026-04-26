@@ -193,17 +193,25 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
                             <div v-if="activeDropdown === item.name && item.sublinks" class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                 <div class="py-1">
                                     <template v-for="sublink in item.sublinks" :key="sublink.name">
+                                        
                                         <div v-if="'sublinks' in sublink && sublink.sublinks" class="relative group">
-                                           <Link :href="sublink.href" class="w-full text-left flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#133E87] font-medium">
-    {{ sublink.name }}
-    <ChevronDown class="h-4 w-4 transform -rotate-90" />
-</Link>
+                                           <component 
+                                               :is="sublink.href === '#' || !sublink.href ? 'button' : Link"
+                                               :href="sublink.href !== '#' ? sublink.href : undefined"
+                                               class="w-full text-left flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#133E87] font-medium"
+                                               :class="{'cursor-pointer': sublink.href !== '#'}"
+                                           >
+                                                {{ sublink.name }}
+                                                <ChevronDown class="h-4 w-4 transform -rotate-90" />
+                                           </component>
+                                           
                                             <div class="absolute left-full top-0 mt-0 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden group-hover:block">
                                                 <div class="py-1">
                                                     <Link v-for="subsublink in sublink.sublinks" :key="subsublink.name" :href="subsublink.href" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium">{{ subsublink.name }}</Link>
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                         <a v-else-if="'external' in sublink && sublink.external" :href="sublink.href" target="_blank" rel="noopener noreferrer" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium">{{ sublink.name }}</a>
                                         <Link v-else :href="sublink.href" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium">{{ sublink.name }}</Link>
                                     </template>
@@ -278,7 +286,15 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
                                      <div v-for="sub in item.sublinks" :key="sub.name">
                                          
                                          <div v-if="'sublinks' in sub && sub.sublinks" class="mb-2 mt-1">
-                                             <div class="px-4 py-2 text-sm font-bold text-gray-800">{{ sub.name }}</div>
+                                             <component 
+                                                 :is="sub.href === '#' || !sub.href ? 'div' : Link"
+                                                 :href="sub.href !== '#' ? sub.href : undefined"
+                                                 @click="sub.href !== '#' ? closeMobileMenu() : null"
+                                                 class="px-4 py-2 text-sm font-bold text-gray-800 block w-full text-left"
+                                                 :class="sub.href !== '#' ? 'hover:text-[#00509D] hover:bg-blue-50 rounded-lg transition-colors cursor-pointer' : ''"
+                                             >
+                                                 {{ sub.name }}
+                                             </component>
                                              <div class="pl-2 space-y-1">
                                                  <Link 
                                                      v-for="subsub in sub.sublinks" 

@@ -73,26 +73,29 @@ onMounted(() => {
             </section>
 
             <section id="fakultas" class="py-16 md:py-24 scroll-mt-24 border-b border-gray-100 bg-gray-50">
-                <div class="container mx-auto px-4 sm:px-6 md:max-w-5xl flex flex-col gap-12">
+                <div class="container mx-auto px-4 sm:px-6 md:max-w-4xl flex flex-col gap-10">
                     <div class="text-center" data-aos="fade-up">
                         <h2 class="text-3xl md:text-4xl font-optimus font-bold text-primary-hover">Pimpinan Fakultas</h2>
                         <div class="w-24 h-1.5 bg-primary/50 mx-auto mt-6 rounded-full"></div>
                     </div>
                     <div v-if="fakultas.length === 0" class="text-center text-gray-500 py-10">Belum ada data pimpinan fakultas.</div>
+                    
                     <template v-for="(p, index) in fakultas" :key="p.id">
-                        <div :data-aos="index % 2 === 0 ? 'fade-right' : 'fade-left'" class="flex flex-col md:flex-row rounded-[2rem] md:rounded-[2.5rem] shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-500 group bg-white border border-gray-100" :class="{ 'md:flex-row-reverse': index % 2 !== 0 }">
-                            <div class="w-full md:w-2/5 flex-shrink-0 relative overflow-hidden bg-gray-100 border-b md:border-b-0 md:border-r border-gray-200">
-                                 <img v-if="p.display_image" :src="p.display_image" :alt="p.name" class="w-full h-[450px] sm:h-[500px] md:h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 bg-white">
-                                 <div v-else class="w-full h-[450px] sm:h-[500px] md:h-full flex items-center justify-center bg-gray-200 text-gray-400 group-hover:scale-105 transition-transform duration-700">
-                                    <User class="w-24 h-24 opacity-60 text-gray-400" />
+                        <div :data-aos="index % 2 === 0 ? 'fade-right' : 'fade-left'" class="flex flex-col md:flex-row rounded-[2rem] shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 group bg-white border border-gray-100 max-w-3xl mx-auto w-full" :class="{ 'md:flex-row-reverse': index % 2 !== 0 }">
+                            
+                            <div class="w-full md:w-1/2 flex-shrink-0 relative overflow-hidden bg-gray-100 border-b md:border-b-0 md:border-r border-gray-200 aspect-[4/5] md:aspect-auto">
+                                 <img v-if="p.display_image" :src="p.display_image" :alt="p.name" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 bg-white">
+                                 <div v-else class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 group-hover:scale-105 transition-transform duration-700">
+                                    <User class="w-20 h-20 opacity-60 text-gray-400" />
                                 </div>
                             </div>
-                            <div class="w-full md:w-3/5 flex flex-col justify-center p-8 sm:p-10 md:p-14 lg:p-16 text-center md:text-left relative bg-gradient-to-br from-primary to-primary-hover text-white">
+                            
+                            <div class="w-full md:w-1/2 flex flex-col justify-center p-8 md:p-10 lg:p-12 text-center md:text-left relative bg-gradient-to-br from-primary to-primary-hover text-white">
                                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-                                <div class="inline-flex items-center justify-center md:justify-start gap-2 px-5 py-2 bg-white/10 text-white font-bold rounded-xl uppercase tracking-wider text-xs mb-5 md:mb-6 w-max mx-auto md:mx-0 border border-white/20 backdrop-blur-sm z-10 shadow-sm">Pimpinan</div>
-                                <h3 class="font-optimus font-bold text-2xl sm:text-3xl md:text-4xl text-white mb-3 md:mb-4 leading-tight group-hover:text-blue-100 transition-colors duration-300 z-10 drop-shadow-md">{{ p.name }}</h3>
-                                <div class="w-16 h-1.5 bg-white/40 rounded-full mb-4 md:mb-6 opacity-80 mx-auto md:mx-0 z-10"></div>
-                                <p class="text-base sm:text-lg md:text-xl text-white/95 font-medium leading-relaxed tracking-wide z-10">{{ p.structural_position }}</p>
+                                <div class="inline-flex items-center justify-center md:justify-start gap-2 px-4 py-1.5 bg-white/10 text-white font-bold rounded-lg uppercase tracking-wider text-[10px] mb-4 w-max mx-auto md:mx-0 border border-white/20 backdrop-blur-sm z-10 shadow-sm">Pimpinan</div>
+                                <h3 class="font-optimus font-bold text-xl md:text-2xl text-white mb-3 leading-tight group-hover:text-blue-100 transition-colors duration-300 z-10 drop-shadow-md">{{ p.name }}</h3>
+                                <div class="w-12 h-1 bg-white/40 rounded-full mb-4 opacity-80 mx-auto md:mx-0 z-10"></div>
+                                <p class="text-sm md:text-base text-white/95 font-medium leading-relaxed tracking-wide z-10">{{ p.structural_position }}</p>
                             </div>
                         </div>
                     </template>
@@ -100,26 +103,29 @@ onMounted(() => {
             </section>
 
             <section id="jurusan" class="py-16 md:py-24 scroll-mt-24 border-b border-gray-100">
-                <div class="container mx-auto px-4 sm:px-6 md:max-w-5xl flex flex-col gap-12">
+                <div class="container mx-auto px-4 sm:px-6 md:max-w-4xl flex flex-col gap-10">
                     <div class="text-center" data-aos="fade-up">
                         <h2 class="text-3xl md:text-4xl font-optimus font-bold text-primary-hover">Pimpinan Jurusan</h2>
                         <div class="w-24 h-1.5 bg-primary/50 mx-auto mt-6 rounded-full"></div>
                     </div>
                     <div v-if="jurusan.length === 0" class="text-center text-gray-500 py-10">Belum ada data pimpinan jurusan.</div>
+                    
                     <template v-for="(p, index) in jurusan" :key="p.id">
-                        <div :data-aos="index % 2 === 0 ? 'fade-right' : 'fade-left'" class="flex flex-col md:flex-row rounded-[2rem] md:rounded-[2.5rem] shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-500 group bg-white border border-gray-100" :class="{ 'md:flex-row-reverse': index % 2 !== 0 }">
-                            <div class="w-full md:w-2/5 flex-shrink-0 relative overflow-hidden bg-gray-100 border-b md:border-b-0 md:border-r border-gray-200">
-                                 <img v-if="p.display_image" :src="p.display_image" :alt="p.name" class="w-full h-[450px] sm:h-[500px] md:h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 bg-white">
-                                 <div v-else class="w-full h-[450px] sm:h-[500px] md:h-full flex items-center justify-center bg-gray-200 text-gray-400 group-hover:scale-105 transition-transform duration-700">
-                                    <User class="w-24 h-24 opacity-60 text-gray-400" />
+                        <div :data-aos="index % 2 === 0 ? 'fade-right' : 'fade-left'" class="flex flex-col md:flex-row rounded-[2rem] shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 group bg-white border border-gray-100 max-w-3xl mx-auto w-full" :class="{ 'md:flex-row-reverse': index % 2 !== 0 }">
+                            
+                            <div class="w-full md:w-1/2 flex-shrink-0 relative overflow-hidden bg-gray-100 border-b md:border-b-0 md:border-r border-gray-200 aspect-[4/5] md:aspect-auto">
+                                 <img v-if="p.display_image" :src="p.display_image" :alt="p.name" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 bg-white">
+                                 <div v-else class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 group-hover:scale-105 transition-transform duration-700">
+                                    <User class="w-20 h-20 opacity-60 text-gray-400" />
                                 </div>
                             </div>
-                            <div class="w-full md:w-3/5 flex flex-col justify-center p-8 sm:p-10 md:p-14 lg:p-16 text-center md:text-left relative bg-gradient-to-br from-primary to-primary-hover text-white">
+
+                            <div class="w-full md:w-1/2 flex flex-col justify-center p-8 md:p-10 lg:p-12 text-center md:text-left relative bg-gradient-to-br from-primary to-primary-hover text-white">
                                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-                                <div class="inline-flex items-center justify-center md:justify-start gap-2 px-5 py-2 bg-white/10 text-white font-bold rounded-xl uppercase tracking-wider text-xs mb-5 md:mb-6 w-max mx-auto md:mx-0 border border-white/20 backdrop-blur-sm z-10 shadow-sm">Ketua Jurusan</div>
-                                <h3 class="font-optimus font-bold text-2xl sm:text-3xl md:text-4xl text-white mb-3 md:mb-4 leading-tight group-hover:text-blue-100 transition-colors duration-300 z-10 drop-shadow-md">{{ p.name }}</h3>
-                                <div class="w-16 h-1.5 bg-white/40 rounded-full mb-4 md:mb-6 opacity-80 mx-auto md:mx-0 z-10"></div>
-                                <p class="text-base sm:text-lg md:text-xl text-white/95 font-medium leading-relaxed tracking-wide z-10">{{ p.structural_position }}</p>
+                                <div class="inline-flex items-center justify-center md:justify-start gap-2 px-4 py-1.5 bg-white/10 text-white font-bold rounded-lg uppercase tracking-wider text-[10px] mb-4 w-max mx-auto md:mx-0 border border-white/20 backdrop-blur-sm z-10 shadow-sm">Ketua Jurusan</div>
+                                <h3 class="font-optimus font-bold text-xl md:text-2xl text-white mb-3 leading-tight group-hover:text-blue-100 transition-colors duration-300 z-10 drop-shadow-md">{{ p.name }}</h3>
+                                <div class="w-12 h-1 bg-white/40 rounded-full mb-4 opacity-80 mx-auto md:mx-0 z-10"></div>
+                                <p class="text-sm md:text-base text-white/95 font-medium leading-relaxed tracking-wide z-10">{{ p.structural_position }}</p>
                             </div>
                         </div>
                     </template>
@@ -128,25 +134,28 @@ onMounted(() => {
 
             <section id="prodi" class="py-16 md:py-24 scroll-mt-24 border-b border-gray-100 bg-gray-50">
                 <div class="container mx-auto px-4 max-w-7xl">
-                    <div v-for="(dept, index) in departments" :key="index" class="mb-24 last:mb-0">
-                        <div class="text-center mb-16" data-aos="fade-up">
-                            <div class="inline-block px-6 py-2.5 bg-primary text-white font-bold rounded-full uppercase tracking-widest text-xs mb-4 shadow-lg shadow-primary/20">{{ dept.jurusan[0] }}</div>
-                            <h2 class="text-3xl md:text-4xl font-optimus font-bold text-primary-hover">{{ dept.jurusan[1] }}</h2>
-                            <div class="w-24 h-1.5 bg-primary/50 mx-auto mt-6 rounded-full"></div>
+                    <div v-for="(dept, index) in departments" :key="index" class="mb-20 last:mb-0">
+                        <div class="text-center mb-12" data-aos="fade-up">
+                            <div class="inline-block px-6 py-2 bg-primary text-white font-bold rounded-full uppercase tracking-widest text-[10px] mb-3 shadow-md shadow-primary/20">{{ dept.jurusan[0] }}</div>
+                            <h2 class="text-2xl md:text-3xl font-optimus font-bold text-primary-hover">{{ dept.jurusan[1] }}</h2>
+                            <div class="w-20 h-1 bg-primary/50 mx-auto mt-4 rounded-full"></div>
                         </div>
-                        <div class="flex flex-wrap justify-center gap-8">
-                            <div v-for="(p, pIndex) in dept.pimpinan" :key="p.id" class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] max-w-[380px]" data-aos="fade-up" :data-aos-delay="pIndex * 50">
-                                <div class="bg-gradient-to-b from-primary to-primary-hover rounded-[2.5rem] shadow-xl p-8 md:p-10 text-center flex flex-col items-center h-full transform transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl hover:shadow-primary/30 group border border-primary-hover relative overflow-hidden">
+                        
+                        <div class="flex flex-wrap justify-center gap-6 md:gap-8">
+                            <div v-for="(p, pIndex) in dept.pimpinan" :key="p.id" class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] max-w-[340px]" data-aos="fade-up" :data-aos-delay="pIndex * 50">
+                                <div class="bg-gradient-to-b from-primary to-primary-hover rounded-[2rem] shadow-lg p-6 md:p-8 text-center flex flex-col items-center h-full transform transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/30 group border border-primary-hover relative overflow-hidden">
                                     <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-                                    <div class="w-40 h-40 rounded-full border-[5px] border-white/20 p-1.5 mb-6 flex-shrink-0 relative overflow-hidden bg-white/10 group-hover:border-white/40 transition-colors duration-500 shadow-inner z-10">
+                                    
+                                    <div class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-[4px] border-white/20 p-1 mb-5 flex-shrink-0 relative overflow-hidden bg-white/10 group-hover:border-white/40 transition-colors duration-500 shadow-inner z-10">
                                         <img v-if="p.display_image" :src="p.display_image" :alt="p.name" class="w-full h-full object-cover rounded-full bg-white">
                                         <div v-else class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 rounded-full">
                                             <User class="w-20 h-20 opacity-60 text-gray-400" />
                                         </div>
                                     </div>
-                                    <h3 class="font-bold text-xl text-white mb-3 group-hover:text-blue-100 transition-colors duration-300 z-10 leading-snug">{{ p.name }}</h3>
-                                    <div class="w-12 h-1 bg-white/30 rounded-full my-3 z-10"></div>
-                                    <p class="text-sm font-medium text-white/90 leading-relaxed z-10">{{ p.structural_position }}</p>
+                                    
+                                    <h3 class="font-bold text-lg md:text-xl text-white mb-2 group-hover:text-blue-100 transition-colors duration-300 z-10 leading-snug">{{ p.name }}</h3>
+                                    <div class="w-10 h-0.5 bg-white/30 rounded-full my-2 z-10"></div>
+                                    <p class="text-xs md:text-sm font-medium text-white/90 leading-relaxed z-10">{{ p.structural_position }}</p>
                                 </div>
                             </div>
                         </div>
@@ -156,25 +165,28 @@ onMounted(() => {
 
             <section id="lab" class="py-16 md:py-24 scroll-mt-24">
                 <div class="container mx-auto px-4 max-w-7xl">
-                    <div class="text-center mb-16" data-aos="fade-up">
-                        <div class="inline-block px-6 py-2.5 bg-primary text-white font-bold rounded-full uppercase tracking-widest text-xs mb-4 shadow-lg shadow-primary/20">Struktur Laboratorium</div>
-                        <h2 class="text-3xl md:text-4xl font-optimus font-bold text-primary-hover">Kepala Laboratorium FSTI</h2>
-                        <div class="w-24 h-1.5 bg-primary/50 mx-auto mt-6 rounded-full"></div>
+                    <div class="text-center mb-12" data-aos="fade-up">
+                        <div class="inline-block px-6 py-2 bg-primary text-white font-bold rounded-full uppercase tracking-widest text-[10px] mb-3 shadow-md shadow-primary/20">Struktur Laboratorium</div>
+                        <h2 class="text-2xl md:text-3xl font-optimus font-bold text-primary-hover">Kepala Laboratorium FSTI</h2>
+                        <div class="w-20 h-1 bg-primary/50 mx-auto mt-4 rounded-full"></div>
                     </div>
                     <div v-if="lab.length === 0" class="text-center text-gray-500 py-10">Belum ada data pimpinan laboratorium.</div>
-                    <div class="flex flex-wrap justify-center gap-8">
-                        <div v-for="(p, pIndex) in lab" :key="p.id" class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] max-w-[380px]" data-aos="fade-up" :data-aos-delay="pIndex * 50">
-                            <div class="bg-gradient-to-b from-primary to-primary-hover rounded-[2.5rem] shadow-xl p-8 md:p-10 text-center flex flex-col items-center h-full transform transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl hover:shadow-primary/30 group border border-primary-hover relative overflow-hidden">
+                    
+                    <div class="flex flex-wrap justify-center gap-6 md:gap-8">
+                        <div v-for="(p, pIndex) in lab" :key="p.id" class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] max-w-[340px]" data-aos="fade-up" :data-aos-delay="pIndex * 50">
+                            <div class="bg-gradient-to-b from-primary to-primary-hover rounded-[2rem] shadow-lg p-6 md:p-8 text-center flex flex-col items-center h-full transform transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/30 group border border-primary-hover relative overflow-hidden">
                                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-                                <div class="w-40 h-40 rounded-full border-[5px] border-white/20 p-1.5 mb-6 flex-shrink-0 relative overflow-hidden bg-white/10 group-hover:border-white/40 transition-colors duration-500 shadow-inner z-10">
+                                
+                                <div class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-[4px] border-white/20 p-1 mb-5 flex-shrink-0 relative overflow-hidden bg-white/10 group-hover:border-white/40 transition-colors duration-500 shadow-inner z-10">
                                     <img v-if="p.display_image" :src="p.display_image" :alt="p.name" class="w-full h-full object-cover rounded-full bg-white">
                                     <div v-else class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 rounded-full">
                                         <User class="w-20 h-20 opacity-60 text-gray-400" />
                                     </div>
                                 </div>
-                                <h3 class="font-bold text-lg text-white mb-3 group-hover:text-blue-100 transition-colors duration-300 z-10 leading-tight">{{ p.name }}</h3>
-                                <div class="w-12 h-1 bg-white/30 rounded-full my-3 z-10"></div>
-                                <p class="text-sm font-medium text-white/90 leading-snug z-10">{{ p.structural_position }}</p>
+                                
+                                <h3 class="font-bold text-lg md:text-xl text-white mb-2 group-hover:text-blue-100 transition-colors duration-300 z-10 leading-tight">{{ p.name }}</h3>
+                                <div class="w-10 h-0.5 bg-white/30 rounded-full my-2 z-10"></div>
+                                <p class="text-xs md:text-sm font-medium text-white/90 leading-snug z-10">{{ p.structural_position }}</p>
                             </div>
                         </div>
                     </div>

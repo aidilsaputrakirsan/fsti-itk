@@ -5,7 +5,7 @@ import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import ArticleCard from '@/Components/ArticleCard.vue';
 import SidebarLatest from '@/Components/SidebarLatest.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, Head } from '@inertiajs/vue3';
 import { Search, ArrowRight, FileX2, Calendar, ChevronDown, ListFilter, X, Newspaper } from 'lucide-vue-next';
 import { debounce } from 'lodash';
 
@@ -79,8 +79,12 @@ watch([search, category], debounce(() => {
 </script>
 
 <template>
-  <PublicLayout title="Berita Utama">
-    
+  <PublicLayout>
+        <Head>
+            <title>Berita</title>
+            <meta name="description" content="Daftar Berita Fakultas Sains dan Teknologi Informasi (FSTI) Institut Teknologi Kalimantan." />
+        </Head>
+
     <Banner title="Berita" subtitle="Pusat Berita & Pengumuman FSTI ITK" :background-image="bannerImage" />
 
     <div class="py-16 md:py-24 bg-white font-public-sans min-h-screen">

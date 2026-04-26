@@ -105,6 +105,7 @@ class FacultyProfileSeeder extends Seeder
 
             'ppid_permohonan_link' => 'https://s.itk.ac.id/permintaanformfsti',
             'ppid_keberatan_link' => 'https://docs.google.com/forms/d/e/1FAIpQLSefIA7eJNmNHt0YXzWaWyLdp4zJUulojXUmh7xlVN-MQxZLlw/viewform',
+            'prestasi_link' => 'https://docs.google.com/forms/d/e/1FAIpQLSfaToVEnR6vnZSTggEbH_IfAVbOpuPf1aCirsNTRb3m8aFL-Q/viewform?pli=1',
 
             'fasilitas' => [
                 ['nama' => 'Gedung B ITK', 'deskripsi' => 'Pusat administrasi dan akademik utama yang mendukung berbagai kegiatan perkuliahan.', 'gambar' => 'fasilitas/gedung-b.webp'],
