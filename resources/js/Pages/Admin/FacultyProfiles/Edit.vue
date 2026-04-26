@@ -49,6 +49,9 @@ const form = useForm({
         bagan_organisasi: props.profile?.content?.bagan_organisasi || 'images/bagan-organisasi.webp',
         pmb_link: props.profile?.content?.pmb_link || '', 
         tracer_study_link: props.profile?.content?.tracer_study_link || '',
+        ppid_permohonan_link: props.profile?.content?.ppid_permohonan_link || '',
+        ppid_keberatan_link: props.profile?.content?.ppid_keberatan_link || '',
+        prestasi_link: props.profile?.content?.prestasi_link || '',
         fasilitas: props.profile?.content?.fasilitas || []
     },
     bagan_image: null
@@ -236,6 +239,30 @@ const submit = () => {
         if (!firstErrorTab) firstErrorTab = 'tautan';
     } else if (!strictUrlPattern.test(form.content.tracer_study_link)) {
         form.setError('content.tracer_study_link', 'Tautan tidak valid. Masukkan URL lengkap dengan domain (Contoh: https://docs.google.com/...).');
+        if (!firstErrorTab) firstErrorTab = 'tautan';
+    }
+
+    if (!form.content.ppid_permohonan_link) {
+        form.setError('content.ppid_permohonan_link', 'Tautan Form Permohonan Informasi wajib diisi.');
+        if (!firstErrorTab) firstErrorTab = 'tautan';
+    } else if (!strictUrlPattern.test(form.content.ppid_permohonan_link)) {
+        form.setError('content.ppid_permohonan_link', 'Tautan tidak valid. Masukkan URL lengkap dengan domain (Contoh: https://docs.google.com/...).');
+        if (!firstErrorTab) firstErrorTab = 'tautan';
+    }
+
+    if (!form.content.ppid_keberatan_link) {
+        form.setError('content.ppid_keberatan_link', 'Tautan Form Pengajuan Keberatan wajib diisi.');
+        if (!firstErrorTab) firstErrorTab = 'tautan';
+    } else if (!strictUrlPattern.test(form.content.ppid_keberatan_link)) {
+        form.setError('content.ppid_keberatan_link', 'Tautan tidak valid. Masukkan URL lengkap dengan domain (Contoh: https://docs.google.com/...).');
+        if (!firstErrorTab) firstErrorTab = 'tautan';
+    }
+
+    if (!form.content.prestasi_link) {
+        form.setError('content.prestasi_link', 'Tautan Form Pelaporan Prestasi wajib diisi.');
+        if (!firstErrorTab) firstErrorTab = 'tautan';
+    } else if (!strictUrlPattern.test(form.content.prestasi_link)) {
+        form.setError('content.prestasi_link', 'Tautan tidak valid. Masukkan URL lengkap dengan domain (Contoh: https://docs.google.com/...).');
         if (!firstErrorTab) firstErrorTab = 'tautan';
     }
 
@@ -596,6 +623,7 @@ const submit = () => {
                     <h2 class="text-2xl font-bold mb-6">Pengaturan Tautan Eksternal</h2>
                     <div class="space-y-6">
                         <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                            <h3 class="text-sm font-bold text-primary uppercase mb-5">Akademik & Alumni</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-bold mb-2">Tautan PMB (Penerimaan Mahasiswa Baru) <span class="text-red-500">*</span></label>
@@ -621,11 +649,57 @@ const submit = () => {
                                     <InputError :message="form.errors['content.tracer_study_link']" />
                                 </div>
                             </div>
-
-                            <p class="text-sm text-gray-600 mt-5 leading-relaxed">
-                                <span class="font-bold">Informasi:</span> Tautan yang Anda masukkan di atas akan menjadi tujuan (link) ketika pengunjung mengklik tombol pada halaman terkait (seperti PMB atau Tracer Study). Pastikan tautan diawali dengan <code>http://</code> atau <code>https://</code>.
-                            </p>
                         </div>
+
+                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                            <h3 class="text-sm font-bold text-primary uppercase mb-5">Layanan Informasi (PPID)</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">Link Form Permohonan Informasi <span class="text-red-500">*</span></label>
+                                    <input 
+                                        type="text" 
+                                        v-model="form.content.ppid_permohonan_link" 
+                                        placeholder="Cth: https://docs.google.com/forms/..." 
+                                        class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
+                                        :class="form.errors['content.ppid_permohonan_link'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                    >
+                                    <InputError :message="form.errors['content.ppid_permohonan_link']" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">Link Form Pengajuan Keberatan <span class="text-red-500">*</span></label>
+                                    <input 
+                                        type="text" 
+                                        v-model="form.content.ppid_keberatan_link" 
+                                        placeholder="Cth: https://docs.google.com/forms/..." 
+                                        class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
+                                        :class="form.errors['content.ppid_keberatan_link'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                    >
+                                    <InputError :message="form.errors['content.ppid_keberatan_link']" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                            <h3 class="text-sm font-bold text-primary uppercase mb-5">Kemahasiswaan</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">Link Form Pelaporan Prestasi <span class="text-red-500">*</span></label>
+                                    <input 
+                                        type="text" 
+                                        v-model="form.content.prestasi_link" 
+                                        placeholder="Cth: https://docs.google.com/forms/..." 
+                                        class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
+                                        :class="form.errors['content.prestasi_link'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                    >
+                                    <InputError :message="form.errors['content.prestasi_link']" />
+                                    <p class="mt-2 text-xs text-gray-500 italic">Tautan ini akan digunakan pada tombol lapor prestasi di halaman publik.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-sm text-gray-600 mt-5 leading-relaxed">
+                            <span class="font-bold">Informasi:</span> Tautan yang Anda masukkan di atas akan menjadi tujuan (link) ketika pengunjung mengklik tombol pada halaman terkait. Pastikan tautan diawali dengan <code>http://</code> atau <code>https://</code>.
+                        </p>
                     </div>
                 </div>
 
@@ -647,3 +721,12 @@ const submit = () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.overflow-x-auto {
+    scrollbar-width: none; 
+}
+.overflow-x-auto::-webkit-scrollbar {
+    display: none; 
+}
+</style>

@@ -46,7 +46,7 @@ watch(searchQuery, () => {
 });
 
 const totalBeasiswas = computed(() => filteredBeasiswas.value.length);
-const totalPages = computed(() => Math.ceil(totalBeasiswas.value / itemsPerPage));
+const totalPages = computed(() => Math.ceil(totalBeasiswas.value / itemsPerPage) || 1);
 const showingFrom = computed(() => totalBeasiswas.value === 0 ? 0 : (currentPage.value - 1) * itemsPerPage + 1);
 const showingTo = computed(() => Math.min(currentPage.value * itemsPerPage, totalBeasiswas.value));
 
@@ -117,7 +117,6 @@ const getIconColorClasses = (index) => {
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
                 <div class="relative w-full bg-gradient-to-br from-primary via-[#243db3] to-primary-hover rounded-[2rem] p-6 sm:p-8 md:p-14 mb-8 md:mb-10 overflow-hidden shadow-xl shadow-primary/20 flex flex-col md:flex-row items-center justify-between border border-white/10" data-aos="fade-down">
-                    
                     <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 24px 24px;"></div>
                     <div class="absolute -top-[30%] -right-[10%] w-[60%] h-[150%] bg-white/10 rounded-[100%] blur-[80px] pointer-events-none transform -rotate-12"></div>
                     <div class="absolute -bottom-[20%] left-[10%] w-[40%] h-[80%] bg-blue-300/20 rounded-[100%] blur-[60px] pointer-events-none"></div>
@@ -207,7 +206,7 @@ const getIconColorClasses = (index) => {
                                     :href="beasiswa.link_url" 
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    class="mt-auto flex items-center justify-center sm:justify-between w-full py-2.5 px-3 sm:py-3.5 sm:px-5 bg-slate-50 hover:bg-primary group-hover:bg-primary rounded-xl text-slate-600 hover:text-white group-hover:text-white text-[10px] sm:text-sm font-bold transition-all duration-300 gap-1.5"
+                                    class="mt-auto flex items-center justify-center sm:justify-between w-full py-2.5 px-3 sm:py-3.5 sm:px-5 bg-slate-50 hover:bg-primary group-hover:bg-primary rounded-xl text-slate-600 hover:text-white group-hover:text-white text-[10px] sm:text-sm font-bold transition-all duration-300 gap-1.5 border border-slate-100 group-hover:border-transparent"
                                 >
                                     <span class="truncate">Lihat Selengkapnya</span>
                                     <ExternalLink class="w-3 h-3 sm:w-4 sm:h-4 transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform shrink-0" />
@@ -224,46 +223,42 @@ const getIconColorClasses = (index) => {
                         </div>
                     </div>
 
-                    <div v-if="totalPages > 1" class="mt-12 md:mt-16 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 bg-white py-4 px-4 md:px-10 rounded-3xl md:rounded-full shadow-sm border border-slate-100" data-aos="fade-in">
-                        <p class="text-xs md:text-sm font-medium text-gray-500 text-center md:text-left">
-                            Menampilkan <span class="text-primary font-bold">{{ showingFrom }}</span> - <span class="text-primary font-bold">{{ showingTo }}</span> dari <span class="text-primary font-bold">{{ totalBeasiswas }}</span> Beasiswa
-                        </p>
+                    <div v-if="totalPages > 1 && filteredBeasiswas.length > 0" class="mt-16 flex flex-col items-center justify-center gap-4 w-full" data-aos="fade-in">
                         
-                        <div class="flex flex-wrap justify-center items-center gap-1.5 md:gap-2">
+                        <div class="flex flex-wrap justify-center items-center gap-2">
                             <button 
                                 @click="changePage(currentPage - 1)"
                                 :disabled="currentPage === 1"
-                                class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300"
-                                :class="currentPage === 1 ? 'text-gray-300 bg-gray-50/50 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
-                                v-html="'&laquo; Sebelumnya'"
-                            ></button>
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                :class="currentPage === 1 ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                            >Sebelumnya</button>
 
                             <template v-for="(page, index) in visiblePages" :key="index">
                                 <span 
                                     v-if="page === '...'"
-                                    class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full text-gray-300 bg-gray-50/50 cursor-not-allowed"
-                                >
-                                    ...
-                                </span>
+                                    class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl text-gray-300 bg-white border border-gray-100 cursor-not-allowed whitespace-nowrap"
+                                >...</span>
                                 <button 
                                     v-else
                                     @click="changePage(page)"
-                                    class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300"
-                                    :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
-                                >
-                                    {{ page }}
-                                </button>
+                                    class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                    :class="currentPage === page ? 'bg-primary text-white border-primary shadow-md shadow-primary/20' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary hover:bg-slate-50 shadow-sm'"
+                                >{{ page }}</button>
                             </template>
 
                             <button 
                                 @click="changePage(currentPage + 1)"
                                 :disabled="currentPage === totalPages"
-                                class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300"
-                                :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50/50 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
-                                v-html="'Selanjutnya &raquo;'"
-                            ></button>
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                            >Selanjutnya</button>
                         </div>
+
+                        <p class="text-sm font-medium text-gray-400 mt-2 text-center">
+                            Menampilkan <span class="text-slate-700 font-bold">{{ showingFrom }}</span> - <span class="text-slate-700 font-bold">{{ showingTo }}</span> dari <span class="text-slate-700 font-bold">{{ totalBeasiswas }}</span> Beasiswa
+                        </p>
                     </div>
+
                 </div>
 
             </div>

@@ -122,7 +122,9 @@ const showingTo = computed<number>(() => props.communityServices?.to || 0);
 const totalCommunityServices = computed<number>(() => props.communityServices?.total || 0);
 
 const visiblePages = computed(() => {
-    const total = totalPages.value; const current = currentPage.value;
+    const total = totalPages.value; 
+    const current = currentPage.value;
+
     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
     if (current <= 4) return [1, 2, 3, 4, 5, '...', total];
     if (current >= total - 3) return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
@@ -139,6 +141,7 @@ const changePage = (page: number | string) => {
         }, { 
             preserveState: true, 
             replace: true, 
+            preserveScroll: true,
             onFinish: () => { window.scrollTo({ top: 450, behavior: 'smooth' }); } 
         });
     }
@@ -248,18 +251,40 @@ const nextPage = () => changePage(currentPage.value + 1);
                     <p class="mt-2 text-gray-500 font-medium max-w-md mx-auto">Data pengabdian masyarakat dengan kriteria pencarian atau filter tersebut tidak tersedia.</p>
                 </div>
 
-                <div v-if="totalPages > 1 && communityServices.data.length > 0" class="flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-slate-100 mx-4 md:mx-8" data-aos="fade-in">
-                    <p class="text-sm font-medium text-slate-500 text-center md:text-left">
-                        Menampilkan <span class="text-primary font-bold">{{ showingFrom }}</span> - <span class="text-primary font-bold">{{ showingTo }}</span> dari <span class="text-primary font-bold">{{ totalCommunityServices }}</span> Data
-                    </p>
+                <div v-if="totalPages > 1 && communityServices.data.length > 0" class="mt-12 flex flex-col items-center justify-center gap-4 w-full relative z-20 mx-2 md:mx-8" data-aos="fade-in">
+                    
                     <div class="flex flex-wrap justify-center items-center gap-2">
-                        <button @click="prevPage()" :disabled="currentPage === 1" class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full" :class="currentPage === 1 ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'" v-html="'&laquo; Sebelumnya'"></button>
+                        <button 
+                            @click="prevPage()"
+                            :disabled="currentPage === 1"
+                            class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                            :class="currentPage === 1 ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                        >Sebelumnya</button>
+
                         <template v-for="(page, index) in visiblePages" :key="index">
-                            <span v-if="page === '...'" class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full text-slate-300 bg-slate-50/50">...</span>
-                            <button v-else @click="changePage(page)" class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full" :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'">{{ page }}</button>
+                            <span 
+                                v-if="page === '...'"
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl text-gray-300 bg-white border border-gray-100 cursor-not-allowed whitespace-nowrap"
+                            >...</span>
+                            <button 
+                                v-else
+                                @click="changePage(page)"
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                :class="currentPage === page ? 'bg-primary text-white border-primary shadow-md shadow-primary/20' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary hover:bg-slate-50 shadow-sm'"
+                            >{{ page }}</button>
                         </template>
-                        <button @click="nextPage()" :disabled="currentPage === totalPages" class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full" :class="currentPage === totalPages ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'" v-html="'Selanjutnya &raquo;'"></button>
+
+                        <button 
+                            @click="nextPage()"
+                            :disabled="currentPage === totalPages"
+                            class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                            :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                        >Selanjutnya</button>
                     </div>
+
+                    <p class="text-sm font-medium text-gray-400 mt-2 text-center">
+                        Menampilkan <span class="text-slate-700 font-bold">{{ showingFrom }}</span> - <span class="text-slate-700 font-bold">{{ showingTo }}</span> dari <span class="text-slate-700 font-bold">{{ totalCommunityServices }}</span> data
+                    </p>
                 </div>
 
             </div>

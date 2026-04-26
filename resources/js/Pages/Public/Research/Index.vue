@@ -89,7 +89,7 @@ onMounted(() => { AOS.init({ duration: 800, once: true }); document.addEventList
 onUnmounted(() => { document.removeEventListener('mousedown', handleClickOutside); });
 
 const applyFilters = () => {
-    router.get(route('research.index'), { search: search.value, year: selectedYear.value, program: selectedProgram.value }, { preserveState: true, replace: true });
+    router.get(route('research.index'), { search: search.value, year: selectedYear.value, program: selectedProgram.value }, { preserveState: true, preserveScroll: true, replace: true });
 };
 
 const resetSearch = () => { search.value = ''; selectedYear.value = ''; selectedProgram.value = ''; };
@@ -101,21 +101,31 @@ const showingTo = computed<number>(() => props.researchList?.to || 0);
 const totalResearch = computed<number>(() => props.researchList?.total || 0);
 
 const visiblePages = computed(() => {
-    const total = totalPages.value; const current = currentPage.value;
+    const total = totalPages.value; 
+    const current = currentPage.value;
+    
     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    
     if (current <= 4) return [1, 2, 3, 4, 5, '...', total];
+    
     if (current >= total - 3) return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+    
     return [1, '...', current - 1, current, current + 1, '...', total];
 });
 
 const changePage = (page: number | string) => {
     if (typeof page === 'number' && page >= 1 && page <= totalPages.value) {
-        router.get(route('research.index'), { search: search.value, year: selectedYear.value, program: selectedProgram.value, page: page }, { preserveState: true, replace: true, onFinish: () => { window.scrollTo({ top: 450, behavior: 'smooth' }); } });
+        router.get(route('research.index'), { search: search.value, year: selectedYear.value, program: selectedProgram.value, page: page }, { 
+            preserveState: true, 
+            preserveScroll: true, 
+            replace: true, 
+            onFinish: () => { 
+                AOS.refresh();
+                window.scrollTo({ top: 450, behavior: 'smooth' }); 
+            } 
+        });
     }
 };
-
-const prevPage = () => changePage(currentPage.value - 1);
-const nextPage = () => changePage(currentPage.value + 1);
 </script>
 
 <template>
@@ -201,40 +211,77 @@ const nextPage = () => changePage(currentPage.value + 1);
                     <button @click="resetSearch" class="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl transition-colors self-start sm:self-auto">Reset Filter</button>
                 </div>
 
-                <div v-if="researchList.data.length > 0" class="bg-white rounded-3xl shadow-[0_8px_30px_rgba(0,53,102,0.04)] border border-slate-100 overflow-hidden mx-2 sm:mx-4 md:mx-8 mb-16" data-aos="fade-up">
-                    <div class="overflow-x-auto">
-                        <table class="w-full min-w-[900px] text-left border-collapse">
-                            <thead>
-                                <tr class="bg-gradient-to-r from-primary to-primary-hover border-b border-primary/20">
-                                    <th class="px-6 py-5 font-bold text-sm text-white tracking-wider text-center w-16">No</th>
-                                    <th class="px-6 py-5 font-bold text-sm text-white tracking-wider w-[20%]">Nama Peneliti</th>
-                                    <th class="px-6 py-5 font-bold text-sm text-white tracking-wider w-[45%]">Judul Penelitian</th>
-                                    <th class="px-6 py-5 font-bold text-sm text-white tracking-wider w-[20%]">Program Studi</th>
-                                    <th class="px-6 py-5 font-bold text-sm text-white tracking-wider text-center w-24">Tahun</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100">
-                                <tr v-for="(item, index) in researchList.data" :key="item.id" class="hover:bg-slate-50/80 transition-colors duration-200 group">
-                                    <td class="px-6 py-4 text-center text-slate-600 font-bold text-sm">{{ Number(showingFrom) + Number(index) }}</td>
-                                    <td class="px-6 py-4">
-                                        <div class="font-bold text-slate-800 group-hover:text-primary transition-colors">{{ item.nama_dosen }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-slate-600 leading-relaxed font-medium">
-                                        {{ item.judul }}
-                                    </td>
-                                    <td class="px-6 py-4 text-sm">
-                                        <span class="px-3 py-1.5 bg-slate-50 border border-slate-100 text-slate-600 rounded-lg font-semibold group-hover:bg-blue-50 group-hover:text-primary group-hover:border-blue-100 transition-colors">
-                                            {{ item.study_program?.name || '-' }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-center">
-                                        <span class="inline-flex items-center justify-center w-14 h-8 rounded-lg bg-slate-100 text-slate-600 font-bold text-sm group-hover:bg-[#D9FFFE]/80 group-hover:text-[#00509D] transition-colors">
-                                            {{ item.tahun }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <div v-if="researchList.data.length > 0">
+                    <div class="bg-white rounded-3xl shadow-[0_8px_30px_rgba(0,53,102,0.04)] border border-slate-100 overflow-hidden mx-2 sm:mx-4 md:mx-8 mb-16" data-aos="fade-up">
+                        <div class="overflow-x-auto">
+                            <table class="w-full min-w-[900px] text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-gradient-to-r from-primary to-primary-hover border-b border-primary/20">
+                                        <th class="px-6 py-5 font-bold text-sm text-white tracking-wider text-center w-16">No</th>
+                                        <th class="px-6 py-5 font-bold text-sm text-white tracking-wider w-[20%]">Nama Peneliti</th>
+                                        <th class="px-6 py-5 font-bold text-sm text-white tracking-wider w-[45%]">Judul Penelitian</th>
+                                        <th class="px-6 py-5 font-bold text-sm text-white tracking-wider w-[20%]">Program Studi</th>
+                                        <th class="px-6 py-5 font-bold text-sm text-white tracking-wider text-center w-24">Tahun</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    <tr v-for="(item, index) in researchList.data" :key="item.id" class="hover:bg-slate-50/80 transition-colors duration-200 group">
+                                        <td class="px-6 py-4 text-center text-slate-600 font-bold text-sm">{{ Number(showingFrom) + Number(index) }}</td>
+                                        <td class="px-6 py-4">
+                                            <div class="font-bold text-slate-800 group-hover:text-primary transition-colors">{{ item.nama_dosen }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-slate-600 leading-relaxed font-medium">
+                                            {{ item.judul }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm">
+                                            <span class="px-3 py-1.5 bg-slate-50 border border-slate-100 text-slate-600 rounded-lg font-semibold group-hover:bg-blue-50 group-hover:text-primary group-hover:border-blue-100 transition-colors">
+                                                {{ item.study_program?.name || '-' }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <span class="inline-flex items-center justify-center w-14 h-8 rounded-lg bg-slate-100 text-slate-600 font-bold text-sm group-hover:bg-[#D9FFFE]/80 group-hover:text-[#00509D] transition-colors">
+                                                {{ item.tahun }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div v-if="totalPages > 1" class="mt-12 flex flex-col items-center justify-center gap-4 w-full relative z-20 mx-2 sm:mx-4 md:mx-8" data-aos="fade-in">
+                        <div class="flex flex-wrap justify-center items-center gap-2">
+                            <button 
+                                @click="changePage(currentPage - 1)"
+                                :disabled="currentPage === 1"
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                :class="currentPage === 1 ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                            >Sebelumnya</button>
+
+                            <template v-for="(page, index) in visiblePages" :key="index">
+                                <span 
+                                    v-if="page === '...'"
+                                    class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl text-gray-300 bg-white border border-gray-100 cursor-not-allowed whitespace-nowrap"
+                                >...</span>
+                                <button 
+                                    v-else
+                                    @click="changePage(page)"
+                                    class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                    :class="currentPage === page ? 'bg-primary text-white border-primary shadow-md shadow-primary/20' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary hover:bg-slate-50 shadow-sm'"
+                                >{{ page }}</button>
+                            </template>
+
+                            <button 
+                                @click="changePage(currentPage + 1)"
+                                :disabled="currentPage === totalPages"
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                            >Selanjutnya</button>
+                        </div>
+
+                        <p class="text-sm font-medium text-gray-400 mt-2 text-center">
+                            Menampilkan <span class="text-slate-700 font-bold">{{ showingFrom }}</span> - <span class="text-slate-700 font-bold">{{ showingTo }}</span> dari <span class="text-slate-700 font-bold">{{ totalResearch }}</span> data
+                        </p>
                     </div>
                 </div>
 
@@ -242,47 +289,6 @@ const nextPage = () => changePage(currentPage.value + 1);
                     <div class="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-4"><FileX2 class="h-10 w-10 text-primary" /></div>
                     <h3 class="text-xl font-bold text-gray-900">Tidak Ditemukan</h3>
                     <p class="mt-2 text-gray-500 font-medium max-w-md mx-auto">Data penelitian dengan kriteria pencarian atau filter tersebut tidak tersedia.</p>
-                </div>
-
-                <div v-if="totalPages > 1 && researchList.data.length > 0" class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 bg-white py-4 px-4 md:px-10 rounded-3xl md:rounded-full shadow-[0_8px_30px_rgba(47,77,211,0.04)] border border-slate-100 mx-2 sm:mx-4 md:mx-8" data-aos="fade-in">
-                    <p class="text-xs md:text-sm font-medium text-slate-500 text-center md:text-left">
-                        Menampilkan <span class="text-primary font-bold">{{ showingFrom }}</span> - <span class="text-primary font-bold">{{ showingTo }}</span> dari <span class="text-primary font-bold">{{ totalResearch }}</span> Penelitian
-                    </p>
-                    
-                    <div class="flex flex-wrap justify-center items-center gap-1.5 md:gap-2">
-                        <button 
-                            @click="prevPage()"
-                            :disabled="currentPage === 1"
-                            class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300"
-                            :class="currentPage === 1 ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            v-html="'&laquo; Sebelumnya'"
-                        ></button>
-
-                        <template v-for="(page, index) in visiblePages" :key="index">
-                            <span 
-                                v-if="page === '...'"
-                                class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full text-slate-300 bg-slate-50/50 cursor-not-allowed"
-                            >
-                                ...
-                            </span>
-                            <button 
-                                v-else
-                                @click="changePage(page)"
-                                class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300"
-                                :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            >
-                                {{ page }}
-                            </button>
-                        </template>
-
-                        <button 
-                            @click="nextPage()"
-                            :disabled="currentPage === totalPages"
-                            class="min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 px-2 md:px-4 flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all duration-300"
-                            :class="currentPage === totalPages ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            v-html="'Selanjutnya &raquo;'"
-                        ></button>
-                    </div>
                 </div>
 
             </div>

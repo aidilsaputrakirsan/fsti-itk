@@ -183,15 +183,15 @@ watch([search, program, selectedYear], debounce(() => {
 
 const resetFilters = () => { search.value = ''; program.value = ''; selectedYear.value = ''; };
 
-const currentPage = computed(() => {
-    const activeLink = props.alumni.links.find(link => link.active);
-    return activeLink ? parseInt(activeLink.label) : 1;
-});
 
-const totalPages = computed(() => props.alumni.links.length > 2 ? props.alumni.links.length - 2 : 1);
+const currentPage = computed(() => props.alumni.current_page || 1);
+
+const totalPages = computed(() => props.alumni.last_page || 1);
+
 const visiblePages = computed(() => {
     const total = totalPages.value;
     const current = currentPage.value;
+
     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
     if (current <= 4) return [1, 2, 3, 4, 5, '...', total];
     if (current >= total - 3) return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
@@ -502,48 +502,43 @@ const changePage = (page) => {
                         <p class="mt-2 text-gray-500 font-medium max-w-md mx-auto">Data alumni dengan kriteria pencarian, program studi, atau tahun lulus tersebut tidak tersedia.</p>
                     </div>
 
-                    <div v-if="totalPages > 1 && alumni.data.length > 0" class="mt-10 flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-gray-100 relative z-20" data-aos="fade-in">
-                        <p class="text-sm font-medium text-gray-500 text-center md:text-left">
-                            Menampilkan <span class="text-primary font-bold">{{ alumni.from }}</span> - <span class="text-primary font-bold">{{ alumni.to }}</span> dari <span class="text-primary font-bold">{{ alumni.total }}</span> Data
-                        </p>
+                    <div v-if="totalPages > 1 && alumni.data.length > 0" class="mt-12 flex flex-col items-center justify-center gap-4 w-full relative z-20" data-aos="fade-in">
                         
                         <div class="flex flex-wrap justify-center items-center gap-2">
                             <button 
                                 @click="changePage(currentPage - 1)"
                                 :disabled="currentPage === 1"
-                                class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-all duration-300"
-                                :class="currentPage === 1 ? 'text-gray-300 bg-gray-50 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
-                                v-html="'&laquo; Sebelumnya'"
-                            ></button>
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                :class="currentPage === 1 ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                            >Sebelumnya</button>
 
                             <template v-for="(page, index) in visiblePages" :key="index">
                                 <span 
                                     v-if="page === '...'"
-                                    class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-xl text-gray-300 bg-gray-50 cursor-not-allowed"
-                                >
-                                    ...
-                                </span>
+                                    class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl text-gray-300 bg-white border border-gray-100 cursor-not-allowed whitespace-nowrap"
+                                >...</span>
                                 <button 
                                     v-else
                                     @click="changePage(page)"
-                                    class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-all duration-300"
-                                    :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
-                                >
-                                    {{ page }}
-                                </button>
+                                    class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                    :class="currentPage === page ? 'bg-primary text-white border-primary shadow-md shadow-primary/20' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary hover:bg-slate-50 shadow-sm'"
+                                >{{ page }}</button>
                             </template>
 
                             <button 
                                 @click="changePage(currentPage + 1)"
                                 :disabled="currentPage === totalPages"
-                                class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-all duration-300"
-                                :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 hover:text-primary'"
-                                v-html="'Selanjutnya &raquo;'"
-                            ></button>
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                            >Selanjutnya</button>
                         </div>
-                    </div>
-                </div>
 
+                        <p class="text-sm font-medium text-gray-400 mt-2 text-center">
+                            Menampilkan <span class="text-slate-700 font-bold">{{ alumni.from }}</span> - <span class="text-slate-700 font-bold">{{ alumni.to }}</span> dari <span class="text-slate-700 font-bold">{{ alumni.total }}</span> data
+                        </p>
+                    </div>
+
+                </div>
             </div>
         </div>
     </PublicLayout>

@@ -7,6 +7,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  subtitle: { 
+    type: String,
+    required: false,
+  },
   backgroundImage: {
     type: String,
     required: true,
@@ -37,7 +41,7 @@ const bannerStyle = computed(() => {
       >
         {{ title }}
       </h1>
-    </div>
+      </div>
   </div>
 </template>
 

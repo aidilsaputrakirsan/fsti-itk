@@ -189,7 +189,6 @@ const formatDateLengkap = (dateStr) => {
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
                 <div class="relative w-full bg-gradient-to-br from-primary via-[#243db3] to-primary-hover rounded-[2rem] p-8 md:p-12 mb-8 overflow-hidden shadow-xl flex items-center justify-between border border-primary-hover/50">
-                    
                     <div class="absolute -top-[20%] -right-[10%] w-[60%] h-[140%] bg-blue-300/20 rounded-[100%] blur-[100px] pointer-events-none transform -rotate-12"></div>
                     <div class="absolute -bottom-[30%] -left-[10%] w-[60%] h-[120%] bg-white/10 rounded-[100%] blur-[120px] pointer-events-none transform rotate-12"></div>
                     <div class="absolute top-[20%] left-[40%] w-[30%] h-[50%] bg-blue-200/15 rounded-full blur-[80px] pointer-events-none"></div>
@@ -322,45 +321,40 @@ const formatDateLengkap = (dateStr) => {
                     </div>
                 </div>
 
-                <div v-if="totalPages > 1 && filteredKegiatanFlat.length > 0" class="mt-16 mx-4 md:mx-8 flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-slate-100" data-aos="fade-in">
-                    <p class="text-sm font-medium text-slate-500 text-center md:text-left">
-                        Menampilkan <span class="text-primary font-bold">{{ showingFrom }}</span> - <span class="text-primary font-bold">{{ showingTo }}</span> dari <span class="text-primary font-bold">{{ totalKegiatans }}</span> Kegiatan
-                    </p>
+                <div v-if="totalPages > 1 && filteredKegiatanFlat.length > 0" class="mt-16 mx-4 md:mx-8 flex flex-col items-center justify-center gap-4 w-full" data-aos="fade-in">
                     
                     <div class="flex flex-wrap justify-center items-center gap-2">
                         <button 
                             @click="changePage(currentPage - 1)"
                             :disabled="currentPage === 1"
-                            class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
-                            :class="currentPage === 1 ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            v-html="'&laquo; Sebelumnya'"
-                        ></button>
+                            class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                            :class="currentPage === 1 ? 'text-gray-300 bg-gray-50 border border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                        >Sebelumnya</button>
 
                         <template v-for="(page, index) in visiblePages" :key="index">
                             <span 
                                 v-if="page === '...'"
-                                class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full text-slate-300 bg-slate-50/50 cursor-not-allowed"
-                            >
-                                ...
-                            </span>
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl text-gray-300 bg-white border border-gray-100 cursor-not-allowed whitespace-nowrap"
+                            >...</span>
                             <button 
                                 v-else
                                 @click="changePage(page)"
-                                class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
-                                :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            >
-                                {{ page }}
-                            </button>
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                :class="currentPage === page ? 'bg-primary text-white border-primary shadow-md shadow-primary/20' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary hover:bg-slate-50 shadow-sm'"
+                            >{{ page }}</button>
                         </template>
 
                         <button 
                             @click="changePage(currentPage + 1)"
                             :disabled="currentPage === totalPages"
-                            class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
-                            :class="currentPage === totalPages ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            v-html="'Selanjutnya &raquo;'"
-                        ></button>
+                            class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                            :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50 border border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                        >Selanjutnya</button>
                     </div>
+
+                    <p class="text-sm font-medium text-gray-400 mt-2">
+                        Menampilkan <span class="text-slate-700 font-bold">{{ showingFrom }}</span> - <span class="text-slate-700 font-bold">{{ showingTo }}</span> dari <span class="text-slate-700 font-bold">{{ totalKegiatans }}</span> data
+                    </p>
                 </div>
 
             </div>
