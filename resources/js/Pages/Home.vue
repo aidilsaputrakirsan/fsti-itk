@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed, onUnmounted } from 'vue';
+import { onMounted, ref, computed, nextTick, onUnmounted } from 'vue';
 import { X, GraduationCap, Trophy, CheckSquare, Building2, Users, ArrowRight, BookOpen, Briefcase, Sparkles, LayoutGrid, Globe, Compass } from 'lucide-vue-next'; 
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import HomeArticleCard from '@/Components/HomeArticleCard.vue';
@@ -126,33 +126,49 @@ const addHoverAnimation = (elements: Element[]) => {
 onMounted(() => {
   startHeroSlider(); 
 
+  
   const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
   heroTl.from([heroTitle1Ref.value, heroTitle2Ref.value], { opacity: 0, x: -30, duration: 1.2, stagger: 0.2 })
         .from(heroButtonRef.value, { opacity: 0, y: 20, duration: 0.8 }, "-=0.5");
 
-  if (heroCardsRef.value) {
-    gsap.from(heroCardsRef.value, {
-      opacity: 0, y: 40, duration: 1, ease: "power3.out",
-      scrollTrigger: { trigger: heroCardsRef.value, start: "top 95%" }
-    });
+  if (heroCardsRef.value && heroSectionRef.value) {
+    gsap.fromTo(heroCardsRef.value, 
+      { autoAlpha: 0, y: 60 },
+      { 
+        autoAlpha: 1, 
+        y: 0, 
+        duration: 0.8, 
+        ease: "power3.out",
+        scrollTrigger: { 
+          trigger: heroSectionRef.value, 
+          start: "top -50",
+          toggleActions: "play none none reverse" 
+        }
+      }
+    );
   }
 
-  if (aboutSectionRef.value) {
+ if (aboutSectionRef.value) {
+    ScrollTrigger.create({
+        trigger: aboutStatsRef.value,
+        start: "top 85%", 
+        onEnter: () => {
+            if (aboutStatsRef.value) {
+                aboutStatsRef.value.querySelectorAll('.stat-number').forEach(el => {
+                    const targetText = el.getAttribute('data-target') || '0';
+                    const target = parseInt(targetText.replace(/\./g, ''));
+                    if (!isNaN(target) && target > 0 && (el as HTMLElement).innerText === "0") {
+                        countUpAnimation(el as HTMLElement, target, 1500); 
+                    }
+                });
+            }
+        }
+    });
+
     const aboutTl = gsap.timeline({ 
         scrollTrigger: { 
             trigger: aboutSectionRef.value, 
-            start: "top 75%",
-            onEnter: () => {
-                if (aboutStatsRef.value) {
-                    aboutStatsRef.value.querySelectorAll('.stat-number').forEach(el => {
-                        const targetText = el.getAttribute('data-target') || '0';
-                        const target = parseInt(targetText.replace(/\./g, ''));
-                        if (!isNaN(target) && target > 0 && (el as HTMLElement).innerText === "0") {
-                            countUpAnimation(el as HTMLElement, target, 1500); 
-                        }
-                    });
-                }
-            }
+            start: "top 75%"
         } 
     });
 
@@ -197,6 +213,11 @@ onMounted(() => {
       opacity: 0, y: 50, duration: 0.7, stagger: 0.2, ease: "power3.out"
     }, "-=0.5");
     addHoverAnimation(Array.from(newsCards));
+
+    gsap.to(".news-batik-parallax", {
+      yPercent: -15, ease: "none",
+      scrollTrigger: { trigger: newsSectionRef.value, start: "top bottom", end: "bottom top", scrub: true }
+    });
   }
 
   setTimeout(() => { ScrollTrigger.refresh(); }, 500);
@@ -207,7 +228,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
 
 <template>
   <PublicLayout>
-    <div class="font-public-sans text-gray-800 bg-white selection:bg-[#FDC500] selection:text-[#2F4DD3]">
+    <div class="font-public-sans text-black-800 bg-white selection:bg-[#FDC500] selection:text-[#2F4DD3]">
       
       <section ref="heroSectionRef" class="relative w-full h-screen min-h-[650px] flex items-center overflow-hidden bg-[#2F4DD3]">
         
@@ -256,16 +277,13 @@ onUnmounted(() => { clearInterval(sliderInterval); });
       </section>
 
       <div class="relative z-30 w-full -mt-16 container mx-auto px-6 lg:px-12">        
-        <div ref="heroCardsRef" class="bg-white/95 backdrop-blur-xl border border-white/50 rounded-[2rem] p-6 lg:p-8 shadow-[0_30px_60px_rgba(0,0,0,0.08)] flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 relative overflow-hidden">
+        <div ref="heroCardsRef" class="invisible bg-white/95 backdrop-blur-xl border border-white/50 rounded-[2rem] p-6 lg:p-8 shadow-[0_30px_60px_rgba(0,0,0,0.08)] flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 relative overflow-hidden">
           
           <div class="absolute -left-10 -top-10 w-32 h-32 bg-[#FDC500] rounded-full blur-3xl opacity-20 pointer-events-none"></div>
           
           <div class="lg:w-1/3 text-center lg:text-left z-10">
-              <div class="inline-flex items-center gap-2 px-3 py-1 bg-[#2F4DD3]/10 text-[#2F4DD3] rounded-full text-xs font-bold uppercase tracking-wider mb-3">
-                  <Sparkles aria-hidden="true" class="w-3.5 h-3.5" />
-              </div>
               <h3 class="text-2xl font-black font-public-sans text-[#2F4DD3] leading-tight">Jelajahi Lebih Cepat</h3>
-              <p class="text-sm text-gray-500 mt-2 font-medium">Temukan informasi penting FSTI dengan akses yang lebih praktis.</p>
+              <p class="text-sm text-black-500 mt-2 font-medium">Temukan informasi penting FSTI dengan akses yang lebih praktis.</p>
           </div>
 
           <div class="lg:w-2/3 grid grid-cols-1 md:grid-cols-3 gap-4 w-full z-10">
@@ -275,7 +293,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
               </div>
               <div>
                   <h4 class="font-bold text-[#2F4DD3] group-hover:text-white text-sm lg:text-base transition-colors">Program Studi</h4>
-                  <p class="text-xs text-gray-400 group-hover:text-white/70 transition-colors">Daftar Program Studi</p>
+                  <p class="text-xs text-black-400 group-hover:text-white/70 transition-colors">Daftar Program Studi</p>
               </div>
             </Link>
 
@@ -285,7 +303,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
               </div>
               <div>
                   <h4 class="font-bold text-[#2F4DD3] group-hover:text-white text-sm lg:text-base transition-colors">Prestasi</h4>
-                  <p class="text-xs text-gray-400 group-hover:text-white/70 transition-colors">Capaian Prestasi Mahasiswa</p>
+                  <p class="text-xs text-black-400 group-hover:text-white/70 transition-colors">Capaian Prestasi Mahasiswa</p>
               </div>
             </Link>
             
@@ -295,7 +313,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
               </div>
               <div>
                   <h4 class="font-bold text-[#2F4DD3] group-hover:text-white text-sm lg:text-base transition-colors">Layanan</h4>
-                  <p class="text-xs text-gray-400 group-hover:text-white/70 transition-colors">Portal Layanan Mahasiswa</p>
+                  <p class="text-xs text-black-400 group-hover:text-white/70 transition-colors">Portal Layanan Mahasiswa</p>
               </div>
             </Link>
           </div>
@@ -318,7 +336,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
               <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold font-optimus text-[#2F4DD3] about-title leading-tight">
                 Sekilas Tentang <br class="hidden lg:block"> FSTI ITK
               </h2>
-              <p class="mt-6 text-gray-600 text-base lg:text-lg leading-relaxed about-text font-normal text-justify lg:text-left">
+              <p class="mt-6 text-black-600 text-base lg:text-lg leading-relaxed about-text font-normal text-justify lg:text-left">
                 {{ deskripsiFakultas }}
               </p>
             </div>
@@ -334,7 +352,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
                         <component :is="getStatIcon(index)" aria-hidden="true" class="w-7 h-7" />
                     </div>
                     <h3 class="text-3xl lg:text-4xl font-black text-[#2F4DD3] stat-number" :data-target="stat.angka">0</h3>
-                    <p class="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider mt-1.5">{{ stat.label }}</p>
+                    <p class="text-xs sm:text-sm font-bold text-black-500 uppercase tracking-wider mt-1.5">{{ stat.label }}</p>
                 </div>
               </div>
             </div>
@@ -350,8 +368,8 @@ onUnmounted(() => { clearInterval(sliderInterval); });
               <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold font-optimus text-[#2F4DD3]">Prestasi Terbaru</h2>
               <p class="mt-2 text-black text-sm sm:text-base font-normal">Capaian membanggakan dari Mahasiswa FSTI ITK</p>
             </div>
-            <Link :href="route('achievements.index')" aria-label="Lihat Semua Prestasi" class="inline-flex items-center font-bold font-public-sans text-[#2F4DD3] bg-white border border-gray-200 rounded-full px-6 py-3 hover:bg-[#FDC500] hover:text-[#2F4DD3] hover:border-[#FDC500] transition-colors duration-300 shadow-sm hover:shadow-md">
-              Lihat Semua <ArrowRight aria-hidden="true" class="ml-2 h-4 w-4" />
+            <Link :href="route('achievements.index')" class="inline-flex items-center font-bold font-public-sans text-[#2F4DD3] bg-white border border-gray-200 rounded-full px-6 py-3 hover:bg-[#FDC500] hover:text-[#2F4DD3] hover:border-[#FDC500] transition-colors duration-300 shadow-sm hover:shadow-md">
+              Lihat Semua <ArrowRight class="ml-2 h-4 w-4" />
             </Link>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-20 mt-4">          
@@ -362,16 +380,20 @@ onUnmounted(() => { clearInterval(sliderInterval); });
         </div>
       </section>
 
-      <section ref="newsSectionRef" v-if="latestPosts.length > 0" class="relative py-20 overflow-hidden bg-gradient-to-b from-[#2F4DD3]/10 to-[#FDC500]/10 font-public-sans">
+      <section ref="newsSectionRef" v-if="latestPosts.length > 0" class="relative py-20 overflow-hidden bg-white font-public-sans">
         
+        <div class="news-batik-parallax absolute top-[-20%] left-0 w-full h-[150%] z-0 opacity-[0.03] pointer-events-none">
+          <img src="/images/ornaments/ornament-3.png" class="w-full h-full object-cover" alt="" onerror="this.style.display='none'">
+        </div>
+
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left mb-12 news-header gap-6 md:gap-0">
             <div>
               <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold font-optimus text-[#2F4DD3]">Berita Terbaru</h2>
               <p class="mt-2 text-black text-sm sm:text-base font-normal">Informasi terkini seputar FSTI</p>
             </div>
-            <Link :href="route('posts.index')" aria-label="Lihat Semua Berita" class="inline-flex items-center font-bold font-public-sans text-black bg-white border border-gray-300 rounded-full px-5 py-2 hover:bg-[#FDC500] hover:text-[#2F4DD3] hover:border-[#FDC500]  transition-colors duration-300 shadow-sm">
-              Lihat Semua <ArrowRight aria-hidden="true" class="ml-2 h-4 w-4" />
+            <Link :href="route('posts.index')" class="inline-flex items-center font-bold font-public-sans text-black bg-white border border-gray-300 rounded-full px-5 py-2 hover:bg-[#FDC500] hover:text-[#2F4DD3] hover:border-[#FDC500]  transition-colors duration-300 shadow-sm">
+              Lihat Semua <ArrowRight class="ml-2 h-4 w-4" />
             </Link>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
