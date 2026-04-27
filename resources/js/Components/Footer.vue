@@ -55,10 +55,10 @@ onUnmounted(() => {
                     <p class="text-black mt-0.5 md:mt-1 text-[10px] md:text-sm">Ikuti kami di media sosial untuk pembaruan terkini.</p>
                 </div>
                 <div class="flex items-center gap-3 mt-3 md:mt-0">
-                    <a :href="contact.instagram_link || '#'" target="_blank" rel="noopener noreferrer" class="bg-[#2F4DD3] p-2 md:p-2.5 rounded-full shadow-md hover:opacity-90 transition-opacity">
+                    <a :href="contact.instagram_link || '#'" aria-label="Kunjungi Instagram FSTI" target="_blank" rel="noopener noreferrer" class="bg-[#2F4DD3] p-3 md:p-2.5 rounded-full shadow-md hover:opacity-90 transition-opacity">
                         <svg class="h-5 w-5 md:h-6 md:w-6 text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                     </a>
-                    <a :href="contact.tiktok_link || '#'" target="_blank" rel="noopener noreferrer" class="bg-[#2F4DD3] p-2 md:p-2.5 rounded-full shadow-md hover:opacity-90 transition-opacity">
+                    <a :href="contact.tiktok_link || '#'" aria-label="Kunjungi TikTok FSTI" target="_blank" rel="noopener noreferrer" class="bg-[#2F4DD3] p-3 md:p-2.5 rounded-full shadow-md hover:opacity-90 transition-opacity">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-white" viewBox="0 0 449.45 515.38" fill="currentColor">
                         <path d="M382.31 103.3c-27.76-18.1-47.79-47.07-54.04-80.82-1.35-7.29-2.1-14.8-2.1-22.48h-88.6l-.15 355.09c-1.48 39.77-34.21 71.68-74.33 71.68-12.47 0-24.21-3.11-34.55-8.56-23.71-12.47-39.94-37.32-39.94-65.91 0-41.07 33.42-74.49 74.48-74.49 7.67 0 15.02 1.27 21.97 3.44V190.8c-7.2-.99-14.51-1.59-21.97-1.59C73.16 189.21 0 262.36 0 352.3c0 55.17 27.56 104 69.63 133.52 26.48 18.61 58.71 29.56 93.46 29.56 89.93 0 163.08-73.16 163.08-163.08V172.23c34.75 24.94 77.33 39.64 123.28 39.64v-88.61c-24.75 0-47.8-7.35-67.14-19.96z"/>
                         </svg>
@@ -71,7 +71,7 @@ onUnmounted(() => {
                 <div class="space-y-3 md:space-y-4">
                     <div class="flex items-center space-x-3">
                          <div class="bg-white p-1 rounded shadow-sm">
-                            <img src="/images/logofsti.webp" alt="Logo FSTI" class="h-8 md:h-10">
+                            <img src="/images/logofsti.webp" alt="Logo FSTI" width="180" height="44" class="h-8 md:h-10 w-auto">
                          </div>
                          <div>
                             <p class="font-bold leading-tight text-sm md:text-base">Fakultas Sains dan Teknologi Informasi</p>
@@ -86,7 +86,7 @@ onUnmounted(() => {
                     
                     <div class="grid grid-cols-2 lg:grid-cols-1 gap-4 lg:gap-4 text-[10px] md:text-sm">
                         
-                        <div class="space-y-4">
+                        <ul class="space-y-4">
                             <li class="flex items-start gap-1.5 md:gap-3 list-none">
                                 <div class="mt-0.5 flex-shrink-0"><svg class="h-3.5 w-3.5 md:h-5 md:w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" /></svg></div>
                                 <div>
@@ -101,9 +101,9 @@ onUnmounted(() => {
                                     <a :href="`mailto:${contact.email || 'fsti@itk.ac.id'}`" class="text-gray-200 hover:text-white break-all">{{ contact.email || 'fsti@itk.ac.id' }}</a>
                                 </div>
                             </li>
-                        </div>
+                        </ul>
 
-                        <div class="space-y-4">
+                        <ul class="space-y-4">
                             <li class="flex items-start gap-1.5 md:gap-3 list-none">
                                 <div class="mt-0.5 flex-shrink-0"><svg class="h-3.5 w-3.5 md:h-5 md:w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V6z" clip-rule="evenodd" /></svg></div>
                                 <div>
@@ -123,7 +123,7 @@ onUnmounted(() => {
                                     </div>
                                 </div>
                             </li>
-                        </div>
+                        </ul>
                     </div>
                 </div>
 
@@ -142,12 +142,12 @@ onUnmounted(() => {
                 </div>
 
                 <div class="flex flex-col items-center gap-1.5 md:gap-2">
-                    <p class="text-[8px] md:text-[10px] font-bold uppercase tracking-widest opacity-60">Statistik Kunjungan</p>
+                    <p class="text-[8px] md:text-[10px] font-bold uppercase tracking-widest text-blue-100">Statistik Kunjungan</p>
                     <div class="flex items-center gap-4 md:gap-6 bg-white/10 backdrop-blur-md px-4 md:px-6 py-2.5 md:py-3 rounded-2xl border border-white/20 shadow-xl w-max">
                         <div class="flex flex-col items-center justify-center gap-1">
                             <Users class="w-3 h-3 md:w-4 md:h-4 text-blue-300" />
                             <div class="text-center leading-tight">
-                                <p class="opacity-70 uppercase font-bold tracking-tighter text-[6px] md:text-[8px]">Hari Ini</p>
+                                <p class="text-gray-100 uppercase font-bold tracking-tighter text-[6px] md:text-[8px]">Hari Ini</p>
                                 <p class="font-bold text-white text-[10px] md:text-sm leading-none mt-0.5">{{ visitors.today.toLocaleString() }}</p>
                             </div>
                         </div>
@@ -155,7 +155,7 @@ onUnmounted(() => {
                         <div class="flex flex-col items-center justify-center gap-1">
                             <Calendar class="w-3 h-3 md:w-4 md:h-4 text-emerald-300" />
                             <div class="text-center leading-tight">
-                                <p class="opacity-70 uppercase font-bold tracking-tighter text-[6px] md:text-[8px]">Bulan Ini</p>
+                                <p class="text-gray-100 uppercase font-bold tracking-tighter text-[6px] md:text-[8px]">Bulan Ini</p>
                                 <p class="font-bold text-white text-[10px] md:text-sm leading-none mt-0.5">{{ visitors.month.toLocaleString() }}</p>
                             </div>
                         </div>
@@ -163,7 +163,7 @@ onUnmounted(() => {
                         <div class="flex flex-col items-center justify-center gap-1">
                             <Activity class="w-3 h-3 md:w-4 md:h-4 text-amber-300" />
                             <div class="text-center leading-tight">
-                                <p class="opacity-70 uppercase font-bold tracking-tighter text-[6px] md:text-[8px]">Total</p>
+                                <p class="text-gray-100 uppercase font-bold tracking-tighter text-[6px] md:text-[8px]">Total</p>
                                 <p class="font-bold text-white text-[10px] md:text-sm leading-none mt-0.5">{{ visitors.total.toLocaleString() }}</p>
                             </div>
                         </div>

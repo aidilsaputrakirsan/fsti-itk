@@ -203,7 +203,7 @@ const isAtTopHome = computed(() => isHome.value && !isScrolled.value);
                         </component>
                         
                         <transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0 translate-y-1" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition ease-in duration-150" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-1">
-                            <div v-if="activeDropdown === item.name && item.sublinks" class="absolute left-0 mt-2 w-60 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none overflow-hidden">
+                            <div v-if="activeDropdown === item.name && item.sublinks" class="absolute left-0 mt-2 w-60 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                 <div class="py-2">
                                     <template v-for="sublink in item.sublinks" :key="sublink.name">
                                         <div v-if="'sublinks' in sublink && sublink.sublinks" class="relative group">

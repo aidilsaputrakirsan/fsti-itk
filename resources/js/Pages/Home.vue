@@ -284,7 +284,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
           
           <div class="lg:w-1/3 text-center lg:text-left z-10">
               <h3 class="text-2xl font-black font-public-sans text-[#2F4DD3] leading-tight">Jelajahi Lebih Cepat</h3>
-              <p class="text-sm text-black-500 mt-2 font-medium">Temukan informasi penting FSTI dengan akses yang lebih praktis.</p>
+              <p class="text-sm text-black-700 mt-2 font-medium">Temukan informasi penting FSTI dengan akses yang lebih praktis.</p>
           </div>
 
           <div class="lg:w-2/3 grid grid-cols-1 md:grid-cols-3 gap-4 w-full z-10">
@@ -294,7 +294,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
               </div>
               <div>
                   <h4 class="font-bold text-[#2F4DD3] group-hover:text-white text-sm lg:text-base transition-colors">Program Studi</h4>
-                  <p class="text-xs text-black-400 group-hover:text-white/70 transition-colors">Daftar Program Studi</p>
+                  <p class="text-xs text-black-700 group-hover:text-white/70 transition-colors">Daftar Program Studi</p>
               </div>
             </Link>
 
@@ -304,7 +304,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
               </div>
               <div>
                   <h4 class="font-bold text-[#2F4DD3] group-hover:text-white text-sm lg:text-base transition-colors">Prestasi</h4>
-                  <p class="text-xs text-black-400 group-hover:text-white/70 transition-colors">Capaian Prestasi Mahasiswa</p>
+                  <p class="text-xs text-black-700 group-hover:text-white/70 transition-colors">Capaian Prestasi Mahasiswa</p>
               </div>
             </Link>
             
@@ -314,7 +314,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
               </div>
               <div>
                   <h4 class="font-bold text-[#2F4DD3] group-hover:text-white text-sm lg:text-base transition-colors">Layanan</h4>
-                  <p class="text-xs text-black-400 group-hover:text-white/70 transition-colors">Portal Layanan Mahasiswa</p>
+                  <p class="text-xs text-black-700 group-hover:text-white/70 transition-colors">Portal Layanan Mahasiswa</p>
               </div>
             </Link>
           </div>
