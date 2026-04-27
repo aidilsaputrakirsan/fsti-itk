@@ -170,18 +170,20 @@ const isAtTopHome = computed(() => isHome.value && !isScrolled.value);
             <div class="flex items-center justify-between h-full">
                 
                 <div class="flex-1 flex justify-start items-center">
-                    <Link href="/" class="flex items-center" @click="closeMobileMenu">
+                    <Link href="/" class="flex items-center" @click="closeMobileMenu" aria-label="Kembali ke Beranda">
                         <img 
                             src="/images/logofsti.webp" 
-                            alt="Logo FSTI ITK" 
+                            alt="Logo Fakultas Sains dan Teknologi Informasi (FSTI)" 
                             fetchpriority="high"
                             decoding="sync"
+                            width="180"
+                            height="44"
                             class="h-9 sm:h-11 w-auto object-contain transition-all duration-300" 
                         >
                     </Link>
                 </div>
 
-                <nav class="hidden xl:flex items-center justify-center space-x-6">
+                <nav class="hidden xl:flex items-center justify-center space-x-6" aria-label="Navigasi Utama">
                     <div
                         v-for="item in navigationMenu"
                         :key="item.name"
@@ -192,10 +194,12 @@ const isAtTopHome = computed(() => isHome.value && !isScrolled.value);
                         <component
                             :is="item.sublinks || item.megaMenu ? 'button' : Link"
                             :href="item.href"
+                            :aria-haspopup="item.sublinks || item.megaMenu ? 'true' : 'false'"
+                            :aria-expanded="activeDropdown === item.name"
                             class="inline-flex items-center px-1 pt-1 text-sm font-bold transition-colors duration-200 text-[#00509D] hover:text-[#133E87]"
                         >
                             {{ item.name }}
-                            <ChevronDown v-if="item.sublinks || item.megaMenu" class="ml-1 h-4 w-4" />
+                            <ChevronDown v-if="item.sublinks || item.megaMenu" aria-hidden="true" class="ml-1 h-4 w-4" />
                         </component>
                         
                         <transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0 translate-y-1" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition ease-in duration-150" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-1">
@@ -209,7 +213,7 @@ const isAtTopHome = computed(() => isHome.value && !isScrolled.value);
                                                class="w-full text-left flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-[#133E87] font-semibold transition-colors"
                                            >
                                                 {{ sublink.name }}
-                                                <ChevronDown class="h-4 w-4 transform -rotate-90" />
+                                                <ChevronDown aria-hidden="true" class="h-4 w-4 transform -rotate-90" />
                                            </component>
                                             <div class="absolute left-full top-0 mt-0 w-60 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 hidden group-hover:block overflow-hidden border-l border-gray-50">
                                                 <div class="py-2">
@@ -247,12 +251,14 @@ const isAtTopHome = computed(() => isHome.value && !isScrolled.value);
                 </nav>
 
                 <div class="flex-1 flex justify-end items-center gap-4 sm:gap-6">
-                    <Link href="/" class="hidden sm:flex items-center" @click="closeMobileMenu">
+                    <Link href="/" class="hidden sm:flex items-center" @click="closeMobileMenu" aria-label="Kembali ke Beranda ITK">
                         <img 
                             src="/images/lambang-itk.webp" 
-                            alt="Logo ITK" 
+                            alt="Logo Institut Teknologi Kalimantan" 
                             fetchpriority="high"
                             decoding="sync"
+                            width="48"
+                            height="48"
                             class="h-10 sm:h-12 w-auto object-contain transition-all duration-300"
                         >
                     </Link>
@@ -260,10 +266,12 @@ const isAtTopHome = computed(() => isHome.value && !isScrolled.value);
                     <div class="xl:hidden">
                         <button 
                             @click="isMobileMenuOpen = !isMobileMenuOpen" 
-                            class="p-2 rounded-xl transition-all duration-300 text-[#00509D] hover:bg-blue-50"
+                            aria-label="Buka/Tutup Navigasi Menu Mobile"
+                            :aria-expanded="isMobileMenuOpen"
+                            class="p-3 rounded-xl transition-all duration-300 text-[#00509D] hover:bg-blue-50"
                         >
-                            <Menu v-if="!isMobileMenuOpen" class="h-7 w-7 stroke-2" />
-                            <X v-else class="h-7 w-7 stroke-2" />
+                            <Menu v-if="!isMobileMenuOpen" aria-hidden="true" class="h-7 w-7 stroke-2" />
+                            <X v-else aria-hidden="true" class="h-7 w-7 stroke-2" />
                         </button>
                     </div>
                 </div>
@@ -284,9 +292,9 @@ const isAtTopHome = computed(() => isHome.value && !isScrolled.value);
                              {{ item.name }}
                          </Link>
                          <div v-else>
-                             <button @click="toggleMobileMenu(item.name)" class="w-full flex items-center justify-between px-4 py-4 rounded-xl text-base font-bold text-[#00509D] hover:bg-blue-50 transition-colors">
+                             <button @click="toggleMobileMenu(item.name)" :aria-expanded="openMobileMenus.includes(item.name)" class="w-full flex items-center justify-between px-4 py-4 rounded-xl text-base font-bold text-[#00509D] hover:bg-blue-50 transition-colors">
                                  {{ item.name }}
-                                 <ChevronDown class="h-5 w-5 transition-transform duration-300" :class="{ 'rotate-180': openMobileMenus.includes(item.name) }" />
+                                 <ChevronDown aria-hidden="true" class="h-5 w-5 transition-transform duration-300" :class="{ 'rotate-180': openMobileMenus.includes(item.name) }" />
                              </button>
                              <div v-show="openMobileMenus.includes(item.name)" class="pl-6 pr-2 pb-2 pt-1 space-y-2 border-l-2 border-blue-50 ml-6 mt-1 mb-4">
                                  <template v-if="item.sublinks">

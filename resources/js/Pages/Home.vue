@@ -126,7 +126,6 @@ const addHoverAnimation = (elements: Element[]) => {
 onMounted(() => {
   startHeroSlider(); 
 
-  
   const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
   heroTl.from([heroTitle1Ref.value, heroTitle2Ref.value], { opacity: 0, x: -30, duration: 1.2, stagger: 0.2 })
         .from(heroButtonRef.value, { opacity: 0, y: 20, duration: 0.8 }, "-=0.5");
@@ -243,6 +242,8 @@ onUnmounted(() => { clearInterval(sliderInterval); });
                     alt="Suasana FSTI ITK"
                     width="1920"
                     height="1080"
+                    :loading="idx === 0 ? 'eager' : 'lazy'"
+                    :fetchpriority="idx === 0 ? 'high' : 'auto'"
                 >
             </transition-group>
         </div>
@@ -251,7 +252,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
         <div class="absolute inset-0 z-10 bg-gradient-to-t from-[#2F4DD3] via-[#2F4DD3]/40 to-transparent lg:hidden"></div>
 
         <div class="absolute inset-0 z-10 opacity-15 mix-blend-overlay w-full lg:w-2/3 pointer-events-none" style="mask-image: linear-gradient(to right, black, transparent);">
-          <img src="/images/ornaments/batik.png" class="w-full h-full object-cover" alt="Batik" width="1000" height="1000" onerror="this.style.display='none'">
+          <img src="/images/ornaments/batik.webp" class="w-full h-full object-cover" alt="Ornamen Batik FSTI" width="1000" height="1000" loading="eager" onerror="this.style.display='none'">
         </div>
 
         <div class="container mx-auto px-6 lg:px-12 relative z-20 flex flex-col justify-center h-full">
@@ -268,7 +269,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
             </h2>
             
             <div ref="heroButtonRef" class="mt-12">
-              <Link :href="route('profiles.about')" aria-label="Pelajari lebih lanjut tentang FSTI" class="inline-flex items-center gap-3 bg-[#FDC500] text-[#2F4DD3] font-black text-lg px-10 py-4 rounded-full shadow-[0_10px_30px_rgba(253,197,0,0.3)] hover:bg-white hover:scale-105 transition-all duration-300 group">
+              <Link :href="route('profiles.about')" aria-label="Buka halaman profil tentang FSTI ITK" class="inline-flex items-center gap-3 bg-[#FDC500] text-[#2F4DD3] font-black text-lg px-10 py-4 rounded-full shadow-[0_10px_30px_rgba(253,197,0,0.3)] hover:bg-white hover:scale-105 transition-all duration-300 group">
                 Tentang FSTI <ArrowRight aria-hidden="true" class="w-6 h-6 group-hover:translate-x-2 transition-transform" />
               </Link>
             </div>
@@ -287,7 +288,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
           </div>
 
           <div class="lg:w-2/3 grid grid-cols-1 md:grid-cols-3 gap-4 w-full z-10">
-            <Link :href="route('profiles.structure') + '#prodi'" aria-label="Lihat Program Studi" class="flex items-center gap-4 bg-gray-50 hover:bg-[#2F4DD3] p-4 rounded-2xl border border-transparent transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-1">
+            <Link :href="route('profiles.structure') + '#prodi'" aria-label="Navigasi ke daftar Program Studi FSTI" class="flex items-center gap-4 bg-gray-50 hover:bg-[#2F4DD3] p-4 rounded-2xl border border-transparent transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-1">
               <div class="w-12 h-12 bg-white text-[#2F4DD3] group-hover:text-[#FDC500] rounded-xl flex items-center justify-center shrink-0 shadow-sm transition-colors">
                   <GraduationCap aria-hidden="true" class="w-6 h-6" />
               </div>
@@ -297,7 +298,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
               </div>
             </Link>
 
-            <Link :href="route('achievements.index')" aria-label="Lihat Prestasi Mahasiswa" class="flex items-center gap-4 bg-gray-50 hover:bg-[#2F4DD3] p-4 rounded-2xl border border-transparent transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-1">
+            <Link :href="route('achievements.index')" aria-label="Navigasi ke halaman Prestasi Mahasiswa FSTI" class="flex items-center gap-4 bg-gray-50 hover:bg-[#2F4DD3] p-4 rounded-2xl border border-transparent transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-1">
               <div class="w-12 h-12 bg-white text-[#2F4DD3] group-hover:text-[#FDC500] rounded-xl flex items-center justify-center shrink-0 shadow-sm transition-colors">
                   <Trophy aria-hidden="true" class="w-6 h-6" />
               </div>
@@ -307,7 +308,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
               </div>
             </Link>
             
-            <Link :href="route('internal-services.index')" aria-label="Portal Layanan" class="flex items-center gap-4 bg-gray-50 hover:bg-[#2F4DD3] p-4 rounded-2xl border border-transparent transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-1">
+            <Link :href="route('internal-services.index')" aria-label="Navigasi ke Portal Layanan Mahasiswa" class="flex items-center gap-4 bg-gray-50 hover:bg-[#2F4DD3] p-4 rounded-2xl border border-transparent transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-1">
               <div class="w-12 h-12 bg-white text-[#2F4DD3] group-hover:text-[#FDC500] rounded-xl flex items-center justify-center shrink-0 shadow-sm transition-colors">
                   <CheckSquare aria-hidden="true" class="w-6 h-6" />
               </div>
@@ -326,7 +327,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
         <div class="absolute -left-32 bottom-0 w-[400px] h-[400px] bg-[#FDC500]/20 rounded-full blur-[100px] pointer-events-none"></div>
 
         <div class="absolute inset-0 opacity-[0.03] pointer-events-none">
-          <img src="/images/ornaments/batik.png" width="1000" height="1000" alt="" class="w-full h-full object-cover">
+          <img src="/images/ornaments/batik.webp" width="1000" height="1000" alt="" loading="lazy" class="w-full h-full object-cover">
         </div>
 
         <div class="container mx-auto px-6 lg:px-12 relative z-10">
@@ -336,7 +337,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
               <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold font-optimus text-[#2F4DD3] about-title leading-tight">
                 Sekilas Tentang <br class="hidden lg:block"> FSTI ITK
               </h2>
-              <p class="mt-6 text-black-600 text-base lg:text-lg leading-relaxed about-text font-normal text-justify lg:text-left">
+              <p class="mt-6 text-black-700 text-base lg:text-lg leading-relaxed about-text font-normal text-justify lg:text-left">
                 {{ deskripsiFakultas }}
               </p>
             </div>
@@ -346,15 +347,15 @@ onUnmounted(() => { clearInterval(sliderInterval); });
             </div>
 
             <div class="lg:w-6/12 flex items-center w-full relative z-20">
-              <div ref="aboutStatsRef" class="grid grid-cols-2 gap-6 w-full">
-                <div v-for="(stat, index) in displayStats" :key="index" class="bg-white/80 backdrop-blur-sm border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-[#FDC500] hover:bg-white transition-all duration-300 about-stat text-center group">
+              <ul ref="aboutStatsRef" class="grid grid-cols-2 gap-6 w-full list-none p-0">
+                <li v-for="(stat, index) in displayStats" :key="index" class="bg-white/80 backdrop-blur-sm border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-[#FDC500] hover:bg-white transition-all duration-300 about-stat text-center group">
                     <div class="w-14 h-14 bg-gray-50 text-[#2F4DD3] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-[#FDC500] group-hover:text-[#2F4DD3] transition-colors shadow-inner">
                         <component :is="getStatIcon(index)" aria-hidden="true" class="w-7 h-7" />
                     </div>
                     <h3 class="text-3xl lg:text-4xl font-black text-[#2F4DD3] stat-number" :data-target="stat.angka">0</h3>
-                    <p class="text-xs sm:text-sm font-bold text-black-500 uppercase tracking-wider mt-1.5">{{ stat.label }}</p>
-                </div>
-              </div>
+                    <p class="text-xs sm:text-sm font-bold text-black-700 uppercase tracking-wider mt-1.5">{{ stat.label }}</p>
+                </li>
+              </ul>
             </div>
 
           </div>
@@ -366,10 +367,10 @@ onUnmounted(() => { clearInterval(sliderInterval); });
           <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left mb-12 achievement-header gap-6 md:gap-0">
             <div>
               <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold font-optimus text-[#2F4DD3]">Prestasi Terbaru</h2>
-              <p class="mt-2 text-black text-sm sm:text-base font-normal">Capaian membanggakan dari Mahasiswa FSTI ITK</p>
+              <p class="mt-2 text-black-800 text-sm sm:text-base font-normal">Capaian membanggakan dari Mahasiswa FSTI ITK</p>
             </div>
-            <Link :href="route('achievements.index')" class="inline-flex items-center font-bold font-public-sans text-[#2F4DD3] bg-white border border-gray-200 rounded-full px-6 py-3 hover:bg-[#FDC500] hover:text-[#2F4DD3] hover:border-[#FDC500] transition-colors duration-300 shadow-sm hover:shadow-md">
-              Lihat Semua <ArrowRight class="ml-2 h-4 w-4" />
+            <Link :href="route('achievements.index')" aria-label="Buka semua galeri prestasi mahasiswa FSTI" class="inline-flex items-center font-bold font-public-sans text-[#2F4DD3] bg-white border border-gray-200 rounded-full px-6 py-3 hover:bg-[#FDC500] hover:text-[#2F4DD3] hover:border-[#FDC500] transition-colors duration-300 shadow-sm hover:shadow-md">
+              Lihat Semua <ArrowRight aria-hidden="true" class="ml-2 h-4 w-4" />
             </Link>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-20 mt-4">          
@@ -383,17 +384,17 @@ onUnmounted(() => { clearInterval(sliderInterval); });
       <section ref="newsSectionRef" v-if="latestPosts.length > 0" class="relative py-20 overflow-hidden bg-white font-public-sans">
         
         <div class="news-batik-parallax absolute top-[-20%] left-0 w-full h-[150%] z-0 opacity-[0.03] pointer-events-none">
-          <img src="/images/ornaments/ornament-3.png" class="w-full h-full object-cover" alt="" onerror="this.style.display='none'">
+          <img src="/images/ornaments/ornament-3.webp" class="w-full h-full object-cover" width="1920" height="1080" alt="" loading="lazy" onerror="this.style.display='none'">
         </div>
 
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left mb-12 news-header gap-6 md:gap-0">
             <div>
               <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold font-optimus text-[#2F4DD3]">Berita Terbaru</h2>
-              <p class="mt-2 text-black text-sm sm:text-base font-normal">Informasi terkini seputar FSTI</p>
+              <p class="mt-2 text-black-800 text-sm sm:text-base font-normal">Informasi terkini seputar FSTI</p>
             </div>
-            <Link :href="route('posts.index')" class="inline-flex items-center font-bold font-public-sans text-black bg-white border border-gray-300 rounded-full px-5 py-2 hover:bg-[#FDC500] hover:text-[#2F4DD3] hover:border-[#FDC500]  transition-colors duration-300 shadow-sm">
-              Lihat Semua <ArrowRight class="ml-2 h-4 w-4" />
+            <Link :href="route('posts.index')" aria-label="Buka semua berita dan informasi terkini FSTI" class="inline-flex items-center font-bold font-public-sans text-black bg-white border border-gray-300 rounded-full px-5 py-2 hover:bg-[#FDC500] hover:text-[#2F4DD3] hover:border-[#FDC500]  transition-colors duration-300 shadow-sm">
+              Lihat Semua <ArrowRight aria-hidden="true" class="ml-2 h-4 w-4" />
             </Link>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
