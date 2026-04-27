@@ -2,7 +2,6 @@ import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
 
-
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
@@ -22,8 +21,16 @@ export default {
 
             colors: {
                 primary: {
-                    DEFAULT: '#2F4DD3', // Warna utama FSTI ITK
-                    hover: '#00509D',   // Warna lebih gelap untuk efek hover
+                    DEFAULT: '#2F4DD3', // Warna utama FSTI ITK (DOMINAN)
+                    hover: '#00509D',   // VIVID AZURE (Pendukung/Hover)
+                    dark: '#003566',    // DARK AZURE (Aksen gelap)
+                },
+                secondary: {
+                    DEFAULT: '#FDC500', // YELLOW
+                    hover: '#FFDF3A',   // LIGHT YELLOW
+                },
+                accent: {
+                    DEFAULT: '#D9FFFE', // LIGHT CYAN
                 }
             }
         },
