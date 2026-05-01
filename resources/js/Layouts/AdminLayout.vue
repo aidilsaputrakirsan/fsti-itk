@@ -62,13 +62,12 @@ const navigation = computed(() => {
         { 
             name: 'Kelola Alumni', 
             href: null,
-            icon: UserGroupIcon, 
+            icon: BriefcaseIcon, 
             children: [
                 { name: 'Kelola Data Alumni', href: '/admin/alumni' },
                 { name: 'Kelola Testimoni Alumni', href: '/admin/alumni-testimonials' },
             ]
         },
-        { name: 'Data Alumni', href: '/admin/alumni', icon: BriefcaseIcon, children: null }, 
         { 
             name: 'Informasi', 
             href: null,
@@ -119,7 +118,7 @@ const navigation = computed(() => {
 
 const isParentUrlActive = (item: any) => {
     if (!item.children) return false;
-    return item.children.some((child: any) => currentUrl.value.startsWith(child.href));
+    return item.children.some((child: any) => currentUrl.value === child.href || (child.href !== '/admin/alumni' && currentUrl.value.startsWith(child.href)));
 };
 
 const toggleSubMenu = (name: string) => {
@@ -211,7 +210,7 @@ onMounted(() => {
                                     @click="isMobileMenuOpen = false"
                                     :class="[
                                         'block w-full px-12 py-3 text-sm font-semibold transition-colors duration-200 leading-tight',
-                                        currentUrl.startsWith(child.href) 
+                                        currentUrl === child.href
                                             ? 'bg-primary text-white border-l-4 border-primary-hover' 
                                             : 'text-gray-600 hover:bg-primary/10 hover:text-primary-hover border-l-4 border-transparent'
                                     ]"

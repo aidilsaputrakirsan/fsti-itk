@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { useForm, Link, Head } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import InputError from '@/Components/InputError.vue';
-import { ArrowLeftIcon, PencilSquareIcon, PaperClipIcon, XMarkIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { ArrowLeftIcon, PencilSquareIcon, PaperClipIcon, XMarkIcon, PlusIcon, TrashIcon, ChevronDownIcon } from '@heroicons/vue/24/outline';
 
 defineOptions({ layout: AdminLayout });
 
@@ -16,18 +16,21 @@ const fileInput = ref(null);
 
 const initialActivities = (props.partner.activities || []).map(act => {
     if (typeof act === 'string') {
-        return { name: act, post_id: '', post_slug: '' };
+        return { name: act, post_id: '', post_slug: '', _search: '', _isOpen: false };
     }
+    const post = act.post_id ? props.posts.find(p => p.id === act.post_id) : null;
     return {
         name: act.name,
         post_id: act.post_id || '',
-        post_slug: act.post_slug || ''
+        post_slug: act.post_slug || '',
+        _search: post ? post.title : '',
+        _isOpen: false
     };
 });
 
 const form = useForm({
     name: props.partner.name,
-    activities: initialActivities.length > 0 ? initialActivities : [{ name: '', post_id: '', post_slug: '' }],
+    activities: initialActivities.length > 0 ? initialActivities : [{ name: '', post_id: '', post_slug: '', _search: '', _isOpen: false }],
     logo: null,
     _method: 'put', 
 });
@@ -47,20 +50,50 @@ const clearLogo = () => {
 };
 
 const addActivity = () => {
-    form.activities.push({ name: '', post_id: '', post_slug: '' });
+    form.activities.push({ name: '', post_id: '', post_slug: '', _search: '', _isOpen: false });
 };
 
 const removeActivity = (index) => {
     form.activities.splice(index, 1);
 };
 
-const updateActivitySlug = (activity) => {
-    if (!activity.post_id) {
+const filteredPosts = (query) => {
+    if (!query) return props.posts;
+    const q = query.toLowerCase();
+    return props.posts.filter(p => p.title.toLowerCase().includes(q));
+};
+
+const selectPost = (activity, post) => {
+    if (post) {
+        activity.post_id = post.id;
+        activity.post_slug = post.slug;
+        activity._search = post.title;
+    } else {
+        activity.post_id = '';
         activity.post_slug = '';
-        return;
+        activity._search = '';
     }
-    const selectedPost = props.posts.find(p => p.id === activity.post_id);
-    activity.post_slug = selectedPost ? selectedPost.slug : '';
+    activity._isOpen = false;
+};
+
+const handleSearchInput = (activity) => {
+    activity._isOpen = true;
+    if (activity._search.trim() === '') {
+        activity.post_id = '';
+        activity.post_slug = '';
+    }
+};
+
+const handleBlur = (activity) => {
+    setTimeout(() => {
+        if (activity.post_id) {
+            const selectedPost = props.posts.find(p => p.id === activity.post_id);
+            activity._search = selectedPost ? selectedPost.title : '';
+        } else {
+            activity._search = '';
+        }
+        activity._isOpen = false;
+    }, 200); 
 };
 
 const submit = () => {
@@ -119,7 +152,7 @@ const submit = () => {
                             <div v-if="props.partner.logo" class="shrink-0 flex flex-col items-center">
                                 <p class="text-[10px] font-extrabold text-primary mb-1.5 uppercase tracking-widest text-center">Logo Saat Ini</p>
                                 <div class="h-20 w-32 bg-white rounded-lg border border-gray-200 flex items-center justify-center p-2 shadow-sm">
-                                    <img :src="`/storage/${props.partner.logo}`" class="h-full w-full object-contain mix-blend-multiply" />
+                                    <img :src="`/storage/${props.partner.logo}`" class="h-full w-full object-contain mix-blend-multiply" onerror="this.src='/images/mitra/'+this.src.split('/').pop()" />
                                 </div>
                             </div>
                             
@@ -142,11 +175,11 @@ const submit = () => {
 
                     <label class="md:pt-3 text-sm font-bold text-gray-800">Daftar Kegiatan</label>
                     <div>
-                        <p class="text-xs text-gray-500 mb-3 font-medium">Tambahkan rincian kegiatan. Jika ada berita yang berkaitan, Anda dapat memilihnya dari daftar dropdown (opsional).</p>
+                        <p class="text-xs text-gray-500 mb-3 font-medium">Tambahkan rincian kegiatan. Jika ada berita yang berkaitan, Anda dapat mencarinya (opsional).</p>
                         
                         <div class="space-y-3">
                             <div v-for="(activity, index) in form.activities" :key="index" class="flex flex-col sm:flex-row gap-2 items-start bg-gray-50 p-3 rounded-xl border border-gray-200">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-grow w-full">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 flex-grow w-full">
                                     <div>
                                         <label class="block text-[11px] font-bold text-gray-600 mb-1 uppercase">Nama Kegiatan <span class="text-red-500">*</span></label>
                                         <input v-model="activity.name" type="text" placeholder="Cth: Penelitian Bersama" class="block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary text-sm py-2" required>
@@ -154,11 +187,37 @@ const submit = () => {
                                     </div>
                                     <div>
                                         <label class="block text-[11px] font-bold text-gray-600 mb-1 uppercase">Tautkan ke Berita (Opsional)</label>
-                                        <select v-model="activity.post_id" @change="updateActivitySlug(activity)" class="block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary text-sm py-2 text-gray-700">
-                                            <option value="">-- Tidak Ada Berita Terkait --</option>
-                                            <option v-for="post in posts" :key="post.id" :value="post.id">{{ post.title }}</option>
-                                        </select>
-                                    </div>
+                                        
+                                        <div class="relative w-full">
+                                            <input 
+                                                type="text" 
+                                                v-model="activity._search"
+                                                @focus="activity._isOpen = true"
+                                                @blur="handleBlur(activity)"
+                                                @input="handleSearchInput(activity)"
+                                                placeholder="Cari judul berita..."
+                                                class="block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary text-sm py-2 pr-8 text-gray-700 bg-white"
+                                            />
+                                            <button v-if="activity.post_id || activity._search" @click="selectPost(activity, null)" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500">
+                                                <XMarkIcon class="w-4 h-4" />
+                                            </button>
+                                            <ChevronDownIcon v-else class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+
+                                            <div v-if="activity._isOpen" class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-52 overflow-y-auto">
+                                                <ul class="py-1 text-sm text-gray-700">
+                                                    <li v-if="filteredPosts(activity._search).length === 0" class="px-4 py-2 text-gray-500 italic">
+                                                        Berita tidak ditemukan.
+                                                    </li>
+                                                    <li @click="selectPost(activity, null)" class="px-4 py-2.5 hover:bg-red-50 hover:text-red-600 cursor-pointer text-gray-500 font-medium border-b border-gray-100 transition-colors">
+                                                        -- Hapus Tautan Berita --
+                                                    </li>
+                                                    <li v-for="post in filteredPosts(activity._search)" :key="post.id" @click="selectPost(activity, post)" class="px-4 py-2 hover:bg-blue-50 cursor-pointer truncate transition-colors" :class="{'bg-blue-50 text-primary font-semibold': activity.post_id === post.id}">
+                                                        {{ post.title }}
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        </div>
                                 </div>
                                 <button type="button" @click="removeActivity(index)" class="mt-5 p-2 text-red-500 hover:bg-red-100 rounded-lg border border-transparent hover:border-red-200 transition-colors shrink-0" title="Hapus Kegiatan">
                                     <TrashIcon class="w-5 h-5" />
