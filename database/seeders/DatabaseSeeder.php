@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\PostCategory;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -46,6 +45,7 @@ class DatabaseSeeder extends Seeder
             CommunityServiceSeeder::class,
             DepartmentSeeder::class,
             InternalServiceSeeder::class,
+            AlumniTestimonialSeeder::class,
         ]);
     }
 }

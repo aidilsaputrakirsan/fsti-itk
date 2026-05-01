@@ -33,7 +33,7 @@ class PublicStaffController extends Controller
     public function pimpinanJurusan()
     {
         $pimpinan = Staff::where('structural_position', 'like', '%Ketua Jurusan%')
-            ->where('is_active', true)->orderBy('name', 'asc')->get();
+            ->where('is_active', true)->orderBy('id', 'asc')->get();
 
         return Inertia::render('Public/Profiles/DepartmentLeaders', [
             'leaders' => $pimpinan
@@ -42,25 +42,22 @@ class PublicStaffController extends Controller
 
     public function pimpinanProdi()
     {
-        $pimpinan = Staff::where('structural_position', 'like', '%Koordinator Program Studi%')
-            ->where('is_active', true)->orderBy('name', 'asc')->get();
+        $studyPrograms = StudyProgram::orderBy('id', 'asc')->get();
+        
+        $prodiStaff = Staff::where('structural_position', 'like', '%Koordinator Program Studi%')
+            ->where('is_active', true)->get();
 
-        $studyPrograms = StudyProgram::all();
+        $pimpinan = $studyPrograms->map(function ($sp) use ($prodiStaff) {
+            $staff = $prodiStaff->first(function ($s) use ($sp) {
+                return str_contains(strtolower($s->structural_position), strtolower($sp->name));
+            });
 
-        $pimpinan = $pimpinan->map(function ($item) use ($studyPrograms) {
-            $jabatan = strtolower($item->structural_position);
-            $jurusan = 'Umum / Lainnya';
-
-            foreach ($studyPrograms as $sp) {
-                if (str_contains($jabatan, strtolower($sp->name))) {
-                    $jurusan = $sp->department;
-                    break;
-                }
+            if ($staff) {
+                $staff->jurusan = $sp->department;
+                return $staff;
             }
-
-            $item->jurusan = $jurusan;
-            return $item;
-        });
+            return null;
+        })->filter()->values();
 
         return Inertia::render('Public/Profiles/ProgramLeaders', [
             'leaders' => $pimpinan
@@ -70,13 +67,12 @@ class PublicStaffController extends Controller
     public function pimpinanLaboratorium()
     {
         $pimpinan = Staff::where('structural_position', 'like', '%Kepala Laboratorium%')
-            ->where('is_active', true)->orderBy('name', 'asc')->get();
+            ->where('is_active', true)->orderBy('id', 'asc')->get();
 
         return Inertia::render('Public/Profiles/LabLeaders', [
             'leaders' => $pimpinan
         ]);
     }
-
 
     public function dosen(Request $request)
     {
@@ -96,9 +92,14 @@ class PublicStaffController extends Controller
         }
 
         $dosenRaw = $query->orderBy('name', 'asc')->get();
-        $prodiList = StudyProgram::orderBy('name', 'asc')->pluck('name')->toArray();
+        
+        $prodiList = StudyProgram::orderBy('id', 'asc')->pluck('name')->toArray();
 
         $groupedDosen = [];
+        foreach ($prodiList as $prodi) {
+            $groupedDosen[$prodi] = [];
+        }
+        $groupedDosen['Umum / Lainnya'] = [];
 
         foreach ($dosenRaw as $dosen) {
             $jabatan = $dosen->functional_position ?? '';
@@ -116,7 +117,11 @@ class PublicStaffController extends Controller
             }
         }
 
-        ksort($groupedDosen);
+        foreach ($groupedDosen as $key => $group) {
+            if (empty($group)) {
+                unset($groupedDosen[$key]);
+            }
+        }
 
         $groupedData = empty($groupedDosen) ? new \stdClass() : (object) $groupedDosen;
 
@@ -140,7 +145,7 @@ class PublicStaffController extends Controller
             });
         }
 
-        $tendik = $query->orderBy('name', 'asc')->paginate(12)->withQueryString();
+        $tendik = $query->orderBy('id', 'asc')->paginate(12)->withQueryString();
 
         return Inertia::render('Public/Profiles/SupportStaff', [
             'staff' => $tendik,

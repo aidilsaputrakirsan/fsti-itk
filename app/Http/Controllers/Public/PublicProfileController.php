@@ -126,21 +126,23 @@ class PublicProfileController extends Controller
         $jurusan = Staff::where('structural_position', 'like', '%Ketua Jurusan%')
             ->where('is_active', true)->orderBy('name', 'asc')->get();
 
-        $studyPrograms = StudyProgram::all();
-        $prodi = Staff::where('structural_position', 'like', '%Koordinator Program Studi%')
-            ->where('is_active', true)->orderBy('name', 'asc')->get()
-            ->map(function ($item) use ($studyPrograms) {
-                $jabatan = strtolower($item->structural_position);
-                $jurusanStr = 'Umum / Lainnya';
-                foreach ($studyPrograms as $sp) {
-                    if (str_contains($jabatan, strtolower($sp->name))) {
-                        $jurusanStr = $sp->department;
-                        break;
-                    }
-                }
-                $item->jurusan = $jurusanStr;
-                return $item;
+        $studyPrograms = StudyProgram::orderBy('id', 'asc')->get();
+
+        $prodiStaff = Staff::where('structural_position', 'like', '%Koordinator Program Studi%')
+            ->where('is_active', true)
+            ->get();
+
+        $prodi = $studyPrograms->map(function ($sp) use ($prodiStaff) {
+            $staff = $prodiStaff->first(function ($s) use ($sp) {
+                return str_contains(strtolower($s->structural_position), strtolower($sp->name));
             });
+
+            if ($staff) {
+                $staff->jurusan = $sp->department;
+                return $staff;
+            }
+            return null;
+        })->filter()->values();
 
         $lab = Staff::where('structural_position', 'like', '%Kepala Laboratorium%')
             ->where('is_active', true)->orderBy('name', 'asc')->get();

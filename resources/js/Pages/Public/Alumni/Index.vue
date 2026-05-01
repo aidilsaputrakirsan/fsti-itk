@@ -4,26 +4,9 @@ import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { 
-    Search, 
-    GraduationCap, 
-    ChevronDown, 
-    ListFilter, 
-    X,
-    BookOpen,
-    FileX2,
-    Quote,
-    Briefcase,
-    Monitor, 
-    Calculator, 
-    Cpu, 
-    Database, 
-    Network, 
-    Activity,
-    UserCircle2,
-    ChevronLeft,
-    ChevronRight,
-    Award,
-    Sparkles
+    Search, GraduationCap, ChevronDown, ListFilter, X, BookOpen, FileX2, Quote, 
+    Briefcase, Monitor, Calculator, Cpu, Database, Network, Activity, UserCircle2, 
+    ChevronLeft, ChevronRight, Award, Sparkles
 } from 'lucide-vue-next';
 import { debounce } from 'lodash';
 import AOS from 'aos';
@@ -34,7 +17,11 @@ const props = defineProps({
     filters: Object,
     studyPrograms: Array,
     years: Array,
-    distribution: Array
+    distribution: Array,
+    testimonials: { 
+        type: Array,
+        default: () => []
+    }
 });
 
 const search = ref(props.filters.search || '');
@@ -49,63 +36,35 @@ const programRef = ref(null);
 const yearRef = ref(null);
 
 const handleClickOutside = (event) => {
-    if (programRef.value && !programRef.value.contains(event.target)) {
-        isProgramOpen.value = false;
-    }
-    if (yearRef.value && !yearRef.value.contains(event.target)) {
-        isYearOpen.value = false;
-    }
+    if (programRef.value && !programRef.value.contains(event.target)) isProgramOpen.value = false;
+    if (yearRef.value && !yearRef.value.contains(event.target)) isYearOpen.value = false;
 };
 
 function selectOption(type, value) {
-    if (type === 'program') {
-        program.value = value;
-        isProgramOpen.value = false;
-    } else if (type === 'year') {
-        selectedYear.value = value;
-        isYearOpen.value = false;
-    }
+    if (type === 'program') { program.value = value; isProgramOpen.value = false; } 
+    else if (type === 'year') { selectedYear.value = value; isYearOpen.value = false; }
 }
 
-const testimonials = [
-      {
-        name: 'Rachman Setiawan Amir',
-        job: ' Pegawai Negeri Sipil\nBadan Kepegawaian Negara',
-        program: 'Sistem Informasi',
-        year: '2013',
-        photo: '/images/alumni/rachman-setiawan.webp',
-        message: 'Sebagai alumni FSTI ITK, saya bangga pernah menjadi bagian dari angkatan pertama yang menyaksikan perjalanan awal kampus ini, dari kondisi yang masih terbatas hingga berkembang dengan fasilitas yang semakin memadai. Proses tersebut memberikan banyak pelajaran tentang perjuangan, kebersamaan, semangat untuk terus berkembang, serta menumbuhkan rasa memiliki yang kuat serta membentuk karakter saya hingga saat ini. Saya berharap FSTI terus menjaga semangat tersebut, meningkatkan kualitas pembelajaran dan fasilitas, serta mencetak lulusan yang kompeten, inovatif, dan berintegritas.'    
-    },
-    {
-        name: 'Rosa Eliviani',
-        job: 'Dosen Program Studi\nSistem Informasi ITK',
-        program: 'Sistem Informasi',
-        year: '2016',
-        photo: '/images/alumni/rosa-eliviani.webp',
-        message: 'Walaupun saat berkuliah dulu fasilitas serba terbatas, namun saya merasa setelah lulus baru merasakan manfaatnya. Apa yang saya pelajari sangat berguna untuk mencari pekerjaan, hingga akhirnya saya memutuskan untuk melanjutkan perkuliahan. Saya pun merasa tidak kalah jauh dengan teman-teman lainnya; artinya, semua yang saya pelajari sungguh menunjang perkuliahan magister saya. Saya berharap, dengan adanya fakultas di ITK, maka kemajuan ITK juga terus berkembang, khususnya untuk FSTI yang menaungi prodi saya, Sistem Informasi.'
-    },
-    {
-        name: 'Samuel Govery',
-        job: 'Tenaga Kependidikan ITK',
-        program: 'Sistem Informasi',
-        year: '2017',
-        photo: '/images/alumni/samuel-govery.webp',
-        message: 'Sebagai alumni FSTI Institut Teknologi Kalimantan, saya bangga pernah menjadi bagian dari lingkungan yang membentuk kemampuan akademik sekaligus karakter. Banyak pengalaman berharga yang menjadi bekal hingga saat ini.\n\nPesan saya, semoga FSTI terus berkembang, inovatif, dan mampu mencetak lulusan yang kompeten serta berintegritas. Untuk mahasiswa, manfaatkan setiap kesempatan yang ada sebaik mungkin.'
-    }
-];
+const testimonialsData = computed(() => props.testimonials);
 
 const activeTestimonialIdx = ref(0); 
-const prevIndex = computed(() => (activeTestimonialIdx.value - 1 + testimonials.length) % testimonials.length);
-const nextIndex = computed(() => (activeTestimonialIdx.value + 1) % testimonials.length);
+const prevIndex = computed(() => {
+    if (testimonialsData.value.length === 0) return 0;
+    return (activeTestimonialIdx.value - 1 + testimonialsData.value.length) % testimonialsData.value.length;
+});
+const nextIndex = computed(() => {
+    if (testimonialsData.value.length === 0) return 0;
+    return (activeTestimonialIdx.value + 1) % testimonialsData.value.length;
+});
 
 let autoplayInterval = null;
 
 const startAutoplay = () => {
-    autoplayInterval = setInterval(() => { nextTestimonial(); }, 1800);
+    if (testimonialsData.value.length > 1) {
+    autoplayInterval = setInterval(() => { nextTestimonial(); }, 1500); 
+    }
 };
-const stopAutoplay = () => {
-    if (autoplayInterval) clearInterval(autoplayInterval);
-};
+const stopAutoplay = () => { if (autoplayInterval) clearInterval(autoplayInterval); };
 
 const nextTestimonial = () => { activeTestimonialIdx.value = nextIndex.value; };
 const prevTestimonial = () => { activeTestimonialIdx.value = prevIndex.value; };
@@ -174,24 +133,18 @@ onUnmounted(() => {
 });
 
 watch([search, program, selectedYear], debounce(() => {
-    router.get(route('alumni.index'), { 
-        search: search.value, program: program.value, year: selectedYear.value 
-    }, { 
+    router.get(route('alumni.index'), { search: search.value, program: program.value, year: selectedYear.value }, { 
         preserveState: true, preserveScroll: true, replace: true, onFinish: () => { AOS.refresh(); }
     });
 }, 400));
 
 const resetFilters = () => { search.value = ''; program.value = ''; selectedYear.value = ''; };
 
-
 const currentPage = computed(() => props.alumni.current_page || 1);
-
 const totalPages = computed(() => props.alumni.last_page || 1);
-
 const visiblePages = computed(() => {
     const total = totalPages.value;
     const current = currentPage.value;
-
     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
     if (current <= 4) return [1, 2, 3, 4, 5, '...', total];
     if (current >= total - 3) return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
@@ -207,10 +160,7 @@ const changePage = (page) => {
             onFinish: () => { 
                 AOS.refresh();
                 const el = document.getElementById('directory-section');
-                if (el) {
-                    const y = el.getBoundingClientRect().top + window.scrollY - 80;
-                    window.scrollTo({ top: y, behavior: 'smooth' });
-                }
+                if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
             } 
         });
     }
@@ -221,14 +171,9 @@ const changePage = (page) => {
     <PublicLayout>
         <Head title="Direktori Alumni" />
         
-        <Banner
-            title="ALUMNI"
-            subtitle="Jejak Kelulusan Fakultas Sains dan Teknologi Informasi"
-            background-image="/images/background-banner.webp"
-        />
+        <Banner title="ALUMNI" subtitle="Jejak Kelulusan Fakultas Sains dan Teknologi Informasi" background-image="/images/background-banner.webp" />
 
         <div class="relative bg-white pt-16 pb-24 md:pt-24 md:pb-32 font-public-sans overflow-hidden" data-aos="fade-up">
-            
             <GraduationCap class="absolute -top-10 -left-16 md:-left-10 w-[24rem] h-[24rem] md:w-[32rem] md:h-[32rem] text-primary/[0.03] -rotate-12 pointer-events-none" />
             <Award class="absolute -bottom-10 -right-16 md:-right-10 w-[24rem] h-[24rem] md:w-[32rem] md:h-[32rem] text-primary/[0.03] rotate-12 pointer-events-none" />
             <Sparkles class="absolute top-1/4 right-1/4 w-32 h-32 text-yellow-500/[0.04] pointer-events-none" />
@@ -241,29 +186,23 @@ const changePage = (page) => {
                     <p class="text-gray-500 mt-3 font-medium text-sm md:text-base">Pengalaman dan kesan alumni setelah menyelesaikan studi di FSTI ITK</p>
                 </div>
                 
-                <div class="relative w-full h-[650px] md:h-[450px] flex items-center justify-center overflow-visible" 
+                <div v-if="testimonialsData.length > 0" class="relative w-full h-[650px] md:h-[450px] flex items-center justify-center overflow-visible" 
                      @mouseenter="stopAutoplay" @mouseleave="startAutoplay">
                     
-                    <div v-for="(alumni, index) in testimonials" :key="index"
+                    <div v-for="(alumni, index) in testimonialsData" :key="index"
                          class="absolute top-4 w-full md:w-[75%] h-[90%] transition-all duration-500 ease-in-out flex flex-col md:flex-row items-center bg-gradient-to-br from-[#003566] via-[#00509D] to-[#2F4DD3] rounded-3xl shadow-[0_20px_50px_rgba(47,77,211,0.2)] border border-white/10 px-6 py-8 md:p-10"
                          :class="getSlideClass(index)">
                         
                         <div class="w-full md:w-5/12 flex justify-center relative shrink-0 z-10 h-64 md:h-full px-2 md:px-6">
-                            
                             <div class="absolute top-4 -left-2 md:-left-4 w-full h-full border-2 border-blue-400/40 rounded-2xl z-0 rounded-bl-[3rem]"></div>
-                            
                             <div class="relative z-10 w-full h-full rounded-2xl overflow-hidden shadow-xl border-4 border-white/20 bg-gradient-to-b from-blue-900 to-slate-800">
                                 <img v-if="alumni.photo" :src="alumni.photo" class="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-700" />
-                                <div v-else class="w-full h-full flex items-center justify-center bg-blue-900/40 text-white/30">
-                                    <UserCircle2 class="w-24 h-24 opacity-50" />
-                                </div>
-                                
+                                <div v-else class="w-full h-full flex items-center justify-center bg-blue-900/40 text-white/30"><UserCircle2 class="w-24 h-24 opacity-50" /></div>
                                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent pointer-events-none"></div>
-                                
                                 <div class="absolute bottom-0 left-0 p-4 md:p-6 w-full z-10">
                                     <h3 class="text-white font-bold text-lg md:text-xl drop-shadow-md leading-tight mb-1">{{ alumni.name }}</h3>
                                     <p class="text-yellow-400 font-bold text-xs md:text-sm drop-shadow uppercase tracking-wide whitespace-pre-line text-left">
-                                        {{ alumni.job !== '' ? alumni.job : 'Alumni' }}
+                                        {{ alumni.job ? alumni.job : 'Alumni' }}
                                     </p>
                                 </div>
                             </div>
@@ -271,32 +210,30 @@ const changePage = (page) => {
 
                         <div class="w-full md:w-7/12 flex flex-col text-center md:text-left z-10 pt-6 md:pt-0 md:pl-8">
                             <Quote class="w-10 h-10 md:w-12 md:h-12 text-white/20 mb-4 mx-auto md:mx-0 fill-current rotate-180" />
-                            
-                            <p v-if="alumni.message" class="text-white/90 text-[14px] md:text-[15px] leading-relaxed mb-6 whitespace-pre-line font-medium text-justify">
+                            <p class="text-white/90 text-[14px] md:text-[15px] leading-relaxed mb-6 whitespace-pre-line font-medium text-justify">
                                 "{{ alumni.message }}"
                             </p>
-                            <p v-else class="text-white/50 text-[14px] md:text-[15px] italic mb-6 text-center md:text-left">
-                                (Belum ada pesan yang ditambahkan oleh alumni ini)
-                            </p>
-
                             <div class="w-10 h-1 bg-yellow-400 mb-4 mx-auto md:mx-0 rounded-full"></div>
-
                             <p class="text-cyan-300 font-bold text-sm md:text-[15px] tracking-wide">
                                 {{ alumni.program }} <span class="font-normal text-cyan-100/70">({{ alumni.year }})</span>
                             </p>
                         </div>
                     </div>
 
-                    <button @click="prevTestimonial" class="absolute left-0 md:left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/10 text-white backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 shadow-lg transition-all border border-white/20">
+                    <button v-if="testimonialsData.length > 1" @click="prevTestimonial" class="absolute left-0 md:left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/10 text-white backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 shadow-lg transition-all border border-white/20">
                         <ChevronLeft class="w-6 h-6" />
                     </button>
-                    <button @click="nextTestimonial" class="absolute right-0 md:right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/10 text-white backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 shadow-lg transition-all border border-white/20">
+                    <button v-if="testimonialsData.length > 1" @click="nextTestimonial" class="absolute right-0 md:right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/10 text-white backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 shadow-lg transition-all border border-white/20">
                         <ChevronRight class="w-6 h-6" />
                     </button>
                 </div>
+
+                <div v-else class="text-center py-10">
+                    <p class="text-gray-500 italic">Belum ada data pengalaman alumni yang ditambahkan.</p>
+                </div>
                 
-                <div class="flex justify-center gap-2 mt-4 relative z-30">
-                    <button v-for="(t, i) in testimonials" :key="i" @click="activeTestimonialIdx = i" 
+                <div v-if="testimonialsData.length > 1" class="flex justify-center gap-2 mt-4 relative z-30">
+                    <button v-for="(t, i) in testimonialsData" :key="i" @click="activeTestimonialIdx = i" 
                             class="w-2.5 h-2.5 rounded-full transition-all duration-300 shadow-sm"
                             :class="activeTestimonialIdx === i ? 'bg-primary w-8' : 'bg-gray-300 hover:bg-gray-400'"></button>
                 </div>
@@ -392,10 +329,8 @@ const changePage = (page) => {
                     <div class="mb-12 bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 relative z-30" data-aos="fade-down">
                         <div class="relative flex-grow">
                             <input 
-                                type="text" 
-                                placeholder="Cari berdasarkan nama atau NIM..." 
+                                type="text" placeholder="Cari berdasarkan nama atau NIM..." v-model="search"
                                 class="w-full pl-12 pr-10 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50 text-gray-800 font-medium transition-all"
-                                v-model="search"
                             >
                             <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <button v-if="search" @click="search = ''" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"><X class="w-5 h-5" /></button>
@@ -403,10 +338,7 @@ const changePage = (page) => {
 
                         <div class="flex flex-col sm:flex-row gap-4 md:w-[45%]">
                             <div class="relative w-full sm:w-3/5" ref="programRef">
-                                <button type="button"
-                                    @click="isProgramOpen = !isProgramOpen; isYearOpen = false"
-                                    class="w-full pl-12 pr-10 py-3.5 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 text-gray-800 font-medium flex items-center justify-between text-left transition-all"
-                                >
+                                <button type="button" @click="isProgramOpen = !isProgramOpen; isYearOpen = false" class="w-full pl-12 pr-10 py-3.5 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 text-gray-800 font-medium flex items-center justify-between text-left transition-all">
                                     <span class="truncate">{{ program || 'Semua Program Studi' }}</span>
                                     <ChevronDown class="w-5 h-5 text-gray-400 transition-transform" :class="{'rotate-180': isProgramOpen}" />
                                 </button>
@@ -414,21 +346,14 @@ const changePage = (page) => {
                                 
                                 <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                                     <div v-show="isProgramOpen" class="absolute top-full left-0 mt-2 w-full z-[100] bg-white rounded-xl shadow-xl border border-gray-100 py-2 font-public-sans overflow-hidden max-h-60 overflow-y-auto">
-                                        <button type="button" @click="selectOption('program', '')" class="w-full text-left px-5 py-3 text-gray-700 font-medium hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': program === ''}">
-                                            Semua Program Studi
-                                        </button>
-                                        <button type="button" v-for="p in studyPrograms" :key="p" @click="selectOption('program', p)" class="w-full text-left px-5 py-3 text-gray-700 font-medium hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': program === p}">
-                                            {{ p }}
-                                        </button>
+                                        <button type="button" @click="selectOption('program', '')" class="w-full text-left px-5 py-3 text-gray-700 font-medium hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': program === ''}">Semua Program Studi</button>
+                                        <button type="button" v-for="p in studyPrograms" :key="p" @click="selectOption('program', p)" class="w-full text-left px-5 py-3 text-gray-700 font-medium hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': program === p}">{{ p }}</button>
                                     </div>
                                 </transition>
                             </div>
 
                             <div class="relative w-full sm:w-2/5" ref="yearRef">
-                                <button type="button"
-                                    @click="isYearOpen = !isYearOpen; isProgramOpen = false"
-                                    class="w-full pl-12 pr-10 py-3.5 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 text-gray-800 font-medium flex items-center justify-between text-left transition-all"
-                                >
+                                <button type="button" @click="isYearOpen = !isYearOpen; isProgramOpen = false" class="w-full pl-12 pr-10 py-3.5 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 text-gray-800 font-medium flex items-center justify-between text-left transition-all">
                                     <span class="truncate">{{ selectedYear || 'Semua Tahun' }}</span>
                                     <ChevronDown class="w-5 h-5 text-gray-400 transition-transform" :class="{'rotate-180': isYearOpen}" />
                                 </button>
@@ -436,12 +361,8 @@ const changePage = (page) => {
                                 
                                 <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                                     <div v-show="isYearOpen" class="absolute top-full left-0 mt-2 w-full z-[100] bg-white rounded-xl shadow-xl border border-gray-100 py-2 font-public-sans overflow-hidden max-h-60 overflow-y-auto">
-                                        <button type="button" @click="selectOption('year', '')" class="w-full text-left px-5 py-3 text-gray-700 font-medium hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': selectedYear === ''}">
-                                            Semua Tahun
-                                        </button>
-                                        <button type="button" v-for="year in years" :key="year" @click="selectOption('year', year)" class="w-full text-left px-5 py-3 text-gray-700 font-medium hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': selectedYear === year}">
-                                            {{ year }}
-                                        </button>
+                                        <button type="button" @click="selectOption('year', '')" class="w-full text-left px-5 py-3 text-gray-700 font-medium hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': selectedYear === ''}">Semua Tahun</button>
+                                        <button type="button" v-for="year in years" :key="year" @click="selectOption('year', year)" class="w-full text-left px-5 py-3 text-gray-700 font-medium hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': selectedYear === year}">{{ year }}</button>
                                     </div>
                                 </transition>
                             </div>
@@ -503,39 +424,15 @@ const changePage = (page) => {
                     </div>
 
                     <div v-if="totalPages > 1 && alumni.data.length > 0" class="mt-12 flex flex-col items-center justify-center gap-4 w-full relative z-20" data-aos="fade-in">
-                        
                         <div class="flex flex-wrap justify-center items-center gap-2">
-                            <button 
-                                @click="changePage(currentPage - 1)"
-                                :disabled="currentPage === 1"
-                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
-                                :class="currentPage === 1 ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
-                            >Sebelumnya</button>
-
+                            <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border" :class="currentPage === 1 ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'">Sebelumnya</button>
                             <template v-for="(page, index) in visiblePages" :key="index">
-                                <span 
-                                    v-if="page === '...'"
-                                    class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl text-gray-300 bg-white border border-gray-100 cursor-not-allowed whitespace-nowrap"
-                                >...</span>
-                                <button 
-                                    v-else
-                                    @click="changePage(page)"
-                                    class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
-                                    :class="currentPage === page ? 'bg-primary text-white border-primary shadow-md shadow-primary/20' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary hover:bg-slate-50 shadow-sm'"
-                                >{{ page }}</button>
+                                <span v-if="page === '...'" class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl text-gray-300 bg-white border border-gray-100 cursor-not-allowed whitespace-nowrap">...</span>
+                                <button v-else @click="changePage(page)" class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border" :class="currentPage === page ? 'bg-primary text-white border-primary shadow-md shadow-primary/20' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary hover:bg-slate-50 shadow-sm'">{{ page }}</button>
                             </template>
-
-                            <button 
-                                @click="changePage(currentPage + 1)"
-                                :disabled="currentPage === totalPages"
-                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
-                                :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
-                            >Selanjutnya</button>
+                            <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages" class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border" :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'">Selanjutnya</button>
                         </div>
-
-                        <p class="text-sm font-medium text-gray-400 mt-2 text-center">
-                            Menampilkan <span class="text-slate-700 font-bold">{{ alumni.from }}</span> - <span class="text-slate-700 font-bold">{{ alumni.to }}</span> dari <span class="text-slate-700 font-bold">{{ alumni.total }}</span> data
-                        </p>
+                        <p class="text-sm font-medium text-gray-400 mt-2 text-center">Menampilkan <span class="text-slate-700 font-bold">{{ alumni.from }}</span> - <span class="text-slate-700 font-bold">{{ alumni.to }}</span> dari <span class="text-slate-700 font-bold">{{ alumni.total }}</span> data</p>
                     </div>
 
                 </div>
@@ -545,16 +442,7 @@ const changePage = (page) => {
 </template>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.3s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-
-.scroll-mt-32 {
-    scroll-margin-top: 8rem;
-}
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+.scroll-mt-32 { scroll-margin-top: 8rem; }
 </style>

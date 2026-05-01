@@ -42,10 +42,8 @@ class HandleInertiaRequests extends Middleware
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),
             ],
-            'globalProdi' => \App\Models\StudyProgram::select('name', 'degree', 'slug', 'department')
-                ->orderBy('degree')
-                ->orderBy('name')
-                ->get(),
+            'globalProdi' => \App\Models\StudyProgram::orderBy('id', 'asc')
+                ->get(['name', 'degree', 'slug', 'department']),
 
             'contact_global' => fn() => $request->is('admin*') ? null : Contact::first(),
 

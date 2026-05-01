@@ -429,21 +429,22 @@ Temukan berbagai jadwal penting kegiatan resmi di lingkungan Fakultas Sains dan 
                                 
                                 <div class="grid grid-cols-7 gap-2 md:gap-3">
                                     <div v-for="(item, index) in calendarDays" :key="index" 
-                                         class="aspect-square flex flex-col items-center justify-center rounded-[1.5rem] transition-all cursor-pointer relative"
+                                         class="aspect-square flex flex-col items-center justify-center rounded-[1.2rem] transition-all duration-300 relative overflow-hidden"
                                          :class="[
-                                             item.isCurrentMonth ? 'hover:bg-blue-50/50 hover:text-primary hover:shadow-sm text-slate-700 bg-slate-50/30' : 'text-slate-300 pointer-events-none',
-                                             hasEvent(item.date) && item.isCurrentMonth ? 'font-black bg-white border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.04)] ring-1 ring-primary/30 text-primary' : 'font-medium'
+                                             !item.isCurrentMonth ? 'text-slate-300 pointer-events-none' : 'cursor-pointer',
+                                             hasEvent(item.date) && item.isCurrentMonth
+                                                 ? 'bg-blue-100/80 border-2 border-primary/30 shadow-[0_4px_12px_rgba(47,77,211,0.15)] hover:bg-blue-200/60 hover:border-primary/50 hover:-translate-y-1'
+                                                 : item.isCurrentMonth ? 'bg-slate-50/30 text-slate-700 hover:bg-blue-50 hover:text-primary border border-transparent' : ''
                                          ]"
                                          @click="item.isCurrentMonth ? openDetailModal(item.date) : null">
                                         
-                                        <span class="text-base md:text-xl z-10" :class="isToday(item.date) && item.isCurrentMonth ? 'bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md' : ''">
+                                        <span class="text-base md:text-xl z-10 transition-transform" 
+                                              :class="[
+                                                  isToday(item.date) && item.isCurrentMonth ? 'bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md font-bold' : '',
+                                                  hasEvent(item.date) && item.isCurrentMonth && !isToday(item.date) ? 'text-primary font-black scale-110' : 'font-medium'
+                                              ]">
                                             {{ item.date.getDate() }}
                                         </span>
-                                        
-                                        <div v-if="item.isCurrentMonth && hasEvent(item.date)" class="absolute bottom-2 md:bottom-3 flex gap-1">
-                                            <div class="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary rounded-full animate-pulse shadow-[0_0_5px_rgba(47,77,211,0.5)]"></div>
-                                            <div v-if="getEventsForDate(item.date).length > 1" class="w-1.5 h-1.5 md:w-2 md:h-2 bg-blue-300 rounded-full"></div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -467,8 +468,8 @@ Temukan berbagai jadwal penting kegiatan resmi di lingkungan Fakultas Sains dan 
 
                         <div class="bg-blue-50/50 border-t border-blue-100/50 p-4 text-center relative z-10">
                             <p class="text-xs text-primary font-bold flex items-center justify-center gap-2 tracking-wider">
-                                <span class="w-2 h-2 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(47,77,211,0.6)]"></span> 
-                                Klik tanggal manapun pada bulan aktif untuk melihat informasi jadwal.
+                                <span class="w-4 h-4 bg-blue-100/80 border-2 border-primary/30 rounded-md shadow-sm"></span> 
+                                Kotak berwarna menandakan terdapat kegiatan. Klik untuk melihat detail jadwal.
                             </p>
                         </div>
                     </div>

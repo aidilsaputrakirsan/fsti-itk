@@ -59,6 +59,15 @@ const navigation = computed(() => {
                 { name: 'Kelola Beasiswa', href: '/admin/beasiswa' },
             ]
         },
+        { 
+            name: 'Kelola Alumni', 
+            href: null,
+            icon: UserGroupIcon, 
+            children: [
+                { name: 'Kelola Data Alumni', href: '/admin/alumni' },
+                { name: 'Kelola Testimoni Alumni', href: '/admin/alumni-testimonials' },
+            ]
+        },
         { name: 'Data Alumni', href: '/admin/alumni', icon: BriefcaseIcon, children: null }, 
         { 
             name: 'Informasi', 

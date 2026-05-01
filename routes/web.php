@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\ScholarshipController;
 use App\Http\Controllers\Admin\StudentActivityController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\AlumniTestimonialController;
 
 // ==============================================================================
 // CONTROLLER PUBLIK
@@ -129,7 +130,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // MODUL ALUMNI
     Route::resource('/alumni', AdminAlumniController::class)->parameters(['alumni' => 'alumnus']);
-
+    Route::resource('alumni-testimonials', AlumniTestimonialController::class);
+    
     // MODUL MITRA
     Route::resource('partners', AdminPartnerController::class);
 
