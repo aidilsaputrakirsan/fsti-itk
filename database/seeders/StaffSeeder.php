@@ -3733,7 +3733,7 @@ class StaffSeeder extends Seeder
                 'name' => 'Muhammad Agung Nursyeha, S.T., M.T.',
                 'nip' => '199203282022031007',
                 'type' => 'Dosen',
-                'structural_position' => '',
+                'structural_position' => 'Koordinator Program Studi Teknik Biomedis',
                 'functional_position' => 'Dosen Program Studi Teknik Elektro',
                 'image_url' => 'https://drive.google.com/file/d/1l5yoxG4IQyB5AIEzKaSJasaqZ1SYxjMJ/view?usp=sharing',
                 'education_history' => [
