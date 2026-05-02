@@ -4,7 +4,7 @@ import { X, GraduationCap, Trophy, CheckSquare, Building2, Users, ArrowRight, Bo
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import HomeArticleCard from '@/Components/HomeArticleCard.vue';
 import AchievementCard from '@/Components/AchievementCard.vue';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import type { Post, Achievement } from '@/types';
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";

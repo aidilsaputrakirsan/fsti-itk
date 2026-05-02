@@ -26,7 +26,7 @@ const submit = () => {
 <template>
     <Head title="Login Admin" />
 
-    <div class="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 font-inter relative overflow-hidden">
+    <main class="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 font-inter relative overflow-hidden">
         <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse"></div>
         <div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-indigo-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" style="animation-delay: 2s;"></div>
         <div class="absolute bottom-[-20%] left-[20%] w-96 h-96 bg-emerald-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" style="animation-delay: 4s;"></div>
@@ -114,12 +114,11 @@ const submit = () => {
                             />
                             <button 
                                 type="button" 
+                                aria-label="Tampilkan atau sembunyikan kata sandi"
                                 @click="showPassword = !showPassword"
                                 class="absolute inset-y-0 right-0 pr-4 flex items-center transition-colors focus:outline-none"
                                 :class="form.errors.password ? 'text-red-400 hover:text-red-600' : 'text-gray-400 hover:text-[#2F4DD3]'"
                             >
-                                <Eye v-if="!showPassword" class="h-5 w-5" />
-                                <EyeOff v-else class="h-5 w-5" />
                             </button>
                         </div>
                         <InputError class="mt-2" :message="form.errors.password" />
@@ -146,13 +145,13 @@ const submit = () => {
                     </button>
                 </form>
 
-                <div class="mt-10 text-center text-xs text-gray-400">
-                    <p>&copy; {{ new Date().getFullYear() }} Fakultas Sains dan Teknologi Informasi.</p>
+                <div class="mt-10 text-center text-xs text-slate-500">                    
+                <p>&copy; {{ new Date().getFullYear() }} Fakultas Sains dan Teknologi Informasi.</p>
                     <Link href="/" class="mt-2 inline-flex items-center gap-1 font-medium hover:text-[#2F4DD3] transition-colors">
                         <ArrowRight class="w-3 h-3" /> Kembali ke Halaman Publik
                     </Link>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 </template>

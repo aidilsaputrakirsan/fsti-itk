@@ -22,7 +22,7 @@ const visitors = computed<VisitorStats>(() => {
             
             <div class="flex flex-col-reverse lg:flex-row justify-between items-center gap-4 lg:gap-0 text-center lg:text-left">
                 
-                <div class="text-[9px] sm:text-sm text-gray-500 w-full lg:w-auto mt-2 lg:mt-0">
+                <div class="text-[9px] sm:text-sm text-gray-300 w-full lg:w-auto mt-2 lg:mt-0">
                     &copy; {{ new Date().getFullYear() }} Fakultas Sains dan Teknologi Informasi ITK.
                 </div>
 
@@ -31,8 +31,8 @@ const visitors = computed<VisitorStats>(() => {
                     <div class="flex flex-row items-center gap-1 sm:gap-3">
                         <Users class="w-2.5 h-2.5 sm:w-5 sm:h-5 text-blue-400 shrink-0" />
                         <div class="text-left">
-                            <p class="text-[5px] sm:text-xs text-gray-400 uppercase tracking-wider mb-0.5 leading-none">Hari Ini</p>
-                            <p class="text-[8px] sm:text-base font-bold text-gray-200 leading-none whitespace-nowrap">{{ visitors.today.toLocaleString('id-ID') }}</p>
+                            <p class="text-[10px] sm:text-xs text-gray-300 uppercase tracking-wider mb-0.5 leading-none">Hari Ini</p>
+                            <p class="text-xs sm:text-base font-bold text-gray-200 leading-none whitespace-nowrap">{{ visitors.today.toLocaleString('id-ID') }}</p>
                         </div>
                     </div>
                     
@@ -41,8 +41,8 @@ const visitors = computed<VisitorStats>(() => {
                     <div class="flex flex-row items-center gap-1 sm:gap-3">
                         <Calendar class="w-2.5 h-2.5 sm:w-5 sm:h-5 text-emerald-400 shrink-0" />
                         <div class="text-left">
-                            <p class="text-[5px] sm:text-xs text-gray-400 uppercase tracking-wider mb-0.5 leading-none">Bulan Ini</p>
-                            <p class="text-[8px] sm:text-base font-bold text-gray-200 leading-none whitespace-nowrap">{{ visitors.month.toLocaleString('id-ID') }}</p>
+                            <p class="text-[10px] sm:text-xs text-gray-300 uppercase tracking-wider mb-0.5 leading-none">Bulan Ini</p>
+                            <p class="text-xs sm:text-base font-bold text-gray-200 leading-none whitespace-nowrap">{{ visitors.month.toLocaleString('id-ID') }}</p>
                         </div>
                     </div>
                     
@@ -51,8 +51,8 @@ const visitors = computed<VisitorStats>(() => {
                     <div class="flex flex-row items-center gap-1 sm:gap-3">
                         <Activity class="w-2.5 h-2.5 sm:w-5 sm:h-5 text-purple-400 shrink-0" />
                         <div class="text-left">
-                            <p class="text-[5px] sm:text-xs text-gray-400 uppercase tracking-wider mb-0.5 leading-none">Total</p>
-                            <p class="text-[8px] sm:text-base font-bold text-gray-200 leading-none whitespace-nowrap">{{ visitors.total.toLocaleString('id-ID') }}</p>
+                            <p class="text-[10px] sm:text-xs text-gray-300 uppercase tracking-wider mb-0.5 leading-none">Total</p>
+                            <p class="text-xs sm:text-base font-bold text-gray-200 leading-none whitespace-nowrap">{{ visitors.total.toLocaleString('id-ID') }}</p>
                         </div>
                     </div>
 

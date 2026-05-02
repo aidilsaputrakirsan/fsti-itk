@@ -12,17 +12,17 @@ defineProps<{
   <div class="bg-white rounded-2xl overflow-hidden border-t-4 border-primary border-x border-b shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group font-public-sans h-full">
     
     <div class="relative aspect-video overflow-hidden bg-gray-100">
-      <Link :href="route('posts.show', post.slug)" class="block w-full h-full">
-        <img 
-          v-if="post.image_url" 
-          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-          :src="post.image_url" 
-          :alt="post.title"
-        >
-        <div v-else class="w-full h-full flex items-center justify-center">
-          <ImageIcon class="w-12 h-12 text-gray-300" />
-        </div>
-      </Link>
+      <Link :href="route('posts.show', post.slug)" :aria-label="'Baca artikel: ' + post.title" class="block w-full h-full">
+  <img 
+    v-if="post.image_url" 
+    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+    :src="post.image_url" 
+    :alt="post.title"
+  >
+  <div v-else class="w-full h-full flex items-center justify-center">
+    <ImageIcon class="w-12 h-12 text-gray-300" aria-hidden="true" />
+  </div>
+</Link>
 
       <span v-if="post.category" class="absolute top-3 left-3 bg-primary text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm uppercase tracking-wider">
         {{ post.category }}

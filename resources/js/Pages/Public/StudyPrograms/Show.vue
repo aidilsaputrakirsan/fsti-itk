@@ -43,7 +43,7 @@ onMounted(() => {
                             {{ studyProgram.degree }} <br class="hidden md:block"/>
                             <span class="text-primary">{{ studyProgram.name }}</span>
                         </h1>
-                        <p class="text-sm font-bold text-primary/60 uppercase tracking-widest mt-4">Profil Ringkas</p>
+                        <p class="text-sm font-bold text-primary/80 uppercase tracking-widest mt-4">Profil Ringkas</p>
                     </div>
                     
                     <div class="md:w-2/3 md:pt-4 text-center md:text-justify">
@@ -64,7 +64,7 @@ onMounted(() => {
                             <Target class="w-8 h-8" />
                         </div>
                         <div>
-                            <h3 class="text-2xl font-bold text-primary font-optimus mb-4">Visi Program Studi</h3>
+                            <h2 class="text-2xl font-bold text-primary font-optimus mb-4">Visi Program Studi</h2>
                             <p class="text-gray-800 leading-relaxed text-xl m-0 font-medium italic">"{{ studyProgram.vision }}"</p>
                         </div>
                     </div>
@@ -105,7 +105,7 @@ onMounted(() => {
                             <Flag class="w-8 h-8" />
                         </div>
                         <div>
-                            <h3 class="text-2xl font-bold text-primary font-optimus m-0 mt-2">Tujuan Program Studi</h3>
+                            <h2 class="text-2xl font-bold text-primary font-optimus m-0 mt-2">Tujuan Program Studi</h2>
                         </div>
                     </div>
                     

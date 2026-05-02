@@ -151,14 +151,16 @@ onMounted(() => {
             isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         ]">
             <div class="flex items-center justify-between px-2 mb-4">
-                <img 
-                    src="/images/logofsti.webp" 
-                    alt="Logo FSTI" 
-                    class="w-40 h-auto" 
-                    fetchpriority="high" 
-                    decoding="sync" 
-                />
-                <button @click="isMobileMenuOpen = false" class="md:hidden p-1.5 rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none">
+  <img 
+    src="/images/logofsti.webp" 
+    alt="Logo FSTI" 
+    class="w-40 h-14" 
+    width="160"
+    height="57"
+    fetchpriority="high" 
+    decoding="sync" 
+/>
+                <button @click="isMobileMenuOpen = false" aria-label="Tutup Menu Navigasi" class="md:hidden p-1.5 rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none">
                     <XMarkIcon class="h-6 w-6" />
                 </button>
             </div>
@@ -192,6 +194,7 @@ onMounted(() => {
                         <div v-else>
                             <button
                                 @click="toggleSubMenu(item.name)"
+                                :aria-label="'Buka submenu ' + item.name"
                                 :class="[
                                     'flex items-center w-full p-3 transition-colors duration-200 text-left rounded-lg group',
                                     openMenu === item.name || isParentUrlActive(item) ? 'bg-primary/15 text-primary-hover' : 'bg-primary/5 text-gray-700',
@@ -242,7 +245,7 @@ onMounted(() => {
             
             <header class="md:hidden flex items-center justify-between bg-white px-4 py-3 border-b border-gray-200 sticky top-0 z-30 shadow-sm">
                 <img src="/images/logofsti.webp" alt="Logo FSTI" class="h-8 w-auto" />
-                <button @click="isMobileMenuOpen = true" class="p-2 rounded-md text-gray-600 hover:text-primary hover:bg-primary/10 transition-colors focus:outline-none">
+                <button @click="isMobileMenuOpen = true" aria-label="Buka Menu Navigasi" class="p-2 rounded-md text-gray-600 hover:text-primary hover:bg-primary/10 transition-colors focus:outline-none">
                     <Bars3Icon class="h-6 w-6" />
                 </button>
             </header>

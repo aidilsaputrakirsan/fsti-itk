@@ -163,9 +163,9 @@ watch([search, category], debounce(() => {
                     
                     <div v-if="headline" class="bg-white rounded-[2rem] overflow-hidden shadow-[0_2px_15px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(47,77,211,0.08)] border border-slate-100 flex flex-col md:flex-row group flex-grow transition-all duration-300">
                         <div class="md:w-1/2 relative overflow-hidden bg-slate-100 min-h-[250px] md:min-h-full">
-                             <Link :href="route('posts.show', headline.slug)" class="block w-full h-full">
-                                 <img v-if="headline.image_url" :src="headline.image_url" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                             </Link>
+<Link :href="route('posts.show', headline.slug)" :aria-label="'Baca artikel utama: ' + headline.title" class="block w-full h-full">
+    <img v-if="headline.image_url" :src="headline.image_url" :alt="headline.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+</Link>
                              <span v-if="headline.category" class="absolute top-5 left-5 bg-white/90 backdrop-blur-sm text-primary text-[11px] font-bold px-4 py-2 rounded-xl shadow-md uppercase tracking-wider border border-white/50">
                                  {{ headline.category }}
                              </span>

@@ -60,19 +60,29 @@ const nextIndex = computed(() => {
 let autoplayInterval = null;
 
 const startAutoplay = () => {
+    stopAutoplay(); 
+    
     if (testimonialsData.value.length > 1) {
-    autoplayInterval = setInterval(() => { nextTestimonial(); }, 1500); 
+        autoplayInterval = setInterval(() => { 
+            nextTestimonial(); 
+        }, 3500); 
     }
 };
-const stopAutoplay = () => { if (autoplayInterval) clearInterval(autoplayInterval); };
+
+const stopAutoplay = () => { 
+    if (autoplayInterval) {
+        clearInterval(autoplayInterval); 
+        autoplayInterval = null; 
+    }
+};
 
 const nextTestimonial = () => { activeTestimonialIdx.value = nextIndex.value; };
 const prevTestimonial = () => { activeTestimonialIdx.value = prevIndex.value; };
 
 const getSlideClass = (index) => {
     if (index === activeTestimonialIdx.value) return 'translate-x-0 scale-100 opacity-100 z-20 pointer-events-auto';
-    if (index === prevIndex.value) return '-translate-x-[85%] md:-translate-x-[65%] scale-[0.85] opacity-40 z-10 pointer-events-none cursor-pointer';
-    if (index === nextIndex.value) return 'translate-x-[85%] md:translate-x-[65%] scale-[0.85] opacity-40 z-10 pointer-events-none cursor-pointer';
+    if (index === prevIndex.value) return '-translate-x-[85%] lg:-translate-x-[65%] scale-[0.85] opacity-40 z-10 pointer-events-none cursor-pointer';
+    if (index === nextIndex.value) return 'translate-x-[85%] lg:translate-x-[65%] scale-[0.85] opacity-40 z-10 pointer-events-none cursor-pointer';
     return 'hidden opacity-0';
 };
 
@@ -186,45 +196,64 @@ const changePage = (page) => {
                     <p class="text-gray-500 mt-3 font-medium text-sm md:text-base">Pengalaman dan kesan alumni setelah menyelesaikan studi di FSTI ITK</p>
                 </div>
                 
-                <div v-if="testimonialsData.length > 0" class="relative w-full h-[650px] md:h-[450px] flex items-center justify-center overflow-visible" 
+               <div v-if="testimonialsData.length > 0" class="relative w-full h-[640px] sm:h-[550px] md:h-[700px] lg:h-[450px] flex items-center justify-center overflow-hidden lg:overflow-visible" 
+                     @mouseenter="stopAutoplay" 
+                     @mouseleave="startAutoplay"
+                     @touchstart="stopAutoplay"
+                     @touchend="startAutoplay">
+                    
+                    <div v-if="testimonialsData.length > 0" class="relative w-full h-[640px] sm:h-[550px] md:h-[700px] lg:h-[450px] flex items-center justify-center overflow-hidden lg:overflow-visible" 
                      @mouseenter="stopAutoplay" @mouseleave="startAutoplay">
                     
                     <div v-for="(alumni, index) in testimonialsData" :key="index"
-                         class="absolute top-4 w-full md:w-[75%] h-[90%] transition-all duration-500 ease-in-out flex flex-col md:flex-row items-center bg-gradient-to-br from-[#003566] via-[#00509D] to-[#2F4DD3] rounded-3xl shadow-[0_20px_50px_rgba(47,77,211,0.2)] border border-white/10 px-6 py-8 md:p-10"
+                         class="absolute top-4 w-[92%] sm:w-[85%] md:w-[80%] lg:w-[75%] h-[92%] transition-all duration-500 ease-in-out flex flex-col lg:flex-row items-center bg-gradient-to-br from-[#003566] via-[#00509D] to-[#2F4DD3] rounded-3xl shadow-[0_20px_50px_rgba(47,77,211,0.2)] border border-white/10 px-5 py-6 sm:p-8 md:p-10"
                          :class="getSlideClass(index)">
                         
-                        <div class="w-full md:w-5/12 flex justify-center relative shrink-0 z-10 h-64 md:h-full px-2 md:px-6">
-                            <div class="absolute top-4 -left-2 md:-left-4 w-full h-full border-2 border-blue-400/40 rounded-2xl z-0 rounded-bl-[3rem]"></div>
-                            <div class="relative z-10 w-full h-full rounded-2xl overflow-hidden shadow-xl border-4 border-white/20 bg-gradient-to-b from-blue-900 to-slate-800">
-                                <img v-if="alumni.photo" :src="alumni.photo" class="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-700" />
-                                <div v-else class="w-full h-full flex items-center justify-center bg-blue-900/40 text-white/30"><UserCircle2 class="w-24 h-24 opacity-50" /></div>
-                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent pointer-events-none"></div>
-                                <div class="absolute bottom-0 left-0 p-4 md:p-6 w-full z-10">
-                                    <h3 class="text-white font-bold text-lg md:text-xl drop-shadow-md leading-tight mb-1">{{ alumni.name }}</h3>
-                                    <p class="text-yellow-400 font-bold text-xs md:text-sm drop-shadow uppercase tracking-wide whitespace-pre-line text-left">
+                        <div class="w-full sm:w-10/12 md:w-8/12 lg:w-5/12 flex justify-center relative shrink-0 z-10 h-[45%] lg:h-full px-2 mx-auto mb-3 md:mb-5 lg:mb-0">
+                            <div class="absolute top-3 -left-2 md:top-4 md:-left-3 lg:-left-4 w-full h-full border-2 border-blue-400/40 rounded-2xl z-0 rounded-bl-[2rem] lg:rounded-bl-[3rem]"></div>
+                            <div class="relative z-10 w-full h-full rounded-2xl overflow-hidden shadow-xl border-2 md:border-4 border-white/20 bg-gradient-to-b from-blue-900 to-slate-800">
+                                <img v-if="alumni.photo" :src="alumni.photo" :alt="'Foto testimonial alumni ' + alumni.name" class="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-700" />
+                                <div v-else class="w-full h-full flex items-center justify-center bg-blue-900/40 text-white/30"><UserCircle2 class="w-20 md:w-24 h-20 md:h-24 opacity-50" /></div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/10 to-transparent pointer-events-none"></div>
+                                
+                                <div class="absolute bottom-0 left-0 p-3 md:p-5 lg:p-6 w-full z-10">
+                                    <h3 class="text-white font-bold text-lg md:text-xl drop-shadow-md leading-tight mb-0.5 md:mb-1">{{ alumni.name }}</h3>
+                                    <p class="text-yellow-400 font-bold text-[10px] md:text-xs lg:text-sm drop-shadow uppercase tracking-wide whitespace-pre-line text-left line-clamp-1">
                                         {{ alumni.job ? alumni.job : 'Alumni' }}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="w-full md:w-7/12 flex flex-col text-center md:text-left z-10 pt-6 md:pt-0 md:pl-8">
-                            <Quote class="w-10 h-10 md:w-12 md:h-12 text-white/20 mb-4 mx-auto md:mx-0 fill-current rotate-180" />
-                            <p class="text-white/90 text-[14px] md:text-[15px] leading-relaxed mb-6 whitespace-pre-line font-medium text-justify">
-                                "{{ alumni.message }}"
-                            </p>
-                            <div class="w-10 h-1 bg-yellow-400 mb-4 mx-auto md:mx-0 rounded-full"></div>
-                            <p class="text-cyan-300 font-bold text-sm md:text-[15px] tracking-wide">
-                                {{ alumni.program }} <span class="font-normal text-cyan-100/70">({{ alumni.year }})</span>
+                        <div class="w-full lg:w-7/12 flex flex-col text-center lg:text-left z-10 lg:pl-8 h-[50%] lg:h-full justify-center">
+                            <Quote class="w-6 h-6 md:w-10 lg:w-12 md:h-10 lg:h-12 text-white/20 mb-2 md:mb-3 mx-auto lg:mx-0 fill-current rotate-180 shrink-0" />
+                            
+<div class="flex-1 min-h-0 overflow-y-auto mb-2 md:mb-3 lg:mb-6 pr-2 w-full custom-scrollbar">                                <p class="text-white/90 text-sm sm:text-base lg:text-[15px] leading-relaxed whitespace-pre-line font-medium text-justify">
+                                    "{{ alumni.message }}"
+                                </p>
+                            </div>
+                            
+                            <div class="w-10 h-1 bg-yellow-400 mb-2 md:mb-3 lg:mb-4 mx-auto lg:mx-0 rounded-full shrink-0"></div>
+                            
+                            <p class="text-cyan-300 font-bold text-xs sm:text-sm md:text-base lg:text-[15px] tracking-wide leading-tight shrink-0 pb-1">
+                                {{ alumni.program }} <span class="font-normal text-cyan-100/70 block sm:inline mt-0.5 sm:mt-0">(Lulusan {{ alumni.year }})</span>
                             </p>
                         </div>
                     </div>
 
-                    <button v-if="testimonialsData.length > 1" @click="prevTestimonial" class="absolute left-0 md:left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/10 text-white backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 shadow-lg transition-all border border-white/20">
-                        <ChevronLeft class="w-6 h-6" />
+                    <button v-if="testimonialsData.length > 1" @click="prevTestimonial" aria-label="Alumni Sebelumnya" class="absolute left-1 md:left-2 lg:left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 bg-white/10 text-white backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 shadow-lg transition-all border border-white/20">
+                        <ChevronLeft class="w-5 h-5 md:w-6 md:h-6" />
                     </button>
-                    <button v-if="testimonialsData.length > 1" @click="nextTestimonial" class="absolute right-0 md:right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/10 text-white backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 shadow-lg transition-all border border-white/20">
-                        <ChevronRight class="w-6 h-6" />
+                    <button v-if="testimonialsData.length > 1" @click="nextTestimonial" aria-label="Alumni Selanjutnya" class="absolute right-1 md:right-2 lg:right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 bg-white/10 text-white backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 shadow-lg transition-all border border-white/20">
+                        <ChevronRight class="w-5 h-5 md:w-6 md:h-6" />
+                    </button>
+                </div>
+
+                    <button v-if="testimonialsData.length > 1" @click="prevTestimonial" aria-label="Alumni Sebelumnya" class="absolute left-1 md:left-2 lg:left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 bg-white/10 text-white backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 shadow-lg transition-all border border-white/20">
+                        <ChevronLeft class="w-5 h-5 md:w-6 md:h-6" />
+                    </button>
+                    <button v-if="testimonialsData.length > 1" @click="nextTestimonial" aria-label="Alumni Selanjutnya" class="absolute right-1 md:right-2 lg:right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 bg-white/10 text-white backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 shadow-lg transition-all border border-white/20">
+                        <ChevronRight class="w-5 h-5 md:w-6 md:h-6" />
                     </button>
                 </div>
 
@@ -283,22 +312,22 @@ const changePage = (page) => {
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
+                        <div class="grid grid-cols-2 sm:grid-cols-2 gap-2 md:gap-3 w-full lg:w-auto">
                             <div v-for="item in chartData" :key="item.study_program" 
                                  @click="activeSegment = (activeSegment === item ? null : item)"
                                  @mouseenter="activeSegment = item"
                                  @mouseleave="activeSegment = null"
-                                 class="flex items-center gap-4 bg-white px-5 py-3 rounded-xl border-2 transition-all cursor-pointer shadow-sm hover:shadow-md"
+                                 class="flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-4 bg-white px-2 py-2 sm:px-5 sm:py-3 rounded-xl border-2 transition-all cursor-pointer shadow-sm hover:shadow-md text-center sm:text-left"
                                  :style="{ borderColor: activeSegment === item ? item.color : '#f3f4f6', transform: activeSegment === item ? 'translateY(-2px)' : 'none' }">
                                  
-                                <div class="w-10 h-10 rounded-xl shadow-inner shrink-0 flex items-center justify-center transition-transform" 
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl shadow-inner shrink-0 flex items-center justify-center transition-transform" 
                                      :class="{'scale-110': activeSegment === item}"
                                      :style="{ backgroundColor: item.color + '15', color: item.color }">
-                                     <component :is="getProgramIcon(item.study_program)" class="w-5 h-5" stroke-width="2" />
+                                     <component :is="getProgramIcon(item.study_program)" class="w-4 h-4 sm:w-5 sm:h-5" stroke-width="2" />
                                 </div>
-                                <div class="flex flex-col">
-                                    <span class="text-sm font-bold transition-colors" :class="activeSegment === item ? 'text-gray-900' : 'text-primary'">{{ item.study_program }}</span>
-                                    <span class="text-[11px] font-semibold text-gray-500">{{ item.total }} Lulusan ({{ item.percent.toFixed(1) }}%)</span>
+                                <div class="flex flex-col w-full overflow-hidden">
+                                    <span class="text-[10px] sm:text-sm font-bold transition-colors truncate" :class="activeSegment === item ? 'text-gray-900' : 'text-primary'" :title="item.study_program">{{ item.study_program }}</span>
+                                    <span class="text-[9px] sm:text-[11px] font-semibold text-gray-500 mt-0.5 sm:mt-0">{{ item.total }} <span class="hidden sm:inline">Lulusan</span> ({{ item.percent.toFixed(0) }}%)</span>
                                 </div>
                             </div>
                         </div>
@@ -445,4 +474,23 @@ const changePage = (page) => {
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 .scroll-mt-32 { scroll-margin-top: 8rem; }
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px; /* Scrollbar super tipis */
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05); 
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3); 
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.6); 
+}
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.05);
+}
 </style>
