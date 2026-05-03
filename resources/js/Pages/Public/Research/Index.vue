@@ -157,43 +157,32 @@ const changePage = (page: number | string) => {
                     </div>
                 </div>
 
-                <div class="relative z-20 -mt-10 md:-mt-16 mx-2 sm:mx-4 md:mx-8 mb-12 md:mb-12 bg-white p-3 md:p-5 rounded-2xl shadow-[0_8px_30px_rgba(47,77,211,0.08)] border border-slate-100 flex flex-col md:flex-row gap-3 md:gap-4" data-aos="fade-down">
+                <div class="relative z-20 -mt-10 md:-mt-16 mx-2 sm:mx-4 md:mx-8 mb-12 bg-white p-3 md:p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-3 md:gap-4" data-aos="fade-down">
                     
                     <div class="relative flex-grow">
                         <input 
-                            type="text" 
-                            placeholder="Cari judul penelitian atau nama dosen..." 
-                            class="w-full pl-10 md:pl-12 pr-10 py-3 md:py-3.5 text-sm md:text-base border border-slate-200 rounded-xl md:rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-slate-50 text-slate-800 font-medium hover:bg-white transition-colors"
+                            type="text" placeholder="Cari judul penelitian atau nama dosen..." title="Cari judul penelitian atau nama dosen..."
+                            class="w-full pl-9 lg:pl-11 pr-8 lg:pr-10 py-3 md:py-3.5 text-[11px] sm:text-sm lg:text-base text-ellipsis border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-slate-50 text-slate-800 font-medium hover:bg-white transition-colors"
                             v-model="search"
                         >
-                        <Search class="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-primary/60" />
-                        <button v-if="search" @click="search = ''" class="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-primary transition-colors">
-                            <X class="w-4 h-4 md:w-5 md:h-5" />
-                        </button>
+                        <Search class="absolute left-3.5 lg:left-4 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-primary/60" />
+                        <button v-if="search" @click="search = ''" class="absolute right-2.5 lg:right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-primary transition-colors"><X class="w-4 h-4 lg:w-5 lg:h-5" /></button>
                     </div>
 
-                    <div class="relative md:w-72">
-                        <button 
-                            ref="programBtnRef"
-                            @click="toggleDropdown('program')"
-                            class="w-full pl-10 md:pl-12 pr-10 py-3 md:py-3.5 text-sm md:text-base border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors focus:ring-2 focus:ring-primary focus:border-primary"
-                        >
+                    <div class="relative w-full md:w-[35%] lg:w-72">
+                        <button ref="programBtnRef" @click="toggleDropdown('program')" class="w-full pl-9 lg:pl-10 pr-7 lg:pr-8 py-3 md:py-3.5 text-[11px] sm:text-xs lg:text-sm xl:text-base border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors">
                             <span class="truncate">{{ selectedProgramName || 'Semua Program Studi' }}</span>
-                            <ChevronDown class="w-4 h-4 md:w-5 md:h-5 text-primary/60 transition-transform duration-200" :class="{'rotate-180': isProgramOpen}" />
+                            <ChevronDown class="w-4 h-4 lg:w-5 lg:h-5 text-primary/60 transition-transform duration-200 shrink-0" :class="{'rotate-180': isProgramOpen}" />
                         </button>
-                        <LibraryBig class="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-primary pointer-events-none" />
+                        <LibraryBig class="absolute left-3.5 lg:left-4 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-primary pointer-events-none" />
                     </div>
 
-                    <div class="relative md:w-48">
-                        <button 
-                            ref="yearBtnRef"
-                            @click="toggleDropdown('year')"
-                            class="w-full pl-10 md:pl-12 pr-10 py-3 md:py-3.5 text-sm md:text-base border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors focus:ring-2 focus:ring-primary focus:border-primary"
-                        >
+                    <div class="relative w-full md:w-[25%] lg:w-56">
+                        <button ref="yearBtnRef" @click="toggleDropdown('year')" class="w-full pl-9 lg:pl-10 pr-7 lg:pr-8 py-3 md:py-3.5 text-[11px] sm:text-xs lg:text-sm xl:text-base border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors">
                             <span class="truncate">{{ selectedYear || 'Semua Tahun' }}</span>
-                            <ChevronDown class="w-4 h-4 md:w-5 md:h-5 text-primary/60 transition-transform duration-200" :class="{'rotate-180': isYearOpen}" />
+                            <ChevronDown class="w-4 h-4 lg:w-5 lg:h-5 text-primary/60 transition-transform duration-200 shrink-0" :class="{'rotate-180': isYearOpen}" />
                         </button>
-                        <ListFilter class="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-primary pointer-events-none" />
+                        <ListFilter class="absolute left-3.5 lg:left-4 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-primary pointer-events-none" />
                     </div>
                 </div>
 

@@ -232,22 +232,7 @@ const changeMonth = (direction) => {
 };
 
 const goToCurrentOrNearestMonth = () => {
-    const today = new Date();
-    const todayTime = today.getFullYear() * 12 + today.getMonth();
-
-    if (activeMonths.value.some(m => m.time === todayTime)) {
-        currentDate.value = new Date(today.getFullYear(), today.getMonth(), 1);
-    } else if (activeMonths.value.length > 0) {
-        const future = activeMonths.value.find(m => m.time > todayTime);
-        if (future) {
-            currentDate.value = new Date(future.year, future.month, 1);
-        } else {
-            const past = activeMonths.value[activeMonths.value.length - 1];
-            currentDate.value = new Date(past.year, past.month, 1);
-        }
-    } else {
-        currentDate.value = new Date(); 
-    }
+    currentDate.value = new Date(); 
     isPickerOpen.value = false;
 };
 
@@ -392,29 +377,28 @@ Temukan berbagai jadwal penting kegiatan resmi di lingkungan Fakultas Sains dan 
 
                     <div class="bg-white rounded-[2rem] shadow-xl shadow-blue-900/5 border border-slate-100 overflow-hidden relative z-10 group">
                         
-                        <div class="bg-gradient-to-r from-primary to-blue-600 px-8 py-6 md:py-8 flex flex-col sm:flex-row items-center justify-between text-white relative overflow-hidden gap-4">
-                            <CalendarDays class="absolute -right-4 -top-8 w-40 h-40 text-white opacity-10 transform rotate-12 transition-transform duration-700 group-hover:rotate-6 pointer-events-none" />
-                            
-                            <div class="relative z-10 flex items-center gap-4">
-                                <div class="w-12 h-12 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/20 flex items-center justify-center">
-                                    <CalendarIcon class="w-6 h-6 text-white" />
-                                </div>
-                                <div class="text-center sm:text-left">
-                                    <p class="text-xs font-bold uppercase tracking-widest text-blue-200 mb-0.5">Kalender</p>
-                                    
-                                    <button @click="togglePicker" class="text-2xl font-black tracking-wider hover:text-blue-100 transition-colors flex items-center gap-2 group/btn select-none">
-                                        {{ monthNames[currentDate.getMonth()] }} {{ currentDate.getFullYear() }}
-                                        <ChevronDown class="w-5 h-5 transition-transform duration-300" :class="isPickerOpen ? 'rotate-180 text-blue-200' : 'group-hover/btn:translate-y-0.5'" />
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="flex gap-2 relative z-10 bg-white/10 p-1.5 rounded-full backdrop-blur-sm border border-white/20">
-                                <button @click="changeMonth(-1)" :disabled="!hasPrevMonth" class="w-10 h-10 flex items-center justify-center rounded-full transition-all" :class="hasPrevMonth ? 'hover:bg-white text-white hover:text-primary' : 'text-white/30 cursor-not-allowed'"><ChevronLeft class="w-5 h-5"/></button>
-                                <button @click="goToCurrentOrNearestMonth" class="px-4 text-sm font-bold hover:bg-white text-white hover:text-primary rounded-full transition-all tracking-wide" :class="activeMonths.length === 0 ? 'opacity-50 cursor-not-allowed hover:bg-transparent hover:text-white' : ''">Bulan Ini</button>
-                                <button @click="changeMonth(1)" :disabled="!hasNextMonth" class="w-10 h-10 flex items-center justify-center rounded-full transition-all" :class="hasNextMonth ? 'hover:bg-white text-white hover:text-primary' : 'text-white/30 cursor-not-allowed'"><ChevronRight class="w-5 h-5"/></button>
-                            </div>
-                        </div>
+                        <div class="bg-gradient-to-r from-primary to-blue-600 px-6 py-6 md:px-8 md:py-8 flex flex-col sm:flex-row items-center justify-between text-white relative overflow-hidden gap-5">
+    <CalendarDays class="absolute -right-4 -top-8 w-40 h-40 text-white opacity-10 transform rotate-12 pointer-events-none" />
+    
+    <div class="relative z-10 flex items-center gap-3 md:gap-4">
+        <div class="shrink-0 w-10 h-10 md:w-12 md:h-12 bg-white/10 rounded-xl md:rounded-2xl backdrop-blur-sm border border-white/20 flex items-center justify-center">
+            <CalendarIcon class="w-5 h-5 md:w-6 md:h-6 text-white" />
+        </div>
+        <div class="text-left">
+            <p class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-blue-200 mb-0.5">Kalender</p>
+            <button @click="togglePicker" class="text-lg md:text-2xl font-black tracking-wider hover:text-blue-100 transition-colors flex items-center gap-1.5 group/btn select-none">
+                {{ monthNames[currentDate.getMonth()] }} {{ currentDate.getFullYear() }}
+                <ChevronDown class="w-4 h-4 md:w-5 md:h-5 transition-transform duration-300" :class="isPickerOpen ? 'rotate-180 text-blue-200' : 'group-hover/btn:translate-y-0.5'" />
+            </button>
+        </div>
+    </div>
+    
+    <div class="flex gap-2 relative z-10 bg-white/10 p-1.5 rounded-full backdrop-blur-sm border border-white/20">
+        <button @click="changeMonth(-1)" :disabled="!hasPrevMonth" class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-all" :class="hasPrevMonth ? 'hover:bg-white text-white hover:text-primary' : 'text-white/30 cursor-not-allowed'"><ChevronLeft class="w-4 h-4 md:w-5 md:h-5"/></button>
+        <button @click="goToCurrentOrNearestMonth" class="px-3 md:px-4 text-xs md:text-sm font-bold hover:bg-white text-white hover:text-primary rounded-full transition-all tracking-wide" :class="activeMonths.length === 0 ? 'opacity-50 cursor-not-allowed hover:bg-transparent hover:text-white' : ''">Hari Ini</button>
+        <button @click="changeMonth(1)" :disabled="!hasNextMonth" class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-all" :class="hasNextMonth ? 'hover:bg-white text-white hover:text-primary' : 'text-white/30 cursor-not-allowed'"><ChevronRight class="w-4 h-4 md:w-5 md:h-5"/></button>
+    </div>
+</div>
 
                         <div class="p-6 md:p-10 relative min-h-[380px]">
                             <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02]">

@@ -112,14 +112,16 @@ const submit = () => {
                                 placeholder="Masukkan kata sandi Anda" 
                                 autocomplete="current-password" 
                             />
-                            <button 
-                                type="button" 
-                                aria-label="Tampilkan atau sembunyikan kata sandi"
-                                @click="showPassword = !showPassword"
-                                class="absolute inset-y-0 right-0 pr-4 flex items-center transition-colors focus:outline-none"
-                                :class="form.errors.password ? 'text-red-400 hover:text-red-600' : 'text-gray-400 hover:text-[#2F4DD3]'"
-                            >
-                            </button>
+                           <button 
+    type="button" 
+    aria-label="Tampilkan atau sembunyikan kata sandi"
+    @click="showPassword = !showPassword"
+    class="absolute inset-y-0 right-0 pr-4 flex items-center transition-colors focus:outline-none"
+    :class="form.errors.password ? 'text-red-400 hover:text-red-600' : 'text-gray-400 hover:text-[#2F4DD3]'"
+>
+    <EyeOff v-if="showPassword" class="h-5 w-5" />
+    <Eye v-else class="h-5 w-5" />
+</button>
                         </div>
                         <InputError class="mt-2" :message="form.errors.password" />
                     </div>

@@ -355,43 +355,44 @@ const changePage = (page) => {
                         </div>
                     </div>
 
-                    <div class="mb-12 bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 relative z-30" data-aos="fade-down">
+                    <div class="mb-12 bg-white p-4 lg:p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 relative z-30" data-aos="fade-down">
                         <div class="relative flex-grow">
                             <input 
-                                type="text" placeholder="Cari berdasarkan nama atau NIM..." v-model="search"
-                                class="w-full pl-12 pr-10 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50 text-gray-800 font-medium transition-all"
+                                type="text" placeholder="Cari berdasarkan nama atau NIM..." title="Cari berdasarkan nama atau NIM..." v-model="search"
+                                class="w-full pl-11 pr-10 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50 text-gray-800 font-medium text-xs lg:text-base text-ellipsis transition-all"
                             >
-                            <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <button v-if="search" @click="search = ''" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"><X class="w-5 h-5" /></button>
+                            <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-gray-400" />
+                            <button v-if="search" @click="search = ''" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"><X class="w-4 h-4 lg:w-5 lg:h-5" /></button>
                         </div>
 
-                        <div class="flex flex-col sm:flex-row gap-4 md:w-[45%]">
-                            <div class="relative w-full sm:w-3/5" ref="programRef">
-                                <button type="button" @click="isProgramOpen = !isProgramOpen; isYearOpen = false" class="w-full pl-12 pr-10 py-3.5 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 text-gray-800 font-medium flex items-center justify-between text-left transition-all">
+                        <div class="flex flex-col sm:flex-row gap-3 md:gap-4 md:w-[48%] lg:w-[45%]">
+                            
+                            <div class="relative w-full sm:w-[58%]" ref="programRef">
+                                <button type="button" @click="isProgramOpen = !isProgramOpen; isYearOpen = false" class="w-full pl-10 pr-8 py-3.5 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 text-gray-800 font-medium flex items-center justify-between text-left transition-all text-xs lg:text-sm xl:text-base">
                                     <span class="truncate">{{ program || 'Semua Program Studi' }}</span>
-                                    <ChevronDown class="w-5 h-5 text-gray-400 transition-transform" :class="{'rotate-180': isProgramOpen}" />
+                                    <ChevronDown class="w-4 h-4 text-gray-400 transition-transform shrink-0" :class="{'rotate-180': isProgramOpen}" />
                                 </button>
-                                <BookOpen class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary pointer-events-none" />
+                                <BookOpen class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary pointer-events-none" />
                                 
                                 <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                                     <div v-show="isProgramOpen" class="absolute top-full left-0 mt-2 w-full z-[100] bg-white rounded-xl shadow-xl border border-gray-100 py-2 font-public-sans overflow-hidden max-h-60 overflow-y-auto">
-                                        <button type="button" @click="selectOption('program', '')" class="w-full text-left px-5 py-3 text-gray-700 font-medium hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': program === ''}">Semua Program Studi</button>
-                                        <button type="button" v-for="p in studyPrograms" :key="p" @click="selectOption('program', p)" class="w-full text-left px-5 py-3 text-gray-700 font-medium hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': program === p}">{{ p }}</button>
+                                        <button type="button" @click="selectOption('program', '')" class="w-full text-left px-5 py-3 text-gray-700 font-medium text-xs lg:text-sm hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': program === ''}">Semua Program Studi</button>
+                                        <button type="button" v-for="p in studyPrograms" :key="p" @click="selectOption('program', p)" class="w-full text-left px-5 py-3 text-gray-700 font-medium text-xs lg:text-sm hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': program === p}">{{ p }}</button>
                                     </div>
                                 </transition>
                             </div>
 
-                            <div class="relative w-full sm:w-2/5" ref="yearRef">
-                                <button type="button" @click="isYearOpen = !isYearOpen; isProgramOpen = false" class="w-full pl-12 pr-10 py-3.5 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 text-gray-800 font-medium flex items-center justify-between text-left transition-all">
+                            <div class="relative w-full sm:w-[42%]" ref="yearRef">
+                                <button type="button" @click="isYearOpen = !isYearOpen; isProgramOpen = false" class="w-full pl-10 pr-8 py-3.5 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 text-gray-800 font-medium flex items-center justify-between text-left transition-all text-xs lg:text-sm xl:text-base">
                                     <span class="truncate">{{ selectedYear || 'Semua Tahun' }}</span>
-                                    <ChevronDown class="w-5 h-5 text-gray-400 transition-transform" :class="{'rotate-180': isYearOpen}" />
+                                    <ChevronDown class="w-4 h-4 text-gray-400 transition-transform shrink-0" :class="{'rotate-180': isYearOpen}" />
                                 </button>
-                                <ListFilter class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary pointer-events-none" />
+                                <ListFilter class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary pointer-events-none" />
                                 
                                 <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                                     <div v-show="isYearOpen" class="absolute top-full left-0 mt-2 w-full z-[100] bg-white rounded-xl shadow-xl border border-gray-100 py-2 font-public-sans overflow-hidden max-h-60 overflow-y-auto">
-                                        <button type="button" @click="selectOption('year', '')" class="w-full text-left px-5 py-3 text-gray-700 font-medium hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': selectedYear === ''}">Semua Tahun</button>
-                                        <button type="button" v-for="year in years" :key="year" @click="selectOption('year', year)" class="w-full text-left px-5 py-3 text-gray-700 font-medium hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': selectedYear === year}">{{ year }}</button>
+                                        <button type="button" @click="selectOption('year', '')" class="w-full text-left px-5 py-3 text-gray-700 font-medium text-xs lg:text-sm hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': selectedYear === ''}">Semua Tahun</button>
+                                        <button type="button" v-for="year in years" :key="year" @click="selectOption('year', year)" class="w-full text-left px-5 py-3 text-gray-700 font-medium text-xs lg:text-sm hover:bg-primary/5 hover:text-primary transition-colors" :class="{'bg-primary/5 text-primary': selectedYear === year}">{{ year }}</button>
                                     </div>
                                 </transition>
                             </div>

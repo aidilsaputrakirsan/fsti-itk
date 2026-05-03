@@ -72,8 +72,13 @@ onUnmounted(() => {
 
                 <div class="relative z-20 -mt-16 mx-4 md:mx-8 mb-12 bg-white p-4 md:p-5 rounded-2xl shadow-[0_8px_30px_rgba(47,77,211,0.08)] border border-slate-100 flex flex-col md:flex-row gap-4" data-aos="fade-down">
                     <div class="relative flex-grow">
-                        <input type="text" placeholder="Cari judul pengumuman atau surat edaran..." class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-slate-50 text-slate-800 font-medium hover:bg-white transition-colors" v-model="searchQuery">
-                        <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/60" />
+<input 
+    type="text" 
+    placeholder="Cari judul pengumuman atau surat edaran..." 
+    title="Cari judul pengumuman atau surat edaran..." 
+    class="w-full pl-10 md:pl-12 pr-8 md:pr-10 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-slate-50 text-slate-800 font-medium text-xs sm:text-sm lg:text-base text-ellipsis hover:bg-white transition-colors" 
+    v-model="searchQuery"
+>                        <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/60" />
                         <button v-if="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-primary transition-colors">
                             <X class="w-5 h-5" />
                         </button>
