@@ -228,10 +228,10 @@ const isAtTopHome = computed(() => isHome.value && !isScrolled.value);
                             </div>
                         </transition>
 
-                        <transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0 translate-y-1" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition ease-in duration-150" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-1">
-                             <div v-if="activeDropdown === item.name && item.megaMenu" class="absolute left-1/2 transform -translate-x-1/2 mt-2 w-screen max-w-4xl px-4 sm:px-0">
-                                 <div class="rounded-2xl shadow-2xl ring-1 ring-black ring-opacity-5 overflow-hidden border border-gray-100">
-                                     <div class="relative grid gap-6 bg-white px-6 py-8 sm:gap-8 sm:p-10 grid-cols-2">
+<transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0 translate-y-1" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition ease-in duration-150" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-1">
+                             <div v-if="activeDropdown === item.name && item.megaMenu" class="absolute left-1/2 transform -translate-x-1/3 mt-2 w-[700px] lg:w-[760px] px-4 sm:px-0 z-50">
+                                 <div class="rounded-2xl shadow-2xl ring-1 ring-black ring-opacity-5 overflow-hidden border border-gray-100">                                     
+                                    <div class="relative grid gap-6 bg-white px-6 py-8 sm:gap-8 sm:p-10 grid-cols-2">
                                          <div v-for="column in item.columns" :key="column.title">
                                              <h3 class="text-xs font-black tracking-widest text-[#00509D] uppercase border-b border-blue-50 pb-3 mb-4">{{ column.title }}</h3>
                                              <ul role="list" class="space-y-4">

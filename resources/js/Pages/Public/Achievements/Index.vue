@@ -64,7 +64,7 @@ const toggleDropdown = (type: 'category' | 'level') => {
                 position: 'absolute',
                 top: `${rect.bottom + window.scrollY + 8}px`,
                 left: `${rect.left}px`,
-                width: `${rect.width}px`,
+                minWidth: `${rect.width}px`,
             };
         }
         isOpen.value = true;
@@ -305,8 +305,8 @@ const resetFilters = () => {
     <Teleport to="body">
         <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
             <div v-if="isCategoryOpen" id="category-dropdown-menu" :style="categoryDropdownStyle" class="z-[9999] bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-100 py-2 overflow-hidden">
-                <a @click="selectOption('category', '')" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors">Semua Kategori</a>
-                <a v-for="c in categories" :key="c" @click="selectOption('category', c)" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors">{{ c }}</a>
+                <a @click="selectOption('category', '')" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors whitespace-nowrap">Semua Kategori</a>
+                <a v-for="c in categories" :key="c" @click="selectOption('category', c)" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors whitespace-nowrap">{{ c }}</a>
             </div>
         </transition>
     </Teleport>
@@ -314,8 +314,8 @@ const resetFilters = () => {
     <Teleport to="body">
         <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
             <div v-if="isLevelOpen" id="level-dropdown-menu" :style="levelDropdownStyle" class="z-[9999] bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-100 py-2 overflow-hidden">
-                <a @click="selectOption('level', '')" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors">Semua Tingkat</a>
-                <a v-for="l in levels" :key="l" @click="selectOption('level', l)" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors">{{ l }}</a>
+                <a @click="selectOption('level', '')" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors whitespace-nowrap">Semua Tingkat</a>
+                <a v-for="l in levels" :key="l" @click="selectOption('level', l)" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors whitespace-nowrap">{{ l }}</a>
             </div>
         </transition>
     </Teleport>

@@ -72,8 +72,8 @@ const jalurMasuk = [
                         <Users class="w-3.5 h-3.5 md:w-4 md:h-4" /> Informasi Penerimaan Mahasiswa Baru
                     </div>
                     
-                    <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-optimus font-bold mb-4 md:mb-6 leading-[1.2] md:leading-[1.1] text-[#003566]">
-                        Wujudkan Mimpimu di<br class="hidden sm:block"/>
+                 <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-optimus font-bold mb-4 md:mb-6 leading-[1.2] md:leading-[1.1] text-[#003566]">
+                        Wujudkan Mimpimu di <br class="hidden sm:block"/>
                         <span class="text-primary drop-shadow-sm">Bidang Sains & Teknologi</span>
                     </h2>
                     
@@ -122,9 +122,9 @@ const jalurMasuk = [
                                 <component :is="jalur.icon" class="w-6 h-6 md:w-8 md:h-8" stroke-width="1.5" />
                             </div>
                             
-                            <h3 class="text-xl md:text-2xl font-bold mb-1.5 md:mb-2 transition-colors" :class="jalur.textColor">{{ jalur.title }}</h3>
-                            <p class="text-[9px] md:text-[10px] font-black tracking-widest text-slate-400 uppercase mb-4 md:mb-6 line-clamp-1">{{ jalur.kepanjangan }}</p>
-                            
+<h3 class="text-xl md:text-lg lg:text-2xl font-bold mb-1.5 md:mb-2 transition-colors" :class="jalur.textColor">{{ jalur.title }}</h3>
+                            <p class="text-[9px] md:text-[10px] lg:text-[11px] font-black tracking-widest text-slate-400 uppercase mb-4 md:mb-6 leading-tight">{{ jalur.kepanjangan }}</p>
+                                                        
                             <p class="text-slate-600 text-xs sm:text-sm leading-relaxed text-justify">
                                 {{ jalur.desc }}
                             </p>

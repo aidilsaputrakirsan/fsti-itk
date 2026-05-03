@@ -144,10 +144,10 @@ onMounted(() => {
 
         <section v-if="studyProgram.accreditation_text || studyProgram.accreditation_certificate_image" class="bg-white py-24 font-public-sans">
             <div class="container mx-auto px-6 lg:px-8 max-w-6xl">
-                <div class="bg-primary rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row relative" data-aos="fade-up">
+                <div class="bg-primary rounded-3xl overflow-hidden shadow-2xl flex flex-col lg:flex-row relative" data-aos="fade-up">
                     
                     <div class="p-10 md:p-14 flex flex-col text-white z-10 transition-all duration-500"
-                         :class="studyProgram.accreditation_certificate_image ? 'md:w-1/2 justify-center' : 'w-full items-center text-center'">
+                         :class="studyProgram.accreditation_certificate_image ? 'lg:w-1/2 justify-center items-center lg:items-start text-center lg:text-left' : 'w-full items-center text-center'">
                         
                         <div class="inline-flex items-center gap-2 bg-white/20 text-white px-4 py-2 rounded-lg font-bold text-sm mb-6 w-max border border-white/30 backdrop-blur-sm">
                             <Award class="w-5 h-5" /> Tersertifikasi Nasional
@@ -159,18 +159,19 @@ onMounted(() => {
                             {{ studyProgram.accreditation_text }}
                         </p>
                         
-                        <div v-if="studyProgram.accreditation_pdf_link" class="mt-auto">
-                            <a :href="studyProgram.accreditation_pdf_link" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 py-3.5 px-6 bg-white text-primary hover:bg-gray-100 font-bold rounded-xl shadow-sm transition-colors w-max">
-                                Unduh Sertifikat Resmi (PDF) <FileDown class="w-5 h-5" />
+                        <div v-if="studyProgram.accreditation_pdf_link" class="mt-auto w-full lg:w-max">
+                            <a :href="studyProgram.accreditation_pdf_link" target="_blank" rel="noopener noreferrer" 
+                               class="flex sm:inline-flex items-center justify-center gap-2 py-3.5 px-4 sm:px-6 bg-white text-primary hover:bg-gray-100 font-bold rounded-xl shadow-sm transition-colors w-full sm:w-max text-sm sm:text-base">
+                                Unduh Sertifikat Resmi (PDF) <FileDown class="w-5 h-5 flex-shrink-0" />
                             </a>
                         </div>
                     </div>
 
-                    <div v-if="studyProgram.accreditation_certificate_image" class="md:w-1/2 bg-white relative min-h-[350px] flex items-center justify-center p-8 border-l-8 border-primary/20">
+                    <div v-if="studyProgram.accreditation_certificate_image" class="w-full lg:w-1/2 bg-white relative min-h-[300px] md:min-h-[350px] flex items-center justify-center p-8 border-t-8 lg:border-t-0 lg:border-l-8 border-primary/20">
                         <img 
                             :src="studyProgram.accreditation_certificate_image" 
                             alt="Sertifikat Akreditasi" 
-                            class="w-full h-full max-h-[450px] object-contain hover:scale-105 transition-transform duration-500 drop-shadow-md"
+                            class="w-full h-full max-h-[350px] md:max-h-[450px] object-contain hover:scale-105 transition-transform duration-500 drop-shadow-md"
                         >
                     </div>
 

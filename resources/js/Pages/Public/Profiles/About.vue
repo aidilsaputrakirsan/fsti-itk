@@ -147,8 +147,8 @@ onMounted(() => {
                         
                         <div class="relative pl-6 md:pl-10">
                             <Quote aria-hidden="true" class="absolute -top-4 -left-2 w-12 h-12 text-blue-400/30 rotate-180 z-0" />
-                            <div class="relative z-10 text-[#0A2A5E] font-medium text-base md:text-lg leading-relaxed space-y-5 text-justify">
-                                <p>
+<div class="relative z-10 text-[#0A2A5E] font-medium text-sm md:text-base lg:text-lg leading-relaxed space-y-5 text-justify">
+                                    <p>
                                     {{ profile?.sambutan_dekan || 'Selamat datang di Fakultas Sains dan Teknologi Informasi (FSTI) Institut Teknologi Kalimantan. FSTI hadir sebagai pusat keunggulan dalam pengembangan sains dan teknologi informasi yang adaptif, inovatif, dan berwawasan lingkungan. Kami berkomitmen untuk menghasilkan lulusan yang tidak hanya unggul secara akademis, tetapi juga memiliki karakter yang kuat dan siap bersaing di tingkat nasional maupun internasional.' }}
                                 </p>
                                 <p v-if="profile?.sambutan_dekan_paragraf_2">
@@ -181,8 +181,7 @@ onMounted(() => {
                 <div class="text-center mb-16" data-aos="fade-up">
                     <h2 class="text-3xl md:text-4xl font-bold font-optimus text-primary mb-4 tracking-tight">Mengenal FSTI ITK</h2>
                     <div class="w-16 h-1 bg-primary mx-auto mb-5 rounded-full opacity-50"></div>
-                    <p class="text-gray-600 text-base md:text-lg max-w-3xl mx-auto leading-relaxed">{{ profile?.statistik?.deskripsi }}</p>
-                </div>
+<p class="text-gray-600 text-sm md:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed">{{ profile?.statistik?.deskripsi }}</p>                </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mx-auto max-w-7xl">
                     <div v-for="(stat, index) in displayStats" :key="index" class="bg-white rounded-2xl p-6 text-center border-t-4 border-transparent hover:border-t-primary border border-x-gray-100 border-b-gray-100 shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 transition-all duration-300 group" data-aos="zoom-in" :data-aos-delay="index * 40">
@@ -209,8 +208,7 @@ onMounted(() => {
                             <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-4 flex items-center gap-3">
                                 <FileText aria-hidden="true" class="w-6 h-6 text-primary" /> Tugas Pokok
                             </h3>
-                            <p class="text-gray-700 leading-relaxed text-justify font-medium">{{ profile?.tugas_fungsi?.tugas }}</p>
-                        </div>
+<p class="text-gray-700 text-sm md:text-base lg:text-lg leading-relaxed text-justify font-medium">{{ profile?.tugas_fungsi?.tugas }}</p>                        </div>
                     </div>
 
                     <div class="lg:col-span-7 space-y-5" data-aos="fade-left">
@@ -247,9 +245,9 @@ onMounted(() => {
                         <Quote aria-hidden="true" class="absolute -top-6 -left-6 text-white/5 w-36 h-36 group-hover:scale-125 group-hover:rotate-12 transition-transform duration-700" />
                         <Quote aria-hidden="true" class="absolute -bottom-6 -right-6 text-white/5 w-36 h-36 transform rotate-180 group-hover:scale-125 group-hover:-rotate-12 transition-transform duration-700" />
                         
-                        <h2 class="text-2xl md:text-3xl font-bold text-white leading-relaxed md:leading-relaxed relative z-10 font-public-sans drop-shadow-md">
-                            "{{ profile?.visi_misi?.visi }}"
-                        </h2>
+                        <h2 class="text-lg sm:text-xl md:text-3xl font-bold text-white leading-relaxed md:leading-relaxed relative z-10 font-public-sans drop-shadow-md text-justify md:text-center">
+    "{{ profile?.visi_misi?.visi }}"
+</h2>
                     </div>
                 </div>
 
@@ -294,9 +292,9 @@ onMounted(() => {
                             Fasilitas & Lingkungan Kampus
                         </h2>
                         <div class="w-16 h-1 bg-primary mx-auto mb-5 rounded-full opacity-50"></div>
-                        <p class="text-gray-600 text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
-                            Kami menyediakan berbagai fasilitas yang nyaman dan memadai untuk mendukung proses belajar, praktik, serta aktivitas harian mahasiswa di kampus.
-                        </p>
+                      <p class="text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed max-w-3xl mx-auto px-4 md:px-0">
+    Kami menyediakan berbagai fasilitas yang nyaman dan memadai untuk mendukung proses belajar, praktik, serta aktivitas harian mahasiswa di kampus.
+</p>
                     </div>
                 </div>
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import VueApexCharts from 'vue3-apexcharts';
 import type { ApexOptions } from 'apexcharts';
+const VueApexCharts = defineAsyncComponent(() => import('vue3-apexcharts'));
 import {
     Newspaper,
     Trophy,

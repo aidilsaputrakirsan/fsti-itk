@@ -75,31 +75,34 @@ const getIcon = (type) => {
 
         <section class="bg-white pt-8 md:pt-12 pb-6 font-public-sans overflow-x-hidden">
             <div class="relative py-6 md:py-10">
-                <div class="absolute inset-y-0 left-0 right-4 md:right-auto md:w-[95%] bg-primary/10 rounded-r-[2rem] md:rounded-r-[6rem] z-0"></div>
+                <div class="absolute inset-y-0 left-0 right-4 md:right-12 lg:right-auto lg:w-[95%] bg-primary/10 rounded-r-[2rem] md:rounded-r-[4rem] lg:rounded-r-[6rem] z-0"></div>
                 
-                <div class="max-w-7xl mx-auto pl-6 pr-12 md:px-8 relative z-10">
-                    <div class="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8">
-                        <div class="md:w-1/5 flex-shrink-0">
+                <div class="max-w-7xl mx-auto pl-6 pr-10 md:pr-24 lg:px-16 relative z-10">
+                    <div class="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-0">
+                        
+                        <div class="md:w-1/4 flex-shrink-0 md:pr-10">
                             <div class="w-12 h-1.5 md:h-2 bg-primary mb-3 rounded-full"></div>
-                            <h2 class="text-2xl sm:text-3xl md:text-4xl font-optimus font-bold text-primary leading-tight uppercase">
-                                Tentang <br class="hidden md:block" /> PPID
+                            <h2 class="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-optimus font-bold text-primary leading-tight uppercase">
+                                Tentang <br class="hidden lg:block" /> PPID
                             </h2>
                         </div>
-                        <div class="md:w-4/5 md:pl-6 md:border-l-2 border-primary/30">
-                            <p class="text-xs md:text-lg text-primary/95 font-medium leading-relaxed text-justify m-0">
+
+                        <div class="md:w-3/4 md:pl-10 md:border-l-2 border-primary/30 py-2">
+                            <p class="text-sm md:text-base lg:text-lg text-primary/95 font-medium leading-relaxed text-justify m-0">
                                 Dalam rangka pelaksanaan keterbukaan informasi publik di lingkungan Institut Teknologi Kalimantan, Tim Pejabat Pengelola Informasi dan Dokumentasi (PPID) tingkat Fakultas dibentuk. Pembentukan ini bertujuan untuk mempermudah pengelolaan dan pelayanan informasi kepada masyarakat sesuai dengan ketentuan peraturan perundang-undangan.
                             </p>
                         </div>
+                        
                     </div>
                 </div>
             </div>
         </section>
 
-      <section class="bg-white pb-16 pt-8 font-public-sans">
+        <section class="bg-white pb-16 pt-8 font-public-sans">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-10 md:mb-12">
-                    <h2 class="text-xl md:text-3xl font-bold font-optimus text-primary">Daftar Informasi Publik</h2>
-                    <p class="mt-2 md:mt-3 text-xs md:text-base text-gray-600 font-medium">Informasi tersedia di Fakultas Sains dan Teknologi Informasi</p>
+                    <h2 class="text-xl md:text-3xl font-bold font-optimus text-primary uppercase">Daftar Informasi Publik</h2>
+                    <p class="mt-2 md:mt-3 text-sm md:text-base text-gray-600 font-medium">Informasi tersedia di Fakultas Sains dan Teknologi Informasi</p>
                 </div>
 
                 <div class="flex flex-wrap justify-center gap-3 md:gap-8 max-w-6xl mx-auto px-1 md:px-4">
@@ -107,20 +110,25 @@ const getIcon = (type) => {
                         v-for="info in $page.props.informationTypes" 
                         :key="info.type"
                         :href="`/ppid/informasi/${info.slug}`"
-                        class="bg-white p-3 md:p-8 rounded-xl md:rounded-2xl shadow-sm border-t-4 border-primary hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 text-center group flex flex-col h-full w-[calc(50%-0.5rem)] md:w-[calc(50%-2rem)] max-w-[420px]"
+                        class="bg-white p-4 md:p-8 rounded-xl md:rounded-2xl shadow-sm border-t-4 border-primary hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 text-center group flex flex-col w-[calc(50%-0.5rem)] md:w-[calc(50%-2rem)] max-w-[420px] h-[380px] sm:h-[400px] md:h-[460px] lg:h-[500px]"
                     >
+                        
                         <div 
-                            class="flex items-center justify-center w-10 h-10 md:w-20 md:h-20 bg-primary/50 rounded-full mx-auto mb-3 md:mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300" 
+                            class="shrink-0 flex items-center justify-center w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 bg-primary/50 rounded-full mx-auto mb-3 md:mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300" 
                             v-html="getIcon(info.type)">
                         </div>
                         
-                        <h3 class="text-xs md:text-xl font-bold text-primary mb-2 md:mb-4 uppercase">Informasi {{ info.type }}</h3>
+                        <div class="shrink-0 min-h-[2.5rem] sm:min-h-[3rem] md:min-h-[4rem] flex items-center justify-center mb-2 md:mb-4">
+                            <h3 class="text-xs md:text-lg lg:text-xl font-bold text-primary uppercase leading-tight px-1">
+                                Informasi {{ info.type }}
+                            </h3>
+                        </div>
                         
-                        <p class="text-[9px] md:text-[15px] text-gray-600 leading-relaxed flex-grow text-center px-1 md:px-0 line-clamp-3 md:line-clamp-none">
-                            Kumpulan informasi publik klasifikasi {{ info.type }} di lingkungan FSTI.
+                        <p class="text-[10px] md:text-sm lg:text-base text-gray-600 leading-relaxed flex-grow text-center px-1 md:px-0 overflow-hidden line-clamp-5 md:line-clamp-none">
+                            Kumpulan informasi publik yang masuk ke dalam Klasifikasi {{ info.type }} di Lingkungan Fakultas Sains dan Teknologi Informasi.
                         </p>
                         
-                        <div class="flex flex-col sm:flex-row items-center justify-center gap-1.5 md:gap-3 mt-4 md:mt-6 mb-5 md:mb-8">
+                        <div class="shrink-0 flex flex-col sm:flex-row items-center justify-center gap-1.5 md:gap-3 mt-3 md:mt-6 mb-4 md:mb-8">
                             <span class="text-[8px] md:text-xs font-bold bg-primary/20 text-primary px-2 py-1 md:px-3 md:py-1.5 rounded-md whitespace-nowrap">
                                 {{ info.total_categories }} Kategori
                             </span>
@@ -129,7 +137,7 @@ const getIcon = (type) => {
                             </span>
                         </div>
 
-                        <div class="mt-auto border-t border-gray-100 pt-4 md:pt-6">
+                        <div class="shrink-0 mt-auto border-t border-gray-100 pt-3 md:pt-6">
                             <span class="inline-flex items-center justify-center w-full px-2 md:px-5 py-2 md:py-2.5 bg-gray-50 text-primary border border-gray-200 font-bold text-[9px] md:text-sm rounded-lg group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300">
                                 Detail
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 md:h-4 md:w-4 ml-1 md:ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">

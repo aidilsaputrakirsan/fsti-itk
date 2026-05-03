@@ -106,8 +106,7 @@ const maskNip = (nip: string | null) => {
 
                 <div class="mb-12 bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 relative z-20 max-w-3xl mx-auto" data-aos="fade-down">
                     <div class="relative">
-                        <input type="text" placeholder="Cari nama staf, jabatan, atau NIP..." v-model="search" class="w-full pl-12 pr-10 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50 text-gray-800 font-medium transition-all" />
-                        <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+<input type="text" placeholder="Cari nama staf, jabatan, atau NIP..." v-model="search" class="w-full pl-12 pr-10 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50 text-gray-800 font-medium text-xs sm:text-sm md:text-base text-ellipsis transition-all" />                        <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <button v-if="search" @click="search = ''" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"><X class="w-5 h-5" /></button>
                     </div>
                 </div>
