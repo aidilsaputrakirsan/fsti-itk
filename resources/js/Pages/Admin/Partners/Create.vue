@@ -146,61 +146,61 @@ const submit = () => {
                     </div>
 
                     <label class="md:pt-3 text-sm font-bold text-gray-800">Daftar Kegiatan</label>
-                    <div>
-                        <p class="text-xs text-gray-500 mb-3 font-medium">Tambahkan rincian kegiatan. Jika ada berita yang berkaitan, Anda dapat mencarinya (opsional).</p>
-                        
-                        <div class="space-y-3">
-                            <div v-for="(activity, index) in form.activities" :key="index" class="flex flex-col sm:flex-row gap-2 items-start bg-gray-50 p-3 rounded-xl border border-gray-200">
-                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 flex-grow w-full">
-                                    <div>
-                                        <label class="block text-[11px] font-bold text-gray-600 mb-1 uppercase">Nama Kegiatan <span class="text-red-500">*</span></label>
-                                        <input v-model="activity.name" type="text" placeholder="Cth: Penelitian Bersama" class="block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary text-sm py-2" required>
-                                        <InputError v-if="form.errors[`activities.${index}.name`]" :message="form.errors[`activities.${index}.name`]" class="mt-1" />
-                                    </div>
-                                    <div>
-                                        <label class="block text-[11px] font-bold text-gray-600 mb-1 uppercase">Tautkan ke Berita (Opsional)</label>
-                                        
-                                        <div class="relative w-full">
-                                            <input 
-                                                type="text" 
-                                                v-model="activity._search"
-                                                @focus="activity._isOpen = true"
-                                                @blur="handleBlur(activity)"
-                                                @input="handleSearchInput(activity)"
-                                                placeholder="Cari judul berita..."
-                                                class="block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary text-sm py-2 pr-8 text-gray-700 bg-white"
-                                            />
-                                            <button v-if="activity.post_id || activity._search" @click="selectPost(activity, null)" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500">
-                                                <XMarkIcon class="w-4 h-4" />
-                                            </button>
-                                            <ChevronDownIcon v-else class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-
-                                            <div v-if="activity._isOpen" class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-52 overflow-y-auto">
-                                                <ul class="py-1 text-sm text-gray-700">
-                                                    <li v-if="filteredPosts(activity._search).length === 0" class="px-4 py-2 text-gray-500 italic">
-                                                        Berita tidak ditemukan.
-                                                    </li>
-                                                    <li @click="selectPost(activity, null)" class="px-4 py-2.5 hover:bg-red-50 hover:text-red-600 cursor-pointer text-gray-500 font-medium border-b border-gray-100 transition-colors">
-                                                        -- Hapus Tautan Berita --
-                                                    </li>
-                                                    <li v-for="post in filteredPosts(activity._search)" :key="post.id" @click="selectPost(activity, post)" class="px-4 py-2 hover:bg-blue-50 cursor-pointer truncate transition-colors" :class="{'bg-blue-50 text-primary font-semibold': activity.post_id === post.id}">
-                                                        {{ post.title }}
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        </div>
-                                </div>
-                                <button type="button" @click="removeActivity(index)" class="mt-5 p-2 text-red-500 hover:bg-red-100 rounded-lg border border-transparent hover:border-red-200 transition-colors shrink-0" title="Hapus Kegiatan">
-                                    <TrashIcon class="w-5 h-5" />
-                                </button>
-                            </div>
-                        </div>
-
-                        <button type="button" @click="addActivity" class="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:text-primary-hover bg-blue-50 px-4 py-2 rounded-lg transition-colors">
-                            <PlusIcon class="w-4 h-4" stroke-width="2.5" /> Tambah Kegiatan
+<div class="min-w-0">
+    <p class="text-xs text-gray-500 mb-3 font-medium">Tambahkan rincian kegiatan. Jika ada berita yang berkaitan, Anda dapat mencarinya (opsional).</p>
+    
+    <div class="space-y-3">
+        <div v-for="(activity, index) in form.activities" :key="index" class="flex flex-col sm:flex-row gap-2 items-start bg-gray-50 p-3 rounded-xl border border-gray-200">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 flex-grow w-full min-w-0">
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-600 mb-1 uppercase">Nama Kegiatan <span class="text-red-500">*</span></label>
+                    <input v-model="activity.name" type="text" placeholder="Cth: Penelitian Bersama" class="block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary text-sm py-2" required>
+                    <InputError v-if="form.errors[`activities.${index}.name`]" :message="form.errors[`activities.${index}.name`]" class="mt-1" />
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-600 mb-1 uppercase">Tautkan ke Berita (Opsional)</label>
+                    
+                    <div class="relative w-full">
+                        <input 
+                            type="text" 
+                            v-model="activity._search"
+                            @focus="activity._isOpen = true"
+                            @blur="handleBlur(activity)"
+                            @input="handleSearchInput(activity)"
+                            placeholder="Ketik untuk mencari judul berita..."
+                            class="block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary text-sm py-2 pr-8 text-gray-700 bg-white"
+                        />
+                        <button v-if="activity.post_id || activity._search" @click="selectPost(activity, null)" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500">
+                            <XMarkIcon class="w-4 h-4" />
                         </button>
+                        <ChevronDownIcon v-else class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+
+                        <div v-if="activity._isOpen" class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-52 overflow-y-auto">
+                            <ul class="py-1 text-sm text-gray-700">
+                                <li v-if="filteredPosts(activity._search).length === 0" class="px-4 py-2 text-gray-500 italic">
+                                    Berita tidak ditemukan.
+                                </li>
+                                <li @click="selectPost(activity, null)" class="px-4 py-2.5 hover:bg-red-50 hover:text-red-600 cursor-pointer text-gray-500 font-medium border-b border-gray-100 transition-colors">
+                                    -- Hapus Tautan Berita --
+                                </li>
+                                <li v-for="post in filteredPosts(activity._search)" :key="post.id" @click="selectPost(activity, post)" class="px-4 py-2 hover:bg-blue-50 cursor-pointer truncate transition-colors" :class="{'bg-blue-50 text-primary font-semibold': activity.post_id === post.id}">
+                                    {{ post.title }}
+                                </li>
+                            </ul>
+                        </div>
                     </div>
+                </div>
+            </div>
+            <button type="button" @click="removeActivity(index)" class="mt-5 p-2 text-red-500 hover:bg-red-100 rounded-lg border border-transparent hover:border-red-200 transition-colors shrink-0" title="Hapus Kegiatan">
+                <TrashIcon class="w-5 h-5" />
+            </button>
+        </div>
+    </div>
+
+    <button type="button" @click="addActivity" class="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:text-primary-hover bg-blue-50 px-4 py-2 rounded-lg transition-colors">
+        <PlusIcon class="w-4 h-4" stroke-width="2.5" /> Tambah Kegiatan
+    </button>
+</div>
 
                 </div>
 

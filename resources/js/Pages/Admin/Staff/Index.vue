@@ -8,6 +8,7 @@ import {
     TrashIcon, 
     ExclamationTriangleIcon, 
     CheckCircleIcon,
+    UserIcon
 } from '@heroicons/vue/24/outline';
 import { Link, router, usePage, Head } from '@inertiajs/vue3';
 import { ref, watch, computed } from 'vue';
@@ -192,17 +193,18 @@ watch(flashSuccess, (message) => {
                     </thead>
                     <tbody>
                         <tr v-if="props.staff.data.length > 0" v-for="person in props.staff.data" :key="person.id">
-                            <td>
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10 rounded-full border border-gray-200 overflow-hidden bg-gray-100">
-                                        <img v-if="person.display_image" :src="person.display_image" alt="" class="h-full w-full object-cover">
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="font-bold text-gray-900 line-clamp-1">{{ person.name }}</div>
-                                        <div class="text-xs text-gray-500 mt-0.5">NIP: {{ person.nip || '-' }}</div>
-                                    </div>
-                                </div>
-                            </td>
+                           <td>
+    <div class="flex items-center">
+        <div class="flex-shrink-0 h-10 w-10 rounded-full border border-gray-200 overflow-hidden bg-gray-100 flex items-center justify-center">
+            <img v-if="person.display_image" :src="person.display_image" alt="" class="h-full w-full object-cover">
+            <UserIcon v-else class="h-6 w-6 text-gray-400 opacity-60" />
+        </div>
+        <div class="ml-4">
+            <div class="font-bold text-gray-900 line-clamp-1">{{ person.name }}</div>
+            <div class="text-xs text-gray-500 mt-0.5">NIP: {{ person.nip || '-' }}</div>
+        </div>
+    </div>
+</td>
                             <td>
                                 <span class="inline-flex rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider mb-1.5" :class="person.type === 'Dosen' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'">
                                     {{ person.type }}

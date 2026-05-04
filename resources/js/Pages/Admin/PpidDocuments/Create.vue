@@ -138,9 +138,9 @@ const submit = () => {
                                 :disabled="form.file !== null"
                             >
                         </div>
-                        <div class="mt-3 bg-blue-50 border border-blue-100 rounded-lg p-3 text-xs text-gray-700 leading-relaxed">
-                            Gunakan opsi ini jika dokumen terlalu besar untuk diunggah langsung (Maks 10 MB). Unggah file ke Google Drive (pastikan akses terbuka untuk publik), lalu masukkan link-nya ke kolom ini.
-                        </div>
+                       <div class="mt-3 bg-blue-50 border border-blue-100 rounded-lg p-3 text-xs text-gray-700 leading-relaxed">
+    Gunakan opsi ini jika dokumen menggunakan tautan eksternal (Google Drive, dll) tanpa batasan ukuran, atau untuk mengarahkan dokumen ke halaman internal website (contoh: masukkan link halaman Kontak).
+</div>
                         <InputError :message="form.errors.file_url" />
                     </div>
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useForm, Link, Head } from '@inertiajs/vue3';
+import { useForm, Link, Head, router  } from '@inertiajs/vue3';
 import { ArrowLeftIcon, PencilSquareIcon, UserCircleIcon } from '@heroicons/vue/24/outline';
 import InputError from '@/Components/InputError.vue';
 
@@ -50,7 +50,14 @@ const submit = () => {
 
     if (hasError) return;
 
-    form.post(route('admin.alumni-testimonials.update', props.testimonial.id));
+    if (!form.photo) {
+        form.transform((data) => {
+            const { photo, ...rest } = data;
+            return rest;
+        }).post(route('admin.alumni-testimonials.update', props.testimonial.id));
+    } else {
+        form.post(route('admin.alumni-testimonials.update', props.testimonial.id));
+    }
 };
 </script>
 

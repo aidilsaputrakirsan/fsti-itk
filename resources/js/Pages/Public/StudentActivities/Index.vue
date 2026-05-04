@@ -83,6 +83,21 @@ const handleClickOutside = (event) => {
     }
 };
 
+const isModalOpen = ref(false);
+const selectedKegiatan = ref(null);
+
+const openModal = (keg) => {
+    selectedKegiatan.value = keg;
+    isModalOpen.value = true;
+    document.body.style.overflow = 'hidden';
+};
+
+const closeModal = () => {
+    isModalOpen.value = false;
+    setTimeout(() => { selectedKegiatan.value = null; }, 300);
+    document.body.style.overflow = '';
+};
+
 onMounted(() => {
     AOS.init({ duration: 800, once: true });
     document.addEventListener('mousedown', handleClickOutside);
@@ -303,9 +318,13 @@ const formatDateLengkap = (dateStr) => {
                                     {{ keg.title }}
                                 </h3>
                                 
-                                <p v-if="keg.description" class="text-sm text-slate-500 line-clamp-2 mb-6 leading-relaxed">
-                                    {{ keg.description }}
-                                </p>
+                               <p v-if="keg.description" class="text-sm text-slate-500 line-clamp-3 mb-2 leading-relaxed">
+    {{ keg.description }}
+</p>
+<button v-if="keg.description" @click="openModal(keg)" class="text-primary text-[13px] font-bold text-left hover:text-primary-hover mb-6 w-fit transition-colors">
+    Baca Selengkapnya &rarr;
+</button>
+<div v-else class="mb-6"></div>
 
                                 <div class="mt-auto space-y-3 pt-5 border-t border-slate-100">
                                     <div v-if="keg.end_date" class="flex items-start gap-3 text-sm text-slate-600">
@@ -360,5 +379,45 @@ const formatDateLengkap = (dateStr) => {
 
             </div>
         </div>
+        <Teleport to="body">
+    <transition enter-active-class="ease-out duration-300" enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="ease-in duration-200" leave-from-class="opacity-100" leave-to-class="opacity-0">
+        <div v-if="isModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center px-4 pt-20 pb-4 sm:p-0">
+            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" @click="closeModal"></div>
+            
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all w-full max-w-2xl relative z-10 max-h-[90vh] flex flex-col">
+                <div class="p-6 sm:p-8 flex-grow overflow-y-auto">
+                    <div class="flex justify-between items-start mb-6">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-primary font-semibold rounded-lg text-xs uppercase tracking-wider border border-blue-100">
+                            <UsersIcon class="w-4 h-4" /> {{ selectedKegiatan?.organizer || 'Kemahasiswaan' }}
+                        </span>
+                        <button @click="closeModal" class="p-2 bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors">
+                            <X class="w-5 h-5" />
+                        </button>
+                    </div>
+                    
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-6 leading-tight">{{ selectedKegiatan?.title }}</h2>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 sm:gap-8 mb-8 p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div>
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Pelaksanaan</p>
+                            <p class="text-sm font-bold text-slate-800">
+                                {{ formatDateLengkap(selectedKegiatan?.start_date) }}
+                                <span v-if="selectedKegiatan?.end_date"> - {{ formatDateLengkap(selectedKegiatan?.end_date) }}</span>
+                            </p>
+                        </div>
+                        <div v-if="selectedKegiatan?.location">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Lokasi</p>
+                            <p class="text-sm font-bold text-slate-800">{{ selectedKegiatan?.location }}</p>
+                        </div>
+                    </div>
+
+                    <div class="prose prose-sm sm:prose-base max-w-none text-slate-600 leading-relaxed whitespace-pre-line text-justify">
+                        {{ selectedKegiatan?.description }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </transition>
+</Teleport>
     </PublicLayout>
 </template>

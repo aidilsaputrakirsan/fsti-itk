@@ -145,35 +145,35 @@ watch(flashSuccess, (message) => {
         </div>
 
         <div class="flex flex-col lg:flex-row items-center justify-between gap-4 mb-6">
-            <div class="relative w-full lg:flex-grow">
-                <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                <input 
-                    v-model="search"
-                    type="text" 
-                    placeholder="Cari Program Studi atau Jurusan..." 
-                    class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-primary focus:ring-primary transition-colors" 
-                />
-            </div>
-            
-            <div class="flex flex-col sm:flex-row w-full lg:w-auto items-center gap-4 flex-shrink-0">
-                <div class="relative w-full sm:w-56">
-                    <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
-                    <select v-model="departmentFilter" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors">
-                        <option value="">Semua Jurusan</option>
-                        <option v-for="dep in departments" :key="dep" :value="dep">{{ dep }}</option>
-                    </select>
-                </div>
-
-                <div class="relative w-full sm:w-48">
-                    <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
-                    <select v-model="statusFilter" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors">
-                        <option value="">Semua Jenjang</option>
-                        <option value="S1">S1 (Sarjana)</option>
-                        <option value="S2">S2 (Magister)</option>
-                    </select>
-                </div>
-            </div>
+    <div class="relative w-full lg:flex-grow">
+        <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+        <input 
+            v-model="search"
+            type="text" 
+            placeholder="Cari Program Studi atau Jurusan..." 
+            class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-primary focus:ring-primary transition-colors" 
+        />
+    </div>
+    
+    <div class="flex flex-col sm:flex-row w-full lg:w-auto items-center gap-4 flex-shrink-0">
+        <div class="relative w-full sm:flex-1 lg:flex-none lg:w-56">
+            <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
+            <select v-model="departmentFilter" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors">
+                <option value="">Semua Jurusan</option>
+                <option v-for="dep in departments" :key="dep" :value="dep">{{ dep }}</option>
+            </select>
         </div>
+
+        <div class="relative w-full sm:flex-1 lg:flex-none lg:w-48">
+            <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
+            <select v-model="statusFilter" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors">
+                <option value="">Semua Jenjang</option>
+                <option value="S1">S1 (Sarjana)</option>
+                <option value="S2">S2 (Magister)</option>
+            </select>
+        </div>
+    </div>
+</div>
 
         <div class="bg-white shadow-sm p-4 sm:p-6 rounded-xl border border-gray-100 overflow-hidden">
             <h3 class="text-lg font-bold text-gray-900 mb-4 hidden sm:block">Daftar Program Studi</h3>

@@ -23,7 +23,7 @@ class ContactController extends Controller
         $validated = $request->validate([
             'address' => 'required|string',
             'operating_hours' => 'required|string',
-            'google_maps_iframe' => 'nullable|string',
+            'google_maps_iframe' => 'nullable|url',
             'email' => 'required|email',
             'academic_wa_number' => 'required|string|min:5|max:50',
             'academic_wa_link' => 'required|url',
@@ -33,6 +33,8 @@ class ContactController extends Controller
             'instagram_link' => 'required|url',
             'tiktok_username' => 'required|string|max:100',
             'tiktok_link' => 'required|url',
+        ], [
+            'google_maps_iframe.url' => 'Tautan sematan peta harus berupa URL valid.',
         ]);
 
         Contact::updateOrCreate(

@@ -153,7 +153,7 @@ class StaffController extends Controller
             'type' => 'required|in:Dosen,Tendik',
             'structural_position' => ['nullable', 'string', 'max:255', 'unique:staff,structural_position'],
             'functional_position' => 'nullable|string|max:255',
-            'image_url' => 'nullable|string',
+            'image_url' => 'nullable|url',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'is_active' => 'required|boolean',
             'education_history' => 'nullable|array',
@@ -169,7 +169,8 @@ class StaffController extends Controller
             'nip.numeric' => 'NIP/NIPH harus berupa angka.',
             'nip.unique' => 'NIP/NIPH ini sudah terdaftar pada civitas lain.',
             'structural_position.unique' => 'Jabatan Struktural ini sudah terdaftar pada civitas lain.',
-            'academic_profiles.*.url' => 'Format link profil tidak valid.'
+            'academic_profiles.*.url' => 'Format link profil tidak valid.',
+            'image_url.url' => 'Format link drive (URL) foto diri formal tidak valid.'
         ]);
 
         if ($request->filled('structural_position')) {
@@ -210,7 +211,7 @@ class StaffController extends Controller
             'type' => 'required|in:Dosen,Tendik',
             'structural_position' => ['nullable', 'string', 'max:255', Rule::unique('staff')->ignore($staff->id)],
             'functional_position' => 'nullable|string|max:255',
-            'image_url' => 'nullable|string',
+            'image_url' => 'nullable|url',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'is_active' => 'required|boolean',
             'education_history' => 'nullable|array',
@@ -226,7 +227,8 @@ class StaffController extends Controller
             'nip.numeric' => 'NIP/NIPH harus berupa angka.',
             'nip.unique' => 'NIP/NIPH ini sudah terdaftar pada civitas lain.',
             'structural_position.unique' => 'Jabatan Struktural ini sudah terdaftar pada civitas lain.',
-            'academic_profiles.*.url' => 'Format link profil tidak valid.'
+            'academic_profiles.*.url' => 'Format link profil tidak valid.',
+            'image_url.url' => 'Format link drive (URL) foto diri formal tidak valid.'
         ]);
 
         if ($request->filled('structural_position')) {

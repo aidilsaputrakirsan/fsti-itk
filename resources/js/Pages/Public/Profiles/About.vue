@@ -7,7 +7,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 import { 
-    Users, GraduationCap, Building, Zap, Beaker, UserCheck, Briefcase, Network, Quote, FileText, Globe, Cpu, Code
+    Users, GraduationCap, Building, Zap, Beaker, UserCheck, Briefcase, Network, Quote, FileText, Globe, Cpu, Code, User
 } from 'lucide-vue-next';
 
 const props = defineProps({ 
@@ -118,18 +118,21 @@ onMounted(() => {
                     
                     <div class="lg:col-span-5 relative order-2 lg:order-1" data-aos="fade-right">
                         <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-gradient-to-b from-slate-50 to-slate-200 w-full">
-                            <img 
-                                :src="dekan?.display_image ? dekan.display_image : '/images/lambang-itk.webp'" 
-                                :alt="dekan?.name || 'Dekan FSTI ITK'" 
-                                class="w-full h-auto object-cover object-bottom hover:scale-105 transition-transform duration-700"
-                                @error="(e) => e.target.src = '/images/lambang-itk.webp'"
-                            >
-                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent pointer-events-none"></div>
-                            <div class="absolute bottom-0 left-0 p-6 md:p-8 w-full z-10">
-                                <h3 class="text-white font-bold text-xl md:text-2xl drop-shadow-md mb-1">{{ dekan?.name || 'Nama Dekan' }}</h3>
-                                <p class="text-blue-300 font-bold text-sm md:text-base drop-shadow uppercase tracking-wide">{{ dekan?.structural_position || 'Dekan FSTI ITK' }}</p>
-                            </div>
-                        </div>
+    <img v-if="dekan?.display_image"
+        :src="dekan.display_image" 
+        :alt="dekan?.name || 'Dekan FSTI ITK'" 
+        class="w-full h-auto object-cover object-bottom hover:scale-105 transition-transform duration-700"
+    >
+    <div v-else class="w-full h-[400px] md:h-[450px] lg:h-[500px] flex items-center justify-center bg-gray-200 text-gray-400 hover:scale-105 transition-transform duration-700">
+        <User class="w-32 h-32 opacity-60 text-gray-400" />
+    </div>
+    
+    <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 p-6 md:p-8 w-full z-10">
+        <h3 class="text-white font-bold text-xl md:text-2xl drop-shadow-md mb-1">{{ dekan?.name || 'Belum Ada Dekan' }}</h3>
+        <p class="text-blue-300 font-bold text-sm md:text-base drop-shadow uppercase tracking-wide">{{ dekan?.structural_position || 'Dekan Fakultas Sains dan Teknologi Informasi ITK' }}</p>
+    </div>
+</div>
                         
                         <div class="absolute top-6 -left-6 w-full h-full border-2 border-primary rounded-2xl z-0 rounded-bl-[4rem]"></div>
                         <div class="absolute -bottom-8 -right-8 w-32 h-32 bg-yellow-400 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-pulse"></div>
@@ -162,8 +165,8 @@ onMounted(() => {
                                 <UserCheck aria-hidden="true" class="w-7 h-7" />
                             </div>
                             <div>
-                                <p class="font-bold text-gray-900 text-lg">{{ dekan?.name || 'Pimpinan Fakultas' }}</p>
-                                <p class="text-sm text-gray-500">{{ dekan?.structural_position || 'Fakultas Sains dan Teknologi Informasi' }}</p>
+                                <p class="font-bold text-gray-900 text-lg">{{ dekan?.name || 'Belum Ada Dekan' }}</p>
+                                <p class="text-sm text-gray-500">{{ dekan?.structural_position || 'Dekan Fakultas Sains dan Teknologi Informasi ITK' }}</p>
                             </div>
                         </div>
                     </div>

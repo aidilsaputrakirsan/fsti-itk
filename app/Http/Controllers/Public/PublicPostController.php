@@ -65,9 +65,6 @@ class PublicPostController extends Controller
                 ->leftJoin('post_categories', 'posts.post_category_id', '=', 'post_categories.id')
                 ->where('posts.status', 'Terbitkan')
                 ->where('post_categories.name', $categoryName)
-                ->when($headline, function ($query) use ($headline) {
-                    return $query->where('posts.id', '!=', $headline->id);
-                })
                 ->latest('posts.created_at')
                 ->take(3)
                 ->get();

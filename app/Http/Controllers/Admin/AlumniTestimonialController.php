@@ -110,6 +110,8 @@ class AlumniTestimonialController extends Controller
                 Storage::disk('public')->delete($alumniTestimonial->photo);
             }
             $validated['photo'] = $request->file('photo')->store('alumni_testimonials', 'public');
+        } else {
+            unset($validated['photo']);
         }
 
         $alumniTestimonial->update($validated);

@@ -2,15 +2,23 @@
 import { ref, watch, computed } from 'vue';
 import { Link, router, usePage, Head } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { debounce } from 'lodash';
 import { 
-    PlusIcon, PencilSquareIcon, TrashIcon, ExclamationTriangleIcon, CheckCircleIcon, DocumentTextIcon, LinkIcon 
+    PlusIcon, PencilSquareIcon, TrashIcon, ExclamationTriangleIcon, CheckCircleIcon, DocumentTextIcon, LinkIcon, MagnifyingGlassIcon,
 } from '@heroicons/vue/24/outline';
 
 defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
     documents: any;
+    filters: any;
 }>();
+
+const search = ref(props.filters?.search || '');
+
+watch(search, debounce((value: string) => {
+    router.get(route('admin.zi.document.index'), { search: value }, { preserveState: true, replace: true });
+}, 300));
 
 const formattedLinks = computed(() => {
     if (!props.documents?.links) return [];
@@ -99,6 +107,13 @@ watch(flashSuccess, (message) => {
                 Tambah Dokumen
             </Link>
         </div>
+
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-4 mb-6">
+    <div class="relative w-full lg:flex-grow">
+        <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+        <input v-model="search" type="text" placeholder="Cari judul dokumen ZI..." class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-primary focus:ring-primary transition-colors" />
+    </div>
+</div>
 
         <div class="bg-white shadow-sm p-4 sm:p-6 rounded-xl border border-gray-100 overflow-hidden">
             <h3 class="text-lg font-bold text-gray-900 mb-4 hidden sm:block">Daftar Dokumen</h3>

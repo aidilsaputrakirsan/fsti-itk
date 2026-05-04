@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { PlusIcon, PencilSquareIcon, TrashIcon, ExclamationTriangleIcon, CheckCircleIcon } from '@heroicons/vue/24/outline';
+import { PlusIcon, PencilSquareIcon, TrashIcon, ExclamationTriangleIcon, CheckCircleIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 import InputError from '@/Components/InputError.vue';
 
 defineOptions({ layout: AdminLayout });
@@ -10,6 +10,12 @@ defineOptions({ layout: AdminLayout });
 const props = defineProps<{
     departments: any[];
 }>();
+
+const search = ref('');
+const filteredDepartments = computed(() => {
+    if (!search.value) return props.departments;
+    return props.departments.filter(d => d.name.toLowerCase().includes(search.value.toLowerCase()));
+});
 
 const page = usePage();
 const showNotification = ref(false);
@@ -95,14 +101,28 @@ const confirmDelete = () => {
         <Head title="Kelola Jurusan" />
 
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Kelola Jurusan</h1>
-                <p class="mt-1 text-gray-600">Manajemen daftar jurusan yang membawahi program studi.</p>
-            </div>
-            <button @click="openCreateModal" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
-                <PlusIcon class="h-5 w-5 stroke-2" /> Tambah Jurusan
-            </button>
-        </div>
+    <div>
+        <h1 class="text-3xl font-bold text-gray-900">Kelola Jurusan</h1>
+        <p class="mt-1 text-gray-600">Manajemen daftar jurusan yang membawahi program studi.</p>
+    </div>
+    <button @click="openCreateModal" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
+        <PlusIcon class="h-5 w-5 stroke-2" /> Tambah Jurusan
+    </button>
+</div>
+
+<div class="flex flex-col lg:flex-row items-center justify-between gap-4 mb-6">
+    <div class="relative w-full lg:flex-grow">
+        <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+        <input 
+            v-model="search"
+            type="text" 
+            placeholder="Cari jurusan..." 
+            class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-primary focus:ring-primary transition-colors" 
+        />
+    </div>
+    
+    <div class="flex flex-col sm:flex-row w-full lg:w-auto items-center gap-4 flex-shrink-0 hidden lg:block"></div>
+</div>
 
         <div class="bg-white shadow-sm p-4 sm:p-6 rounded-xl border border-gray-100 overflow-hidden">
             <h3 class="text-lg font-bold text-gray-900 mb-4 hidden sm:block">Daftar Jurusan</h3>
@@ -118,8 +138,7 @@ const confirmDelete = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-if="departments.length > 0" v-for="(dept, index) in departments" :key="dept.id">
-                            <td class="text-center font-medium text-gray-500">{{ index + 1 }}</td>
+<tr v-if="filteredDepartments.length > 0" v-for="(dept, index) in filteredDepartments" :key="dept.id">                            <td class="text-center font-medium text-gray-500">{{ index + 1 }}</td>
                             <td><div class="font-bold text-gray-900 leading-snug">{{ dept.name }}</div></td>
                             <td class="text-center">
                                 <span class="inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800">

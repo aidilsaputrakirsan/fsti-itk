@@ -82,6 +82,21 @@ const changePage = (page) => {
     }
 };
 
+const isModalOpen = ref(false);
+const selectedBeasiswa = ref(null);
+
+const openModal = (beasiswa) => {
+    selectedBeasiswa.value = beasiswa;
+    isModalOpen.value = true;
+    document.body.style.overflow = 'hidden';
+};
+
+const closeModal = () => {
+    isModalOpen.value = false;
+    setTimeout(() => { selectedBeasiswa.value = null; }, 300);
+    document.body.style.overflow = '';
+};
+
 onMounted(() => {
     AOS.init({ duration: 800, once: true });
 });
@@ -192,33 +207,23 @@ const getIconColorClasses = (index) => {
                                     {{ beasiswa.title }}
                                 </h3>
                                 
-                                <p class="text-[10px] sm:text-xs font-semibold tracking-wider text-slate-400 uppercase mb-3 sm:mb-4 flex items-center gap-1 sm:gap-1.5">
-                                    <Landmark class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" /> 
-                                    <span class="truncate">{{ beasiswa.provider || 'Mitra FSTI ITK' }}</span>
-                                </p>
+                               
+                                <p class="text-[10px] sm:text-xs font-semibold tracking-wider text-slate-400 uppercase mb-3 sm:mb-4 flex items-start gap-1 sm:gap-1.5">
+                                    <Landmark class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 mt-0.5" /> 
+                                    <span class="whitespace-normal break-words leading-tight">{{ beasiswa.provider || 'Mitra FSTI ITK' }}</span>
+                                </p>                    
 
-                                <p class="text-slate-500 text-[11px] sm:text-sm leading-relaxed flex-grow mb-4 sm:mb-6 whitespace-pre-line text-justify line-clamp-4 md:line-clamp-none">
-                                    {{ beasiswa.description }}
-                                </p>
 
-                                <a 
-                                    v-if="beasiswa.link_url" 
-                                    :href="beasiswa.link_url" 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    class="mt-auto flex items-center justify-center sm:justify-between w-full py-2.5 px-3 sm:py-3.5 sm:px-5 bg-slate-50 hover:bg-primary group-hover:bg-primary rounded-xl text-slate-600 hover:text-white group-hover:text-white text-[10px] sm:text-sm font-bold transition-all duration-300 gap-1.5 border border-slate-100 group-hover:border-transparent"
-                                >
-                                    <span class="truncate">Lihat Selengkapnya</span>
-                                    <ExternalLink class="w-3 h-3 sm:w-4 sm:h-4 transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform shrink-0" />
-                                </a>
-                                
-                                <button 
-                                    v-else 
-                                    disabled 
-                                    class="mt-auto flex items-center justify-center sm:justify-between w-full py-2.5 px-3 sm:py-3.5 sm:px-5 bg-slate-50 rounded-xl text-slate-400 text-[10px] sm:text-sm font-bold cursor-not-allowed border border-slate-100"
-                                >
-                                    <span class="truncate">Belum Tersedia</span>
-                                </button>
+<p class="text-slate-500 text-[11px] sm:text-sm leading-relaxed mb-4 sm:mb-6 whitespace-pre-line text-justify line-clamp-3">
+    {{ beasiswa.description }}
+</p>
+<button 
+    @click="openModal(beasiswa)"
+    class="mt-auto flex items-center justify-center sm:justify-between w-full py-2.5 px-3 sm:py-3.5 sm:px-5 bg-slate-50 hover:bg-primary group-hover:bg-primary rounded-xl text-slate-600 hover:text-white group-hover:text-white text-[10px] sm:text-sm font-bold transition-all duration-300 gap-1.5 border border-slate-100 group-hover:border-transparent"
+>
+    <span class="truncate">Detail Beasiswa</span>
+    <BookOpen class="w-3 h-3 sm:w-4 sm:h-4 transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform shrink-0" />
+</button>
                             </div>
                         </div>
                     </div>
@@ -263,5 +268,38 @@ const getIconColorClasses = (index) => {
 
             </div>
         </div>
+        <Teleport to="body">
+    <transition enter-active-class="ease-out duration-300" enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="ease-in duration-200" leave-from-class="opacity-100" leave-to-class="opacity-0">
+        <div v-if="isModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center px-4 pt-20 pb-4 sm:p-0">
+            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" @click="closeModal"></div>
+            
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all w-full max-w-2xl relative z-10 max-h-[90vh] flex flex-col">
+                <div class="p-6 sm:p-8 flex-grow overflow-y-auto">
+                    <div class="flex justify-between items-start mb-6">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-primary font-semibold rounded-lg text-xs uppercase tracking-wider border border-blue-100">
+                            <Landmark class="w-4 h-4" /> {{ selectedBeasiswa?.provider || 'Mitra FSTI ITK' }}
+                        </span>
+                        <button @click="closeModal" class="p-2 bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors">
+                            <X class="w-5 h-5" />
+                        </button>
+                    </div>
+                    
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-6 leading-tight">{{ selectedBeasiswa?.title }}</h2>
+                    
+                    <div class="prose prose-sm sm:prose-base max-w-none text-slate-600 leading-relaxed whitespace-pre-line text-justify mb-8">
+                        {{ selectedBeasiswa?.description }}
+                    </div>
+
+                    <div class="pt-6 border-t border-slate-100 flex justify-end gap-3">
+                        <button @click="closeModal" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-colors">Tutup</button>
+                        <a v-if="selectedBeasiswa?.link_url" :href="selectedBeasiswa.link_url" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white font-bold hover:bg-primary-hover transition-colors shadow-sm">
+                            Kunjungi Laman <ExternalLink class="w-4 h-4" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </transition>
+</Teleport>
     </PublicLayout>
 </template>

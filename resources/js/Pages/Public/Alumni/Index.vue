@@ -218,7 +218,7 @@ const changePage = (page) => {
                                 
                                 <div class="absolute bottom-0 left-0 p-3 md:p-5 lg:p-6 w-full z-10">
                                     <h3 class="text-white font-bold text-lg md:text-xl drop-shadow-md leading-tight mb-0.5 md:mb-1">{{ alumni.name }}</h3>
-                                    <p class="text-yellow-400 font-bold text-[10px] md:text-xs lg:text-sm drop-shadow uppercase tracking-wide whitespace-pre-line text-left line-clamp-1">
+                                     <p class="text-yellow-400 font-bold text-[10px] md:text-xs lg:text-sm drop-shadow uppercase tracking-wide whitespace-normal break-words text-left leading-snug">
                                         {{ alumni.job ? alumni.job : 'Alumni' }}
                                     </p>
                                 </div>

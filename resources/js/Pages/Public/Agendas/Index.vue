@@ -490,10 +490,10 @@ Temukan berbagai jadwal penting kegiatan resmi di lingkungan Fakultas Sains dan 
 
                                     <div class="pt-6 pb-6 px-6 flex-grow flex flex-col bg-white rounded-b-[1.5rem] h-full">
                                         <div class="mb-4 mt-1">
-                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 text-primary font-semibold rounded-md text-[11px] uppercase tracking-wider border border-slate-100">
-                                                <Building class="w-3.5 h-3.5" /> {{ agenda.organizer || 'FSTI ITK' }}
-                                            </span>
-                                        </div>
+    <span v-if="agenda.organizer" class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 text-primary font-semibold rounded-md text-[11px] uppercase tracking-wider border border-slate-100">
+        <Building class="w-3.5 h-3.5" /> {{ agenda.organizer }}
+    </span>
+</div>
                                         <h3 class="text-lg font-bold text-slate-800 mb-3 group-hover:text-primary transition-colors duration-300 leading-snug break-words overflow-hidden">{{ agenda.title }}</h3>
                                         
                                         <div v-if="agenda.description" class="text-sm text-slate-500 mb-6 leading-relaxed whitespace-pre-wrap break-words overflow-hidden" v-html="agenda.description"></div>
@@ -554,11 +554,11 @@ Temukan berbagai jadwal penting kegiatan resmi di lingkungan Fakultas Sains dan 
                                 
                                 <div class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-primary to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 
-                                <div class="mb-4 flex items-center justify-between">
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50/50 text-primary font-bold rounded-lg text-[10px] uppercase border border-blue-100/50 tracking-widest shadow-sm">
-                                        <Building class="w-3.5 h-3.5" /> {{ agenda.organizer || 'FSTI ITK' }}
-                                    </span>
-                                </div>
+                               <div class="mb-4 flex items-center justify-between">
+    <span v-if="agenda.organizer" class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50/50 text-primary font-bold rounded-lg text-[10px] uppercase border border-blue-100/50 tracking-widest shadow-sm">
+        <Building class="w-3.5 h-3.5" /> {{ agenda.organizer }}
+    </span>
+</div>
                                 <h4 class="text-xl md:text-2xl font-bold text-gray-900 leading-snug mb-4 group-hover:text-primary transition-colors break-words">{{ agenda.title }}</h4>
                                 
                                 <div v-if="agenda.description" class="text-[15px] text-gray-600 mb-6 leading-relaxed whitespace-pre-wrap break-words overflow-hidden" v-html="agenda.description"></div>

@@ -2,7 +2,9 @@
 import { ref, watch, computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { debounce } from 'lodash';
 import { 
+    MagnifyingGlassIcon,
     PlusIcon, 
     PencilSquareIcon, 
     TrashIcon, 
@@ -14,7 +16,14 @@ defineOptions({ layout: AdminLayout });
 
 const props = defineProps<{
     categories: any;
+    filters: any;
 }>();
+
+const search = ref(props.filters?.search || '');
+
+watch(search, debounce((value: string) => {
+    router.get(route('admin.post-categories.index'), { search: value }, { preserveState: true, replace: true });
+}, 300));
 
 const formattedLinks = computed(() => {
     if (!props.categories?.links) return [];
@@ -112,6 +121,14 @@ watch([flashSuccess, flashError], ([successMsg, errorMsg]) => {
                 Tambah Kategori
             </Link>
         </div>
+
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-4 mb-6">
+    <div class="relative w-full lg:flex-grow">
+        <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+        <input v-model="search" type="text" placeholder="Cari nama kategori..." class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-primary focus:ring-primary transition-colors" />
+    </div>
+    <div class="flex flex-col sm:flex-row w-full lg:w-auto items-center gap-4 flex-shrink-0 hidden lg:block"></div>
+</div>
 
         <div class="bg-white shadow-sm p-4 sm:p-6 rounded-xl border border-gray-100 overflow-hidden">
             <h3 class="text-lg font-bold text-gray-900 mb-4 hidden sm:block">Daftar Kategori</h3>
