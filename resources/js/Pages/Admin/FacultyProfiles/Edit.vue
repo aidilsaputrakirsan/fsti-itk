@@ -343,7 +343,7 @@ const submit = () => {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div v-for="(stat, index) in form.content.statistik.data" :key="index" class="bg-white p-5 border border-gray-200 rounded-2xl shadow-sm">
                             <label class="text-xs font-bold text-primary mb-3 block uppercase tracking-wider">Kotak Data {{ index + 1 }}</label>
-                            <div class="flex gap-4 items-start">
+                            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start">
                                 <div class="w-1/3">
                                     <input 
                                         type="text" 
@@ -465,9 +465,9 @@ const submit = () => {
                                     >
                                     <InputError :message="form.errors['content.visi_misi.misi_tagline']" />
                                 </div>
-                                <button type="button" @click="addMisi" class="flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-50 text-primary font-bold rounded-xl hover:bg-blue-100 transition shadow-sm border border-blue-100 text-sm h-fit">
-                                    <PlusIcon class="w-4 h-4 stroke-2" /> Tambah Misi
-                                </button>
+                                <button type="button" @click="addMisi" class="flex shrink-0 items-center justify-center gap-1.5 px-3 py-2 bg-blue-50 text-primary font-bold rounded-xl hover:bg-blue-100 transition text-xs sm:text-sm h-fit">
+    <PlusIcon class="w-4 h-4 stroke-2" /> <span class="hidden sm:inline">Tambah Misi</span><span class="sm:hidden">Tambah</span>
+</button>
                             </div>
                             
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">

@@ -114,11 +114,11 @@ watch([flashSuccess, flashError], ([successMsg, errorMsg]) => {
 
 <template>
     <div>
-        <Head title="Kelola Kategori PPID" />
+        <Head title="Kelola Kategori Dokumen PPID" />
 
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Kelola Kategori PPID</h1>
+                <h1 class="text-3xl font-bold text-gray-900">Kelola Kategori Dokumen PPID</h1>
                 <p class="mt-1 text-gray-600">Manajemen kelompok dan kategori dokumen untuk halaman PPID.</p>
             </div>
             <Link :href="route('admin.kategori-ppid.create')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
@@ -140,7 +140,7 @@ watch([flashSuccess, flashError], ([successMsg, errorMsg]) => {
         </div>
 
         <div class="bg-white shadow-sm p-4 sm:p-6 rounded-xl border border-gray-100 overflow-hidden">
-            <h3 class="text-lg font-bold text-gray-900 mb-4 hidden sm:block">Daftar Kategori PPID</h3>
+            <h3 class="text-lg font-bold text-gray-900 mb-4 hidden sm:block">Daftar Kategori Dokumen PPID</h3>
 
             <div class="admin-table-container overflow-x-auto w-full">
                 <table class="w-full min-w-[800px]">

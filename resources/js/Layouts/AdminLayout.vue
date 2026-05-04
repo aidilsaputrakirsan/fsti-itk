@@ -85,7 +85,7 @@ const navigation = computed(() => {
             icon: ArchiveBoxIcon, 
             children: [
                 { name: 'Kelola Dokumen PPID', href: '/admin/ppid' },
-                { name: 'Kelola Kategori PPID', href: '/admin/kategori-ppid' }
+                { name: 'Kelola Kategori Dokumen PPID', href: '/admin/kategori-ppid' }
             ]
         },
         {
@@ -142,12 +142,12 @@ onMounted(() => {
         
         <div 
             v-show="isMobileMenuOpen" 
-            class="fixed inset-0 bg-gray-800/50 z-40 md:hidden transition-opacity" 
+            class="fixed inset-0 bg-gray-800/50 z-40 lg:hidden transition-opacity" 
             @click="isMobileMenuOpen = false"
         ></div>
 
         <aside :class="[
-            'fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-white px-5 pt-6 pb-4 border-r border-gray-200 shadow-xl transition-transform duration-300 ease-in-out md:relative md:translate-x-0',
+            'fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-white px-5 pt-6 pb-4 border-r border-gray-200 shadow-xl transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0',
             isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         ]">
             <div class="flex items-center justify-between px-2 mb-4">
@@ -160,7 +160,7 @@ onMounted(() => {
     fetchpriority="high" 
     decoding="sync" 
 />
-                <button @click="isMobileMenuOpen = false" aria-label="Tutup Menu Navigasi" class="md:hidden p-1.5 rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none">
+                <button @click="isMobileMenuOpen = false" aria-label="Tutup Menu Navigasi" class="lg:hidden p-1.5 rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none">
                     <XMarkIcon class="h-6 w-6" />
                 </button>
             </div>
@@ -243,14 +243,14 @@ onMounted(() => {
 
         <div class="flex flex-1 flex-col overflow-x-hidden relative h-screen">
             
-            <header class="md:hidden flex items-center justify-between bg-white px-4 py-3 border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+            <header class="lg:hidden flex items-center justify-between bg-white px-4 py-3 border-b border-gray-200 sticky top-0 z-30 shadow-sm">
                 <img src="/images/logofsti.webp" alt="Logo FSTI" class="h-8 w-auto" />
                 <button @click="isMobileMenuOpen = true" aria-label="Buka Menu Navigasi" class="p-2 rounded-md text-gray-600 hover:text-primary hover:bg-primary/10 transition-colors focus:outline-none">
                     <Bars3Icon class="h-6 w-6" />
                 </button>
             </header>
 
-            <main class="flex-1 overflow-y-auto bg-slate-50 p-4 sm:p-6 md:p-8 md:pt-10">
+            <main class="flex-1 overflow-y-auto bg-slate-50 p-4 sm:p-6 lg:p-8 lg:pt-10">
                 <slot />
             </main>
         </div>

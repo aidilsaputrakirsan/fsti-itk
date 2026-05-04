@@ -151,35 +151,35 @@ const formatNumber = (num: number | undefined | null) => {
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md">
                 <div class="space-y-1">
-                    <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">Berita Terbit</p>
+                    <p class="text-[11px] lg:text-xs font-bold text-gray-500 uppercase tracking-widest">Berita Terbit</p>
                     <div class="flex items-baseline gap-2">
                         <span class="text-3xl font-extrabold text-gray-900">{{ stats?.publishedPosts ?? 0 }}</span>
                         <span class="text-sm text-gray-500 font-medium">/ {{ stats?.totalPosts ?? 0 }}</span>
                     </div>
                 </div>
-                <div class="p-4 bg-blue-50 rounded-2xl text-blue-600"><Newspaper class="w-8 h-8" /></div>
+                <div class="p-3 lg:p-4 bg-blue-50 rounded-2xl text-blue-600 hidden sm:block"><Newspaper class="w-7 h-7 lg:w-8 lg:h-8" /></div>
             </div>
 
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md">
                 <div class="space-y-1">
-                    <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">Total Prestasi</p>
+                    <p class="text-[11px] lg:text-xs font-bold text-gray-500 uppercase tracking-widest">Total Prestasi</p>
                     <span class="text-3xl font-extrabold text-gray-900">{{ stats?.totalAchievements ?? 0 }}</span>
                 </div>
-                <div class="p-4 bg-emerald-50 rounded-2xl text-emerald-600"><Trophy class="w-8 h-8" /></div>
+                <div class="p-3 lg:p-4 bg-emerald-50 rounded-2xl text-emerald-600 hidden sm:block"><Trophy class="w-7 h-7 lg:w-8 lg:h-8" /></div>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md md:col-span-2 lg:col-span-1">
                 <div class="space-y-1">
-                    <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">Indeks Kepuasan</p>
+                    <p class="text-[11px] lg:text-xs font-bold text-gray-500 uppercase tracking-widest">Indeks Kepuasan</p>
                     <div class="flex items-center gap-2">
                         <span class="text-3xl font-extrabold text-gray-900">{{ stats?.avgRating || '0.0' }}</span>
                         <Star class="w-6 h-6 text-amber-400 fill-current" />
                     </div>
                 </div>
-                <div class="p-4 bg-amber-50 rounded-2xl text-amber-600"><MessageSquare class="w-8 h-8" /></div>
+                <div class="p-3 lg:p-4 bg-amber-50 rounded-2xl text-amber-600 hidden sm:block"><MessageSquare class="w-7 h-7 lg:w-8 lg:h-8" /></div>
             </div>
         </div>
 

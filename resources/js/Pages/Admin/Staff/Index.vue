@@ -156,24 +156,26 @@ watch(flashSuccess, (message) => {
                 />
             </div>
             
-            <div class="flex flex-col sm:flex-row w-full md:w-auto items-center gap-4 flex-shrink-0">
-                <div class="relative w-full sm:w-48">
+            <div class="flex flex-col lg:flex-row w-full lg:w-auto items-center gap-4 shrink-0">
+                
+                <div class="relative w-full lg:w-48">
                     <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
-                    <select v-model="typeFilter" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors">
+                    <select v-model="typeFilter" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors cursor-pointer">
                         <option value="">Semua Tipe</option>
                         <option value="Dosen">Dosen</option>
                         <option value="Tendik">Tendik</option>
                     </select>
                 </div>
 
-                <div class="relative w-full sm:w-48">
+                <div class="relative w-full lg:w-48">
                     <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
-                    <select v-model="statusFilter" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors">
+                    <select v-model="statusFilter" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors cursor-pointer">
                         <option value="">Semua Status</option>
                         <option value="Aktif">Aktif</option>
                         <option value="Nonaktif">Nonaktif</option>
                     </select>
                 </div>
+
             </div>
         </div>
 

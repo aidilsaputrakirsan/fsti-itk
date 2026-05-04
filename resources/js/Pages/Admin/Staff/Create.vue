@@ -256,7 +256,7 @@ const submit = () => {
 
                     <label class="md:pt-2 text-sm font-bold text-gray-800">Foto Diri Formal</label>
                     <div class="bg-gray-50 p-4 sm:p-5 rounded-lg border border-gray-200">
-                        <p class="text-xs text-primary font-bold mb-3">Disarankan ada agar profil tidak terlihat kosong. Jika dikosongkan, sistem akan menampilkan placeholder "Foto Belum Tersedia".</p>
+                        <p class="text-xs text-primary font-bold mb-3">Disarankan ada agar profil tidak terlihat kosong. Jika dikosongkan, sistem akan menampilkan foto profil kosong.</p>
                         
                         <label class="block text-sm text-gray-800 mb-1 font-bold" :class="{'opacity-50': form.image_url}">Opsi 1: Upload File Gambar</label>
                         <div class="relative flex items-center w-full rounded-md border bg-white shadow-sm px-4 py-2 mb-4 transition" 
