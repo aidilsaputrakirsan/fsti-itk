@@ -184,6 +184,16 @@ onMounted(() => {
         const statCards = Array.from(aboutStatsRef.value.children);
         if(statCards.length > 0) {
             addHoverAnimation(statCards);
+            gsap.to(".about-batik-parallax", {
+      yPercent: -15, 
+      ease: "none",
+      scrollTrigger: { 
+        trigger: aboutSectionRef.value, 
+        start: "top bottom", 
+        end: "bottom top", 
+        scrub: true 
+      }
+    });
         }
     }
   }
@@ -326,7 +336,7 @@ onUnmounted(() => { clearInterval(sliderInterval); });
         <LayoutGrid aria-hidden="true" class="absolute -right-20 top-20 w-[600px] h-[600px] text-[#2F4DD3] opacity-[0.02] transform rotate-12 pointer-events-none" />
         <div class="absolute -left-32 bottom-0 w-[400px] h-[400px] bg-[#FDC500]/20 rounded-full blur-[100px] pointer-events-none"></div>
 
-        <div class="absolute inset-0 opacity-[0.03] pointer-events-none">
+        <div class="about-batik-parallax absolute top-[-20%] left-0 w-full h-[150%] z-0 opacity-[0.03] pointer-events-none">
           <img src="/images/ornaments/batik.webp" width="1000" height="1000" alt="" loading="lazy" class="w-full h-full object-cover">
         </div>
 
@@ -337,9 +347,9 @@ onUnmounted(() => { clearInterval(sliderInterval); });
               <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold font-optimus text-[#2F4DD3] about-title leading-tight">
                 Sekilas Tentang <br class="hidden lg:block"> FSTI ITK
               </h2>
-              <p class="mt-6 text-black-700 text-base lg:text-lg leading-relaxed about-text font-normal text-justify lg:text-left">
-                {{ deskripsiFakultas }}
-              </p>
+<p class="mt-6 text-black-700 text-base lg:text-lg leading-relaxed about-text font-normal text-justify">
+  {{ deskripsiFakultas }}
+</p>
             </div>
 
             <div class="hidden lg:flex h-64 items-center">
