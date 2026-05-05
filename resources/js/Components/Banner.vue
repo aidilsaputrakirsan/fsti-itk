@@ -7,6 +7,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  subtitle: { 
+    type: String,
+    required: false,
+  },
   backgroundImage: {
     type: String,
     required: true,
@@ -33,11 +37,11 @@ const bannerStyle = computed(() => {
 
     <div class="relative z-10 mt-10 md:mt-12 text-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
       <h1
-        class="text-white font-optimus uppercase tracking-wider text-shadow-custom text-stroke-custom transition-all duration-300 leading-tight text-3xl sm:text-4xl md:text-5xl lg:text-6xl md:whitespace-nowrap"
+        class="text-white font-optimus  uppercase tracking-wider text-shadow-custom text-stroke-custom transition-all duration-300 leading-tight text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
       >
         {{ title }}
       </h1>
-    </div>
+      </div>
   </div>
 </template>
 

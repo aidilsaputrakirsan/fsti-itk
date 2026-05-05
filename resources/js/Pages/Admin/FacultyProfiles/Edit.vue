@@ -5,7 +5,7 @@ import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { 
     ChartBarIcon, DocumentTextIcon, FlagIcon, 
     PaperAirplaneIcon, CheckCircleIcon, PhotoIcon, PaperClipIcon, XMarkIcon, LinkIcon,
-    BuildingLibraryIcon, PlusIcon, TrashIcon
+    BuildingLibraryIcon, PlusIcon, TrashIcon, ChatBubbleBottomCenterTextIcon
 } from '@heroicons/vue/24/outline';
 import InputError from '@/Components/InputError.vue';
 
@@ -30,6 +30,7 @@ const tabs = [
     { id: 'statistik', name: 'Statistik Data', icon: ChartBarIcon },
     { id: 'tugas', name: 'Tugas & Fungsi', icon: DocumentTextIcon },
     { id: 'visi', name: 'Visi & Misi', icon: FlagIcon },
+    { id: 'sambutan', name: 'Sambutan Dekan', icon: ChatBubbleBottomCenterTextIcon },
     { id: 'fasilitas', name: 'Fasilitas Kampus', icon: BuildingLibraryIcon },
     { id: 'bagan', name: 'Bagan Organisasi', icon: PhotoIcon },
     { id: 'tautan', name: 'Tautan Eksternal', icon: LinkIcon }, 
@@ -43,9 +44,14 @@ const form = useForm({
         statistik: props.profile?.content?.statistik || { deskripsi: '', data: [] },
         tugas_fungsi: props.profile?.content?.tugas_fungsi || { tugas: '', fungsi: [] },
         visi_misi: props.profile?.content?.visi_misi || { visi: '', misi_tagline: '', misi: [] },
+        sambutan_dekan: props.profile?.content?.sambutan_dekan || '', 
+        sambutan_dekan_paragraf_2: props.profile?.content?.sambutan_dekan_paragraf_2 || '', 
         bagan_organisasi: props.profile?.content?.bagan_organisasi || 'images/bagan-organisasi.webp',
         pmb_link: props.profile?.content?.pmb_link || '', 
         tracer_study_link: props.profile?.content?.tracer_study_link || '',
+        ppid_permohonan_link: props.profile?.content?.ppid_permohonan_link || '',
+        ppid_keberatan_link: props.profile?.content?.ppid_keberatan_link || '',
+        prestasi_link: props.profile?.content?.prestasi_link || '',
         fasilitas: props.profile?.content?.fasilitas || []
     },
     bagan_image: null
@@ -73,6 +79,28 @@ const addFasilitas = () => {
 
 const removeFasilitas = (index) => {
     form.content.fasilitas.splice(index, 1);
+};
+
+const addFungsi = () => {
+    if (!form.content.tugas_fungsi.fungsi) {
+        form.content.tugas_fungsi.fungsi = [];
+    }
+    form.content.tugas_fungsi.fungsi.push({ judul: '', deskripsi: '' });
+};
+
+const removeFungsi = (index) => {
+    form.content.tugas_fungsi.fungsi.splice(index, 1);
+};
+
+const addMisi = () => {
+    if (!form.content.visi_misi.misi) {
+        form.content.visi_misi.misi = [];
+    }
+    form.content.visi_misi.misi.push({ huruf: '', teks: '' });
+};
+
+const removeMisi = (index) => {
+    form.content.visi_misi.misi.splice(index, 1);
 };
 
 const handleFasilitasImageChange = (event, index) => {
@@ -154,8 +182,8 @@ const submit = () => {
         if (!m.huruf) {
             form.setError(`content.visi_misi.misi.${index}.huruf`, 'Wajib.');
             if (!firstErrorTab) firstErrorTab = 'visi';
-        } else if (!/^[A-Za-z]$/.test(m.huruf)) {
-            form.setError(`content.visi_misi.misi.${index}.huruf`, 'Harus 1 Huruf.');
+        } else if (!/^[A-Za-z0-9]$/.test(m.huruf)) {
+            form.setError(`content.visi_misi.misi.${index}.huruf`, 'Harus 1 karakter.');
             if (!firstErrorTab) firstErrorTab = 'visi';
         }
 
@@ -164,6 +192,11 @@ const submit = () => {
             if (!firstErrorTab) firstErrorTab = 'visi';
         }
     });
+
+    if (!form.content.sambutan_dekan || form.content.sambutan_dekan.trim().length < 10) {
+        form.setError('content.sambutan_dekan', 'Sambutan Paragraf 1 wajib diisi (minimal 10 karakter).');
+        if (!firstErrorTab) firstErrorTab = 'sambutan';
+    }
 
     form.content.fasilitas.forEach((f, index) => {
         if (!f.nama) { 
@@ -206,6 +239,30 @@ const submit = () => {
         if (!firstErrorTab) firstErrorTab = 'tautan';
     } else if (!strictUrlPattern.test(form.content.tracer_study_link)) {
         form.setError('content.tracer_study_link', 'Tautan tidak valid. Masukkan URL lengkap dengan domain (Contoh: https://docs.google.com/...).');
+        if (!firstErrorTab) firstErrorTab = 'tautan';
+    }
+
+    if (!form.content.ppid_permohonan_link) {
+        form.setError('content.ppid_permohonan_link', 'Tautan Form Permohonan Informasi wajib diisi.');
+        if (!firstErrorTab) firstErrorTab = 'tautan';
+    } else if (!strictUrlPattern.test(form.content.ppid_permohonan_link)) {
+        form.setError('content.ppid_permohonan_link', 'Tautan tidak valid. Masukkan URL lengkap dengan domain (Contoh: https://docs.google.com/...).');
+        if (!firstErrorTab) firstErrorTab = 'tautan';
+    }
+
+    if (!form.content.ppid_keberatan_link) {
+        form.setError('content.ppid_keberatan_link', 'Tautan Form Pengajuan Keberatan wajib diisi.');
+        if (!firstErrorTab) firstErrorTab = 'tautan';
+    } else if (!strictUrlPattern.test(form.content.ppid_keberatan_link)) {
+        form.setError('content.ppid_keberatan_link', 'Tautan tidak valid. Masukkan URL lengkap dengan domain (Contoh: https://docs.google.com/...).');
+        if (!firstErrorTab) firstErrorTab = 'tautan';
+    }
+
+    if (!form.content.prestasi_link) {
+        form.setError('content.prestasi_link', 'Tautan Form Pelaporan Prestasi wajib diisi.');
+        if (!firstErrorTab) firstErrorTab = 'tautan';
+    } else if (!strictUrlPattern.test(form.content.prestasi_link)) {
+        form.setError('content.prestasi_link', 'Tautan tidak valid. Masukkan URL lengkap dengan domain (Contoh: https://docs.google.com/...).');
         if (!firstErrorTab) firstErrorTab = 'tautan';
     }
 
@@ -286,7 +343,7 @@ const submit = () => {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div v-for="(stat, index) in form.content.statistik.data" :key="index" class="bg-white p-5 border border-gray-200 rounded-2xl shadow-sm">
                             <label class="text-xs font-bold text-primary mb-3 block uppercase tracking-wider">Kotak Data {{ index + 1 }}</label>
-                            <div class="flex gap-4 items-start">
+                            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start">
                                 <div class="w-1/3">
                                     <input 
                                         type="text" 
@@ -302,15 +359,19 @@ const submit = () => {
                                     <InputError :message="form.errors[`content.statistik.data.${index}.angka`]" />
                                 </div>
                                 <div class="w-full">
-                                    <input 
-                                        type="text" 
-                                        v-model="stat.label" 
-                                        class="w-full rounded-xl py-3 transition-all duration-200"
-                                        :class="form.errors[`content.statistik.data.${index}.label`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                        placeholder="Label (Mhs / Dosen / Dll)"
-                                    >
-                                    <InputError :message="form.errors[`content.statistik.data.${index}.label`]" />
-                                </div>
+    <input 
+        type="text" 
+        v-model="stat.label" 
+        class="w-full rounded-xl py-3 transition-all duration-200"
+        :class="[
+            form.errors[`content.statistik.data.${index}.label`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white',
+            isAutoGeneratedStat(stat.label) ? 'bg-gray-100 text-gray-500 cursor-not-allowed select-none' : ''
+        ]"
+        placeholder="Label (Mhs / Dosen / Dll)"
+        :readonly="isAutoGeneratedStat(stat.label)"
+    >
+    <InputError :message="form.errors[`content.statistik.data.${index}.label`]" />
+</div>
                             </div>
                         </div>
                     </div>
@@ -333,8 +394,19 @@ const submit = () => {
                         <hr class="border-gray-200">
 
                         <div class="space-y-5">
-                            <h3 class="font-bold text-gray-700 bg-gray-50 p-4 rounded-xl border border-gray-200">Daftar Fungsi Fakultas</h3>
-                            <div v-for="(func, index) in form.content.tugas_fungsi.fungsi" :key="index" class="bg-white p-5 border border-gray-200 rounded-2xl shadow-sm flex gap-5 items-start">
+                            <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-200">
+                                <h3 class="font-bold text-gray-700">Daftar Fungsi Fakultas</h3>
+                                <button type="button" @click="addFungsi" class="flex items-center gap-2 px-4 py-2 bg-blue-50 text-primary font-bold rounded-xl hover:bg-blue-100 transition shadow-sm border border-blue-100 text-sm">
+                                    <PlusIcon class="w-4 h-4 stroke-2" /> Tambah Fungsi
+                                </button>
+                            </div>
+
+                            <div v-for="(func, index) in form.content.tugas_fungsi.fungsi" :key="index" class="relative bg-white p-5 border border-gray-200 rounded-2xl shadow-sm flex gap-5 items-start hover:border-blue-200 transition-all group">
+                                
+                                <button type="button" @click="removeFungsi(index)" class="absolute -top-3 -right-3 w-8 h-8 flex items-center justify-center bg-red-100 text-red-600 rounded-full hover:bg-red-500 hover:text-white transition shadow-md z-10" title="Hapus Fungsi">
+                                    <TrashIcon class="w-4 h-4" />
+                                </button>
+
                                 <div class="shrink-0 w-10 h-10 flex items-center justify-center bg-blue-50 text-primary font-bold rounded-xl text-lg">{{ index + 1 }}</div>
                                 <div class="w-full space-y-4">
                                     <div>
@@ -359,6 +431,10 @@ const submit = () => {
                                     </div>
                                 </div>
                             </div>
+
+                            <div v-if="!form.content.tugas_fungsi.fungsi || form.content.tugas_fungsi.fungsi.length === 0" class="text-center py-10 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300 text-gray-500">
+                                Belum ada data fungsi. Klik tombol "Tambah Fungsi" di atas.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -378,19 +454,29 @@ const submit = () => {
                         </div>
 
                         <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                            <div class="mb-6">
-                                <label class="block text-sm font-bold mb-1">Misi Tagline / Akronim <span class="text-red-500">*</span></label>
-                                <input 
-                                    type="text" 
-                                    v-model="form.content.visi_misi.misi_tagline" 
-                                    class="mt-1 py-3 text-sm rounded-xl w-72 transition-all duration-200 shadow-sm"
-                                    :class="form.errors['content.visi_misi.misi_tagline'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
-                                >
-                                <InputError :message="form.errors['content.visi_misi.misi_tagline']" />
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+                                <div>
+                                    <label class="block text-sm font-bold mb-1">Misi Tagline / Akronim <span class="text-red-500">*</span></label>
+                                    <input 
+                                        type="text" 
+                                        v-model="form.content.visi_misi.misi_tagline" 
+                                        class="mt-1 py-3 text-sm rounded-xl w-full sm:w-72 transition-all duration-200 shadow-sm"
+                                        :class="form.errors['content.visi_misi.misi_tagline'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                    >
+                                    <InputError :message="form.errors['content.visi_misi.misi_tagline']" />
+                                </div>
+                                <button type="button" @click="addMisi" class="flex shrink-0 items-center justify-center gap-1.5 px-3 py-2 bg-blue-50 text-primary font-bold rounded-xl hover:bg-blue-100 transition text-xs sm:text-sm h-fit">
+    <PlusIcon class="w-4 h-4 stroke-2" /> <span class="hidden sm:inline">Tambah Misi</span><span class="sm:hidden">Tambah</span>
+</button>
                             </div>
                             
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                                <div v-for="(m, index) in form.content.visi_misi.misi" :key="index" class="flex gap-4 items-start bg-white p-4 border border-gray-200 rounded-2xl shadow-sm">
+                                <div v-for="(m, index) in form.content.visi_misi.misi" :key="index" class="relative flex gap-4 items-start bg-white p-4 border border-gray-200 rounded-2xl shadow-sm hover:border-blue-200 transition-all group">
+                                    
+                                    <button type="button" @click="removeMisi(index)" class="absolute -top-3 -right-3 w-7 h-7 flex items-center justify-center bg-red-100 text-red-600 rounded-full hover:bg-red-500 hover:text-white transition shadow-md z-10" title="Hapus Misi">
+                                        <TrashIcon class="w-3.5 h-3.5" />
+                                    </button>
+
                                     <div class="flex-shrink-0">
                                         <input 
                                             type="text" 
@@ -414,6 +500,40 @@ const submit = () => {
                                     </div>
                                 </div>
                             </div>
+                            
+                            <div v-if="!form.content.visi_misi.misi || form.content.visi_misi.misi.length === 0" class="text-center py-8 bg-gray-100 rounded-2xl border-2 border-dashed border-gray-300 text-gray-500 mt-4">
+                                Belum ada rincian poin misi. Klik tombol "Tambah Misi".
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-show="activeTab === 'sambutan'">
+                    <h2 class="text-2xl font-bold mb-6">Sambutan Dekan</h2>
+                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-6">
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Sambutan Paragraf 1 <span class="text-red-500">*</span></label>
+                            <textarea
+                                v-model="form.content.sambutan_dekan"
+                                rows="4"
+                                class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
+                                :class="form.errors['content.sambutan_dekan'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                placeholder="Masukkan kalimat sambutan pembuka..."
+                            ></textarea>
+                            <InputError :message="form.errors['content.sambutan_dekan']" class="mt-1" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Sambutan Paragraf 2 (Opsional)</label>
+                            <textarea
+                                v-model="form.content.sambutan_dekan_paragraf_2"
+                                rows="4"
+                                class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm border-gray-300 focus:border-primary focus:ring-primary bg-white"
+                                placeholder="Masukkan kalimat tambahan atau harapan..."
+                            ></textarea>
+                            <InputError :message="form.errors['content.sambutan_dekan_paragraf_2']" class="mt-1" />
+                        </div>
+                        <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl text-sm text-gray-700">
+                            <strong>Penting:</strong> Foto, Nama, dan Jabatan Dekan pada halaman publik akan otomatis diambil dari menu Kelola Civitas Akademika berdasarkan data staf yang memiliki nama jabatan <b>"Dekan"</b> (tidak termasuk Wakil Dekan). Pastikan data Dekan di menu tersebut sudah aktif dan fotonya sudah diunggah.
                         </div>
                     </div>
                 </div>
@@ -422,10 +542,9 @@ const submit = () => {
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-2xl font-bold">Fasilitas & Lingkungan Kampus</h2>
                         <button type="button" @click="addFasilitas" class="flex items-center gap-2 px-4 py-2 bg-blue-50 text-primary font-bold rounded-xl hover:bg-blue-100 transition shadow-sm border border-blue-100">
-                            <PlusIcon class="w-5 h-5" /> Tambah Fasilitas
+                            <PlusIcon class="w-5 h-5 stroke-2" /> Tambah Fasilitas
                         </button>
                     </div>
-                    <p class="text-gray-600 mb-6 bg-blue-50 p-4 rounded-xl text-sm border border-blue-100">Tambahkan fasilitas yang dimiliki oleh fakultas. Pada tampilan publik, urutan pertama dan urutan ke-6 ke atas akan otomatis ditampilkan dengan ukuran <i>card</i> yang lebih lebar agar tidak membosankan.</p>
                     
                     <div class="space-y-6">
                         <div v-for="(item, index) in form.content.fasilitas" :key="index" class="bg-gray-50 p-6 rounded-2xl border border-gray-200 relative group shadow-sm transition-all hover:shadow-md hover:border-blue-200">
@@ -507,6 +626,7 @@ const submit = () => {
                     <h2 class="text-2xl font-bold mb-6">Pengaturan Tautan Eksternal</h2>
                     <div class="space-y-6">
                         <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                            <h3 class="text-sm font-bold text-primary uppercase mb-5">Akademik & Alumni</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-bold mb-2">Tautan PMB (Penerimaan Mahasiswa Baru) <span class="text-red-500">*</span></label>
@@ -532,11 +652,57 @@ const submit = () => {
                                     <InputError :message="form.errors['content.tracer_study_link']" />
                                 </div>
                             </div>
-
-                            <p class="text-sm text-gray-600 mt-5 leading-relaxed">
-                                <span class="font-bold">Informasi:</span> Tautan yang Anda masukkan di atas akan menjadi tujuan (link) ketika pengunjung mengklik tombol pada halaman terkait (seperti PMB atau Tracer Study). Pastikan tautan diawali dengan <code>http://</code> atau <code>https://</code>.
-                            </p>
                         </div>
+
+                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                            <h3 class="text-sm font-bold text-primary uppercase mb-5">Layanan Informasi (PPID)</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">Link Form Permohonan Informasi <span class="text-red-500">*</span></label>
+                                    <input 
+                                        type="text" 
+                                        v-model="form.content.ppid_permohonan_link" 
+                                        placeholder="Cth: https://docs.google.com/forms/..." 
+                                        class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
+                                        :class="form.errors['content.ppid_permohonan_link'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                    >
+                                    <InputError :message="form.errors['content.ppid_permohonan_link']" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">Link Form Pengajuan Keberatan <span class="text-red-500">*</span></label>
+                                    <input 
+                                        type="text" 
+                                        v-model="form.content.ppid_keberatan_link" 
+                                        placeholder="Cth: https://docs.google.com/forms/..." 
+                                        class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
+                                        :class="form.errors['content.ppid_keberatan_link'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                    >
+                                    <InputError :message="form.errors['content.ppid_keberatan_link']" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                            <h3 class="text-sm font-bold text-primary uppercase mb-5">Kemahasiswaan</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">Link Form Pelaporan Prestasi <span class="text-red-500">*</span></label>
+                                    <input 
+                                        type="text" 
+                                        v-model="form.content.prestasi_link" 
+                                        placeholder="Cth: https://docs.google.com/forms/..." 
+                                        class="w-full rounded-xl py-3 transition-all duration-200 shadow-sm"
+                                        :class="form.errors['content.prestasi_link'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
+                                    >
+                                    <InputError :message="form.errors['content.prestasi_link']" />
+                                    <p class="mt-2 text-xs text-gray-500 italic">Tautan ini akan digunakan pada tombol lapor prestasi di halaman publik.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-sm text-gray-600 mt-5 leading-relaxed">
+                            <span class="font-bold">Informasi:</span> Tautan yang Anda masukkan di atas akan menjadi tujuan (link) ketika pengunjung mengklik tombol pada halaman terkait. Pastikan tautan diawali dengan <code>http://</code> atau <code>https://</code>.
+                        </p>
                     </div>
                 </div>
 
@@ -558,3 +724,12 @@ const submit = () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.overflow-x-auto {
+    scrollbar-width: none; 
+}
+.overflow-x-auto::-webkit-scrollbar {
+    display: none; 
+}
+</style>

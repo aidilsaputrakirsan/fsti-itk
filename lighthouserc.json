@@ -1,0 +1,44 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "http://127.0.0.1:8000/",
+        "http://127.0.0.1:8000/profil/tentang",
+        "http://127.0.0.1:8000/profil/struktur-organisasi",
+        "http://127.0.0.1:8000/profil/dosen",
+        "http://127.0.0.1:8000/profil/tenaga-kependidikan",
+        "http://127.0.0.1:8000/prestasi",
+        "http://127.0.0.1:8000/layanan-internal",
+        "http://127.0.0.1:8000/prodi/s1-matematika",
+        "http://127.0.0.1:8000/berita",
+        "http://127.0.0.1:8000/berita/rapat-koordinasi-akademik-persiapan-perkuliahan-semester-genap-20242025",
+        "http://127.0.0.1:8000/ppid",
+        "http://127.0.0.1:8000/ppid/informasi/berkala",
+        "http://127.0.0.1:8000/zona-integritas",
+        "http://127.0.0.1:8000/survei-kepuasan",
+        "http://127.0.0.1:8000/kontak",
+        "http://127.0.0.1:8000/kegiatan-mahasiswa",
+        "http://127.0.0.1:8000/beasiswa",
+        "http://127.0.0.1:8000/informasi-pmb",
+        "http://127.0.0.1:8000/agenda-fakultas",
+        "http://127.0.0.1:8000/alumni",
+        "http://127.0.0.1:8000/tracer-study",
+        "http://127.0.0.1:8000/pengumuman",
+        "http://127.0.0.1:8000/penelitian",
+        "http://127.0.0.1:8000/pengabdian",
+        "http://127.0.0.1:8000/kerjasama"
+      ],
+      "numberOfRuns": 1,
+      "settings": {
+        "onlyCategories": ["performance", "accessibility", "best-practices", "seo"],
+        "formFactor": "desktop",
+        "screenEmulation": {
+          "mobile": false
+        }
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

@@ -39,6 +39,8 @@ class AnnouncementSeeder extends Seeder
             ['title' => 'Pengumuman ke Mahasiswa Penyesuaian Pelaksanaan Perkuliahan selama UTBK', 'description' => null, 'document' => 'pengumuman-pelaksanaan-perkuliahan.pdf', 'poster' => null, 'created_at' => now()->subDays(rand(1, 30))],
             ['title' => 'Pengumuman Pelatihan IAET Mahasiswa', 'description' => null, 'document' => 'pengumuman-pelatihan-iaet.pdf', 'poster' => null, 'created_at' => now()->subDays(rand(1, 30))],
             ['title' => 'Pengumuman Perpanjangan IPD-IPM Mahasiswa', 'description' => null, 'document' => 'pengumuman-ipd-ipm.pdf', 'poster' => null, 'created_at' => now()->subDays(rand(1, 30))],
+            ['title' => 'Pengumuman Kalender Akademik 2025/2026', 'description' => null, 'document' => 'pengumuman-kalender-akademik.pdf', 'poster' => null, 'created_at' => now()->subDays(rand(1, 30))],
+
         ];
 
         $copiedCount = 0;

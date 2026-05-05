@@ -10,11 +10,20 @@ use Illuminate\Support\Str;
 
 class PostCategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = PostCategory::latest()->paginate(10);
+        $query = PostCategory::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%')
+                ->orWhere('slug', 'like', '%' . $request->search . '%');
+        }
+
+        $categories = $query->latest()->paginate(10)->withQueryString();
+
         return Inertia::render('Admin/PostCategories/Index', [
-            'categories' => $categories
+            'categories' => $categories,
+            'filters' => $request->only(['search']),
         ]);
     }
 

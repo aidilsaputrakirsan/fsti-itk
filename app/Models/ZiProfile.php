@@ -13,7 +13,8 @@ class ZiProfile extends Model
         'user_id',
         'banner_image_path',
         'description',
-        'service_declaration_image_path'
+        'service_declaration_image_path',
+        'external_website_url'
     ];
 
     public function user()

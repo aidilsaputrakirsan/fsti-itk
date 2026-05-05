@@ -67,6 +67,18 @@ const form = useForm<StaffFormData>({
     academic_profiles: props.staff.academic_profiles || [],
 });
 
+const selectedProdis = ref<string[]>([]);
+
+if (props.staff.type === 'Dosen' && props.staff.functional_position) {
+    selectedProdis.value = props.staff.functional_position.split(',').map((s: string) => s.trim());
+}
+
+watch(selectedProdis, (newVal) => {
+    if (form.type === 'Dosen') {
+        form.functional_position = newVal.join(', ');
+    }
+}, { deep: true });
+
 const predefinedPositions = computed(() => {
     const basePositions = [
         'Dekan Fakultas Sains dan Teknologi Informasi',
@@ -103,9 +115,9 @@ const cancelCustomPosition = () => {
 };
 
 watch(() => form.type, (newType) => {
-    if (newType === 'Dosen' && !form.functional_position.startsWith('Dosen Program Studi')) {
-        form.functional_position = '';
-    } else if (newType === 'Tendik' && form.functional_position.startsWith('Dosen Program Studi')) {
+    if (newType === 'Dosen') {
+        form.functional_position = selectedProdis.value.join(', ');
+    } else {
         form.functional_position = '';
     }
 });
@@ -148,8 +160,8 @@ const submit = () => {
         hasError = true;
     }
 
-    if (form.type === 'Dosen' && !form.functional_position) {
-        form.setError('functional_position', 'Program studi wajib dipilih untuk tipe Dosen.');
+    if (form.type === 'Dosen' && selectedProdis.value.length === 0) {
+        form.setError('functional_position', 'Minimal satu program studi wajib dipilih untuk tipe Dosen.');
         hasError = true;
     }
 
@@ -226,17 +238,22 @@ const submit = () => {
 
                     <label class="md:pt-2 text-sm font-bold text-gray-800">Jabatan Fungsional <span v-if="form.type==='Dosen'" class="text-red-500">*</span></label>
                     <div>
-                        <select v-if="form.type === 'Dosen'" v-model="form.functional_position" 
-                            class="block w-full rounded-lg transition-colors"
-                            :class="form.errors.functional_position ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'">
-                            <option value="" disabled>-- Pilih Program Studi --</option>
-                            <option v-for="prodi in studyPrograms" :key="prodi.id" :value="'Dosen Program Studi ' + prodi.name">
-                                Dosen Program Studi {{ prodi.name }}
-                            </option>
-                        </select>
+                        <div v-if="form.type === 'Dosen'" class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 border rounded-xl bg-gray-50" :class="form.errors.functional_position ? 'border-red-500' : 'border-gray-200'">
+                            <label v-for="prodi in studyPrograms" :key="prodi.id" class="flex items-start gap-3 cursor-pointer group">
+                                <input type="checkbox" :value="'Dosen Program Studi ' + prodi.name" v-model="selectedProdis" 
+                                    class="mt-0.5 rounded border-gray-300 text-primary shadow-sm focus:ring-primary">
+                                <span class="text-sm text-gray-700 leading-snug group-hover:text-primary transition-colors">Dosen Program Studi {{ prodi.name }}</span>
+                            </label>
+                        </div>
 
                         <input v-else v-model="form.functional_position" type="text" class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white">
+                        
                         <InputError :message="form.errors.functional_position" />
+                        
+                        <p v-if="!form.errors.functional_position" class="mt-1.5 text-xs font-medium" :class="form.type === 'Dosen' ? 'text-primary' : 'text-gray-500'">
+                            <span v-if="form.type === 'Dosen'">Centang prodi tempat dosen mengajar. (Bisa pilih lebih dari satu jika dosen mengajar di banyak prodi).</span>
+                            <span v-else>Keterangan jabatan utama di kartu profil depan.</span>
+                        </p>
                     </div>
 
                     <label class="md:pt-2 text-sm font-bold text-gray-800">Jabatan Struktural</label>
@@ -416,11 +433,12 @@ const submit = () => {
 
                     <label class="md:pt-2 text-sm font-bold text-gray-800">Profil Akademik</label>
                     <div>
+                        <p class="text-xs text-gray-500 mb-3 font-medium">Opsional. Tautan profil SINTA, Scopus, Google Scholar, LinkedIn, dll.</p>
                         <div class="space-y-3">
                             <div v-for="(item, index) in form.academic_profiles" :key="index" class="flex gap-2 items-start relative">
                                 <div class="relative w-full">
                                     <LinkIcon class="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
-                                    <input v-model="form.academic_profiles[index]" type="url" 
+                                    <input v-model="form.academic_profiles[index]" type="url" placeholder="Contoh: https://scholar.google.com/..." 
                                         class="block w-full pl-10 rounded-lg transition-colors text-sm"
                                         :class="form.errors[`academic_profiles.${index}`] ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'">
                                     <InputError :message="form.errors[`academic_profiles.${index}`]" />

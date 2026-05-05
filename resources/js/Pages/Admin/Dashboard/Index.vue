@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import VueApexCharts from 'vue3-apexcharts';
 import type { ApexOptions } from 'apexcharts';
+const VueApexCharts = defineAsyncComponent(() => import('vue3-apexcharts'));
 import {
     Newspaper,
     Trophy,
@@ -151,35 +151,35 @@ const formatNumber = (num: number | undefined | null) => {
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md">
                 <div class="space-y-1">
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Berita Terbit</p>
+                    <p class="text-[11px] lg:text-xs font-bold text-gray-500 uppercase tracking-widest">Berita Terbit</p>
                     <div class="flex items-baseline gap-2">
                         <span class="text-3xl font-extrabold text-gray-900">{{ stats?.publishedPosts ?? 0 }}</span>
-                        <span class="text-sm text-gray-400 font-medium">/ {{ stats?.totalPosts ?? 0 }}</span>
+                        <span class="text-sm text-gray-500 font-medium">/ {{ stats?.totalPosts ?? 0 }}</span>
                     </div>
                 </div>
-                <div class="p-4 bg-blue-50 rounded-2xl text-blue-600"><Newspaper class="w-8 h-8" /></div>
+                <div class="p-3 lg:p-4 bg-blue-50 rounded-2xl text-blue-600 hidden sm:block"><Newspaper class="w-7 h-7 lg:w-8 lg:h-8" /></div>
             </div>
 
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md">
                 <div class="space-y-1">
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Total Prestasi</p>
+                    <p class="text-[11px] lg:text-xs font-bold text-gray-500 uppercase tracking-widest">Total Prestasi</p>
                     <span class="text-3xl font-extrabold text-gray-900">{{ stats?.totalAchievements ?? 0 }}</span>
                 </div>
-                <div class="p-4 bg-emerald-50 rounded-2xl text-emerald-600"><Trophy class="w-8 h-8" /></div>
+                <div class="p-3 lg:p-4 bg-emerald-50 rounded-2xl text-emerald-600 hidden sm:block"><Trophy class="w-7 h-7 lg:w-8 lg:h-8" /></div>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-md md:col-span-2 lg:col-span-1">
                 <div class="space-y-1">
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Indeks Kepuasan</p>
+                    <p class="text-[11px] lg:text-xs font-bold text-gray-500 uppercase tracking-widest">Indeks Kepuasan</p>
                     <div class="flex items-center gap-2">
                         <span class="text-3xl font-extrabold text-gray-900">{{ stats?.avgRating || '0.0' }}</span>
                         <Star class="w-6 h-6 text-amber-400 fill-current" />
                     </div>
                 </div>
-                <div class="p-4 bg-amber-50 rounded-2xl text-amber-600"><MessageSquare class="w-8 h-8" /></div>
+                <div class="p-3 lg:p-4 bg-amber-50 rounded-2xl text-amber-600 hidden sm:block"><MessageSquare class="w-7 h-7 lg:w-8 lg:h-8" /></div>
             </div>
         </div>
 
@@ -194,28 +194,28 @@ const formatNumber = (num: number | undefined | null) => {
                 <div class="flex items-center gap-5 sm:border-r border-gray-100 pb-4 sm:pb-0">
                     <div class="p-4 bg-blue-50 rounded-xl text-blue-600"><Users class="w-7 h-7" /></div>
                     <div>
-                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Hari Ini</p>
+                        <p class="text-[11px] font-bold text-gray-500 uppercase tracking-widest leading-none">Hari Ini</p>
                         <p class="text-3xl font-black text-gray-900 mt-1.5">{{ formatNumber(stats?.kunjunganHariIni) }}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-5 lg:border-r border-gray-100 pb-4 sm:pb-0">
                     <div class="p-4 bg-emerald-50 rounded-xl text-emerald-600"><Calendar class="w-7 h-7" /></div>
                     <div>
-                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Bulan Ini</p>
+                        <p class="text-[11px] font-bold text-gray-500 uppercase tracking-widest leading-none">Bulan Ini</p>
                         <p class="text-3xl font-black text-emerald-600 mt-1.5">{{ formatNumber(stats?.kunjunganBulanIni) }}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-5 sm:border-r border-gray-100 pb-4 sm:pb-0">
                     <div class="p-4 bg-purple-50 rounded-xl text-purple-600"><Activity class="w-7 h-7" /></div>
                     <div>
-                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Total Kunjungan</p>
+                        <p class="text-[11px] font-bold text-gray-500 uppercase tracking-widest leading-none">Total Kunjungan</p>
                         <p class="text-3xl font-black text-purple-600 mt-1.5">{{ formatNumber(stats?.totalKunjungan) }}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-5">
                     <div class="p-4 bg-amber-50 rounded-xl text-amber-600"><MousePointerClick class="w-7 h-7" /></div>
                     <div>
-                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">Tayangan (Hits)</p>
+                        <p class="text-[11px] font-bold text-gray-500 uppercase tracking-widest leading-none">Tayangan (Hits)</p>
                         <p class="text-3xl font-black text-amber-600 mt-1.5">{{ formatNumber(stats?.totalHits) }}</p>
                     </div>
                 </div>
@@ -228,7 +228,7 @@ const formatNumber = (num: number | undefined | null) => {
                     <TrendingUp class="w-5 h-5 text-blue-500" /> Tren Prestasi Mahasiswa
                 </h3>
                 <VueApexCharts v-if="charts?.achievementsTrend?.length > 0" type="area" height="300" :options="achievementsTrendOptions" :series="achievementsTrendSeries" />
-                <div v-else class="h-[300px] flex items-center justify-center text-sm text-gray-400">Data belum tersedia</div>
+                <div v-else class="h-[300px] flex items-center justify-center text-sm text-gray-500">Data belum tersedia</div>
             </div>
 
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
@@ -236,7 +236,7 @@ const formatNumber = (num: number | undefined | null) => {
                     <PieChart class="w-5 h-5 text-purple-500" /> Sebaran Informasi Berita
                 </h3>
                 <VueApexCharts v-if="charts?.postsByCategory?.length > 0" type="donut" height="300" :options="postsByCategoryOptions" :series="postsByCategorySeries" />
-                <div v-else class="h-[300px] flex items-center justify-center text-sm text-gray-400">Data belum tersedia</div>
+                <div v-else class="h-[300px] flex items-center justify-center text-sm text-gray-500">Data belum tersedia</div>
             </div>
         </div>
 
@@ -251,13 +251,13 @@ const formatNumber = (num: number | undefined | null) => {
                         <span class="text-sm font-bold text-gray-300 mt-0.5">{{ index + 1 }}</span>
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors cursor-pointer" :title="post.title">{{ post.title }}</p>
-                            <div class="flex items-center gap-3 mt-1 text-[11px] text-gray-400 font-medium">
+                            <div class="flex items-center gap-3 mt-1 text-[11px] text-gray-500 font-medium">
                                 <span class="bg-gray-100 px-1.5 py-0.5 rounded">{{ post.category }}</span>
                                 <span class="flex items-center gap-1"><Eye class="w-3 h-3" /> {{ post.views }}</span>
                             </div>
                         </div>
                     </div>
-                    <div v-if="!recent.topViewedPosts.length" class="text-center text-xs text-gray-400 py-4">Belum ada data berita</div>
+                    <div v-if="!recent.topViewedPosts.length" class="text-center text-xs text-gray-500 py-4">Belum ada data berita</div>
                 </div>
             </div>
 
@@ -273,9 +273,9 @@ const formatNumber = (num: number | undefined | null) => {
                             <span class="text-amber-400 text-[10px] tracking-widest">{{ getRatingStars(survey.rating) }}</span>
                         </div>
                         <p class="text-xs text-gray-600 line-clamp-2 leading-relaxed italic">"{{ survey.feedback || 'Tidak ada pesan.' }}"</p>
-                        <p class="text-[10px] text-gray-400 mt-2 font-medium uppercase tracking-tighter">{{ getTimeAgo(survey.created_at) }}</p>
+                        <p class="text-[10px] text-gray-500 mt-2 font-medium uppercase tracking-tighter">{{ getTimeAgo(survey.created_at) }}</p>
                     </div>
-                    <div v-if="!recent.surveys.length" class="text-center text-xs text-gray-400 py-4">Belum ada data feedback</div>
+                    <div v-if="!recent.surveys.length" class="text-center text-xs text-gray-500 py-4">Belum ada data feedback</div>
                 </div>
             </div>
 
@@ -297,7 +297,7 @@ const formatNumber = (num: number | undefined | null) => {
                             </div>
                         </div>
                     </div>
-                    <div v-if="!recent.achievements.length" class="text-center text-xs text-gray-400 py-4">Belum ada data prestasi</div>
+                    <div v-if="!recent.achievements.length" class="text-center text-xs text-gray-500 py-4">Belum ada data prestasi</div>
                 </div>
             </div>
         </div>

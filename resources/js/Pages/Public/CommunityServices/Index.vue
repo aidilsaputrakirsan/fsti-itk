@@ -122,7 +122,9 @@ const showingTo = computed<number>(() => props.communityServices?.to || 0);
 const totalCommunityServices = computed<number>(() => props.communityServices?.total || 0);
 
 const visiblePages = computed(() => {
-    const total = totalPages.value; const current = currentPage.value;
+    const total = totalPages.value; 
+    const current = currentPage.value;
+
     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
     if (current <= 4) return [1, 2, 3, 4, 5, '...', total];
     if (current >= total - 3) return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
@@ -139,6 +141,7 @@ const changePage = (page: number | string) => {
         }, { 
             preserveState: true, 
             replace: true, 
+            preserveScroll: true,
             onFinish: () => { window.scrollTo({ top: 450, behavior: 'smooth' }); } 
         });
     }
@@ -156,13 +159,17 @@ const nextPage = () => changePage(currentPage.value + 1);
         <div class="bg-gray-50/50 py-16 md:py-24 font-public-sans min-h-screen overflow-x-hidden relative">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
-                <div class="relative w-full bg-gradient-to-br from-primary to-primary-hover rounded-[2rem] p-8 md:p-12 mb-8 overflow-hidden shadow-xl flex items-center justify-between border border-primary-hover/50">
+                <div class="relative w-full bg-gradient-to-br from-primary to-primary-hover rounded-[1.5rem] md:rounded-[2rem] p-6 sm:p-8 md:p-12 mb-8 overflow-hidden shadow-xl flex items-center justify-between border border-primary-hover/50">
+                    <div class="absolute -top-[20%] -right-[10%] w-[60%] h-[140%] bg-blue-300/20 rounded-[100%] blur-[100px] pointer-events-none transform -rotate-12"></div>
+                    <div class="absolute -bottom-[30%] -left-[10%] w-[60%] h-[120%] bg-white/10 rounded-[100%] blur-[120px] pointer-events-none transform rotate-12"></div>
+                    <div class="absolute top-[20%] left-[40%] w-[30%] h-[50%] bg-blue-200/15 rounded-full blur-[80px] pointer-events-none"></div>
+
                    <div class="relative z-10 text-white w-full max-w-3xl">
-                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-sm font-bold mb-6 shadow-sm uppercase tracking-wider">
-                            <HeartHandshake class="w-4 h-4" /> Pengabdian Masyarakat
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-xs md:text-sm font-bold mb-4 md:mb-6 shadow-sm uppercase tracking-wider">
+                            <HeartHandshake class="w-3.5 h-3.5 md:w-4 md:h-4" /> Pengabdian Masyarakat
                         </div>
-                        <h2 class="text-3xl md:text-5xl font-optimus font-bold mb-4 leading-tight drop-shadow-sm">Direktori Pengabdian<br/>Dosen FSTI</h2>
-                        <p class="text-blue-50 md:text-lg font-light leading-relaxed max-w-xl opacity-90">
+                        <h2 class="text-2xl sm:text-3xl md:text-5xl font-optimus font-bold mb-3 md:mb-4 leading-tight drop-shadow-sm">Direktori Pengabdian<br/>Dosen FSTI</h2>
+                        <p class="text-blue-50 text-sm sm:text-base md:text-lg font-light leading-relaxed max-w-xl opacity-90">
                             Temukan jejak kontribusi dan kegiatan pengabdian kepada masyarakat dari para dosen Fakultas Sains dan Teknologi Informasi.
                         </p>
                     </div>
@@ -171,30 +178,31 @@ const nextPage = () => changePage(currentPage.value + 1);
                     </div>
                 </div>
 
-                <div class="relative z-20 -mt-16 mx-4 md:mx-8 mb-12 bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4" data-aos="fade-down">
+                <div class="relative z-20 -mt-10 md:-mt-16 mx-2 sm:mx-4 md:mx-8 mb-12 bg-white p-3 md:p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-3 md:gap-4" data-aos="fade-down">
                     <div class="relative flex-grow">
                         <input 
-                            type="text" 
-                            placeholder="Cari judul pengabdian atau nama dosen..." 
-                            class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-slate-50 text-slate-800 font-medium hover:bg-white transition-colors" 
+                            type="text" placeholder="Cari judul pengabdian atau nama dosen..." title="Cari judul pengabdian atau nama dosen..."
+                            class="w-full pl-9 lg:pl-11 pr-8 lg:pr-10 py-3 md:py-3.5 text-[11px] sm:text-sm lg:text-base text-ellipsis border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-slate-50 text-slate-800 font-medium hover:bg-white transition-colors" 
                             v-model="search"
                         >
-                        <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/60" />
-                        <button v-if="search" @click="resetSearch" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-primary transition-colors"><X class="w-5 h-5" /></button>
+                        <Search class="absolute left-3.5 lg:left-4 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-primary/60" />
+                        <button v-if="search" @click="resetSearch" class="absolute right-2.5 lg:right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-primary transition-colors"><X class="w-4 h-4 lg:w-5 lg:h-5" /></button>
                     </div>
-                    <div class="relative md:w-72">
-                        <button ref="programBtnRef" @click.prevent="toggleDropdown('program')" class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors focus:ring-2 focus:ring-primary focus:border-primary">
+
+                    <div class="relative w-full md:w-[35%] lg:w-72">
+                        <button ref="programBtnRef" @click.prevent="toggleDropdown('program')" class="w-full pl-9 lg:pl-10 pr-7 lg:pr-8 py-3 md:py-3.5 text-[11px] sm:text-xs lg:text-sm xl:text-base border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors">
                             <span class="truncate">{{ selectedProgramName || 'Semua Program Studi' }}</span>
-                            <ChevronDown class="w-5 h-5 text-primary/60" :class="{'rotate-180': isProgramOpen}" />
+                            <ChevronDown class="w-4 h-4 lg:w-5 lg:h-5 text-primary/60 shrink-0" :class="{'rotate-180': isProgramOpen}" />
                         </button>
-                        <LibraryBig class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary pointer-events-none" />
+                        <LibraryBig class="absolute left-3.5 lg:left-4 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-primary pointer-events-none" />
                     </div>
-                    <div class="relative md:w-48">
-                        <button ref="yearBtnRef" @click.prevent="toggleDropdown('year')" class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors focus:ring-2 focus:ring-primary focus:border-primary">
+
+                    <div class="relative w-full md:w-[25%] lg:w-56">
+                        <button ref="yearBtnRef" @click.prevent="toggleDropdown('year')" class="w-full pl-9 lg:pl-10 pr-7 lg:pr-8 py-3 md:py-3.5 text-[11px] sm:text-xs lg:text-sm xl:text-base border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 font-medium flex items-center justify-between text-left transition-colors">
                             <span class="truncate">{{ selectedYear || 'Semua Tahun' }}</span>
-                            <ChevronDown class="w-5 h-5 text-primary/60" :class="{'rotate-180': isYearOpen}" />
+                            <ChevronDown class="w-4 h-4 lg:w-5 lg:h-5 text-primary/60 shrink-0" :class="{'rotate-180': isYearOpen}" />
                         </button>
-                        <ListFilter class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary pointer-events-none" />
+                        <ListFilter class="absolute left-3.5 lg:left-4 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-primary pointer-events-none" />
                     </div>
                 </div>
 
@@ -248,18 +256,40 @@ const nextPage = () => changePage(currentPage.value + 1);
                     <p class="mt-2 text-gray-500 font-medium max-w-md mx-auto">Data pengabdian masyarakat dengan kriteria pencarian atau filter tersebut tidak tersedia.</p>
                 </div>
 
-                <div v-if="totalPages > 1 && communityServices.data.length > 0" class="flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-slate-100 mx-4 md:mx-8" data-aos="fade-in">
-                    <p class="text-sm font-medium text-slate-500 text-center md:text-left">
-                        Menampilkan <span class="text-primary font-bold">{{ showingFrom }}</span> - <span class="text-primary font-bold">{{ showingTo }}</span> dari <span class="text-primary font-bold">{{ totalCommunityServices }}</span> Data
-                    </p>
+                <div v-if="totalPages > 1 && communityServices.data.length > 0" class="mt-12 flex flex-col items-center justify-center gap-4 w-full relative z-20 mx-2 md:mx-8" data-aos="fade-in">
+                    
                     <div class="flex flex-wrap justify-center items-center gap-2">
-                        <button @click="prevPage()" :disabled="currentPage === 1" class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full" :class="currentPage === 1 ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'" v-html="'&laquo; Sebelumnya'"></button>
+                        <button 
+                            @click="prevPage()"
+                            :disabled="currentPage === 1"
+                            class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                            :class="currentPage === 1 ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                        >Sebelumnya</button>
+
                         <template v-for="(page, index) in visiblePages" :key="index">
-                            <span v-if="page === '...'" class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full text-slate-300 bg-slate-50/50">...</span>
-                            <button v-else @click="changePage(page)" class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full" :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'">{{ page }}</button>
+                            <span 
+                                v-if="page === '...'"
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl text-gray-300 bg-white border border-gray-100 cursor-not-allowed whitespace-nowrap"
+                            >...</span>
+                            <button 
+                                v-else
+                                @click="changePage(page)"
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                :class="currentPage === page ? 'bg-primary text-white border-primary shadow-md shadow-primary/20' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary hover:bg-slate-50 shadow-sm'"
+                            >{{ page }}</button>
                         </template>
-                        <button @click="nextPage()" :disabled="currentPage === totalPages" class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full" :class="currentPage === totalPages ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'" v-html="'Selanjutnya &raquo;'"></button>
+
+                        <button 
+                            @click="nextPage()"
+                            :disabled="currentPage === totalPages"
+                            class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                            :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                        >Selanjutnya</button>
                     </div>
+
+                    <p class="text-sm font-medium text-gray-400 mt-2 text-center">
+                        Menampilkan <span class="text-slate-700 font-bold">{{ showingFrom }}</span> - <span class="text-slate-700 font-bold">{{ showingTo }}</span> dari <span class="text-slate-700 font-bold">{{ totalCommunityServices }}</span> data
+                    </p>
                 </div>
 
             </div>

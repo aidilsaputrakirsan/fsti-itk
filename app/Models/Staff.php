@@ -46,13 +46,17 @@ class Staff extends Model
         $url = $this->image_url;
 
         if (empty($url) || trim($url) === 'Belum tersedia pada website') {
-            return null; 
+            return null;
         }
 
         if (str_contains($url, 'drive.google.com')) {
             preg_match('/\/d\/([a-zA-Z0-9_-]+)/', $url, $matches);
             if (isset($matches[1])) {
-                return "https://lh3.googleusercontent.com/d/{$matches[1]}";
+                $driveId = $matches[1];
+
+                $driveUrl = "https://drive.google.com/uc?export=view&id={$driveId}";
+
+                return "https://wsrv.nl/?url=" . urlencode($driveUrl) . "&w=400&h=400&fit=cover&output=webp&q=80";
             }
         }
 

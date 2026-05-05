@@ -136,7 +136,7 @@ const submit = () => {
                     <InputError :message="form.errors.degree" />
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Jurusan Induk</label>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Jurusan</label>
                     <select v-model="form.department" class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white py-3" required>
                         <option value="" disabled>Pilih Jurusan</option>
                         <option v-for="dept in departments" :key="dept" :value="dept">{{ dept }}</option>

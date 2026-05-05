@@ -16,11 +16,11 @@ class PublicPartnerController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        $partners = $query->orderBy('name', 'asc')->paginate(12)->withQueryString()->through(function ($item) {
+        $partners = $query->orderBy('id', 'asc')->paginate(12)->withQueryString()->through(function ($item) {
             $logoUrl = null;
             if ($item->logo) {
-                $logoUrl = str_contains($item->logo, '/') 
-                    ? asset('storage/' . $item->logo) 
+                $logoUrl = str_contains($item->logo, '/')
+                    ? asset('storage/' . $item->logo)
                     : asset('images/mitra/' . $item->logo);
             }
 

@@ -96,7 +96,7 @@ const submit = () => {
                     <div>
                         <select v-model="form.study_program_id" 
                             class="block w-full rounded-lg transition-colors py-3 border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white">
-                            <option value="">-- Semua / Level Fakultas --</option>
+                            <option value="" disabled>-- Pilih Program Studi --</option>
                             <option v-for="prodi in studyPrograms" :key="prodi.id" :value="prodi.id">
                                 {{ prodi.name }}
                             </option>

@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Alumni;
+use App\Models\AlumniTestimonial;
 use App\Models\StudyProgram;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 class PublicAlumniController extends Controller
 {
@@ -40,11 +42,33 @@ class PublicAlumniController extends Controller
 
         $years = Alumni::select('graduation_year')->distinct()->orderBy('graduation_year', 'desc')->pluck('graduation_year');
 
+        $distribution = Alumni::select('study_program', DB::raw('count(*) as total'))
+            ->groupBy('study_program')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        $testimonials = AlumniTestimonial::where('is_active', true)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($t) {
+                return [
+                    'id' => $t->id,
+                    'name' => $t->name,
+                    'job' => $t->job,
+                    'program' => $t->study_program,
+                    'year' => $t->graduation_year,
+                    'photo' => $t->photo ? asset('storage/' . $t->photo) : null,
+                    'message' => $t->message,
+                ];
+            });
+
         return Inertia::render('Public/Alumni/Index', [
             'alumni' => $alumni,
             'filters' => $request->only(['search', 'program', 'year']),
             'studyPrograms' => $studyPrograms,
-            'years' => $years
+            'years' => $years,
+            'distribution' => $distribution,
+            'testimonials' => $testimonials
         ]);
     }
 }

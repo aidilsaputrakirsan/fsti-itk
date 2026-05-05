@@ -3,21 +3,28 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 
-    <meta name="description"
-        content="Website Resmi Fakultas Sains dan Teknologi Informasi, Institut Teknologi Kalimantan (FSTI ITK).">
+    <title inertia>FSTI ITK - Fakultas Sains dan Teknologi Informasi</title>
+    
+    <meta name="description" content="Website Resmi Fakultas Sains dan Teknologi Informasi (FSTI), Institut Teknologi Kalimantan (ITK). Pusat pendidikan dan inovasi sains, sistem informasi, dan teknologi di Balikpapan.">
+    <meta name="keywords" content="FSTI ITK, Fakultas Sains dan Teknologi Informasi, ITK, Institut Teknologi Kalimantan, Sistem Informasi ITK, Informatika ITK, Ilmu Komputer ITK Balikpapan">
+    <meta name="author" content="FSTI ITK">
 
-    <title inertia>FSTI ITK</title>
-    <link rel="preload" as="image" href="{{ asset('images/background-banner.webp') }}" fetchpriority="high">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="FSTI ITK - Fakultas Sains dan Teknologi Informasi">
+    <meta property="og:description" content="Website Resmi Fakultas Sains dan Teknologi Informasi (FSTI), Institut Teknologi Kalimantan (ITK).">
+    <meta property="og:image" content="{{ asset('images/logofsti.webp') }}">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" /></noscript>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Kulim+Park:wght@400;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,100..900;1,100..900&family=Asar&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kulim+Park:ital,wght@0,200;0,300;0,400;0,600;0,700;1,200;1,300;1,400;1,600;1,700&family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,100..900;1,100..900&family=Asar&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kulim+Park:ital,wght@0,200;0,300;0,400;0,600;0,700;1,200;1,300;1,400;1,600;1,700&family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"></noscript>
 
     <link rel="icon" type="image/png" href="{{ asset('images/logofsti.webp') }}">
 
@@ -26,7 +33,7 @@
     @inertiaHead
 </head>
 
-<body class="font-sans antialiased">
+<body class="font-sans antialiased m-0 p-0 overflow-x-hidden w-full">
     @inertia
 </body>
 

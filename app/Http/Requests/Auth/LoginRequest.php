@@ -32,6 +32,21 @@ class LoginRequest extends FormRequest
             'remember' => ['nullable', 'boolean'], 
         ];
     }
+    
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format alamat email tidak valid.',
+            'password.required' => 'Kata sandi wajib diisi.',
+        ];
+    }
+
     /**
      * Attempt to authenticate the request's credentials.
      *
@@ -45,7 +60,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'Email atau kata sandi yang Anda masukkan salah.',
             ]);
         }
 
@@ -66,12 +81,10 @@ class LoginRequest extends FormRequest
         event(new Lockout($this));
 
         $seconds = RateLimiter::availableIn($this->throttleKey());
+        $minutes = ceil($seconds / 60);
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
+            'email' => "Terlalu banyak percobaan masuk. Silakan coba lagi dalam {$minutes} menit.",
         ]);
     }
 

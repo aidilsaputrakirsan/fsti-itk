@@ -17,20 +17,26 @@ class PpidCategoryController extends Controller
         $query = PpidCategory::query();
 
         if ($request->filled('search')) {
-            $query->where('nama_kategori', 'like', '%' . $request->search . '%')
-                  ->orWhere('jenis_informasi', 'like', '%' . $request->search . '%');
+            $query->where('nama_kategori', 'like', '%' . $request->search . '%');
         }
 
+        if ($request->filled('jenis')) {
+            $query->where('jenis_informasi', 'like', '%' . $request->jenis . '%');
+        }
+
+        $existingTypes = PpidCategory::distinct()->orderBy('jenis_informasi', 'asc')->pluck('jenis_informasi');
+
         $categories = $query->orderBy('jenis_informasi', 'asc')
-                            ->orderBy('urutan', 'asc')
-                            ->paginate(10)->withQueryString();
+            ->orderBy('urutan', 'asc')
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Admin/PpidCategories/Index', [
             'categories' => $categories,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search', 'jenis']),
+            'existingTypes' => $existingTypes
         ]);
     }
-
     public function create()
     {
         return Inertia::render('Admin/PpidCategories/Create');
@@ -48,7 +54,7 @@ class PpidCategoryController extends Controller
                     return $query->where('jenis_informasi', $request->jenis_informasi);
                 }),
             ],
-            'urutan' => 'nullable|integer|min:1', 
+            'urutan' => 'nullable|integer|min:1',
         ], [
             'nama_kategori.unique' => 'Kategori ini sudah ada di dalam Jenis Informasi tersebut.',
             'urutan.min' => 'Urutan harus dimulai dari angka 1.',
@@ -59,8 +65,8 @@ class PpidCategoryController extends Controller
         if ($request->filled('urutan')) {
             $urutanBaru = $request->urutan;
             PpidCategory::where('jenis_informasi', $jenis)
-                        ->where('urutan', '>=', $urutanBaru)
-                        ->increment('urutan');
+                ->where('urutan', '>=', $urutanBaru)
+                ->increment('urutan');
         } else {
             $max = PpidCategory::where('jenis_informasi', $jenis)->max('urutan');
             $validated['urutan'] = $max ? $max + 1 : 1;
@@ -76,7 +82,7 @@ class PpidCategoryController extends Controller
     public function edit(string $id)
     {
         $category = PpidCategory::findOrFail($id);
-        
+
         return Inertia::render('Admin/PpidCategories/Edit', [
             'category' => $category
         ]);
@@ -117,24 +123,24 @@ class PpidCategoryController extends Controller
             if ($oldUrutan != $newUrutan) {
                 if ($newUrutan < $oldUrutan) {
                     PpidCategory::where('jenis_informasi', $newJenis)
-                                ->where('id', '!=', $category->id)
-                                ->whereBetween('urutan', [$newUrutan, $oldUrutan - 1])
-                                ->increment('urutan');
+                        ->where('id', '!=', $category->id)
+                        ->whereBetween('urutan', [$newUrutan, $oldUrutan - 1])
+                        ->increment('urutan');
                 } elseif ($newUrutan > $oldUrutan) {
                     PpidCategory::where('jenis_informasi', $newJenis)
-                                ->where('id', '!=', $category->id)
-                                ->whereBetween('urutan', [$oldUrutan + 1, $newUrutan])
-                                ->decrement('urutan');
+                        ->where('id', '!=', $category->id)
+                        ->whereBetween('urutan', [$oldUrutan + 1, $newUrutan])
+                        ->decrement('urutan');
                 }
             }
         } else {
             PpidCategory::where('jenis_informasi', $oldJenis)
-                        ->where('urutan', '>', $oldUrutan)
-                        ->decrement('urutan');
+                ->where('urutan', '>', $oldUrutan)
+                ->decrement('urutan');
 
             PpidCategory::where('jenis_informasi', $newJenis)
-                        ->where('urutan', '>=', $newUrutan)
-                        ->increment('urutan');
+                ->where('urutan', '>=', $newUrutan)
+                ->increment('urutan');
         }
 
         $validated['slug'] = Str::slug($request->nama_kategori, '-');
@@ -160,9 +166,9 @@ class PpidCategoryController extends Controller
         $category->delete();
 
         PpidCategory::where('jenis_informasi', $jenis)
-                    ->where('urutan', '>', $oldUrutan)
-                    ->decrement('urutan');
-        
+            ->where('urutan', '>', $oldUrutan)
+            ->decrement('urutan');
+
         return redirect()->route('admin.kategori-ppid.index')->with('success', 'Kategori berhasil dihapus!');
     }
 }

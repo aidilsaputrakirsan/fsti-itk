@@ -26,7 +26,7 @@ const submit = () => {
 <template>
     <Head title="Login Admin" />
 
-    <div class="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 font-inter relative overflow-hidden">
+    <main class="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 font-inter relative overflow-hidden">
         <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse"></div>
         <div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-indigo-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" style="animation-delay: 2s;"></div>
         <div class="absolute bottom-[-20%] left-[20%] w-96 h-96 bg-emerald-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" style="animation-delay: 4s;"></div>
@@ -64,7 +64,7 @@ const submit = () => {
                     <p class="text-sm text-gray-500 mt-2">Masukkan email dan kata sandi Anda untuk masuk.</p>
                 </div>
 
-                <form @submit.prevent="submit" class="space-y-6">
+                <form @submit.prevent="submit" class="space-y-6" novalidate>
                     <div v-if="status" class="bg-emerald-50 text-emerald-600 p-4 rounded-xl text-sm font-medium border border-emerald-100 flex items-center gap-2">
                         {{ status }}
                     </div>
@@ -73,15 +73,19 @@ const submit = () => {
                         <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Mail class="h-5 w-5 text-gray-400" />
+                                <Mail class="h-5 w-5 transition-colors" :class="form.errors.email ? 'text-red-400' : 'text-gray-400'" />
                             </div>
                             <input 
                                 id="email" 
                                 type="email" 
                                 v-model="form.email" 
-                                class="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2F4DD3] focus:border-[#2F4DD3] transition-all outline-none" 
+                                :class="[
+                                    'block w-full pl-11 pr-4 py-3.5 rounded-xl text-sm transition-all outline-none border focus:ring-2',
+                                    form.errors.email 
+                                        ? 'border-red-500 bg-red-50 text-red-900 focus:ring-red-500 focus:border-red-500' 
+                                        : 'bg-slate-50 border-slate-200 focus:ring-[#2F4DD3] focus:border-[#2F4DD3]'
+                                ]"
                                 placeholder="Masukkan alamat email Anda yang terdaftar" 
-                                required 
                                 autofocus 
                                 autocomplete="username" 
                             />
@@ -93,38 +97,44 @@ const submit = () => {
                         <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Kata Sandi</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Lock class="h-5 w-5 text-gray-400" />
+                                <Lock class="h-5 w-5 transition-colors" :class="form.errors.password ? 'text-red-400' : 'text-gray-400'" />
                             </div>
                             <input 
                                 id="password" 
                                 :type="showPassword ? 'text' : 'password'" 
                                 v-model="form.password" 
-                                class="block w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2F4DD3] focus:border-[#2F4DD3] transition-all outline-none" 
+                                :class="[
+                                    'block w-full pl-11 pr-12 py-3.5 rounded-xl text-sm transition-all outline-none border focus:ring-2',
+                                    form.errors.password 
+                                        ? 'border-red-500 bg-red-50 text-red-900 focus:ring-red-500 focus:border-red-500' 
+                                        : 'bg-slate-50 border-slate-200 focus:ring-[#2F4DD3] focus:border-[#2F4DD3]'
+                                ]"
                                 placeholder="Masukkan kata sandi Anda" 
-                                required 
                                 autocomplete="current-password" 
                             />
-                            <button 
-                                type="button" 
-                                @click="showPassword = !showPassword"
-                                class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-[#2F4DD3] focus:outline-none transition-colors"
-                            >
-                                <Eye v-if="!showPassword" class="h-5 w-5" />
-                                <EyeOff v-else class="h-5 w-5" />
-                            </button>
+                           <button 
+    type="button" 
+    aria-label="Tampilkan atau sembunyikan kata sandi"
+    @click="showPassword = !showPassword"
+    class="absolute inset-y-0 right-0 pr-4 flex items-center transition-colors focus:outline-none"
+    :class="form.errors.password ? 'text-red-400 hover:text-red-600' : 'text-gray-400 hover:text-[#2F4DD3]'"
+>
+    <EyeOff v-if="showPassword" class="h-5 w-5" />
+    <Eye v-else class="h-5 w-5" />
+</button>
                         </div>
                         <InputError class="mt-2" :message="form.errors.password" />
                     </div>
 
-                   <label class="flex items-center">
-    <input 
-        type="checkbox" 
-        name="remember" 
-        v-model="form.remember" 
-        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
-    />
-    <span class="ms-2 text-sm text-gray-600">Ingat Saya</span>
-</label>
+                    <label class="flex items-center">
+                        <input 
+                            type="checkbox" 
+                            name="remember" 
+                            v-model="form.remember" 
+                            class="rounded border-gray-300 text-[#2F4DD3] shadow-sm focus:ring-[#2F4DD3]"
+                        />
+                        <span class="ms-2 text-sm text-gray-600">Ingat Saya</span>
+                    </label>
 
                     <button 
                         type="submit" 
@@ -137,13 +147,13 @@ const submit = () => {
                     </button>
                 </form>
 
-                <div class="mt-10 text-center text-xs text-gray-400">
-                    <p>&copy; {{ new Date().getFullYear() }} Fakultas Sains dan Teknologi Informasi.</p>
+                <div class="mt-10 text-center text-xs text-slate-500">                    
+                <p>&copy; {{ new Date().getFullYear() }} Fakultas Sains dan Teknologi Informasi.</p>
                     <Link href="/" class="mt-2 inline-flex items-center gap-1 font-medium hover:text-[#2F4DD3] transition-colors">
                         <ArrowRight class="w-3 h-3" /> Kembali ke Halaman Publik
                     </Link>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 </template>

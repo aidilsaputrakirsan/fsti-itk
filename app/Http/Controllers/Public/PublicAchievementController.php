@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Achievement;
+use App\Models\FacultyProfile; 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -51,6 +52,9 @@ class PublicAchievementController extends Controller
             'non_academic' => Achievement::where('category', 'Non-Akademik')->count(),
         ];
 
+        $profile = FacultyProfile::first();
+        $googleFormUrl = $profile?->content['prestasi_link'] ?? '#';
+
         return Inertia::render('Public/Achievements/Index', [
             'achievements' => $achievements,
             'stats' => $stats,
@@ -58,6 +62,7 @@ class PublicAchievementController extends Controller
             'years' => Achievement::select('year')->distinct()->orderByDesc('year')->pluck('year'),
             'levels' => ['Internasional', 'Nasional', 'Provinsi', 'Kota/Kabupaten', 'Universitas'],
             'categories' => ['Akademik', 'Non-Akademik'],
+            'googleFormUrl' => $googleFormUrl,
         ]);
     }
 }

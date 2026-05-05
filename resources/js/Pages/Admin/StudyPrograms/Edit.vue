@@ -129,9 +129,8 @@ const submit = () => {
 
     <div class="bg-white shadow-sm p-5 sm:p-8 rounded-xl border-t-4 border-primary">
       <form @submit.prevent="submit" novalidate>
-        <div class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-x-8 gap-y-6 md:gap-y-8">
-          
-            <label class="md:pt-3 text-sm font-bold text-gray-800">Nama Program Studi <span class="text-red-600">*</span></label>
+<div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-x-8 gap-y-6 lg:gap-y-8">          
+            <label class="lg:pt-3 text-sm font-bold text-gray-800">Nama Program Studi <span class="text-red-600">*</span></label>
             <div>
                 <input v-model="form.name" type="text" 
                     class="block w-full rounded-lg transition-colors py-3"
@@ -140,7 +139,7 @@ const submit = () => {
                 <InputError :message="form.errors.name" />
             </div>
 
-            <label class="md:pt-3 text-sm font-bold text-gray-800">Jenjang & Jurusan <span class="text-red-600">*</span></label>
+            <label class="lg:pt-3 text-sm font-bold text-gray-800">Jenjang & Jurusan <span class="text-red-600">*</span></label>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Jenjang</label>
@@ -151,7 +150,7 @@ const submit = () => {
                     <InputError :message="form.errors.degree" />
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Jurusan Induk</label>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Jurusan</label>
                     <select v-model="form.department" class="block w-full rounded-lg transition-colors border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white py-3" required>
                         <option value="" disabled>Pilih Jurusan</option>
                         <option v-for="dept in departments" :key="dept" :value="dept">{{ dept }}</option>
@@ -160,7 +159,7 @@ const submit = () => {
                 </div>
             </div>
 
-            <label class="md:pt-3 text-sm font-bold text-gray-800">Profil Ringkas <span class="text-red-600">*</span></label>
+            <label class="lg:pt-3 text-sm font-bold text-gray-800">Profil Ringkas <span class="text-red-600">*</span></label>
             <div>
                 <textarea v-model="form.description" rows="4" 
                     class="block w-full rounded-lg transition-colors py-3"
@@ -169,7 +168,7 @@ const submit = () => {
                 <InputError :message="form.errors.description" />
             </div>
 
-            <label class="md:pt-3 text-sm font-bold text-gray-800">Visi <span class="text-red-600">*</span></label>
+            <label class="lg:pt-3 text-sm font-bold text-gray-800">Visi <span class="text-red-600">*</span></label>
             <div>
                 <textarea v-model="form.vision" rows="3" 
                     class="block w-full rounded-lg transition-colors py-3"
@@ -178,7 +177,7 @@ const submit = () => {
                 <InputError :message="form.errors.vision" />
             </div>
 
-            <label class="md:pt-3 text-sm font-bold text-gray-800">Misi <span class="text-red-600">*</span></label>
+            <label class="lg:pt-3 text-sm font-bold text-gray-800">Misi <span class="text-red-600">*</span></label>
             <div>
                 <p class="text-xs text-gray-500 mb-2 font-medium">Pisahkan setiap poin dengan menekan tombol <strong>Enter</strong>.</p>
                 <textarea v-model="form.mission" rows="6" 
@@ -188,7 +187,7 @@ const submit = () => {
                 <InputError :message="form.errors.mission" />
             </div>
 
-            <label class="md:pt-3 text-sm font-bold text-gray-800">Tujuan <span class="text-red-600">*</span></label>
+            <label class="lg:pt-3 text-sm font-bold text-gray-800">Tujuan <span class="text-red-600">*</span></label>
             <div>
                 <p class="text-xs text-gray-500 mb-2 font-medium">Pisahkan setiap poin dengan menekan tombol <strong>Enter</strong>.</p>
                 <textarea v-model="form.goals" rows="5" 
@@ -198,7 +197,7 @@ const submit = () => {
                 <InputError :message="form.errors.goals" />
             </div>
 
-            <label class="md:pt-3 text-sm font-bold text-gray-800">Profil Lulusan / Karier <span class="text-red-600">*</span></label>
+            <label class="lg:pt-3 text-sm font-bold text-gray-800">Profil Lulusan / Karier <span class="text-red-600">*</span></label>
             <div>
                 <p class="text-xs text-gray-500 mb-2 font-medium">Pisahkan setiap profesi dengan menekan tombol <strong>Enter</strong>.</p>
                 <textarea v-model="form.graduate_profiles" rows="4" 
@@ -208,7 +207,7 @@ const submit = () => {
                 <InputError :message="form.errors.graduate_profiles" />
             </div>
             
-            <label class="md:pt-3 text-sm font-bold text-gray-800">Teks Akreditasi <span class="text-red-600">*</span></label>
+            <label class="lg:pt-3 text-sm font-bold text-gray-800">Teks Akreditasi <span class="text-red-600">*</span></label>
             <div>
                 <textarea v-model="form.accreditation_text" rows="2" 
                     class="block w-full rounded-lg transition-colors py-3"
@@ -217,7 +216,7 @@ const submit = () => {
                 <InputError :message="form.errors.accreditation_text" />
             </div>
 
-            <label class="md:pt-3 text-sm font-bold text-gray-800">Tautan & Media Tambahan</label>
+            <label class="lg:pt-3 text-sm font-bold text-gray-800">Tautan & Media Tambahan</label>
             <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 space-y-5">
                 <div>
                     <label class="block text-xs font-bold text-gray-700 mb-1.5">Link Website Resmi Prodi <span class="text-red-500">*</span></label>

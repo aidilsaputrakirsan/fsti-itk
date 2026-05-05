@@ -130,21 +130,21 @@ watch(flashSuccess, (message) => {
                 />
             </div>
             <div class="flex flex-col sm:flex-row w-full lg:w-auto items-center gap-4 flex-shrink-0">
-                <div class="relative w-full sm:w-64">
-                    <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
-                    <select v-model="selectedProdi" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors cursor-pointer">
-                        <option value="">Semua Program Studi</option>
-                        <option v-for="prodi in studyPrograms" :key="prodi" :value="prodi">{{ prodi }}</option>
-                    </select>
-                </div>
-                <div class="relative w-full sm:w-48">
-                    <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
-                    <select v-model="selectedYear" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors cursor-pointer">
-                        <option value="">Semua Tahun</option>
-                        <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
-                    </select>
-                </div>
+            <div class="relative w-full sm:flex-1 lg:flex-none lg:w-64">
+                <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
+                <select v-model="selectedProdi" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors cursor-pointer">
+                    <option value="">Semua Program Studi</option>
+                    <option v-for="prodi in studyPrograms" :key="prodi" :value="prodi">{{ prodi }}</option>
+                </select>
             </div>
+            <div class="relative w-full sm:flex-1 lg:flex-none lg:w-48">
+                <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
+                <select v-model="selectedYear" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors cursor-pointer">
+                    <option value="">Semua Tahun</option>
+                    <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+                </select>
+            </div>
+        </div>
         </div>
 
         <div class="bg-white shadow-sm p-4 sm:p-6 rounded-xl border border-gray-100 overflow-hidden">

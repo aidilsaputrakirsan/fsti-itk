@@ -65,7 +65,7 @@ onMounted(() => {
     class="rounded-xl overflow-hidden shadow-md flex flex-col h-full"
     :class="bgColorClass"
   >
-    <Link :href="route('posts.show', post.slug)">
+    <Link :href="route('posts.show', post.slug)" tabindex="-1" aria-hidden="true">
       <div class="aspect-video overflow-hidden">
         <img
           v-if="post.image_url"
@@ -76,7 +76,7 @@ onMounted(() => {
           decoding="async"
         >
         <div v-else class="w-full h-56 bg-gray-200 flex items-center justify-center">
-          <span class="text-gray-400">Gambar tidak tersedia</span>
+          <span class="text-gray-800 font-medium">Gambar tidak tersedia</span>
         </div>
       </div>
     </Link>
@@ -105,6 +105,8 @@ onMounted(() => {
       <div class="mt-6 text-right">
         <Link
           :href="route('posts.show', post.slug)"
+          tabindex="-1" 
+          aria-hidden="true"
           class="inline-block bg-[#2F4DD3] text-white font-bold px-6 py-2 rounded-full hover:bg-opacity-90 transition-colors duration-300 text-sm"
         >
           Baca Selengkapnya

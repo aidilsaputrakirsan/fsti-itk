@@ -2,7 +2,7 @@
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import { Head } from '@inertiajs/vue3';
-import { ImageOff } from 'lucide-vue-next';
+import { User } from 'lucide-vue-next';
 
 const props = defineProps({
     leaders: Array
@@ -39,9 +39,8 @@ const props = defineProps({
                                 class="w-full h-[450px] sm:h-[500px] md:h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 bg-white"
                              >
                              
-                             <div v-else class="w-full h-[450px] sm:h-[500px] md:h-full flex flex-col items-center justify-center bg-gray-100 text-gray-400 group-hover:scale-105 transition-transform duration-700">
-                                <ImageOff class="w-12 h-12 mb-3 opacity-40" />
-                                <span class="text-sm font-semibold text-gray-500">Foto Belum Tersedia</span>
+                             <div v-else class="w-full h-[450px] sm:h-[500px] md:h-full flex items-center justify-center bg-gray-200 text-gray-400 group-hover:scale-105 transition-transform duration-700">
+                                <User class="w-24 h-24 opacity-60 text-gray-400" />
                             </div>
                         </div>
 

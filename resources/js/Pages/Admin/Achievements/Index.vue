@@ -118,7 +118,7 @@ watch(flashSuccess, (message) => {
             <input 
                 v-model="search"
                 type="text" 
-                placeholder="Cari daftar prestasi..." 
+                placeholder="Cari daftar prestasi atau nama mahasiswa..." 
                 class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-primary focus:ring-primary transition-colors" 
             />
         </div>

@@ -28,87 +28,7 @@ class StudyProgramSeeder extends Seeder
         }
 
         $prodiData = [
-            [
-                'name' => 'Matematika',
-                'department' => 'Sains dan Analitika Data',
-                'degree' => 'S1',
-                'slug' => 's1-matematika',
-                'description' => 'Program Studi Matematika Institut Teknologi Kalimantan (ITK), yang berdiri sejak 2015 dan telah terakreditasi Baik oleh LAMSAMA (2023), berfokus pada pengembangan kemampuan analisis matematis dan penerapannya di berbagai bidang. Mahasiswa dibekali keterampilan pemrograman dan software serta dapat memilih empat bidang minat, yaitu analisis, aljabar, matematika industri, serta simulasi dan komputasi matematika. Lulusan diharapkan mampu berkontribusi di sektor sains, teknologi, industri, hingga pendidikan, serta memiliki karakter beriman, berakhlak, dan berjiwa nasionalisme.',
-                'vision' => 'Program Studi Matematika menjadi pusat pengembangan keilmuan Matematika dalam bidang industri dan lingkungan di Kalimantan Timur pada tahun 2035 melalui pemberdayaan potensi daerah',
-                'mission' => [
-                    'Menyelenggarakan pendidikan matematika yang berkualitas untuk menghasilkan lulusan yang berkompeten, sesuai kebutuhan pasar, siap melanjutkan pendidikan ke jenjang yang lebih tinggi, serta mampu memberikan sumbangsih bagi pembangunan nasional.',
-                    'Meningkatkan kegiatan penelitian matematika di bidang industri dan lingkungan sehingga mampu menjadi pusat pengembangan keilmuan matematika di Kalimantan Timur.',
-                    'Menerapkan ilmu matematika dan terapannya sebagai solusi masalah masyarakat dalam rangka pengabdian kepada masyarakat.',
-                    'Menjalin kerjasama dengan perguruan tinggi lain, industri, masyarakat, dan pemerintah.'
-                ],
-                'goals' => 'Menjadi wadah pengembangan keilmuan matematika dan proses pembelajaran yang berkualitas untuk meningkatkan kompetensi mahasiswa matematika sehingga menghasilkan sarjana yang mampu memahami sepenuhnya konsep dasar matematika, serta beretos kerja tinggi dalam berkarya dan berkontribusi.',
-                'graduate_profiles' => [
-                    'Data Analyst',
-                    'Data Scientist',
-                    'Praktisi Industri dan Pemerintahan',
-                    'Akademisi dan Peneliti',
-                    'Business Analyst',
-                    'Aktuaris',
-                    'Konsultan',
-                    'Analisis Keuangan'
-                ],
-                'accreditation_certificate_image' => 'akreditasi_matematika.webp',
-                'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Matematika-2023-2028.pdf',
-                'accreditation_text' => 'Telah terakreditasi oleh Lembaga Akreditasi Mandiri Sains Alam dan Ilmu Formal (LAMSAMA) dengan peringkat Baik.',
-                'website_link' => 'https://math.itk.ac.id/'
-            ],
-            [
-                'name' => 'Ilmu Aktuaria',
-                'department' => 'Sains dan Analitika Data',
-                'degree' => 'S1',
-                'slug' => 's1-ilmu-aktuaria',
-                'description' => 'Program Studi Ilmu Aktuaria mempelajari analisis dan pengukuran dampak finansial dari kejadian tidak pasti di masa depan, khususnya dalam industri asuransi, keuangan, dan bidang terkait, melalui penerapan matematika, probabilitas, dan statistika. Mahasiswa dibekali pengetahuan terintegrasi yang mencakup matematika terapan, keuangan, ekonomi, dan komputasi untuk menentukan nilai kewajiban masa depan secara tepat. Lulusan diharapkan menjadi aktuaris yang mampu menyusun strategi dan mendukung pengambilan keputusan berbasis risiko di berbagai sektor industri.',
-                'vision' => 'Menjadi program studi ilmu aktuaria yang unggul dan berperan aktif dalam pengembangan ilmu aktuaria melalui pemberdayaan potensi daerah Kalimantan Timur pada tahun 2035',
-                'mission' => [
-                    'Menyelenggarakan pendidikan aktuaria yang berkualitas untuk menghasilkan lulusan yang sesuai dengan kebutuhan pasar dan siap melanjutkan pendidikan ke jenjang yang lebih tinggi.',
-                    'Meningkatkan kegiatan penelitian di bidang ilmu aktuaria terutama pengelolaan risiko di bidang kelestarian lingkungan.',
-                    'Menerapkan ilmu aktuaria sebagai solusi masalah masyarakat dalam rangka pengabdian masyarakat.',
-                    'Menjalin kerja sama dengan persatuan aktuaris indonesia, perguruan tinggi lain, industri keuangan, masyarakat, dan pemerintah.'
-                ],
-                'goals' => null,
-                'graduate_profiles' => [
-                    'Aktuaris',
-                    'Analisis Risiko',
-                    'Analisis Data',
-                    'Banker',
-                    'Pengelola Investasi',
-                    'Praktisi Dana Pensiun',
-                    'Praktisi Social Care',
-                    'Lembaga Pemerintahan'
-                ],
-                'accreditation_certificate_image' => 'akreditasi_aktuaria.webp',
-                'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Ilmu-Aktuaria-2022-2027.pdf',
-                'accreditation_text' => 'Telah terakreditasi oleh Badan Akreditasi Nasional Perguruan Tinggi (BAN-PT) dengan peringkat Baik.',
-                'website_link' => 'https://actsci.itk.ac.id/'
-            ],
-            [
-                'name' => 'Statistika',
-                'department' => 'Sains dan Analitika Data',
-                'degree' => 'S1',
-                'slug' => 's1-statistika',
-                'description' => 'Program Studi Statistika ITK berkomitmen menghasilkan lulusan yang kompeten dalam analisis statistik dan pengolahan big data melalui kurikulum yang berfokus pada manajemen data dan komputasi. Pembelajaran dirancang selaras dengan perkembangan teknologi sehingga lulusan memiliki keterampilan yang relevan dengan kebutuhan zaman. Dengan kompetensi tersebut, lulusan memiliki peluang karier luas di sektor pemerintah, pendidikan, bisnis, dan industri.',
-                'vision' => 'Menjadi program studi yang menghasilkan karya unggul dalam pendidikan dan penerapan statistika serta berperan aktif dalam pengembangan potensi daerah Kalimantan, khususnya di bidang ekologi, energi, dan smart city ada tahun 2035.',
-                'mission' => [
-                    'Menyelenggarakan proses pendidikan tinggi yang unggul dan berbasis pada pengembangan keilmuan statistika dan terapannya melalui kerangka merdeka belajar.',
-                    'Berperan aktif dalam menghasilkan karya penelitian dan pengabdian kepada masyarakat sebagai upaya untuk memperkaya serta memperkuat ilmu pengetahuan dan teknologi.',
-                    'Membangun relasi dan kerjasama yang baik dengan berbagai sektor industri dan pemerintah dalam pengembangan statistika, khususnya di bidang ekologi, energi, dan smart city.'
-                ],
-                'goals' => "1. Menyelenggarakan pendidikan tinggi yang unggul dan berkualitas sehingga menghasilkan lulusan yang profesional dan memiliki daya saing.\n2. Menerapkan dan mengembangkan keilmuan statistika melalui kegiatan penelitian.\n3. Berkontirbusi dalam pengabdian kepada masyarakat.",
-                'graduate_profiles' => [
-                    'Data Scientist',
-                    'Data Analyst',
-                    'Konsultan Riset'
-                ],
-                'accreditation_certificate_image' => 'akreditasi_statistika.webp',
-                'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Statistika-2022-2027.pdf',
-                'accreditation_text' => 'Telah terakreditasi oleh Badan Akreditasi Nasional Perguruan Tinggi (BAN-PT) dengan peringkat Baik.',
-                'website_link' => 'https://stat.itk.ac.id/'
-            ],
+            // ================= JURUSAN SAINS DAN ANALITIKA DATA (JSAD) =================
             [
                 'name' => 'Fisika',
                 'department' => 'Sains dan Analitika Data',
@@ -139,29 +59,107 @@ class StudyProgramSeeder extends Seeder
                 'website_link' => 'https://phy.itk.ac.id/'
             ],
             [
-                'name' => 'Teknik Informatika',
+                'name' => 'Matematika',
+                'department' => 'Sains dan Analitika Data',
+                'degree' => 'S1',
+                'slug' => 's1-matematika',
+                'description' => 'Program Studi Matematika Institut Teknologi Kalimantan (ITK), yang berdiri sejak 2015 dan telah terakreditasi Baik oleh LAMSAMA (2023), berfokus pada pengembangan kemampuan analisis matematis dan penerapannya di berbagai bidang. Mahasiswa dibekali keterampilan pemrograman dan software serta dapat memilih empat bidang minat, yaitu analisis, aljabar, matematika industri, serta simulasi dan komputasi matematika. Lulusan diharapkan mampu berkontribusi di sektor sains, teknologi, industri, hingga pendidikan, serta memiliki karakter beriman, berakhlak, dan berjiwa nasionalisme.',
+                'vision' => 'Program Studi Matematika menjadi pusat pengembangan keilmuan Matematika dalam bidang industri dan lingkungan di Kalimantan Timur pada tahun 2035 melalui pemberdayaan potensi daerah',
+                'mission' => [
+                    'Menyelenggarakan pendidikan matematika yang berkualitas untuk menghasilkan lulusan yang berkompeten, sesuai kebutuhan pasar, siap melanjutkan pendidikan ke jenjang yang lebih tinggi, serta mampu memberikan sumbangsih bagi pembangunan nasional.',
+                    'Meningkatkan kegiatan penelitian matematika di bidang industri dan lingkungan sehingga mampu menjadi pusat pengembangan keilmuan matematika di Kalimantan Timur.',
+                    'Menerapkan ilmu matematika dan terapannya sebagai solusi masalah masyarakat dalam rangka pengabdian kepada masyarakat.',
+                    'Menjalin kerjasama dengan perguruan tinggi lain, industri, masyarakat, dan pemerintah.'
+                ],
+                'goals' => 'Menjadi wadah pengembangan keilmuan matematika dan proses pembelajaran yang berkualitas untuk meningkatkan kompetensi mahasiswa matematika sehingga menghasilkan sarjana yang mampu memahami sepenuhnya konsep dasar matematika, serta beretos kerja tinggi dalam berkarya dan berkontribusi.',
+                'graduate_profiles' => [
+                    'Data Analyst',
+                    'Data Scientist',
+                    'Praktisi Industri dan Pemerintahan',
+                    'Akademisi dan Peneliti',
+                    'Business Analyst',
+                    'Aktuaris',
+                    'Konsultan',
+                    'Analisis Keuangan'
+                ],
+                'accreditation_certificate_image' => 'akreditasi_matematika.webp',
+                'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Matematika-2023-2028.pdf',
+                'accreditation_text' => 'Telah terakreditasi oleh Lembaga Akreditasi Mandiri Sains Alam dan Ilmu Formal (LAMSAMA) dengan peringkat Baik.',
+                'website_link' => 'https://math.itk.ac.id/'
+            ],
+            [
+                'name' => 'Statistika',
+                'department' => 'Sains dan Analitika Data',
+                'degree' => 'S1',
+                'slug' => 's1-statistika',
+                'description' => 'Program Studi Statistika ITK berkomitmen menghasilkan lulusan yang kompeten dalam analisis statistik dan pengolahan big data melalui kurikulum yang berfokus pada manajemen data dan komputasi. Pembelajaran dirancang selaras dengan perkembangan teknologi sehingga lulusan memiliki keterampilan yang relevan dengan kebutuhan zaman. Dengan kompetensi tersebut, lulusan memiliki peluang karier luas di sektor pemerintah, pendidikan, bisnis, dan industri.',
+                'vision' => 'Menjadi program studi yang menghasilkan karya unggul dalam pendidikan dan penerapan statistika serta berperan aktif dalam pengembangan potensi daerah Kalimantan, khususnya di bidang ekologi, energi, dan smart city ada tahun 2035.',
+                'mission' => [
+                    'Menyelenggarakan proses pendidikan tinggi yang unggul dan berbasis pada pengembangan keilmuan statistika dan terapannya melalui kerangka merdeka belajar.',
+                    'Berperan aktif dalam menghasilkan karya penelitian dan pengabdian kepada masyarakat sebagai upaya untuk memperkaya serta memperkuat ilmu pengetahuan dan teknologi.',
+                    'Membangun relasi dan kerjasama yang baik dengan berbagai sektor industri dan pemerintah dalam pengembangan statistika, khususnya di bidang ekologi, energi, dan smart city.'
+                ],
+                'goals' => "1. Menyelenggarakan pendidikan tinggi yang unggul dan berkualitas sehingga menghasilkan lulusan yang profesional dan memiliki daya saing.\n2. Menerapkan dan mengembangkan keilmuan statistika melalui kegiatan penelitian.\n3. Berkontirbusi dalam pengabdian kepada masyarakat.",
+                'graduate_profiles' => [
+                    'Data Scientist',
+                    'Data Analyst',
+                    'Konsultan Riset'
+                ],
+                'accreditation_certificate_image' => 'akreditasi_statistika.webp',
+                'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Statistika-2022-2027.pdf',
+                'accreditation_text' => 'Telah terakreditasi oleh Badan Akreditasi Nasional Perguruan Tinggi (BAN-PT) dengan peringkat Baik.',
+                'website_link' => 'https://stat.itk.ac.id/'
+            ],
+            [
+                'name' => 'Ilmu Aktuaria',
+                'department' => 'Sains dan Analitika Data',
+                'degree' => 'S1',
+                'slug' => 's1-ilmu-aktuaria',
+                'description' => 'Program Studi Ilmu Aktuaria mempelajari analisis dan pengukuran dampak finansial dari kejadian tidak pasti di masa depan, khususnya dalam industri asuransi, keuangan, dan bidang terkait, melalui penerapan matematika, probabilitas, dan statistika. Mahasiswa dibekali pengetahuan terintegrasi yang mencakup matematika terapan, keuangan, ekonomi, dan komputasi untuk menentukan nilai kewajiban masa depan secara tepat. Lulusan diharapkan menjadi aktuaris yang mampu menyusun strategi dan mendukung pengambilan keputusan berbasis risiko di berbagai sektor industri.',
+                'vision' => 'Menjadi program studi ilmu aktuaria yang unggul dan berperan aktif dalam pengembangan ilmu aktuaria melalui pemberdayaan potensi daerah Kalimantan Timur pada tahun 2035',
+                'mission' => [
+                    'Menyelenggarakan pendidikan aktuaria yang berkualitas untuk menghasilkan lulusan yang sesuai dengan kebutuhan pasar dan siap melanjutkan pendidikan ke jenjang yang lebih tinggi.',
+                    'Meningkatkan kegiatan penelitian di bidang ilmu aktuaria terutama pengelolaan risiko di bidang kelestarian lingkungan.',
+                    'Menerapkan ilmu aktuaria sebagai solusi masalah masyarakat dalam rangka pengabdian masyarakat.',
+                    'Menjalin kerja sama dengan persatuan aktuaris indonesia, perguruan tinggi lain, industri keuangan, masyarakat, dan pemerintah.'
+                ],
+                'goals' => null,
+                'graduate_profiles' => [
+                    'Aktuaris',
+                    'Analisis Risiko',
+                    'Analisis Data',
+                    'Banker',
+                    'Pengelola Investasi',
+                    'Praktisi Dana Pensiun',
+                    'Praktisi Social Care',
+                    'Lembaga Pemerintahan'
+                ],
+                'accreditation_certificate_image' => 'akreditasi_aktuaria.webp',
+                'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Ilmu-Aktuaria-2022-2027.pdf',
+                'accreditation_text' => 'Telah terakreditasi oleh Badan Akreditasi Nasional Perguruan Tinggi (BAN-PT) dengan peringkat Baik.',
+                'website_link' => 'https://actsci.itk.ac.id/'
+            ],
+
+            // ================= JURUSAN TEKNIK ELEKTRO, INFORMATIKA, DAN BISNIS (JTEIB) =================
+            [
+                'name' => 'Teknik Elektro',
                 'department' => 'Teknik Elektro, Informatika, dan Bisnis',
                 'degree' => 'S1',
-                'slug' => 's1-teknik-informatika',
-                'description' => 'Program Studi Informatika ITK berfokus pada pengembangan kompetensi dasar informatika serta keahlian pemrograman yang kuat untuk mendukung perancangan dan pengembangan sistem berbasis komputer. Mahasiswa dibekali kemampuan dalam menganalisis, mengevaluasi, serta mengimplementasikan solusi teknologi informasi yang adaptif terhadap kebutuhan industri. Dengan bekal tersebut, lulusan diharapkan mampu berkontribusi dalam pengembangan sistem digital yang inovatif dan relevan di berbagai sektor.',
-                'vision' => 'Menjadi program studi unggul di bidang Informatika yang inovatif dan kreatif dalam poros Kalimantan pada tahun 2025',
-                'mission' => [
-                    'Menyelenggarakan sistem pendidikan yang efektif, efisien, dan berkelanjutan dalam rangka menghasilkan lulusan sarjana Informatika.',
-                    'Menghasilkan lulusan yang memiliki kompetensi di bidang Informatika, berjiwa wirausaha (entrepreneur) dan dapat berperan positif di tingkat nasional dan internasional (world class).',
-                    'Meningkatkan kontribusi dan kolaborasi dengan berbagai pihak dalam masyarakat dengan mengembangkan produk dan layanan dalam bidang Informatika di tingkat regional, nasional maupun internasional.'
-                ],
-                'goals' => "1. Menghasilkan lulusan yang memiliki kompetensi di bidang Informatika, berjiwa wirausaha dan dapat dipercaya sehingga mampu bekerja sama dan memberikan kontribusi di tingkat nasional maupun internasional.\n2. Menjalankan sistem pendidikan dengan penjaminan mutu sesuai standar nasional dan internasional.\n3. Melibatkan civitas academica dalam penelitian yang memperkaya keilmuan di bidang komputasi.\n4. Melibatkan civitas academica dalam pengabdian masyarakat.\n5. Meningkatkan kontribusi dan kolaborasi dengan mengembangkan inovasi.\n6. Mengembangkan sertifikasi kompetensi di bidang Informatika.",
+                'slug' => 's1-teknik-elektro',
+                'description' => 'Program Studi Teknik Elektro Institut Teknologi Kalimantan (ITK) berfokus pada penguasaan ilmu listrik, elektronika, dan elektromagnetisme dalam perancangan, pengembangan, serta implementasi sistem dan perangkat teknologi. Mahasiswa dibekali dasar kuat matematika, fisika, dan komputasi melalui pembelajaran seperti sistem kontrol, komunikasi, mikroprosesor, teknik daya, serta teknologi terkini seperti energi terbarukan, robotika, dan kecerdasan buatan. Lulusan diharapkan mampu berpikir kritis, kreatif, dan bekerja dalam tim, serta berkarier di berbagai bidang seperti rekayasa perangkat keras, sistem kontrol, jaringan, teknologi informasi, hingga riset dan pengembangan teknologi.',
+                'vision' => null,
+                'mission' => null,
+                'goals' => null,
                 'graduate_profiles' => [
-                    'Software Engineer',
-                    'Digital Entrepreneur',
-                    'Artificial Intelligence Engineer',
-                    'Computer Scientist',
-                    'Data Scientist'
+                    'Insinyur di bidang teknik elektro and bidang yang relevan',
+                    'Ilmuwan, Peneliti, Guru/Dosen',
+                    'Pegawai/Staf Pemerintah dan Tokoh Masyarakat',
+                    'Pengusaha'
                 ],
-                'accreditation_certificate_image' => 'akreditasi_informatika.webp',
-                'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Informatika-2024-2029.pdf',
-                'accreditation_text' => 'Telah terakreditasi oleh Lembaga Akreditasi Mandiri Informatika dan Komputer (LAMINFOKOM) dengan peringkat Baik Sekali.',
-                'website_link' => 'https://if.itk.ac.id/'
+                'accreditation_certificate_image' => 'akreditasi_elektro.webp',
+                'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Teknik-Elektro-2023-2027.pdf',
+                'accreditation_text' => 'Telah terakreditasi oleh Lembaga Akreditasi Mandiri Program Studi Keteknikan (LAM Teknik) dengan peringkat Baik Sekali.',
+                'website_link' => 'https://ee.itk.ac.id/'
             ],
             [
                 'name' => 'Sistem Informasi',
@@ -186,6 +184,31 @@ class StudyProgramSeeder extends Seeder
                 'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Sistem-Informasi-2023-2028.pdf',
                 'accreditation_text' => 'Telah terakreditasi oleh Lembaga Akreditasi Mandiri Informatika dan Komputer (LAMINFOKOM) dengan peringkat Baik Sekali.',
                 'website_link' => 'https://is.itk.ac.id/'
+            ],
+            [
+                'name' => 'Informatika',
+                'department' => 'Teknik Elektro, Informatika, dan Bisnis',
+                'degree' => 'S1',
+                'slug' => 's1-teknik-informatika',
+                'description' => 'Program Studi Informatika ITK berfokus pada pengembangan kompetensi dasar informatika serta keahlian pemrograman yang kuat untuk mendukung perancangan dan pengembangan sistem berbasis komputer. Mahasiswa dibekali kemampuan dalam menganalisis, mengevaluasi, serta mengimplementasikan solusi teknologi informasi yang adaptif terhadap kebutuhan industri. Dengan bekal tersebut, lulusan diharapkan mampu berkontribusi dalam pengembangan sistem digital yang inovatif dan relevan di berbagai sektor.',
+                'vision' => 'Menjadi program studi unggul di bidang Informatika yang inovatif dan kreatif dalam poros Kalimantan pada tahun 2025',
+                'mission' => [
+                    'Menyelenggarakan sistem pendidikan yang efektif, efisien, dan berkelanjutan dalam rangka menghasilkan lulusan sarjana Informatika.',
+                    'Menghasilkan lulusan yang memiliki kompetensi di bidang Informatika, berjiwa wirausaha (entrepreneur) dan dapat berperan positif di tingkat nasional dan internasional (world class).',
+                    'Meningkatkan kontribusi dan kolaborasi dengan berbagai pihak dalam masyarakat dengan mengembangkan produk dan layanan dalam bidang Informatika di tingkat regional, nasional maupun internasional.'
+                ],
+                'goals' => "1. Menghasilkan lulusan yang memiliki kompetensi di bidang Informatika, berjiwa wirausaha dan dapat dipercaya sehingga mampu bekerja sama dan memberikan kontribusi di tingkat nasional maupun internasional.\n2. Menjalankan sistem pendidikan dengan penjaminan mutu sesuai standar nasional dan internasional.\n3. Melibatkan civitas academica dalam penelitian yang memperkaya keilmuan di bidang komputasi.\n4. Melibatkan civitas academica dalam pengabdian masyarakat.\n5. Meningkatkan kontribusi dan kolaborasi dengan mengembangkan inovasi.\n6. Mengembangkan sertifikasi kompetensi di bidang Informatika.",
+                'graduate_profiles' => [
+                    'Software Engineer',
+                    'Digital Entrepreneur',
+                    'Artificial Intelligence Engineer',
+                    'Computer Scientist',
+                    'Data Scientist'
+                ],
+                'accreditation_certificate_image' => 'akreditasi_informatika.webp',
+                'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Informatika-2024-2029.pdf',
+                'accreditation_text' => 'Telah terakreditasi oleh Lembaga Akreditasi Mandiri Informatika dan Komputer (LAMINFOKOM) dengan peringkat Baik Sekali.',
+                'website_link' => 'https://if.itk.ac.id/'
             ],
             [
                 'name' => 'Bisnis Digital',
@@ -214,24 +237,26 @@ class StudyProgramSeeder extends Seeder
                 'website_link' => 'https://bisnisdigital.itk.ac.id/'
             ],
             [
-                'name' => 'Teknik Elektro',
+                'name' => 'Teknik Biomedis',
                 'department' => 'Teknik Elektro, Informatika, dan Bisnis',
                 'degree' => 'S1',
-                'slug' => 's1-teknik-elektro',
-                'description' => 'Program Studi Teknik Elektro Institut Teknologi Kalimantan (ITK) berfokus pada penguasaan ilmu listrik, elektronika, dan elektromagnetisme dalam perancangan, pengembangan, serta implementasi sistem dan perangkat teknologi. Mahasiswa dibekali dasar kuat matematika, fisika, dan komputasi melalui pembelajaran seperti sistem kontrol, komunikasi, mikroprosesor, teknik daya, serta teknologi terkini seperti energi terbarukan, robotika, dan kecerdasan buatan. Lulusan diharapkan mampu berpikir kritis, kreatif, dan bekerja dalam tim, serta berkarier di berbagai bidang seperti rekayasa perangkat keras, sistem kontrol, jaringan, teknologi informasi, hingga riset dan pengembangan teknologi.',
+                'slug' => 's1-teknik-biomedis',
+                'description' => 'Program Studi Teknik Biomedis ITK berfokus pada pengembangan teknologi kesehatan yang sesuai dengan kondisi wilayah, khususnya daerah terpencil. Mahasiswa mempelajari dasar medis dan teknik untuk merancang alat kesehatan yang inovatif, sehingga lulusan mampu menciptakan solusi teknologi yang bermanfaat bagi pelayanan kesehatan masyarakat.',
                 'vision' => null,
                 'mission' => null,
                 'goals' => null,
                 'graduate_profiles' => [
-                    'Insinyur di bidang teknik elektro and bidang yang relevan',
-                    'Ilmuwan, Peneliti, Guru/Dosen',
-                    'Pegawai/Staf Pemerintah dan Tokoh Masyarakat',
-                    'Pengusaha'
+                    'Engineer Biomedis',
+                    'Engineer Telemedicine',
+                    'Analisis Data Kesehatan',
+                    'Engineer Rehabilitasi',
+                    'Wirausaha di Bidang Teknologi Biomedis',
+                    'Birokrat di Bidang Layanan Kesehatan'
                 ],
-                'accreditation_certificate_image' => 'akreditasi_elektro.webp',
-                'accreditation_pdf_link' => 'https://ult.itk.ac.id/wp-content/uploads/2024/09/Sertifikat-Akreditasi-Program-Studi-Teknik-Elektro-2023-2027.pdf',
-                'accreditation_text' => 'Telah terakreditasi oleh Lembaga Akreditasi Mandiri Program Studi Keteknikan (LAM Teknik) dengan peringkat Baik Sekali.',
-                'website_link' => 'https://ee.itk.ac.id/'
+                'accreditation_certificate_image' => null,
+                'accreditation_pdf_link' => null,
+                'accreditation_text' => null,
+                'website_link' => null
             ],
             [
                 'name' => 'Magister Manajemen Teknologi',
@@ -253,7 +278,7 @@ class StudyProgramSeeder extends Seeder
                 'accreditation_pdf_link' => null,
                 'accreditation_text' => 'Telah terakreditasi oleh Lembaga Akreditasi Mandiri Program Studi Keteknikan (LAM Teknik) dengan peringkat Baik.',
                 'website_link' => null
-            ]
+            ],
         ];
 
         $copiedCount = 0;

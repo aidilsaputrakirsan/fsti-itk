@@ -11,7 +11,14 @@ import {
     UserGroupIcon,              
     ChartBarIcon,               
     MagnifyingGlassCircleIcon,  
-    StarIcon                    
+    StarIcon,
+    GlobeAltIcon,
+    ArrowTopRightOnSquareIcon,
+    BanknotesIcon, 
+    HandRaisedIcon, 
+    GiftIcon, 
+    BriefcaseIcon, 
+    NoSymbolIcon
 } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
@@ -123,6 +130,71 @@ const displayDocuments = props.documents || [];
             </div>
         </section>
 
+        <section class="bg-white py-8 md:py-12 font-public-sans">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="relative overflow-hidden bg-gradient-to-r from-primary to-blue-900 rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(47,77,211,0.4)] p-8 md:p-12 lg:p-16 border border-blue-700/50">
+                    
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none"></div>
+                    <ShieldCheckIcon class="absolute right-8 md:right-24 top-1/2 -translate-y-1/2 w-40 h-40 md:w-64 md:h-64 text-white opacity-5 transform rotate-12 pointer-events-none" />
+
+                    <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16">
+                        
+                        <div class="flex-1 text-center lg:text-left">
+                            <span class="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-[10px] md:text-xs font-bold uppercase tracking-widest text-white mb-4 backdrop-blur-sm">
+                                Kawasan Wilayah Bebas dari Korupsi (WBK)
+                            </span>
+                            <h3 class="text-4xl md:text-5xl lg:text-6xl font-optimus font-bold text-white mb-4 leading-tight drop-shadow-md">
+                                BERANI JUJUR,<br/> <span class="text-yellow-400">HEBAT!</span>
+                            </h3>
+                            <p class="text-blue-100 text-sm md:text-lg font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                                Seluruh pimpinan, sivitas akademika, dan tenaga kependidikan FSTI ITK berkomitmen memberikan pelayanan prima yang transparan, akuntabel, dan terbebas dari segala bentuk penyimpangan.
+                            </p>
+                        </div>
+
+                        <div class="shrink-0 w-full lg:w-auto">
+                            <div class="grid grid-cols-2 gap-4 md:gap-5">
+                                
+                                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 flex flex-col items-center justify-center text-center hover:bg-white/20 transition-all duration-300 shadow-sm hover:shadow-md">
+                                    <div class="relative w-12 h-12 md:w-14 md:h-14 mb-3 mx-auto">
+                                        <BanknotesIcon class="absolute inset-0 w-full h-full text-white p-2.5" stroke-width="1.5" />
+                                        <NoSymbolIcon class="absolute inset-0 w-full h-full text-red-500 drop-shadow-md" stroke-width="2.5" />
+                                    </div>
+                                    <span class="font-black text-white tracking-widest text-sm md:text-base">NO SUAP</span>
+                                </div>
+
+                                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 flex flex-col items-center justify-center text-center hover:bg-white/20 transition-all duration-300 shadow-sm hover:shadow-md">
+                                    <div class="relative w-12 h-12 md:w-14 md:h-14 mb-3 mx-auto">
+                                        <HandRaisedIcon class="absolute inset-0 w-full h-full text-white p-2.5" stroke-width="1.5" />
+                                        <NoSymbolIcon class="absolute inset-0 w-full h-full text-red-500 drop-shadow-md" stroke-width="2.5" />
+                                    </div>
+                                    <span class="font-black text-white tracking-widest text-sm md:text-base">NO PUNGLI</span>
+                                </div>
+
+                                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 flex flex-col items-center justify-center text-center hover:bg-white/20 transition-all duration-300 shadow-sm hover:shadow-md">
+                                    <div class="relative w-12 h-12 md:w-14 md:h-14 mb-3 mx-auto">
+                                        <GiftIcon class="absolute inset-0 w-full h-full text-white p-2.5" stroke-width="1.5" />
+                                        <NoSymbolIcon class="absolute inset-0 w-full h-full text-red-500 drop-shadow-md" stroke-width="2.5" />
+                                    </div>
+                                    <span class="font-black text-white tracking-widest text-sm md:text-base">NO GRATIFIKASI</span>
+                                </div>
+
+                                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 flex flex-col items-center justify-center text-center hover:bg-white/20 transition-all duration-300 shadow-sm hover:shadow-md">
+                                    <div class="relative w-12 h-12 md:w-14 md:h-14 mb-3 mx-auto">
+                                        <BriefcaseIcon class="absolute inset-0 w-full h-full text-white p-2.5" stroke-width="1.5" />
+                                        <NoSymbolIcon class="absolute inset-0 w-full h-full text-red-500 drop-shadow-md" stroke-width="2.5" />
+                                    </div>
+                                    <span class="font-black text-white tracking-widest text-sm md:text-base">NO KORUPSI</span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="bg-white py-12 md:py-16 font-public-sans">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-10 md:mb-12">
@@ -162,7 +234,38 @@ const displayDocuments = props.documents || [];
                     <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-2">Belum Ada Dokumen Publikasi</h3>
                     <p class="text-xs md:text-sm text-gray-500 font-medium">Dokumen pendukung Zona Integritas FSTI sedang dalam tahap penyusunan dan akan segera dipublikasikan di sini.</p>
                 </div>
+            </div>
+        </section>
 
+        <section class="py-16 md:py-24 relative overflow-hidden bg-white font-public-sans">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 max-w-5xl">
+                <div class="bg-gradient-to-br from-primary to-blue-700 rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-12 lg:p-16 text-center text-white shadow-2xl relative overflow-hidden" data-aos="zoom-in">
+                    
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-400/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none"></div>
+                    <ShieldCheckIcon class="absolute -right-10 top-1/2 -translate-y-1/2 w-64 h-64 text-white opacity-[0.03] pointer-events-none" />
+                    
+                    <div class="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-white/10 border border-white/20 backdrop-blur-md text-white rounded-full shadow-lg mb-6 relative z-10">
+                        <GlobeAltIcon class="w-8 h-8 md:w-10 md:h-10" />
+                    </div>
+                    
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-optimus font-bold mb-6 leading-tight relative z-10">Portal Zona Integritas</h2>
+                    
+                    <p class="text-blue-100 text-base md:text-lg mb-10 max-w-3xl mx-auto relative z-10 font-medium leading-relaxed">
+                        Untuk mengakses informasi yang lebih komprehensif, layanan pengaduan, survei, serta inovasi pelayanan publik terkait Zona Integritas, silakan kunjungi website terpisah khusus ZI FSTI ITK.
+                    </p>
+                    
+                    <div class="flex justify-center relative z-10">
+                        <a 
+                            :href="profile?.external_website_url || '#'" 
+                            :target="profile?.external_website_url ? '_blank' : null" 
+                            :rel="profile?.external_website_url ? 'noopener noreferrer' : null"
+                            class="px-8 py-4 bg-white text-primary font-bold rounded-xl hover:bg-gray-50 hover:-translate-y-1 hover:shadow-[0_10px_20px_-10px_rgba(255,255,255,0.5)] transition-all duration-300 flex items-center justify-center gap-2"
+                        >
+                            Kunjungi Website ZI FSTI <ArrowTopRightOnSquareIcon class="w-5 h-5" />
+                        </a>
+                    </div>
+                </div>
             </div>
         </section>
 

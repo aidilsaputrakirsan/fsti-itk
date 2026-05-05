@@ -83,6 +83,21 @@ const handleClickOutside = (event) => {
     }
 };
 
+const isModalOpen = ref(false);
+const selectedKegiatan = ref(null);
+
+const openModal = (keg) => {
+    selectedKegiatan.value = keg;
+    isModalOpen.value = true;
+    document.body.style.overflow = 'hidden';
+};
+
+const closeModal = () => {
+    isModalOpen.value = false;
+    setTimeout(() => { selectedKegiatan.value = null; }, 300);
+    document.body.style.overflow = '';
+};
+
 onMounted(() => {
     AOS.init({ duration: 800, once: true });
     document.addEventListener('mousedown', handleClickOutside);
@@ -189,7 +204,6 @@ const formatDateLengkap = (dateStr) => {
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
                 <div class="relative w-full bg-gradient-to-br from-primary via-[#243db3] to-primary-hover rounded-[2rem] p-8 md:p-12 mb-8 overflow-hidden shadow-xl flex items-center justify-between border border-primary-hover/50">
-                    
                     <div class="absolute -top-[20%] -right-[10%] w-[60%] h-[140%] bg-blue-300/20 rounded-[100%] blur-[100px] pointer-events-none transform -rotate-12"></div>
                     <div class="absolute -bottom-[30%] -left-[10%] w-[60%] h-[120%] bg-white/10 rounded-[100%] blur-[120px] pointer-events-none transform rotate-12"></div>
                     <div class="absolute top-[20%] left-[40%] w-[30%] h-[50%] bg-blue-200/15 rounded-full blur-[80px] pointer-events-none"></div>
@@ -210,12 +224,13 @@ const formatDateLengkap = (dateStr) => {
 
                 <div class="relative z-20 -mt-16 mx-4 md:mx-8 mb-8 bg-white p-4 md:p-5 rounded-2xl shadow-[0_8px_30px_rgba(47,77,211,0.08)] border border-slate-100 flex flex-col md:flex-row gap-4" data-aos="fade-down">
                     <div class="relative flex-grow">
-                        <input 
-                            type="text" 
-                            placeholder="Cari nama kegiatan atau event..." 
-                            class="w-full pl-12 pr-10 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-slate-50 text-slate-800 font-medium hover:bg-white transition-colors"
-                            v-model="searchQuery"
-                        >
+                    <input 
+    type="text" 
+    placeholder="Cari nama kegiatan atau event..." 
+    title="Cari nama kegiatan atau event..." 
+    class="w-full pl-10 md:pl-12 pr-8 md:pr-10 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-slate-50 text-slate-800 font-medium text-xs sm:text-sm lg:text-base text-ellipsis hover:bg-white transition-colors"
+    v-model="searchQuery"
+>
                         <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/60" />
                         <button v-if="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-primary transition-colors">
                             <X class="w-5 h-5" />
@@ -303,9 +318,13 @@ const formatDateLengkap = (dateStr) => {
                                     {{ keg.title }}
                                 </h3>
                                 
-                                <p v-if="keg.description" class="text-sm text-slate-500 line-clamp-2 mb-6 leading-relaxed">
-                                    {{ keg.description }}
-                                </p>
+                               <p v-if="keg.description" class="text-sm text-slate-500 line-clamp-3 mb-2 leading-relaxed">
+    {{ keg.description }}
+</p>
+<button v-if="keg.description" @click="openModal(keg)" class="text-primary text-[13px] font-bold text-left hover:text-primary-hover mb-6 w-fit transition-colors">
+    Baca Selengkapnya &rarr;
+</button>
+<div v-else class="mb-6"></div>
 
                                 <div class="mt-auto space-y-3 pt-5 border-t border-slate-100">
                                     <div v-if="keg.end_date" class="flex items-start gap-3 text-sm text-slate-600">
@@ -322,48 +341,83 @@ const formatDateLengkap = (dateStr) => {
                     </div>
                 </div>
 
-                <div v-if="totalPages > 1 && filteredKegiatanFlat.length > 0" class="mt-16 mx-4 md:mx-8 flex flex-col md:flex-row items-center justify-between gap-6 bg-white py-4 px-6 md:px-10 rounded-full shadow-sm border border-slate-100" data-aos="fade-in">
-                    <p class="text-sm font-medium text-slate-500 text-center md:text-left">
-                        Menampilkan <span class="text-primary font-bold">{{ showingFrom }}</span> - <span class="text-primary font-bold">{{ showingTo }}</span> dari <span class="text-primary font-bold">{{ totalKegiatans }}</span> Kegiatan
-                    </p>
+                <div v-if="totalPages > 1 && filteredKegiatanFlat.length > 0" class="mt-16 mx-4 md:mx-8 flex flex-col items-center justify-center gap-4 w-full" data-aos="fade-in">
                     
                     <div class="flex flex-wrap justify-center items-center gap-2">
                         <button 
                             @click="changePage(currentPage - 1)"
                             :disabled="currentPage === 1"
-                            class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
-                            :class="currentPage === 1 ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            v-html="'&laquo; Sebelumnya'"
-                        ></button>
+                            class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                            :class="currentPage === 1 ? 'text-gray-300 bg-gray-50 border border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                        >Sebelumnya</button>
 
                         <template v-for="(page, index) in visiblePages" :key="index">
                             <span 
                                 v-if="page === '...'"
-                                class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full text-slate-300 bg-slate-50/50 cursor-not-allowed"
-                            >
-                                ...
-                            </span>
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl text-gray-300 bg-white border border-gray-100 cursor-not-allowed whitespace-nowrap"
+                            >...</span>
                             <button 
                                 v-else
                                 @click="changePage(page)"
-                                class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
-                                :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            >
-                                {{ page }}
-                            </button>
+                                class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                                :class="currentPage === page ? 'bg-primary text-white border-primary shadow-md shadow-primary/20' : 'text-gray-600 bg-white border-gray-200 hover:border-primary hover:text-primary hover:bg-slate-50 shadow-sm'"
+                            >{{ page }}</button>
                         </template>
 
                         <button 
                             @click="changePage(currentPage + 1)"
                             :disabled="currentPage === totalPages"
-                            class="min-w-[2.5rem] h-10 px-4 flex items-center justify-center text-sm font-bold rounded-full transition-all duration-300"
-                            :class="currentPage === totalPages ? 'text-slate-300 bg-slate-50/50 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'"
-                            v-html="'Selanjutnya &raquo;'"
-                        ></button>
+                            class="h-10 min-w-[2.5rem] px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors whitespace-nowrap border"
+                            :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50 border border-gray-100 cursor-not-allowed' : 'text-gray-600 bg-white border border-gray-200 hover:border-primary hover:text-primary shadow-sm'"
+                        >Selanjutnya</button>
                     </div>
+
+                    <p class="text-sm font-medium text-gray-400 mt-2">
+                        Menampilkan <span class="text-slate-700 font-bold">{{ showingFrom }}</span> - <span class="text-slate-700 font-bold">{{ showingTo }}</span> dari <span class="text-slate-700 font-bold">{{ totalKegiatans }}</span> data
+                    </p>
                 </div>
 
             </div>
         </div>
+        <Teleport to="body">
+    <transition enter-active-class="ease-out duration-300" enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="ease-in duration-200" leave-from-class="opacity-100" leave-to-class="opacity-0">
+        <div v-if="isModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center px-4 pt-20 pb-4 sm:p-0">
+            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" @click="closeModal"></div>
+            
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all w-full max-w-2xl relative z-10 max-h-[90vh] flex flex-col">
+                <div class="p-6 sm:p-8 flex-grow overflow-y-auto">
+                    <div class="flex justify-between items-start mb-6">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-primary font-semibold rounded-lg text-xs uppercase tracking-wider border border-blue-100">
+                            <UsersIcon class="w-4 h-4" /> {{ selectedKegiatan?.organizer || 'Kemahasiswaan' }}
+                        </span>
+                        <button @click="closeModal" class="p-2 bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors">
+                            <X class="w-5 h-5" />
+                        </button>
+                    </div>
+                    
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-6 leading-tight">{{ selectedKegiatan?.title }}</h2>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 sm:gap-8 mb-8 p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div>
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Pelaksanaan</p>
+                            <p class="text-sm font-bold text-slate-800">
+                                {{ formatDateLengkap(selectedKegiatan?.start_date) }}
+                                <span v-if="selectedKegiatan?.end_date"> - {{ formatDateLengkap(selectedKegiatan?.end_date) }}</span>
+                            </p>
+                        </div>
+                        <div v-if="selectedKegiatan?.location">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Lokasi</p>
+                            <p class="text-sm font-bold text-slate-800">{{ selectedKegiatan?.location }}</p>
+                        </div>
+                    </div>
+
+                    <div class="prose prose-sm sm:prose-base max-w-none text-slate-600 leading-relaxed whitespace-pre-line text-justify">
+                        {{ selectedKegiatan?.description }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </transition>
+</Teleport>
     </PublicLayout>
 </template>

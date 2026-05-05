@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\PpidDocument;
 use App\Models\PpidCategory;
-use App\Models\FacultyProfile; 
+use App\Models\FacultyProfile;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -26,19 +26,19 @@ class PublicPpidDocumentController extends Controller
         })->values();
 
         $facultyProfile = FacultyProfile::first();
-        
-        $permohonanLink = $facultyProfile && !empty($facultyProfile->content['ppid_permohonan_link']) 
-                            ? $facultyProfile->content['ppid_permohonan_link'] 
-                            : 'https://s.itk.ac.id/permintaanformfsti';
-                            
-        $keberatanLink = $facultyProfile && !empty($facultyProfile->content['ppid_keberatan_link']) 
-                            ? $facultyProfile->content['ppid_keberatan_link'] 
-                            : 'https://docs.google.com/forms/d/e/1FAIpQLSefIA7eJNmNHt0YXzWaWyLdp4zJUulojXUmh7xlVN-MQxZLlw/viewform';
+
+        $permohonanLink = $facultyProfile && !empty($facultyProfile->content['ppid_permohonan_link'])
+            ? $facultyProfile->content['ppid_permohonan_link']
+            : 'https://s.itk.ac.id/permintaanformfsti';
+
+        $keberatanLink = $facultyProfile && !empty($facultyProfile->content['ppid_keberatan_link'])
+            ? $facultyProfile->content['ppid_keberatan_link']
+            : 'https://docs.google.com/forms/d/e/1FAIpQLSefIA7eJNmNHt0YXzWaWyLdp4zJUulojXUmh7xlVN-MQxZLlw/viewform';
 
         return Inertia::render('Public/PpidDocuments/Index', [
             'informationTypes' => $informationTypes,
-            'permohonanLink' => $permohonanLink, 
-            'keberatanLink' => $keberatanLink   
+            'permohonanLink' => $permohonanLink,
+            'keberatanLink' => $keberatanLink
         ]);
     }
 
@@ -61,11 +61,11 @@ class PublicPpidDocumentController extends Controller
             abort(404);
         }
 
-        $categories = PpidCategory::with(['dokumen' => function($q) {
-                $q->orderBy('created_at', 'desc'); 
-            }])
+        $categories = PpidCategory::with(['dokumen' => function ($q) {
+            $q->orderBy('created_at', 'asc');
+        }])
             ->where('jenis_informasi', $originalType)
-            ->orderBy('urutan', 'asc') 
+            ->orderBy('urutan', 'asc')
             ->get();
 
         return Inertia::render('Public/PpidDocuments/ShowType', [

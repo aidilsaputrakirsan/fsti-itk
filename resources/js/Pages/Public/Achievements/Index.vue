@@ -6,6 +6,7 @@ import debounce from 'lodash/debounce';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import Banner from '@/Components/Banner.vue';
 import AchievementCard from '@/Components/AchievementCard.vue';
+import PublicPagination from '@/Components/PublicPagination.vue'; 
 import { Trophy, Award, Search, Medal, Star, Send, ChevronDown } from 'lucide-vue-next';
 
 import AOS from 'aos';
@@ -25,10 +26,10 @@ const props = defineProps<{
   filters: Filters;
   levels: string[];
   categories: string[];
+  googleFormUrl: string;
 }>();
 
 const bannerImage = '/images/background-banner.webp';
-const googleFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfaToVEnR6vnZSTggEbH_IfAVbOpuPf1aCirsNTRb3m8aFL-Q/viewform?pli=1';
 
 const search = ref(props.filters.search || '');
 const selectedLevel = ref(props.filters.level || '');
@@ -63,7 +64,7 @@ const toggleDropdown = (type: 'category' | 'level') => {
                 position: 'absolute',
                 top: `${rect.bottom + window.scrollY + 8}px`,
                 left: `${rect.left}px`,
-                width: `${rect.width}px`,
+                minWidth: `${rect.width}px`,
             };
         }
         isOpen.value = true;
@@ -123,51 +124,6 @@ const resetFilters = () => {
     applyFilters();
 };
 
-const currentPage = computed(() => {
-    const activeLink = props.achievements.links.find(link => link.active);
-    return activeLink ? parseInt(activeLink.label) : 1;
-});
-
-const totalPages = computed(() => {
-    return props.achievements.links.length > 2 ? props.achievements.links.length - 2 : 1;
-});
-
-const visiblePages = computed(() => {
-    const total = totalPages.value;
-    const current = currentPage.value;
-
-    if (total <= 7) {
-        return Array.from({ length: total }, (_, i) => i + 1);
-    }
-
-    if (current <= 4) {
-        return [1, 2, 3, 4, 5, '...', total];
-    }
-
-    if (current >= total - 3) {
-        return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
-    }
-
-    return [1, '...', current - 1, current, current + 1, '...', total];
-});
-
-const changePage = (page: number | string) => {
-    if (typeof page === 'number' && page >= 1 && page <= totalPages.value) {
-        router.get(route('achievements.index'), {
-            search: search.value,
-            level: selectedLevel.value,
-            category: selectedCategory.value,
-            page: page 
-        }, {
-            preserveState: true,
-            replace: true,
-            onFinish: () => { 
-                AOS.refresh(); 
-                window.scrollTo({ top: 450, behavior: 'smooth' }); 
-            } 
-        });
-    }
-};
 </script>
 
 <template>
@@ -300,31 +256,7 @@ const changePage = (page: number | string) => {
                         </div>
                     </div>
 
-                    <div v-if="totalPages > 1" class="mt-12 flex items-center justify-center gap-2">
-                        <button 
-                            @click="changePage(currentPage - 1)"
-                            :disabled="currentPage === 1"
-                            class="h-10 px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors"
-                            :class="currentPage === 1 ? 'text-gray-300 bg-gray-50 cursor-not-allowed' : 'text-gray-600 bg-white hover:bg-gray-50 border border-gray-200 shadow-sm'"
-                        >&laquo; Sebelumnya</button>
-
-                        <template v-for="(page, index) in visiblePages" :key="index">
-                            <span v-if="page === '...'" class="h-10 px-4 flex items-center justify-center text-sm font-bold text-gray-400">...</span>
-                            <button 
-                                v-else
-                                @click="changePage(page)"
-                                class="h-10 px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors"
-                                :class="currentPage === page ? 'bg-primary text-white shadow-md' : 'text-gray-600 bg-white hover:bg-gray-50 border border-gray-200 shadow-sm'"
-                            >{{ page }}</button>
-                        </template>
-
-                        <button 
-                            @click="changePage(currentPage + 1)"
-                            :disabled="currentPage === totalPages"
-                            class="h-10 px-4 flex items-center justify-center text-sm font-bold rounded-xl transition-colors"
-                            :class="currentPage === totalPages ? 'text-gray-300 bg-gray-50 cursor-not-allowed' : 'text-gray-600 bg-white hover:bg-gray-50 border border-gray-200 shadow-sm'"
-                        >Selanjutnya &raquo;</button>
-                    </div>
+                    <PublicPagination :meta="achievements" />
                 </div>
 
                 <div v-else class="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-2xl border border-gray-100 shadow-sm text-center" data-aos="zoom-in">
@@ -373,8 +305,8 @@ const changePage = (page: number | string) => {
     <Teleport to="body">
         <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
             <div v-if="isCategoryOpen" id="category-dropdown-menu" :style="categoryDropdownStyle" class="z-[9999] bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-100 py-2 overflow-hidden">
-                <a @click="selectOption('category', '')" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors">Semua Kategori</a>
-                <a v-for="c in categories" :key="c" @click="selectOption('category', c)" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors">{{ c }}</a>
+                <a @click="selectOption('category', '')" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors whitespace-nowrap">Semua Kategori</a>
+                <a v-for="c in categories" :key="c" @click="selectOption('category', c)" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors whitespace-nowrap">{{ c }}</a>
             </div>
         </transition>
     </Teleport>
@@ -382,8 +314,8 @@ const changePage = (page: number | string) => {
     <Teleport to="body">
         <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
             <div v-if="isLevelOpen" id="level-dropdown-menu" :style="levelDropdownStyle" class="z-[9999] bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-100 py-2 overflow-hidden">
-                <a @click="selectOption('level', '')" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors">Semua Tingkat</a>
-                <a v-for="l in levels" :key="l" @click="selectOption('level', l)" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors">{{ l }}</a>
+                <a @click="selectOption('level', '')" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors whitespace-nowrap">Semua Tingkat</a>
+                <a v-for="l in levels" :key="l" @click="selectOption('level', l)" class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary font-bold cursor-pointer transition-colors whitespace-nowrap">{{ l }}</a>
             </div>
         </transition>
     </Teleport>

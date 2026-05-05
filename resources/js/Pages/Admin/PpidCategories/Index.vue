@@ -3,6 +3,7 @@ import { ref, watch, computed } from 'vue';
 import { Link, router, usePage, Head } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { 
+    FunnelIcon,
     MagnifyingGlassIcon,
     PlusIcon, 
     PencilSquareIcon, 
@@ -17,9 +18,16 @@ defineOptions({ layout: AdminLayout });
 const props = defineProps<{
     categories: any;
     filters: any;
+    existingTypes: string[];
 }>();
 
 const search = ref(props.filters?.search || '');
+const filterJenis = ref(props.filters?.jenis || '');
+
+watch([search, filterJenis], debounce(([searchValue, jenisValue]) => {
+    router.get(route('admin.kategori-ppid.index'), { search: searchValue, jenis: jenisValue }, { preserveState: true, replace: true });
+}, 300));
+
 
 watch(search, debounce((value: string) => {
     router.get(route('admin.kategori-ppid.index'), { 
@@ -114,11 +122,11 @@ watch([flashSuccess, flashError], ([successMsg, errorMsg]) => {
 
 <template>
     <div>
-        <Head title="Kelola Kategori PPID" />
+        <Head title="Kelola Kategori Dokumen PPID" />
 
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Kelola Kategori PPID</h1>
+                <h1 class="text-3xl font-bold text-gray-900">Kelola Kategori Dokumen PPID</h1>
                 <p class="mt-1 text-gray-600">Manajemen kelompok dan kategori dokumen untuk halaman PPID.</p>
             </div>
             <Link :href="route('admin.kategori-ppid.create')" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors flex-shrink-0">
@@ -127,20 +135,27 @@ watch([flashSuccess, flashError], ([successMsg, errorMsg]) => {
             </Link>
         </div>
 
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-            <div class="relative w-full">
-                <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                <input 
-                    v-model="search" 
-                    type="text" 
-                    placeholder="Cari nama kategori atau jenis informasi..." 
-                    class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-primary focus:ring-primary transition-colors" 
-                />
-            </div>
-        </div>
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-4 mb-6">
+    <div class="relative w-full lg:flex-grow">
+        <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+        <input v-model="search" type="text" placeholder="Cari nama kategori..." class="w-full rounded-lg border-gray-300 py-3 pl-11 pr-4 bg-white shadow-sm focus:border-primary focus:ring-primary transition-colors" />
+    </div>
+    
+    <div class="flex flex-col sm:flex-row w-full lg:w-auto items-center gap-4 flex-shrink-0">
+        <div class="relative w-full sm:flex-1 lg:flex-none lg:w-64">
+    <FunnelIcon class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-500"/>
+    <select v-model="filterJenis" class="w-full rounded-lg border-gray-300 bg-white py-3 pl-11 pr-10 text-sm font-medium text-gray-700 shadow-sm focus:border-primary focus:ring-primary transition-colors cursor-pointer">
+        <option value="">Semua Jenis</option>
+        <option v-for="type in existingTypes" :key="type" :value="type">
+            Informasi {{ type }}
+        </option>
+    </select>
+</div>
+    </div>
+</div>
 
         <div class="bg-white shadow-sm p-4 sm:p-6 rounded-xl border border-gray-100 overflow-hidden">
-            <h3 class="text-lg font-bold text-gray-900 mb-4 hidden sm:block">Daftar Kategori PPID</h3>
+            <h3 class="text-lg font-bold text-gray-900 mb-4 hidden sm:block">Daftar Kategori Dokumen PPID</h3>
 
             <div class="admin-table-container overflow-x-auto w-full">
                 <table class="w-full min-w-[800px]">

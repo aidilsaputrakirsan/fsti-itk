@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\PostCategory;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,28 +12,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        if (!User::where('email', 'superadmin@fsti.itk.ac.id')->exists()) {
+            User::factory()->create([
+                'name' => 'Super Admin FSTI',
+                'email' => 'superadmin@fsti.itk.ac.id',
+                'password' => bcrypt('superadmin123'),
+                'is_superadmin' => true,
+            ]);
+            $this->command->info('Super Admin user created: superadmin@fsti.itk.ac.id / superadmin123');
+        } else {
+            $this->command->info('Admin user already exists, skipping...');
+        }
+
         if (!User::where('email', 'admin@fsti.itk.ac.id')->exists()) {
             User::factory()->create([
                 'name' => 'Admin FSTI',
                 'email' => 'admin@fsti.itk.ac.id',
                 'password' => bcrypt('admin123'),
-                'is_superadmin' => true,
+                'is_superadmin' => false,
             ]);
             $this->command->info('Admin user created: admin@fsti.itk.ac.id / admin123');
         } else {
             $this->command->info('Admin user already exists, skipping...');
         }
-
-        $categories = [
-            ['name' => 'Akademik', 'slug' => 'akademik'],
-            ['name' => 'Non Akademik', 'slug' => 'non-akademik'],
-            ['name' => 'Kerjasama', 'slug' => 'kerjasama'],
-        ];
-
-        foreach ($categories as $cat) {
-            PostCategory::firstOrCreate(['slug' => $cat['slug']], $cat);
-        }
-        $this->command->info('Post Categories seeded successfully.');
 
         $this->call([
             PostSeeder::class,
@@ -56,6 +56,8 @@ class DatabaseSeeder extends Seeder
             AlumniSeeder::class,
             CommunityServiceSeeder::class,
             DepartmentSeeder::class,
+            InternalServiceSeeder::class,
+            AlumniTestimonialSeeder::class,
         ]);
     }
 }

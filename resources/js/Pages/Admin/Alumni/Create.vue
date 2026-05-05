@@ -79,7 +79,7 @@ const submit = () => {
                     
                     <label class="md:pt-3 text-sm font-bold text-gray-800">Nomor Induk Mahasiswa <span class="text-red-600">*</span></label>
                     <div>
-                        <input v-model="form.nim" type="text" placeholder="Contoh: 02161001" 
+                        <input v-model="form.nim" type="text" placeholder="Contoh: 10221015" 
                             class="block w-full rounded-lg transition-colors py-3"
                             :class="form.errors.nim ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 text-red-900' : 'border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 focus:bg-white'" 
                             required>

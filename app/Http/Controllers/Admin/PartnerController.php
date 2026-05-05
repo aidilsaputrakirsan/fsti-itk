@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Partner;
-use App\Models\Post; 
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\File;
@@ -13,13 +13,33 @@ use Illuminate\Support\Facades\Storage;
 class PartnerController extends Controller
 {
     private $protectedLogos = [
-        'bpsdm.png', 'terra-drone.png', 'jasindo.png', 'smk-cendekia.png',
-        'sma-7.png', 'sma-9.png', 'posyantek.png', 'dkumkmp.png',
-        'universitas-brawijaya.png', 'brida-kaltim.png', 'fsad-its.png',
-        'universitas-kristen.png', 'icdec.png', 'pertamedika.png', 'oikn.png',
-        'universitas-malang.png', 'unesa.png', 'universitas-hasanuddin.png',
-        'javan.png', 'matematika-its.png', 'fteic-its.png', 'astra.png',
-        'upn.png', 'inixindo.png', 'bps.png', 'cqut.png', 'kiet.png'
+        'bpsdm.png',
+        'terra-drone.png',
+        'jasindo.png',
+        'smk-cendekia.png',
+        'sma-7.png',
+        'sma-9.png',
+        'posyantek.png',
+        'dkumkmp.png',
+        'universitas-brawijaya.png',
+        'brida-kaltim.png',
+        'fsad-its.png',
+        'universitas-kristen.png',
+        'icdec.png',
+        'pertamedika.png',
+        'oikn.png',
+        'universitas-malang.png',
+        'unesa.png',
+        'universitas-hasanuddin.png',
+        'javan.png',
+        'matematika-its.png',
+        'fteic-its.png',
+        'astra.png',
+        'upn.png',
+        'inixindo.png',
+        'bps.png',
+        'cqut.png',
+        'kiet.png'
     ];
 
     public function index(Request $request)
@@ -71,6 +91,10 @@ class PartnerController extends Controller
             'activities.*.post_id' => 'nullable',
             'activities.*.post_slug' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'activities.*.name.required' => 'Nama rincian kegiatan wajib diisi.',
+            'activities.*.name.string' => 'Nama kegiatan harus berupa teks.',
+            'activities.*.name.max' => 'Nama kegiatan maksimal 255 karakter.'
         ]);
 
         $activities = [];
@@ -119,6 +143,10 @@ class PartnerController extends Controller
             'activities.*.post_id' => 'nullable',
             'activities.*.post_slug' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'activities.*.name.required' => 'Nama rincian kegiatan wajib diisi.',
+            'activities.*.name.string' => 'Nama kegiatan harus berupa teks.',
+            'activities.*.name.max' => 'Nama kegiatan maksimal 255 karakter.'
         ]);
 
         $activities = [];
