@@ -258,8 +258,8 @@ onUnmounted(() => { clearInterval(sliderInterval); });
             </transition-group>
         </div>
 
-        <div class="absolute inset-0 z-10 bg-gradient-to-r from-[#2F4DD3] via-[#2F4DD3]/90 to-transparent"></div>
-        <div class="absolute inset-0 z-10 bg-gradient-to-t from-[#2F4DD3] via-[#2F4DD3]/40 to-transparent lg:hidden"></div>
+        <div class="absolute inset-0 z-10 bg-gradient-to-r from-[#2F4DD3] via-[#2F4DD3]/70 to-transparent"></div>
+        <div class="absolute inset-0 z-10 bg-gradient-to-t from-[#2F4DD3] via-[#2F4DD3]/70 to-transparent lg:hidden"></div>
 
         <div class="absolute inset-0 z-10 opacity-15 mix-blend-overlay w-full lg:w-2/3 pointer-events-none" style="mask-image: linear-gradient(to right, black, transparent);">
           <img src="/images/ornaments/batik.webp" class="w-full h-full object-cover" alt="Ornamen Batik FSTI" width="1000" height="1000" loading="eager" onerror="this.style.display='none'">
