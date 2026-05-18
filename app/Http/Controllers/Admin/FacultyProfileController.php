@@ -127,23 +127,30 @@ class FacultyProfileController extends Controller
             }
         }
 
-        $fasilitas = $request->input('content.fasilitas', []);
+        $oldFasilitas = $profile->content['fasilitas'] ?? [];
+        $newFasilitasInputs = $request->input('content.fasilitas', []);
+
+        $retainedImagePaths = [];
+        foreach ($newFasilitasInputs as $item) {
+            if (isset($item['gambar']) && is_string($item['gambar'])) {
+                $retainedImagePaths[] = $item['gambar'];
+            }
+        }
+
+        foreach ($oldFasilitas as $oldItem) {
+            $oldImage = $oldItem['gambar'] ?? null;
+            if ($oldImage && !in_array($oldImage, $retainedImagePaths) && !str_starts_with($oldImage, 'images/') && !str_starts_with($oldImage, 'http')) {
+                Storage::disk('public')->delete($oldImage);
+            }
+        }
+
+        $fasilitas = $newFasilitasInputs;
         foreach ($fasilitas as $index => $item) {
             if ($request->hasFile("content.fasilitas.{$index}.gambar")) {
-                $file = $request->file("content.fasilitas.{$index}.gambar");
-
-                if (
-                    isset($profile->content['fasilitas'][$index]['gambar']) &&
-                    !str_starts_with($profile->content['fasilitas'][$index]['gambar'], 'images/') &&
-                    !str_starts_with($profile->content['fasilitas'][$index]['gambar'], 'http')
-                ) {
-                    Storage::disk('public')->delete($profile->content['fasilitas'][$index]['gambar']);
-                }
-
-                $path = $file->store('fasilitas', 'public');
+                $path = $request->file("content.fasilitas.{$index}.gambar")->store('fasilitas', 'public');
                 $fasilitas[$index]['gambar'] = $path;
             } else {
-                $fasilitas[$index]['gambar'] = $item['gambar'] ?? ($profile->content['fasilitas'][$index]['gambar'] ?? null);
+                $fasilitas[$index]['gambar'] = $item['gambar'] ?? null;
             }
         }
         $content['fasilitas'] = $fasilitas;

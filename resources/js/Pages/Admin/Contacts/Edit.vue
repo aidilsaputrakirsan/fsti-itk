@@ -228,7 +228,7 @@ const submit = () => {
                                     :class="form.errors.google_maps_iframe ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50' : 'border-gray-300 focus:border-primary focus:ring-primary bg-white'"
                                 />
                                 <InputError :message="form.errors.google_maps_iframe" />
-                                <p class="text-xs text-gray-500 mt-2 font-medium">Panduan: Salin URL dari atribut <code class="bg-blue-50 text-primary px-1.5 py-0.5 rounded">src="..."</code> pada sematan peta.</p>
+                                <p class="text-xs text-gray-500 mt-2 font-medium">Panduan: Salin URL dari atribut di dalam <code class="bg-blue-50 text-primary px-1.5 py-0.5 rounded">src="..."</code> pada sematan peta.</p>
                             </div>
                         </div>
                     </div>
