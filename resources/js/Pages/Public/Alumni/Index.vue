@@ -236,7 +236,7 @@ const changePage = (page) => {
                             <div class="w-10 h-1 bg-yellow-400 mb-2 md:mb-3 lg:mb-4 mx-auto lg:mx-0 rounded-full shrink-0"></div>
                             
                             <p class="text-cyan-300 font-bold text-xs sm:text-sm md:text-base lg:text-[15px] tracking-wide leading-tight shrink-0 pb-1">
-                                {{ alumni.program }} <span class="font-normal text-cyan-100/70 block sm:inline mt-0.5 sm:mt-0">(Lulusan {{ alumni.year }})</span>
+                                {{ alumni.program }} <span class="font-normal text-cyan-100/70 block sm:inline mt-0.5 sm:mt-0">(Angkatan {{ alumni.year }})</span>
                             </p>
                         </div>
                     </div>

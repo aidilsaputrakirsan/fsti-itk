@@ -98,7 +98,7 @@ class PpidDocumentController extends Controller
         $dataToUpdate = [
             'ppid_category_id' => $validated['kategori_ppid_id'],
             'judul_dokumen'    => $validated['judul_dokumen'],
-            'file_url'         => $validated['file_url'] ?? $document->file_url,
+            'file_url'         => array_key_exists('file_url', $validated) ? $validated['file_url'] : $document->file_url,
         ];
 
         if ($request->hasFile('file')) {

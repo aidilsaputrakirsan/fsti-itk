@@ -60,9 +60,10 @@ class AlumniController extends Controller
             'name' => 'required|string|max:255',
             'study_program' => 'required|string|max:255',
             'entry_year' => 'required|integer|min:2000|max:' . date('Y'),
-            'graduation_year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+            'graduation_year' => 'required|integer|min:2000|max:' . (date('Y') + 1) . '|gt:entry_year',
         ], [
             'nim.unique' => 'Data dengan NIM ini sudah terdaftar sebagai alumni.',
+            'graduation_year.gte' => 'Tahun lulus harus setelah atau sama dengan tahun masuk.'
         ]);
 
         Alumni::create($validated);
@@ -89,9 +90,10 @@ class AlumniController extends Controller
             'name' => 'required|string|max:255',
             'study_program' => 'required|string|max:255',
             'entry_year' => 'required|integer|min:2000|max:' . date('Y'),
-            'graduation_year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+            'graduation_year' => 'required|integer|min:2000|max:' . (date('Y') + 1) . '|gt:entry_year',
         ], [
             'nim.unique' => 'Data dengan NIM ini sudah terdaftar pada alumni lain.',
+            'graduation_year.gte' => 'Tahun lulus harus setelah atau sama dengan tahun masuk.'
         ]);
 
         $alumnus->update($validated);

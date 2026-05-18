@@ -156,6 +156,11 @@ class IntegrityZoneController extends Controller
                 }
                 $document->file_url = $validated['file_url'];
             }
+        } elseif (!$request->filled('file_url') && !$request->hasFile('file')) {
+            if ($document->file_url && str_contains($document->file_url, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $document->file_url));
+            }
+            $document->file_url = null;
         }
 
         $document->save();
