@@ -199,19 +199,28 @@ const submit = () => {
     }
 
     form.content.fasilitas.forEach((f, index) => {
-        if (!f.nama) { 
-            form.setError(`content.fasilitas.${index}.nama`, 'Nama fasilitas wajib diisi.'); 
-            if (!firstErrorTab) firstErrorTab = 'fasilitas'; 
+    if (!f.nama) { 
+        form.setError(`content.fasilitas.${index}.nama`, 'Nama fasilitas wajib diisi.'); 
+        if (!firstErrorTab) firstErrorTab = 'fasilitas'; 
+    }
+    if (!f.deskripsi) { 
+        form.setError(`content.fasilitas.${index}.deskripsi`, 'Deskripsi fasilitas wajib diisi.'); 
+        if (!firstErrorTab) firstErrorTab = 'fasilitas'; 
+    }
+    if (!f.gambar) { 
+        form.setError(`content.fasilitas.${index}.gambar`, 'Gambar fasilitas wajib di-upload.'); 
+        if (!firstErrorTab) firstErrorTab = 'fasilitas'; 
+    } else if (f.gambar instanceof File) {
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!allowedTypes.includes(f.gambar.type)) {
+            form.setError(`content.fasilitas.${index}.gambar`, 'Format file harus JPG, PNG, atau WEBP.');
+            if (!firstErrorTab) firstErrorTab = 'fasilitas';
+        } else if (f.gambar.size > 2 * 1024 * 1024) {
+            form.setError(`content.fasilitas.${index}.gambar`, 'Ukuran file maksimal 2MB.');
+            if (!firstErrorTab) firstErrorTab = 'fasilitas';
         }
-        if (!f.deskripsi) { 
-            form.setError(`content.fasilitas.${index}.deskripsi`, 'Deskripsi fasilitas wajib diisi.'); 
-            if (!firstErrorTab) firstErrorTab = 'fasilitas'; 
-        }
-        if (!f.gambar) { 
-            form.setError(`content.fasilitas.${index}.gambar`, 'Gambar fasilitas wajib di-upload.'); 
-            if (!firstErrorTab) firstErrorTab = 'fasilitas'; 
-        }
-    });
+    }
+});
 
     if (form.bagan_image) {
         const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
@@ -567,8 +576,7 @@ const submit = () => {
                                         <span class="ml-2 text-xs truncate flex-1 text-gray-500" :class="{'text-red-700 font-bold': form.errors[`content.fasilitas.${index}.gambar`]}">
                                             {{ typeof item.gambar === 'object' && item.gambar !== null ? item.gambar.name : (item.gambar ? 'Gambar tersimpan...' : 'Pilih file...') }}
                                         </span>
-                                        <input type="file" accept="image/*" @change="handleFasilitasImageChange($event, index)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                                    </div>
+<input type="file" accept="image/jpeg, image/png, image/jpg, image/webp" @change="handleFasilitasImageChange($event, index)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />                                    </div>
                                     <InputError :message="form.errors[`content.fasilitas.${index}.gambar`]" class="mt-1" />
                                 </div>
                                 <div class="w-full space-y-4">

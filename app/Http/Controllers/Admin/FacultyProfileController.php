@@ -92,7 +92,7 @@ class FacultyProfileController extends Controller
 
     public function update(Request $request)
     {
-        $request->validate([
+        $rules = [
             'content' => 'required|array',
             'content.pmb_link' => 'nullable|url',
             'content.tracer_study_link' => 'nullable|url',
@@ -100,7 +100,17 @@ class FacultyProfileController extends Controller
             'content.sambutan_dekan_paragraf_2' => 'nullable|string',
             'bagan_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'content.fasilitas' => 'nullable|array',
-        ]);
+        ];
+
+        if ($request->has('content.fasilitas')) {
+            foreach ($request->input('content.fasilitas') as $key => $val) {
+                if ($request->hasFile("content.fasilitas.$key.gambar")) {
+                    $rules["content.fasilitas.$key.gambar"] = 'image|mimes:jpeg,png,jpg,webp|max:2048';
+                }
+            }
+        }
+
+        $request->validate($rules);
 
         $profile = FacultyProfile::first();
         $content = $request->content;
