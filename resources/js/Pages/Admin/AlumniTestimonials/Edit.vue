@@ -45,7 +45,7 @@ const submit = () => {
 
     if (!form.name) { form.setError('name', 'Nama lengkap wajib diisi.'); hasError = true; }
     if (!form.study_program) { form.setError('study_program', 'Program studi wajib dipilih.'); hasError = true; }
-    if (!form.graduation_year) { form.setError('graduation_year', 'Tahun lulus wajib diisi.'); hasError = true; }
+    if (!form.graduation_year) { form.setError('graduation_year', 'Tahun angkatan wajib diisi.'); hasError = true; }
     if (!form.message) { form.setError('message', 'Pesan / Kesan wajib diisi.'); hasError = true; }
 
     if (hasError) return;
@@ -104,7 +104,7 @@ const submit = () => {
                         <InputError :message="form.errors.study_program" />
                     </div>
 
-                    <label class="md:pt-3 text-sm font-bold text-gray-800">Tahun Kelulusan <span class="text-red-600">*</span></label>
+                    <label class="md:pt-3 text-sm font-bold text-gray-800">Tahun Angkatan <span class="text-red-600">*</span></label>
                     <div>
                         <input v-model="form.graduation_year" type="number" min="2000" :max="new Date().getFullYear() + 1" 
                             class="block w-full sm:w-1/2 rounded-lg transition-colors py-3"
