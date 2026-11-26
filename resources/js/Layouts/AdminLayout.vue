@@ -57,6 +57,7 @@ const navigation = computed(() => {
                 { name: 'Kelola Portal Layanan', href: '/admin/internal-services' },
                 { name: 'Kelola Kegiatan', href: '/admin/kegiatan-mahasiswa' },
                 { name: 'Kelola Beasiswa', href: '/admin/beasiswa' },
+                { name: 'Kelola Mitra KP/Magang', href: '/admin/mitra-kp-magang' },
             ]
         },
         { 
