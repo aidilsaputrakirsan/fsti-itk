@@ -31,6 +31,7 @@ use App\Http\Controllers\Admin\StudentActivityController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\AlumniTestimonialController;
+use App\Http\Controllers\Admin\InternshipPartnerController;
 
 // ==============================================================================
 // CONTROLLER PUBLIK
@@ -52,6 +53,7 @@ use App\Http\Controllers\Public\PublicSatisfactionSurveyController;
 use App\Http\Controllers\Public\PublicScholarshipController;
 use App\Http\Controllers\Public\PublicStudentActivityController;
 use App\Http\Controllers\Public\PublicStudyProgramController;
+use App\Http\Controllers\Public\PublicInternshipPartnerController;
 
 // ==============================================================================
 // MODEL
@@ -127,6 +129,12 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // MODUL BEASISWA
     Route::resource('beasiswa', ScholarshipController::class)->parameters(['beasiswa' => 'scholarship']);
+
+    // MODUL MITRA KP/MAGANG
+    Route::resource('mitra-kp-magang', InternshipPartnerController::class)
+        ->parameters(['mitra-kp-magang' => 'internship_partner'])
+        ->except(['show'])
+        ->names('internship-partners');
 
     // MODUL ALUMNI
     Route::resource('/alumni', AdminAlumniController::class)->parameters(['alumni' => 'alumnus']);
@@ -278,6 +286,9 @@ Route::get('/agenda-fakultas', [PublicAgendaController::class, 'index'])->name('
 
 // HALAMAN BEASISWA
 Route::get('/beasiswa', [PublicScholarshipController::class, 'index'])->name('scholarships.index');
+
+// HALAMAN MITRA KP/MAGANG
+Route::get('/mitra-kp-magang', [PublicInternshipPartnerController::class, 'index'])->name('internship-partners.index');
 
 // HALAMAN PENGUMUMAN
 Route::get('/pengumuman', [PublicAnnouncementController::class, 'index'])->name('announcements.index');

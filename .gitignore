@@ -22,3 +22,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Data seeder sensitif (data pribadi alumni & dosen) — simpan lokal saja
+/database/seeders/assets/alumni/data_alumni.csv
+/database/seeders/assets/research/sinta_data.json
