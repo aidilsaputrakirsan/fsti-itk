@@ -154,6 +154,8 @@ Informasi lengkap untuk 8 program studi:
 - MySQL / PostgreSQL (Production)
 
 > Untuk dokumentasi arsitektur teknis yang lebih detail, lihat [ARCHITECTURE.md](ARCHITECTURE.md)
+>
+> Untuk serah terima pengelolaan (alur sistem, panduan admin, deploy), lihat folder [docs/](docs/README.md)
 
 ## Struktur Direktori
 
